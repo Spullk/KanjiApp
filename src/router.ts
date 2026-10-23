@@ -5,6 +5,9 @@ export type Route =
   | { page: "home" }
   | { page: "search"; q: string }
   | { page: "lessons" }
+  | { page: "review" }
+  | { page: "learn" }
+  | { page: "progress" }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -14,6 +17,9 @@ export const href = {
   home: () => "#/",
   search: (q = "") => `#/search${q ? "?q=" + encodeURIComponent(q) : ""}`,
   lessons: () => "#/lessons",
+  review: () => "#/review",
+  learn: () => "#/learn",
+  progress: () => "#/progress",
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
   radical: (c: string) => `#/r/${encodeURIComponent(c)}`,
@@ -28,6 +34,12 @@ export function parse(hash: string): Route {
       return { page: "search", q: new URLSearchParams(query).get("q") ?? "" };
     case "lessons":
       return { page: "lessons" };
+    case "review":
+      return { page: "review" };
+    case "learn":
+      return { page: "learn" };
+    case "progress":
+      return { page: "progress" };
     case "lesson":
       return { page: "lesson", id: Number(seg[1]) };
     case "k":

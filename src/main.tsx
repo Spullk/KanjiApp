@@ -9,9 +9,14 @@ import { WordPage } from "./pages/WordPage";
 import { RadicalPage } from "./pages/RadicalPage";
 import { LessonPage, LessonsPage } from "./pages/LessonPages";
 import { SearchPage } from "./pages/SearchPage";
+import { ReviewPage } from "./pages/ReviewPage";
+import { LearnPage } from "./pages/LearnPage";
+import { ProgressPage } from "./pages/ProgressPage";
+import { dueCards, requestPersistence, useStore } from "./srs";
 import "./style.css";
 
 registerSW({ immediate: true });
+requestPersistence();
 
 function Page({ route }: { route: Route }) {
   switch (route.page) {
@@ -27,6 +32,12 @@ function Page({ route }: { route: Route }) {
       return <LessonPage id={route.id} />;
     case "search":
       return <SearchPage q={route.q} />;
+    case "review":
+      return <ReviewPage />;
+    case "learn":
+      return <LearnPage />;
+    case "progress":
+      return <ProgressPage />;
     default:
       return <HomePage />;
   }
@@ -36,6 +47,7 @@ function App() {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const route = useRoute();
+  const due = dueCards(useStore()).length;
   useEffect(() => {
     loadData().then(() => setReady(true), (e) => setError(String(e)));
   }, []);
@@ -49,11 +61,18 @@ function App() {
         <a class={route.page === "home" ? "on" : ""} href={href.home()}>
           <span aria-hidden="true">根</span>Home
         </a>
+        <a class={route.page === "review" || route.page === "learn" ? "on" : ""} href={href.review()}>
+          <span aria-hidden="true">復</span>Review
+          {due > 0 && <b class="tab-badge">{due}</b>}
+        </a>
         <a class={route.page === "search" ? "on" : ""} href={href.search()}>
           <span aria-hidden="true">探</span>Search
         </a>
         <a class={route.page.startsWith("lesson") ? "on" : ""} href={href.lessons()}>
           <span aria-hidden="true">課</span>Lessons
+        </a>
+        <a class={route.page === "progress" ? "on" : ""} href={href.progress()}>
+          <span aria-hidden="true">進</span>Progress
         </a>
       </nav>
     </>

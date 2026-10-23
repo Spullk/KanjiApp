@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "preact": "^10.29.8",
+    "ts-fsrs": "^5.4.2",
     "wanakana": "^5.3.1"
   },
   "devDependencies": {

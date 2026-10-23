@@ -1,5 +1,6 @@
 import { useData } from "../data";
 import { href } from "../router";
+import { StudyButton } from "../components/ItemCards";
 import { Badges, Chip, Chips, Section } from "../components/bits";
 
 export function RadicalPage({ c }: { c: string }) {
@@ -13,6 +14,7 @@ export function RadicalPage({ c }: { c: string }) {
         <div class="hero-meaning">{r.meanings.join(", ") || "No name yet"}</div>
         <Badges items={[r.lesson && `Lesson ${r.lesson}`, r.readings.length > 0 && r.readings.slice(0, 3).join("・")]} />
       </header>
+      <StudyButton kind="radical" k={r.c} />
 
       {r.original && r.original !== r.c && (
         <Section title="Variant of">
