@@ -1,3 +1,43 @@
 # KanjiApp
 
 A personal kanji and vocabulary trainer in the spirit of WaniKani, with Anki-style spaced repetition.
+
+## Data
+
+`data/` holds everything the app needs, generated from open sources by `scripts/`.
+
+| File | What's in it |
+| --- | --- |
+| `kanji.json` | All 2,136 Jōyō kanji: meanings, every on/kun reading with the words that use it (most-used reading first), special readings (今日 きょう), parts, sound component, kanji that contain it, kanji that share its sound component, JLPT level, lesson |
+| `radicals.json` | Components that aren't Jōyō kanji themselves (氵, 亻, 吾…), with meanings and the kanji that use them |
+| `words.json` | ~16k common words: reading, furigana split per kanji, English senses, example sentence ids |
+| `sentences.json` | Tatoeba example sentences with English, plus the position of each known word so it can be linked |
+| `lessons.json` | The study order: 206 lessons of ~10 kanji, with the radicals and review words each one introduces |
+| `meta.json` | Counts and source credits |
+
+### Study order
+
+Kanji go roughly from JLPT N5 to N1, then the remaining Jōyō kanji, most frequent first. Two things pull kanji out of that order, like WaniKani does:
+
+- A kanji's parts come first, so 青 is learned before 晴.
+- Kanji that share a sound component are pulled together (青 brings 情, 精 and 静 into the same lesson), as long as they are at most one JLPT level harder.
+
+There is no level locking; the order is only a suggestion of what to learn next.
+
+### Rebuilding
+
+```sh
+python scripts/fetch_sources.py --sentences   # downloads into sources/ (not committed)
+python scripts/build_data.py
+```
+
+Leave out `--sentences` to skip the ~100 MB Tatoeba download; the build then writes no sentences. The **Build data** GitHub Action runs both steps with sentences whenever `scripts/` changes and commits the result.
+
+## Credits
+
+- [JMdict and KANJIDIC2](https://www.edrdg.org/) by the Electronic Dictionary Research and Development Group, CC BY-SA 4.0 (via [jamdict-data](https://pypi.org/project/jamdict-data/))
+- [KanjiVG](https://kanjivg.tagaini.net/) by Ulrich Apel and contributors, CC BY-SA 3.0
+- JLPT levels from Jonathan Waller's lists, via [kanji-data](https://github.com/davidluzgouveia/kanji-data) (MIT)
+- Example sentences from the [Tatoeba Project](https://tatoeba.org/), CC BY 2.0 FR
+
+Because of the share-alike licenses, the generated `data/` is CC BY-SA 4.0.

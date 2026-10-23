@@ -1,0 +1,45 @@
+"""English names for kanji components that KANJIDIC has no (useful) meaning for.
+
+Keys are the component as KanjiVG writes it. Anything not listed falls back to the
+KANJIDIC meanings of the component, or of the full form it is a variant of.
+"""
+
+COMPONENT_NAMES = {
+    "亻": ["person"],
+    "宀": ["roof"],
+    "丿": ["slash"],
+    "冖": ["cover"],
+    "禾": ["grain"],
+    "广": ["building"],
+    "彳": ["going"],
+    "厂": ["cliff"],
+    "冫": ["ice"],
+    "⺕": ["snout"],
+    "⺍": ["three dots"],
+    "𠂉": ["gun"],
+    "罒": ["net"],
+    "疒": ["sickness"],
+    "殳": ["weapon"],
+    "儿": ["legs"],
+    "亠": ["lid"],
+    "龶": ["life (top)"],
+    "𡗗": ["spring (top)"],
+    "业": ["business (top)"],
+    "𠦝": ["morning (left)"],
+    "マ": ["ma"],
+    "劦": ["triple power"],
+    "夋": ["walk slowly"],
+    "俞": ["boat (top)"],
+    "龰": ["run (bottom)"],
+    "电": ["electric"],
+    "𠔉": ["scroll (top)"],
+    "壴": ["drum"],
+    "夗": ["turn over"],
+    "菐": ["thicket"],
+    "丆": ["cliff"],
+    "习": ["wing"],
+    "龷": ["yellow (top)"],
+    "𠂇": ["left hand"],
+    "乡": ["village"],
+    "甶": ["ghost head"],
+}
