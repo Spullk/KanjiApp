@@ -698,6 +698,16 @@ a.primary {
   text-overflow: ellipsis;
 }
 
+.page-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.settings-link {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .progress-line {
   display: block;
   color: var(--muted);

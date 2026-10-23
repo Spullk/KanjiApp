@@ -1,8 +1,7 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { mergeIntoStore, migrate, STAGE_LABEL, stageOf, update, useStore, type ItemKind, type Stage, type Store } from "../srs";
+import { STAGE_LABEL, stageOf, useStore, type ItemKind, type Stage } from "../srs";
 import { Section } from "../components/bits";
-import { allowReminders, isNative, shareFile } from "../native";
 
 const STAGES: Stage[] = ["mature", "young", "learning", "none"];
 const DAY = 86_400_000;
@@ -47,7 +46,12 @@ export function ProgressPage() {
 
   return (
     <article class="page">
-      <h1>Progress</h1>
+      <div class="page-head">
+        <h1>Progress</h1>
+        <a class="settings-link" href={href.settings()}>
+          Settings
+        </a>
+      </div>
       <div class="stat-tiles">
         <Tile n={forecast[0]} label="due today" />
         <Tile n={perDay.get(dayKey(now)) ?? 0} label="reviewed today" />
@@ -76,68 +80,6 @@ export function ProgressPage() {
             </div>
           ))}
         </div>
-      </Section>
-
-      <Section title="Settings">
-        <label class="setting">
-          New items per batch
-          <select
-            value={store.settings.batch}
-            onChange={(e) => update((s) => (s.settings.batch = Number((e.target as HTMLSelectElement).value)))}
-          >
-            {[3, 5, 10, 15, 20].map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </label>
-        <label class="setting">
-          Target recall
-          <select
-            value={store.settings.retention}
-            onChange={(e) => update((s) => (s.settings.retention = Number((e.target as HTMLSelectElement).value)))}
-          >
-            {[0.8, 0.85, 0.9, 0.95].map((n) => (
-              <option key={n} value={n}>{Math.round(n * 100)}%</option>
-            ))}
-          </select>
-        </label>
-        <p class="hint">Higher recall means more frequent reviews. 90% is the Anki default.</p>
-        {isNative && (
-          <label class="setting">
-            Daily reminder
-            <select
-              value={store.settings.reminder ?? ""}
-              onChange={(e) => setReminder(e.target as HTMLSelectElement)}
-            >
-              <option value="">Off</option>
-              {REMINDER_HOURS.map((h) => (
-                <option key={h} value={h}>{new Date(2000, 0, 1, h).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}</option>
-              ))}
-            </select>
-          </label>
-        )}
-      </Section>
-
-      <Section
-        title="Backup"
-        hint={`Progress is saved on this ${isNative ? "phone" : "device"} only. Export now and then so you can't lose it. Importing a backup merges it with what's here, so you can also use it to bring progress over from another device.`}
-      >
-        <div class="backup">
-          <button onClick={() => exportStore(store)}>Export progress</button>
-          <label class="file-button">
-            Import
-            <input type="file" accept="application/json" onChange={(e) => importStore(e.target as HTMLInputElement)} />
-          </label>
-        </div>
-      </Section>
-      <Section title="Credits">
-        <ul class="credits">
-          <li>Dictionary: JMdict and KANJIDIC2, EDRDG, CC BY-SA 4.0</li>
-          <li>Kanji parts and stroke order: KanjiVG, Ulrich Apel, CC BY-SA 3.0</li>
-          <li>Example sentences and their recordings: Tatoeba Project, CC BY 2.0 FR</li>
-          <li>Word recordings: Kanji alive, CC BY 4.0</li>
-          <li>JLPT levels: Jonathan Waller's lists</li>
-        </ul>
       </Section>
 
       <Section title="All kanji" hint="In lesson order. Tap one to open it.">
@@ -180,44 +122,4 @@ function StageBar({ label, counts, total }: { label: string; counts: Record<Stag
       </div>
     </div>
   );
-}
-
-const REMINDER_HOURS = [7, 8, 9, 12, 17, 18, 19, 20, 21, 22];
-
-async function setReminder(select: HTMLSelectElement) {
-  const hour = select.value === "" ? undefined : Number(select.value);
-  if (hour !== undefined && !(await allowReminders())) {
-    select.value = "";
-    alert("Nekko isn't allowed to send notifications. You can turn them on in the phone's Settings.");
-    return;
-  }
-  update((s) => (s.settings.reminder = hour));
-}
-
-function exportStore(store: Store) {
-  const name = `nekko-progress-${new Date().toISOString().slice(0, 10)}.json`;
-  if (isNative) {
-    shareFile(name, JSON.stringify(store)).catch((e) => console.error(e));
-    return;
-  }
-  const blob = new Blob([JSON.stringify(store)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-async function importStore(input: HTMLInputElement) {
-  const file = input.files?.[0];
-  if (!file) return;
-  try {
-    mergeIntoStore(migrate(JSON.parse(await file.text())));
-    input.value = "";
-  } catch (e) {
-    input.value = "";
-    console.error(e);
-    input.setCustomValidity("That file isn't a Nekko backup.");
-    input.reportValidity();
-  }
 }
