@@ -1,6 +1,19 @@
-# KanjiApp
+# Nekko 根っこ
 
-A personal kanji and vocabulary trainer in the spirit of WaniKani, with Anki-style spaced repetition.
+A personal kanji and vocabulary trainer in the spirit of WaniKani, with Anki-style spaced repetition. Every word links to its kanji, every kanji to its readings, parts, sound family and words, so you can wander the whole web from anywhere.
+
+## App
+
+A Preact + Vite web app that installs to a phone home screen and works offline (the dictionary is cached on first load, about 3 MB gzipped).
+
+```sh
+npm install
+npm run dev     # local dev server
+npm test        # unit tests
+npm run build   # static site in dist/
+```
+
+The **App** GitHub Action builds every PR and publishes `main` to GitHub Pages. Pages has to be switched on once: repo **Settings → Pages → Source: GitHub Actions**.
 
 ## Data
 

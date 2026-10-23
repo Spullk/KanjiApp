@@ -1,3 +1,5 @@
 # Downloaded by scripts/fetch_sources.py
 sources/
 __pycache__/
+node_modules/
+dist/
