@@ -606,6 +606,16 @@ a.primary {
   background: #2563c9;
 }
 
+.card-note {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--hl);
+  color: var(--hl-text);
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+}
+
 .stage.leech {
   background: #c43d3d;
 }

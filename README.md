@@ -17,7 +17,7 @@ The **App** GitHub Action builds every PR and publishes `main` to GitHub Pages. 
 
 ## Phone apps
 
-The iPhone and Android apps are the same web app wrapped with [Capacitor](https://capacitorjs.com/), in `ios/` and `android/`. On top of the website they keep progress in a file in the app's own storage, send a daily review reminder (Progress → Settings), tap the phone's haptics when you grade, use the phone's Japanese voice, and share backups through the share sheet.
+The iPhone and Android apps are the same web app wrapped with [Capacitor](https://capacitorjs.com/), in `ios/` and `android/`. On top of the website they keep progress in a file in the app's own storage, send a daily review reminder (Progress → Settings → Reminders), tap the phone's haptics when you grade, use the phone's Japanese voice, and share backups through the share sheet.
 
 ```sh
 npm run app       # build the website and copy it into both apps

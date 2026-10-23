@@ -1,5 +1,5 @@
 // Spaced repetition: which items you study, their FSRS scheduling state, and the review log.
-// Everything lives on this device (see storage.ts); Progress → Backup exports it as JSON.
+// Everything lives on this device (see storage.ts); Settings → Backup exports it as JSON.
 
 import { useEffect, useState } from "preact/hooks";
 import { createEmptyCard, fsrs, generatorParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
