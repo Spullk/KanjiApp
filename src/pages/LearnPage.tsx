@@ -1,15 +1,23 @@
 import { useMemo } from "preact/hooks";
 import { useData } from "../data";
 import { href } from "../router";
-import { addItem, getStore, nextToLearn, update, useStore } from "../srs";
+import { addItem, getStore, newLeftToday, nextToLearn, update, useStore } from "../srs";
 import { ItemSummary } from "../components/ItemCards";
 
 export function LearnPage() {
   const data = useData();
   const store = useStore();
   // Freeze the batch when the page opens, so it doesn't shift while you read it.
-  const batch = useMemo(() => nextToLearn(getStore(), data, store.settings.batch), [data, store.settings.batch]);
+  const left = newLeftToday(store);
+  const batch = useMemo(() => nextToLearn(getStore(), data, Math.min(store.settings.batch, left)), [data, store.settings.batch, left]);
 
+  if (!left) {
+    return (
+      <p class="empty">
+        That's today's {store.settings.dailyNew} new items. More tomorrow, or raise the limit in <a href={href.settings()}>Settings</a>.
+      </p>
+    );
+  }
   if (!batch.length) return <p class="empty">You've added everything. Impressive.</p>;
 
   const addAll = () => {

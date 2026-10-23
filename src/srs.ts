@@ -38,6 +38,12 @@ export type StoredCard = {
 export type Settings = {
   batch: number;
   retention: number;
+  /** self: show the answer and grade yourself (Anki). typed: type meaning and reading (WaniKani). */
+  answerMode: "self" | "typed";
+  /** Most new items to start per day; 0 for no limit. */
+  dailyNew: number;
+  /** When vacation mode was switched on. Nothing is due while it's on, and it pushes everything back when it ends. */
+  vacation?: number;
   /** Native app only: hour of the daily review reminder, or undefined for none. */
   reminder?: number;
 };
@@ -73,7 +79,7 @@ export type Store = {
   undo: Undo[];
 };
 
-export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9 };
+export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, answerMode: "self", dailyNew: 0 };
 
 const UNDO_LIMIT = 20;
 
@@ -179,6 +185,11 @@ export function setItemInfo(store: Store, kind: ItemKind, key: string, change: P
   store.items[id] = next;
 }
 
+/** Marks (or with `undefined`, unmarks) many items at once, e.g. a whole lesson as already known. */
+export function setStatusMany(store: Store, items: { kind: ItemKind; key: string }[], status: ItemInfo["status"], now = Date.now()) {
+  for (const it of items) setItemInfo(store, it.kind, it.key, { status }, now);
+}
+
 /** A card is a leech once you've forgotten it this many times. */
 export const LEECH_LAPSES = 8;
 
@@ -198,6 +209,28 @@ export function addItem(store: Store, kind: ItemKind, key: string, now = Date.no
     }
   }
   return added;
+}
+
+/** Adds an item as if you'd been reviewing it elsewhere: its cards hold for `stability` days and come back at `due`. */
+export function addReviewedItem(store: Store, kind: ItemKind, key: string, stability: number, due: number, now = Date.now()) {
+  for (const face of FACES[kind]) {
+    const id = cardId(kind, key, face);
+    store.cards[id] = {
+      due,
+      stability,
+      difficulty: 5,
+      elapsed_days: 0,
+      scheduled_days: Math.max(1, Math.round(stability)),
+      learning_steps: 0,
+      reps: 1,
+      lapses: 0,
+      state: State.Review,
+      last_review: Math.min(now, due - stability * 86_400_000),
+      added: startOfDay(now) - 1, // not new today, so it doesn't use up the daily limit
+      updated: now,
+    };
+    delete store.removed[id];
+  }
 }
 
 export function removeItem(store: Store, kind: ItemKind, key: string, now = Date.now()) {
@@ -236,8 +269,9 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
   } as Record<Grade, number>;
 }
 
-/** Cards due by `until`, learning cards first, then the most overdue. */
+/** Cards due by `until`, learning cards first, then the most overdue. None while on vacation. */
 export function dueCards(store: Store, until = Date.now()): string[] {
+  if (store.settings.vacation) return [];
   return Object.entries(store.cards)
     .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status)
     .sort(([, a], [, b]) => {
@@ -246,6 +280,64 @@ export function dueCards(store: Store, until = Date.now()): string[] {
       return al - bl || a.due - b.due;
     })
     .map(([id]) => id);
+}
+
+export function startOfDay(t: number): number {
+  const d = new Date(t);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+/** How many more new items today's limit allows. */
+export function newLeftToday(store: Store, now = Date.now()): number {
+  if (!store.settings.dailyNew) return Infinity;
+  const start = startOfDay(now);
+  const today = new Set(
+    Object.entries(store.cards)
+      .filter(([, c]) => c.added >= start)
+      .map(([id]) => id.slice(0, id.lastIndexOf(":"))),
+  );
+  return Math.max(0, store.settings.dailyNew - today.size);
+}
+
+export function relDate(t: number): string {
+  return new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+export function startVacation(store: Store, now = Date.now()) {
+  store.settings.vacation = now;
+}
+
+/** Ends vacation mode, moving every card's schedule on by the time you were away, as if it had stood still. */
+export function endVacation(store: Store, now = Date.now()) {
+  const since = store.settings.vacation;
+  delete store.settings.vacation;
+  if (!since || now <= since) return;
+  const shift = now - since;
+  for (const c of Object.values(store.cards)) {
+    c.due += shift;
+    if (c.last_review !== undefined) c.last_review += shift;
+    c.updated = now;
+  }
+}
+
+export type PracticeSet = "mistakes" | "leeches" | "recent";
+
+export const PRACTICE_LABEL: Record<PracticeSet, string> = {
+  mistakes: "Today's mistakes",
+  leeches: "Leeches",
+  recent: "Learned this week",
+};
+
+/** Cards for extra practice, which never changes the schedule. */
+export function practiceCards(store: Store, set: PracticeSet, now = Date.now()): string[] {
+  const ids =
+    set === "mistakes"
+      ? store.log.filter(([, r, t]) => r === Rating.Again && t >= startOfDay(now)).map(([id]) => id)
+      : Object.entries(store.cards)
+          .filter(([, c]) => (set === "leeches" ? c.lapses >= LEECH_LAPSES : c.added >= now - 7 * 86_400_000))
+          .map(([id]) => id);
+  return [...new Set(ids)].filter((id) => store.cards[id]);
 }
 
 /** The order to learn a lesson in: each kanji right after its new radicals, then the words. */

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
+import type { PracticeSet } from "./srs";
 
 // Hash routes, so the app works from any static host (GitHub Pages) and offline.
 export type Route =
@@ -9,6 +10,8 @@ export type Route =
   | { page: "learn" }
   | { page: "progress" }
   | { page: "settings" }
+  | { page: "known" }
+  | { page: "practice"; set: PracticeSet }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -22,6 +25,8 @@ export const href = {
   learn: () => "#/learn",
   progress: () => "#/progress",
   settings: () => "#/settings",
+  known: () => "#/known",
+  practice: (set: PracticeSet) => `#/practice/${set}`,
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
   radical: (c: string) => `#/r/${encodeURIComponent(c)}`,
@@ -44,6 +49,10 @@ export function parse(hash: string): Route {
       return { page: "progress" };
     case "settings":
       return { page: "settings" };
+    case "known":
+      return { page: "known" };
+    case "practice":
+      return ["mistakes", "leeches", "recent"].includes(seg[1]) ? { page: "practice", set: seg[1] as PracticeSet } : { page: "progress" };
     case "lesson":
       return { page: "lesson", id: Number(seg[1]) };
     case "k":

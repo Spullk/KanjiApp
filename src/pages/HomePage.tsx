@@ -1,13 +1,13 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { dueCards, nextToLearn, stageOf, useStore } from "../srs";
+import { dueCards, newLeftToday, nextToLearn, stageOf, useStore } from "../srs";
 import { Chips, Section } from "../components/bits";
 
 export function HomePage() {
   const data = useData();
   const store = useStore();
   const due = dueCards(store).length;
-  const next = nextToLearn(store, data, store.settings.batch);
+  const next = nextToLearn(store, data, Math.min(store.settings.batch, newLeftToday(store)));
   const all = Object.keys(data.kanji);
   const known = all.filter((k) => stageOf(store, "kanji", k) === "mature").length;
   const studied = all.filter((k) => stageOf(store, "kanji", k) !== "none").length;
@@ -20,6 +20,11 @@ export function HomePage() {
         Nekko <span lang="ja">根っこ</span>
       </h1>
 
+      {store.settings.vacation && (
+        <a class="vacation-note" href={href.settings()}>
+          Vacation mode is on, so nothing is due. Turn it off in Settings →
+        </a>
+      )}
       <div class="home-actions">
         <a class={`big-action review ${due ? "" : "quiet"}`} href={href.review()}>
           <span class="ba-n">{due}</span>
