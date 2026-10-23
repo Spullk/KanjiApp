@@ -47,7 +47,12 @@ export function ReviewPage() {
     const next = Math.min(...Object.values(store.cards).map((c) => c.due));
     return (
       <article class="page review-done">
-        <h1>{done ? `Nice, ${done} done` : "All caught up"}</h1>
+        <h1>{store.settings.vacation ? "On vacation" : done ? `Nice, ${done} done` : "All caught up"}</h1>
+        {store.settings.vacation && (
+          <p class="hint">
+            Reviews are paused. Switch vacation mode off in <a href={href.settings()}>Settings</a> when you're back.
+          </p>
+        )}
         {undoButton}
         {soon > 0 && (
           <button class="primary wide" onClick={() => setEarly(true)}>

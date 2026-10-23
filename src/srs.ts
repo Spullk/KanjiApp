@@ -38,6 +38,10 @@ export type StoredCard = {
 export type Settings = {
   batch: number;
   retention: number;
+  /** Most new items to start per day; 0 for no limit. */
+  dailyNew: number;
+  /** When vacation mode was switched on. Nothing is due while it's on, and it pushes everything back when it ends. */
+  vacation?: number;
   /** Native app only: hour of the daily review reminder, or undefined for none. */
   reminder?: number;
 };
@@ -73,7 +77,7 @@ export type Store = {
   undo: Undo[];
 };
 
-export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9 };
+export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, dailyNew: 0 };
 
 const UNDO_LIMIT = 20;
 
@@ -236,8 +240,9 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
   } as Record<Grade, number>;
 }
 
-/** Cards due by `until`, learning cards first, then the most overdue. */
+/** Cards due by `until`, learning cards first, then the most overdue. None while on vacation. */
 export function dueCards(store: Store, until = Date.now()): string[] {
+  if (store.settings.vacation) return [];
   return Object.entries(store.cards)
     .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status)
     .sort(([, a], [, b]) => {
@@ -246,6 +251,45 @@ export function dueCards(store: Store, until = Date.now()): string[] {
       return al - bl || a.due - b.due;
     })
     .map(([id]) => id);
+}
+
+export function startOfDay(t: number): number {
+  const d = new Date(t);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+/** How many more new items today's limit allows. */
+export function newLeftToday(store: Store, now = Date.now()): number {
+  if (!store.settings.dailyNew) return Infinity;
+  const start = startOfDay(now);
+  const today = new Set(
+    Object.entries(store.cards)
+      .filter(([, c]) => c.added >= start)
+      .map(([id]) => id.slice(0, id.lastIndexOf(":"))),
+  );
+  return Math.max(0, store.settings.dailyNew - today.size);
+}
+
+export function relDate(t: number): string {
+  return new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+export function startVacation(store: Store, now = Date.now()) {
+  store.settings.vacation = now;
+}
+
+/** Ends vacation mode, moving every card's schedule on by the time you were away, as if it had stood still. */
+export function endVacation(store: Store, now = Date.now()) {
+  const since = store.settings.vacation;
+  delete store.settings.vacation;
+  if (!since || now <= since) return;
+  const shift = now - since;
+  for (const c of Object.values(store.cards)) {
+    c.due += shift;
+    if (c.last_review !== undefined) c.last_review += shift;
+    c.updated = now;
+  }
 }
 
 /** The order to learn a lesson in: each kanji right after its new radicals, then the words. */

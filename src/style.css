@@ -718,6 +718,16 @@ a.primary {
   font-size: 0.9rem;
 }
 
+.vacation-note {
+  display: block;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--hl);
+  color: var(--hl-text);
+  font-size: 0.9rem;
+}
+
 .progress-line {
   display: block;
   color: var(--muted);

@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS, mergeIntoStore, migrate, update, useStore, type Settings, type Store } from "../srs";
+import { DEFAULT_SETTINGS, endVacation, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
 import { Section } from "../components/bits";
 import { allowReminders, isNative, shareFile } from "../native";
 
@@ -25,6 +25,14 @@ export function SettingsPage() {
             ))}
           </select>
         </label>
+        <label class="setting">
+          New items per day
+          <select value={store.settings.dailyNew} onChange={(e) => set("dailyNew", Number((e.target as HTMLSelectElement).value))}>
+            {[0, 5, 10, 15, 20, 30, 50].map((n) => (
+              <option key={n} value={n}>{n || "No limit"}</option>
+            ))}
+          </select>
+        </label>
       </Section>
 
       <Section title="Reviews">
@@ -42,6 +50,20 @@ export function SettingsPage() {
         </p>
       </Section>
 
+      <Section
+        title="Vacation mode"
+        hint="Nothing comes due while you're away. When you come back, every review moves on by the time you were gone, so there's no pile waiting."
+      >
+        {store.settings.vacation ? (
+          <div class="backup">
+            <span>On since {relDate(store.settings.vacation)}</span>
+            <button onClick={() => update((s) => endVacation(s))}>I'm back</button>
+          </div>
+        ) : (
+          <button onClick={() => update((s) => startVacation(s))}>Go on vacation</button>
+        )}
+      </Section>
+
       {isNative && (
         <Section title="Reminders">
           <label class="setting">
@@ -57,7 +79,7 @@ export function SettingsPage() {
       )}
 
       {!isDefault && (
-        <button class="link-button" onClick={() => update((s) => (s.settings = { ...DEFAULT_SETTINGS, reminder: s.settings.reminder }))}>
+        <button class="link-button" onClick={() => update((s) => (s.settings = { ...DEFAULT_SETTINGS, reminder: s.settings.reminder, vacation: s.settings.vacation }))}>
           Reset to defaults
         </button>
       )}
