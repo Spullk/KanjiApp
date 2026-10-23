@@ -2,6 +2,7 @@ import { useData } from "../data";
 import { href } from "../router";
 import { replaceStore, STAGE_LABEL, stageOf, update, useStore, type ItemKind, type Stage, type Store } from "../srs";
 import { Section } from "../components/bits";
+import { allowReminders, isNative, shareFile } from "../native";
 
 const STAGES: Stage[] = ["mature", "young", "learning", "none"];
 const DAY = 86_400_000;
@@ -101,9 +102,26 @@ export function ProgressPage() {
           </select>
         </label>
         <p class="hint">Higher recall means more frequent reviews. 90% is the Anki default.</p>
+        {isNative && (
+          <label class="setting">
+            Daily reminder
+            <select
+              value={store.settings.reminder ?? ""}
+              onChange={(e) => setReminder(e.target as HTMLSelectElement)}
+            >
+              <option value="">Off</option>
+              {REMINDER_HOURS.map((h) => (
+                <option key={h} value={h}>{new Date(2000, 0, 1, h).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}</option>
+              ))}
+            </select>
+          </label>
+        )}
       </Section>
 
-      <Section title="Backup" hint="Progress is saved on this device only. Export now and then so you can't lose it.">
+      <Section
+        title="Backup"
+        hint={`Progress is saved on this ${isNative ? "phone" : "device"} only. Export now and then so you can't lose it.`}
+      >
         <div class="backup">
           <button onClick={() => exportStore(store)}>Export progress</button>
           <label class="file-button">
@@ -164,11 +182,28 @@ function StageBar({ label, counts, total }: { label: string; counts: Record<Stag
   );
 }
 
+const REMINDER_HOURS = [7, 8, 9, 12, 17, 18, 19, 20, 21, 22];
+
+async function setReminder(select: HTMLSelectElement) {
+  const hour = select.value === "" ? undefined : Number(select.value);
+  if (hour !== undefined && !(await allowReminders())) {
+    select.value = "";
+    alert("Nekko isn't allowed to send notifications. You can turn them on in the phone's Settings.");
+    return;
+  }
+  update((s) => (s.settings.reminder = hour));
+}
+
 function exportStore(store: Store) {
+  const name = `nekko-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  if (isNative) {
+    shareFile(name, JSON.stringify(store)).catch((e) => console.error(e));
+    return;
+  }
   const blob = new Blob([JSON.stringify(store)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `nekko-progress-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = name;
   a.click();
   URL.revokeObjectURL(a.href);
 }

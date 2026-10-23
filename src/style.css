@@ -58,7 +58,8 @@ a {
 main {
   max-width: 720px;
   margin: 0 auto;
-  padding: 16px 16px calc(84px + env(safe-area-inset-bottom));
+  padding: calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(84px + env(safe-area-inset-bottom))
+    calc(16px + env(safe-area-inset-left));
 }
 
 h1 {

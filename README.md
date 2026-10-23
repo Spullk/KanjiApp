@@ -15,6 +15,18 @@ npm run build   # static site in dist/
 
 The **App** GitHub Action builds every PR and publishes `main` to GitHub Pages. Pages has to be switched on once: repo **Settings → Pages → Source: GitHub Actions**.
 
+## Phone apps
+
+The iPhone and Android apps are the same web app wrapped with [Capacitor](https://capacitorjs.com/), in `ios/` and `android/`. On top of the website they keep progress in a file in the app's own storage, send a daily review reminder (Progress → Settings), tap the phone's haptics when you grade, use the phone's Japanese voice, and share backups through the share sheet.
+
+```sh
+npm run app       # build the website and copy it into both apps
+npm run ios       # ...then open the iPhone project in Xcode (needs a Mac)
+npm run android   # ...then open the Android project in Android Studio
+```
+
+The **Mobile** GitHub Action builds both apps on every PR, so a Mac isn't needed to check they compile. Its Android run leaves an installable debug APK under the run's **Artifacts**. App icons and splash screens come from `assets/` (`npx capacitor-assets generate`).
+
 ## Data
 
 `data/` holds everything the app needs, generated from open sources by `scripts/`.
