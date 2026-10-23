@@ -907,6 +907,9 @@ a.primary {
   gap: 8px;
   margin-top: 12px;
 }
+.grade-buttons.two {
+  grid-template-columns: 1fr 1fr;
+}
 
 .grade {
   border: none;
@@ -1231,4 +1234,30 @@ button.secondary,
 button.secondary:disabled {
   opacity: 0.5;
   cursor: default;
+}
+
+/* ---------- practice */
+
+.practice-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.practice-links a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.85rem;
+  text-align: center;
+}
+.practice-links a b {
+  font-size: 1.3rem;
+}
+.practice-links a.quiet {
+  opacity: 0.5;
 }

@@ -319,6 +319,25 @@ export function endVacation(store: Store, now = Date.now()) {
   }
 }
 
+export type PracticeSet = "mistakes" | "leeches" | "recent";
+
+export const PRACTICE_LABEL: Record<PracticeSet, string> = {
+  mistakes: "Today's mistakes",
+  leeches: "Leeches",
+  recent: "Learned this week",
+};
+
+/** Cards for extra practice, which never changes the schedule. */
+export function practiceCards(store: Store, set: PracticeSet, now = Date.now()): string[] {
+  const ids =
+    set === "mistakes"
+      ? store.log.filter(([, r, t]) => r === Rating.Again && t >= startOfDay(now)).map(([id]) => id)
+      : Object.entries(store.cards)
+          .filter(([, c]) => (set === "leeches" ? c.lapses >= LEECH_LAPSES : c.added >= now - 7 * 86_400_000))
+          .map(([id]) => id);
+  return [...new Set(ids)].filter((id) => store.cards[id]);
+}
+
 /** The order to learn a lesson in: each kanji right after its new radicals, then the words. */
 export function lessonItems(data: Data, lessonIndex: number): { kind: ItemKind; key: string }[] {
   const l = data.lessons[lessonIndex];
