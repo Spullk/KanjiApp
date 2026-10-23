@@ -1,6 +1,7 @@
 import { useData } from "../data";
 import { href } from "../router";
 import { StudyButton } from "../components/ItemCards";
+import { StrokeOrder } from "../components/StrokeOrder";
 import { Badges, Chip, Chips, MoreList, ReadingText, Section, SentenceView, WordRow } from "../components/bits";
 
 export function KanjiPage({ c }: { c: string }) {
@@ -69,6 +70,10 @@ export function KanjiPage({ c }: { c: string }) {
           </div>
         </Section>
       )}
+
+      <Section title="Stroke order">
+        <StrokeOrder c={k.c} />
+      </Section>
 
       {k.soundFamily.length > 0 && k.phonetic && (
         <Section

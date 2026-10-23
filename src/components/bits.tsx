@@ -2,6 +2,7 @@ import type { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
 import { hira, useData, type Segment, type Word } from "../data";
 import { href } from "../router";
+import { playSentence, playWord } from "../audio";
 
 /** A word with furigana, where each kanji links to its own page. */
 export function Furigana({ segments, highlight, link = true }: { segments: Segment[]; highlight?: string; link?: boolean }) {
@@ -101,10 +102,38 @@ export function SentenceView({ id, highlight }: { id: string; highlight?: string
   parts.push(s.ja.slice(pos));
   return (
     <div class="sentence">
-      <div class="sent-ja" lang="ja">{parts}</div>
+      <div class="sent-ja" lang="ja">
+        <SpeakButton onClick={() => playSentence(s)} human={!!s.audio} />
+        {parts}
+      </div>
       <div class="sent-en">{s.en}</div>
     </div>
   );
+}
+
+/** A small speaker button. Human recordings get a filled icon, text-to-speech an outline. */
+export function SpeakButton({ onClick, human }: { onClick: () => void; human: boolean }) {
+  return (
+    <button
+      class={`speak ${human ? "human" : "tts"}`}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick();
+      }}
+      title={human ? "Play recording" : "Play (synthetic voice)"}
+      aria-label={human ? "Play recording" : "Play with synthetic voice"}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" />
+        <path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" />
+      </svg>
+    </button>
+  );
+}
+
+export function WordSpeak({ w }: { w: Word }) {
+  return <SpeakButton onClick={() => playWord(w)} human={!!w.audio} />;
 }
 
 /** A KANJIDIC reading: on in katakana, kun with its okurigana dimmed (い.きる → い・きる). */

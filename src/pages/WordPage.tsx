@@ -1,7 +1,7 @@
 import { hira, useData } from "../data";
 import { href } from "../router";
 import { StudyButton } from "../components/ItemCards";
-import { Badges, Furigana, ReadingText, Section, SentenceView } from "../components/bits";
+import { Badges, Furigana, ReadingText, Section, SentenceView, WordSpeak } from "../components/bits";
 
 export function WordPage({ id }: { id: string }) {
   const { words, kanji } = useData();
@@ -24,7 +24,9 @@ export function WordPage({ id }: { id: string }) {
         <div class="hero-word" lang="ja">
           <Furigana segments={w.furigana} />
         </div>
-        <div class="hero-reading" lang="ja">{w.r}</div>
+        <div class="hero-reading" lang="ja">
+          {w.r} <WordSpeak w={w} />
+        </div>
         <Badges items={[w.lesson && `Lesson ${w.lesson}`, w.usuallyKana && "Usually written in kana"]} />
       </header>
       <StudyButton kind="word" k={w.id} />

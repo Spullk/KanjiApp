@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { useData } from "../data";
 import { href } from "../router";
 import { dueCards, getStore, grade, parseCardId, preview, Rating, update, useStore, type Grade } from "../srs";
-import { Furigana } from "../components/bits";
+import { Furigana, WordSpeak } from "../components/bits";
 import { MainReadings, ReadingUse, relTime, shortInterval } from "../components/ItemCards";
 
 const EARLY_WINDOW = 20 * 60 * 1000; // learning steps due within 20 min can be done now
@@ -132,7 +132,7 @@ function CardBack({ id }: { id: string }) {
     body = (
       <>
         <div class="answer-word" lang="ja">
-          <Furigana segments={w.furigana} link={false} />
+          <Furigana segments={w.furigana} link={false} /> <WordSpeak w={w} />
         </div>
         <div class="answer-main">{w.senses.slice(0, 2).map((s) => s.gloss.slice(0, 3).join(", ")).join("; ")}</div>
         <ReadingUse id={key} />

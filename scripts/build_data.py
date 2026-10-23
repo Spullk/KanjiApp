@@ -7,6 +7,7 @@ Writes data/*.json. Example sentences are included when sources/tatoeba/ exists.
 """
 
 import bz2
+import csv
 import json
 import re
 import sqlite3
@@ -399,6 +400,57 @@ def load_sentences(words):
     return sentences
 
 
+# ---------------------------------------------------------------- audio and strokes
+
+def load_word_audio(words):
+    """Kanji alive recorded 6-12 example words per kanji. Link the ones that are our words.
+
+    Files are named <kname>_06_<letter>, letters following the order of the examples list.
+    """
+    path = SOURCES / "ka_data.csv"
+    if not path.exists():
+        return 0
+    by_form = {(w["w"], hira(w["r"])): wid for wid, w in words.items()}
+    linked = 0
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            try:
+                examples = json.loads(row["examples"])
+            except (json.JSONDecodeError, KeyError):
+                continue
+            for i, ex in enumerate(examples):
+                m = re.match(r"^(.+?)（(.+?)）$", ex[0].strip())
+                wid = m and by_form.get((m[1], hira(m[2])))
+                if wid and "audio" not in words[wid]:
+                    words[wid]["audio"] = f"{row['kname']}_06_{chr(ord('a') + i)}"
+                    linked += 1
+    return linked
+
+
+def load_sentence_audio(sentences):
+    """Mark sentences that have a freely licensed Tatoeba recording: s["audio"] = [audio id, speaker]."""
+    path = SOURCES / "tatoeba" / "sentences_with_audio.tar.bz2"
+    if not path.exists() or not sentences:
+        return 0
+    with tarfile.open(path) as tar:
+        member = next(m for m in tar.getmembers() if m.isfile())
+        for line in tar.extractfile(member).read().decode("utf-8").splitlines():
+            cols = line.split("\t")
+            # sentence id, audio id, username, license, attribution url
+            if len(cols) >= 4 and cols[0] in sentences and cols[3] not in ("", "\\N"):
+                sentences[cols[0]]["audio"] = [cols[1], cols[2]]
+    return sum(1 for s in sentences.values() if "audio" in s)
+
+
+def load_strokes(joyo):
+    """KanjiVG stroke paths per kanji, in stroke order, for the stroke order animation."""
+    strokes = {}
+    for k in joyo:
+        tree = ET.parse(SOURCES / "kanjivg" / ("%05x.svg" % ord(k)))
+        strokes[k] = [p.get("d") for p in tree.iter(SVG + "path")]
+    return strokes
+
+
 # ---------------------------------------------------------------- ordering
 
 def build_lessons(joyo, kanji, parts):
@@ -607,6 +659,9 @@ def main():
     radicals = {el: r for el, r in radicals.items() if r["lesson"] or r["usedIn"]}
 
     sentences = load_sentences(words)
+    audio_words = load_word_audio(words)
+    audio_sentences = load_sentence_audio(sentences)
+    strokes = load_strokes(joyo)
     for w in words.values():
         w.setdefault("sentences", [])
         del w["uses"]
@@ -614,16 +669,18 @@ def main():
     OUT.mkdir(exist_ok=True)
     meta = {
         "counts": {"kanji": len(kanji), "radicals": len(radicals), "words": len(words),
-                   "studyWords": len(study_words), "sentences": len(sentences), "lessons": len(lesson_out)},
+                   "studyWords": len(study_words), "sentences": len(sentences), "lessons": len(lesson_out),
+                   "wordAudio": audio_words, "sentenceAudio": audio_sentences},
         "sources": {
             "JMdict / KANJIDIC2": "Electronic Dictionary Research and Development Group, CC BY-SA 4.0, via jamdict-data",
             "KanjiVG": "Ulrich Apel and contributors, CC BY-SA 3.0",
             "JLPT levels": "Jonathan Waller's lists via davidluzgouveia/kanji-data, MIT",
-            "Example sentences": "Tatoeba Project, CC BY 2.0 FR",
+            "Example sentences": "Tatoeba Project, CC BY 2.0 FR; recordings by the named Tatoeba speakers",
+            "Word audio": "Kanji alive, CC BY 4.0",
         },
     }
     for name, obj in [("kanji", kanji), ("radicals", radicals), ("words", words),
-                      ("sentences", sentences), ("lessons", lesson_out), ("meta", meta)]:
+                      ("sentences", sentences), ("lessons", lesson_out), ("strokes", strokes), ("meta", meta)]:
         (OUT / f"{name}.json").write_text(json.dumps(obj, ensure_ascii=False, separators=(",", ":")),
                                           encoding="utf-8")
     print(json.dumps(meta["counts"]), f"unaligned words: {unaligned}")
