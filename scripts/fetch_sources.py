@@ -24,11 +24,13 @@ SOURCES = Path(__file__).resolve().parent.parent / "sources"
 # JMdict + KANJIDIC2 packed into one SQLite file, published on PyPI by the jamdict project.
 JAMDICT_DATA = "jamdict-data==1.5"
 JLPT_URL = "https://raw.githubusercontent.com/davidluzgouveia/kanji-data/master/kanji.json"
+KANJIALIVE_URL = "https://raw.githubusercontent.com/kanjialive/kanji-data-media/master/language-data/ka_data.csv"
 KANJIVG_URL = "https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/{}.svg"
 TATOEBA = {
     "jpn_indices.tar.bz2": "https://downloads.tatoeba.org/exports/jpn_indices.tar.bz2",
     "jpn_sentences.tsv.bz2": "https://downloads.tatoeba.org/exports/per_language/jpn/jpn_sentences.tsv.bz2",
     "eng_sentences.tsv.bz2": "https://downloads.tatoeba.org/exports/per_language/eng/eng_sentences.tsv.bz2",
+    "sentences_with_audio.tar.bz2": "https://downloads.tatoeba.org/exports/sentences_with_audio.tar.bz2",
 }
 
 JOYO_GRADES = ("1", "2", "3", "4", "5", "6", "8")
@@ -91,6 +93,8 @@ def main():
     print("Dictionary: ok")
     download(JLPT_URL, SOURCES / "kanji-data.json")
     print("JLPT levels: ok")
+    download(KANJIALIVE_URL, SOURCES / "ka_data.csv")
+    print("Kanji alive audio list: ok")
     fetch_kanjivg(db)
     if args.sentences:
         fetch_sentences()

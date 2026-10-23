@@ -112,6 +112,16 @@ export function ProgressPage() {
           </label>
         </div>
       </Section>
+      <Section title="Credits">
+        <ul class="credits">
+          <li>Dictionary: JMdict and KANJIDIC2, EDRDG, CC BY-SA 4.0</li>
+          <li>Kanji parts and stroke order: KanjiVG, Ulrich Apel, CC BY-SA 3.0</li>
+          <li>Example sentences and their recordings: Tatoeba Project, CC BY 2.0 FR</li>
+          <li>Word recordings: Kanji alive, CC BY 4.0</li>
+          <li>JLPT levels: Jonathan Waller's lists</li>
+        </ul>
+      </Section>
+
       <Section title="All kanji" hint="In lesson order. Tap one to open it.">
         <div class="kanji-grid" lang="ja">
           {kanjiKeys.map((k) => (

@@ -26,6 +26,7 @@ The **App** GitHub Action builds every PR and publishes `main` to GitHub Pages. 
 | `words.json` | ~16k common words: reading, furigana split per kanji, English senses, example sentence ids |
 | `sentences.json` | Tatoeba example sentences with English, plus the position of each known word so it can be linked |
 | `lessons.json` | The study order: 206 lessons of ~10 kanji, with the radicals and review words each one introduces |
+| `strokes.json` | KanjiVG stroke paths per kanji, in stroke order |
 | `meta.json` | Counts and source credits |
 
 ### Study order
@@ -51,6 +52,7 @@ Leave out `--sentences` to skip the ~100 MB Tatoeba download; the build then wri
 - [JMdict and KANJIDIC2](https://www.edrdg.org/) by the Electronic Dictionary Research and Development Group, CC BY-SA 4.0 (via [jamdict-data](https://pypi.org/project/jamdict-data/))
 - [KanjiVG](https://kanjivg.tagaini.net/) by Ulrich Apel and contributors, CC BY-SA 3.0
 - JLPT levels from Jonathan Waller's lists, via [kanji-data](https://github.com/davidluzgouveia/kanji-data) (MIT)
-- Example sentences from the [Tatoeba Project](https://tatoeba.org/), CC BY 2.0 FR
+- Example sentences and their recordings from the [Tatoeba Project](https://tatoeba.org/), CC BY 2.0 FR (recordings under each speaker's own licence)
+- Word recordings from [Kanji alive](https://kanjialive.com/), CC BY 4.0, streamed from their media server; words without a recording use the device's Japanese text-to-speech voice
 
 Because of the share-alike licenses, the generated `data/` is CC BY-SA 4.0.

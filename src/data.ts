@@ -46,9 +46,12 @@ export type Word = {
   usuallyKana: boolean;
   sentences: string[];
   lesson?: number;
+  /** Kanji alive recording, e.g. "jutsu-no(beru)_06_a" */
+  audio?: string;
 };
 
-export type Sentence = { ja: string; en: string; links: [number, number, string][] };
+/** audio: [Tatoeba audio id, speaker] when a freely licensed recording exists. */
+export type Sentence = { ja: string; en: string; links: [number, number, string][]; audio?: [string, string] };
 export type Lesson = { id: number; radicals: string[]; kanji: string[]; words: string[] };
 
 export type Data = {
