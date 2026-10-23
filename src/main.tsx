@@ -12,10 +12,12 @@ import { SearchPage } from "./pages/SearchPage";
 import { ReviewPage } from "./pages/ReviewPage";
 import { LearnPage } from "./pages/LearnPage";
 import { ProgressPage } from "./pages/ProgressPage";
-import { dueCards, requestPersistence, useStore } from "./srs";
+import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
+import { initNative, isNative } from "./native";
 import "./style.css";
 
-registerSW({ immediate: true });
+// The app store build ships every file inside the app, so only the website needs the offline cache.
+if (!isNative) registerSW({ immediate: true });
 requestPersistence();
 
 function Page({ route }: { route: Route }) {
@@ -49,7 +51,13 @@ function App() {
   const route = useRoute();
   const due = dueCards(useStore()).length;
   useEffect(() => {
-    loadData().then(() => setReady(true), (e) => setError(String(e)));
+    Promise.all([loadData(), initStore()]).then(
+      () => {
+        setReady(true);
+        initNative(getStore);
+      },
+      (e) => setError(String(e)),
+    );
   }, []);
 
   return (

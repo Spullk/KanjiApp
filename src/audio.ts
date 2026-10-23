@@ -2,6 +2,7 @@
 // otherwise the device's Japanese text-to-speech voice. Recordings stream, so they need a connection.
 
 import type { Sentence, Word } from "./data";
+import { isNative, speakNative } from "./native";
 
 const KANJI_ALIVE = "https://media.kanjialive.com/examples_audio/audio-mp3/";
 const TATOEBA = "https://tatoeba.org/audio/download/";
@@ -9,6 +10,10 @@ const TATOEBA = "https://tatoeba.org/audio/download/";
 let current: HTMLAudioElement | null = null;
 
 export function speak(text: string) {
+  if (isNative) {
+    speakNative(text).catch(() => {});
+    return;
+  }
   if (!("speechSynthesis" in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
@@ -38,5 +43,5 @@ export function playSentence(s: Sentence) {
 }
 
 export function hasSpeech(): boolean {
-  return typeof window !== "undefined" && "speechSynthesis" in window;
+  return isNative || (typeof window !== "undefined" && "speechSynthesis" in window);
 }

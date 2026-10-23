@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Nekko</string>
+    <string name="title_activity_main">Nekko</string>
+    <string name="package_name">com.spullk.nekko</string>
+    <string name="custom_url_scheme">com.spullk.nekko</string>
+</resources>

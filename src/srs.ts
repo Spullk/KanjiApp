@@ -1,9 +1,10 @@
 // Spaced repetition: which items you study, their FSRS scheduling state, and the review log.
-// Everything lives in localStorage on this device; Progress → Backup exports it as JSON.
+// Everything lives on this device (see storage.ts); Progress → Backup exports it as JSON.
 
 import { useEffect, useState } from "preact/hooks";
 import { createEmptyCard, fsrs, generatorParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
 import type { Data } from "./data";
+import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
 
 export { Rating, State };
 export type { Grade };
@@ -32,7 +33,12 @@ export type StoredCard = {
   added: number;
 };
 
-export type Settings = { batch: number; retention: number };
+export type Settings = {
+  batch: number;
+  retention: number;
+  /** Native app only: hour of the daily review reminder, or undefined for none. */
+  reminder?: number;
+};
 
 export type Store = {
   version: 1;
@@ -184,18 +190,30 @@ export const STAGE_LABEL: Record<Stage, string> = {
 
 // ---------------------------------------------------------------- persistence
 
-const KEY = "nekko.srs.v1";
-let store: Store = load();
+let store: Store = emptyStore();
+let storage: StorageAdapter = localStorageAdapter;
 const listeners = new Set<() => void>();
+const saveHooks = new Set<(s: Store) => void>();
 
-function load(): Store {
+function parseStore(raw: string | null): Store {
   try {
-    const raw = localStorage.getItem(KEY);
     if (raw) return { ...emptyStore(), ...JSON.parse(raw) };
   } catch {
-    // Private mode or corrupt data: start fresh rather than crash.
+    // Corrupt data: start fresh rather than crash.
   }
   return emptyStore();
+}
+
+/** Loads saved progress. Call once before showing anything that uses the store. */
+export async function initStore(adapter: StorageAdapter = defaultAdapter) {
+  storage = adapter;
+  store = parseStore(await adapter.load());
+  listeners.forEach((l) => l());
+}
+
+/** Runs after every saved change (the native app reschedules its reminders here). */
+export function onSave(fn: (s: Store) => void) {
+  saveHooks.add(fn);
 }
 
 export function getStore(): Store {
@@ -206,11 +224,13 @@ export function getStore(): Store {
 export function update(fn: (s: Store) => void) {
   fn(store);
   store = { ...store };
-  try {
-    localStorage.setItem(KEY, JSON.stringify(store));
-  } catch (e) {
-    console.error("Could not save progress", e);
-  }
+  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
+  listeners.forEach((l) => l());
+  saveHooks.forEach((h) => h(store));
+}
+
+/** Re-renders without saving, e.g. when the app comes back to the foreground and more is due. */
+export function refresh() {
   listeners.forEach((l) => l());
 }
 

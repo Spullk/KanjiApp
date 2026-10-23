@@ -3,6 +3,7 @@ import { useData } from "../data";
 import { href } from "../router";
 import { dueCards, getStore, grade, parseCardId, preview, Rating, update, useStore, type Grade } from "../srs";
 import { Furigana, WordSpeak } from "../components/bits";
+import { tap } from "../native";
 import { MainReadings, ReadingUse, relTime, shortInterval } from "../components/ItemCards";
 
 const EARLY_WINDOW = 20 * 60 * 1000; // learning steps due within 20 min can be done now
@@ -23,6 +24,7 @@ export function ReviewPage() {
   const current = queue[0];
 
   const answer = (g: Grade) => {
+    tap(g === Rating.Again);
     update((s) => grade(s, current, g));
     setShown(false);
     setDone((d) => d + 1);
