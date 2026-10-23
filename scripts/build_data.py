@@ -520,7 +520,7 @@ def main():
             continue
         words[str(idseq)] = {
             "id": str(idseq), "w": e["form"], "r": e["reading"],
-            "furigana": [[t, r] for t, r, _, _ in segs],
+            "furigana": [[t, r, key] if key else [t, r] for t, r, _, key in segs],  # key: KANJIDIC reading used, "*" = special
             "uses": [[k, key] for _, _, k, key in segs if k],
             "special": [t for t, _, k, key in segs if key == "*"],
             "senses": e["senses"], "rank": e["rank"], "usuallyKana": e["usuallyKana"],
@@ -535,7 +535,7 @@ def main():
             for k in run:
                 if k in joyo_set:
                     by_kanji[k]["*"].append(wid)
-    order_key = lambda wid: (words[wid]["usuallyKana"], words[wid]["rank"], len(words[wid]["w"]))
+    order_key = lambda wid: (words[wid]["usuallyKana"], words[wid]["rank"], len(words[wid]["w"]), int(wid))
     keep = set()
     for k in joyo:
         groups = {key: sorted(set(ws), key=order_key) for key, ws in by_kanji[k].items()}
