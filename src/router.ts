@@ -52,7 +52,7 @@ export function parse(hash: string): Route {
     case "known":
       return { page: "known" };
     case "practice":
-      return { page: "practice", set: seg[1] as PracticeSet };
+      return ["mistakes", "leeches", "recent"].includes(seg[1]) ? { page: "practice", set: seg[1] as PracticeSet } : { page: "progress" };
     case "lesson":
       return { page: "lesson", id: Number(seg[1]) };
     case "k":

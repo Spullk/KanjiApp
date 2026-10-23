@@ -38,6 +38,8 @@ export type StoredCard = {
 export type Settings = {
   batch: number;
   retention: number;
+  /** self: show the answer and grade yourself (Anki). typed: type meaning and reading (WaniKani). */
+  answerMode: "self" | "typed";
   /** Most new items to start per day; 0 for no limit. */
   dailyNew: number;
   /** When vacation mode was switched on. Nothing is due while it's on, and it pushes everything back when it ends. */
@@ -77,7 +79,7 @@ export type Store = {
   undo: Undo[];
 };
 
-export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, dailyNew: 0 };
+export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, answerMode: "self", dailyNew: 0 };
 
 const UNDO_LIMIT = 20;
 

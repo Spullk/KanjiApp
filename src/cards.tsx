@@ -7,6 +7,13 @@ import { href } from "./router";
 import { parseCardId, type Face, type ItemKind } from "./srs";
 import { Furigana, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
+import { readingForms } from "./answers";
+
+/** One thing to type in typed-answer mode, and every answer that counts. */
+export type Ask = { label: "Meaning" | "Reading"; kana: boolean; answers(data: Data, key: string): string[] };
+
+const meaning = (get: (data: Data, key: string) => string[]): Ask => ({ label: "Meaning", kana: false, answers: get });
+const reading = (get: (data: Data, key: string) => string[]): Ask => ({ label: "Reading", kana: true, answers: get });
 
 export type CardType = {
   /** The question above the card, e.g. "Kanji · meaning?". */
@@ -17,6 +24,8 @@ export type CardType = {
   back(data: Data, key: string): ComponentChildren;
   /** The item's full page. */
   link(key: string): string;
+  /** What to type, in order, when answering by typing. */
+  asks: Ask[];
 };
 
 const char = (_: Data, key: string) => key;
@@ -28,6 +37,7 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
     front: char,
     back: (data, key) => <div class="answer-main">{data.radicals[key].meanings.join(", ") || "(no name)"}</div>,
     link: href.radical,
+    asks: [meaning((data, key) => data.radicals[key].meanings)],
   },
   "kanji:meaning": {
     prompt: "Kanji · meaning?",
@@ -39,6 +49,7 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
       </>
     ),
     link: href.kanji,
+    asks: [meaning((data, key) => data.kanji[key].meanings)],
   },
   "kanji:reading": {
     prompt: "Kanji · readings?",
@@ -50,6 +61,12 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
       </>
     ),
     link: href.kanji,
+    asks: [
+      reading((data, key) => {
+        const k = data.kanji[key];
+        return [...k.readings.map((r) => r.r), ...k.on, ...k.kun].flatMap(readingForms);
+      }),
+    ],
   },
   "word:word": {
     prompt: "Word · reading and meaning?",
@@ -67,6 +84,7 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
       );
     },
     link: href.word,
+    asks: [reading((data, key) => [data.words[key].r]), meaning((data, key) => data.words[key].senses.flatMap((s) => s.gloss))],
   },
 };
 

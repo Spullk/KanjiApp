@@ -84,7 +84,7 @@ describe("store v2", () => {
     expect(s.cards["kanji:語:meaning"].updated).toBe(3);
     expect(s.cards["radical:口:meaning"].updated).toBe(2);
     expect(s.log).toHaveLength(1);
-    expect(s.settings).toEqual({ batch: 10, retention: 0.85, dailyNew: 0 });
+    expect(s.settings).toEqual({ batch: 10, retention: 0.85, answerMode: "self", dailyNew: 0 });
     expect(s.removed).toEqual({});
     expect(() => migrate({ version: 9, cards: {} })).toThrow();
     expect(() => migrate("nope")).toThrow();

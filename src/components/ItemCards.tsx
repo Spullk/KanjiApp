@@ -144,9 +144,11 @@ export function StudyButton({ kind, k }: { kind: ItemKind; k: string }) {
 }
 
 function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
-  const note = itemInfo(useStore(), kind, k)?.note ?? "";
+  const info = itemInfo(useStore(), kind, k);
+  const note = info?.note ?? "";
+  const synonyms = info?.synonyms ?? [];
   return (
-    <details class="note-box" open={!!note}>
+    <details class="note-box" open={!!note || synonyms.length > 0}>
       <summary>{note ? "Your note" : "Add a note"}</summary>
       <textarea
         key={`${kind}:${k}`}
@@ -158,6 +160,21 @@ function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
           if (text !== note) update((s) => setItemInfo(s, kind, k, { note: text }));
         }}
       />
+      {synonyms.length > 0 && (
+        <div class="synonyms">
+          Also accepted when typing:
+          {synonyms.map((w) => (
+            <button
+              key={w}
+              class="synonym"
+              title="Stop accepting this"
+              onClick={() => update((s) => setItemInfo(s, kind, k, { synonyms: synonyms.filter((x) => x !== w) }))}
+            >
+              {w} ×
+            </button>
+          ))}
+        </div>
+      )}
     </details>
   );
 }

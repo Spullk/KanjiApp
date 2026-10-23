@@ -44,6 +44,18 @@ export function SettingsPage() {
 
       <Section title="Reviews">
         <label class="setting">
+          How you answer
+          <select value={store.settings.answerMode} onChange={(e) => set("answerMode", (e.target as HTMLSelectElement).value as Settings["answerMode"])}>
+            <option value="self">Show and grade yourself</option>
+            <option value="typed">Type the answer</option>
+          </select>
+        </label>
+        <p class="hint">
+          {store.settings.answerMode === "typed"
+            ? "Like WaniKani: type the meaning in English and the reading in kana. Small typos in meanings are fine."
+            : "Like Anki: think of the answer, show it, then say how well you knew it."}
+        </p>
+        <label class="setting">
           Target recall
           <select value={store.settings.retention} onChange={(e) => set("retention", Number((e.target as HTMLSelectElement).value))}>
             {[0.8, 0.85, 0.9, 0.95].map((n) => (

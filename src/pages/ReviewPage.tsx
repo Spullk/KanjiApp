@@ -1,17 +1,12 @@
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { href } from "../router";
-import { dueCards, getStore, grade, itemInfo, parseCardId, preview, Rating, undoLast, update, useStore, type Grade } from "../srs";
-import { CardBack, CardFront } from "../cards";
+import { dueCards, grade, Rating, undoLast, update, useStore, type Grade } from "../srs";
+import { CardFront } from "../cards";
+import { SelfGrade, TypedAnswer } from "../components/AnswerModes";
 import { tap } from "../native";
-import { relTime, shortInterval } from "../components/ItemCards";
+import { relTime } from "../components/ItemCards";
 
 const EARLY_WINDOW = 20 * 60 * 1000; // learning steps due within 20 min can be done now
-const BUTTONS: [Grade, string][] = [
-  [Rating.Again, "Again"],
-  [Rating.Hard, "Hard"],
-  [Rating.Good, "Good"],
-  [Rating.Easy, "Easy"],
-];
 
 export function ReviewPage() {
   const store = useStore();
@@ -67,9 +62,7 @@ export function ReviewPage() {
     );
   }
 
-  // How you answer. Self-grading is the only mode so far; typed answers will be another component with the
-  // same props, chosen in Settings.
-  const Answer = SelfGrade;
+  const Answer = store.settings.answerMode === "typed" ? TypedAnswer : SelfGrade;
   return (
     <article class="page review">
       <div class="review-count">
@@ -78,49 +71,5 @@ export function ReviewPage() {
       <CardFront id={current} />
       <Answer key={`${current}#${done}`} id={current} onAnswer={answer} />
     </article>
-  );
-}
-
-type AnswerProps = { id: string; onAnswer: (g: Grade) => void };
-
-/** Anki style: show the answer, then say how well you knew it. */
-function SelfGrade({ id, onAnswer }: AnswerProps) {
-  const [shown, setShown] = useState(false);
-  const store = useStore();
-  const { kind, key } = parseCardId(id);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (!shown && (e.key === " " || e.key === "Enter")) {
-        e.preventDefault();
-        setShown(true);
-      } else if (shown && ["1", "2", "3", "4"].includes(e.key)) {
-        onAnswer(Number(e.key) as Grade);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
-
-  if (!shown) {
-    return (
-      <button class="primary wide reveal" onClick={() => setShown(true)}>
-        Show answer
-      </button>
-    );
-  }
-  const times = preview(getStore(), id);
-  return (
-    <>
-      <CardBack id={id} note={itemInfo(store, kind, key)?.note} />
-      <div class="grade-buttons">
-        {BUTTONS.map(([g, label]) => (
-          <button key={g} class={`grade g${g}`} onClick={() => onAnswer(g)}>
-            <span>{label}</span>
-            <small>{shortInterval(times[g])}</small>
-          </button>
-        ))}
-      </div>
-    </>
   );
 }
