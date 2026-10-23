@@ -4,7 +4,7 @@ import radicals from "../data/radicals.json";
 import words from "../data/words.json";
 import lessons from "../data/lessons.json";
 import type { Data } from "../src/data";
-import { addItem, dueCards, emptyStore, grade, isAdded, merge, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
+import { addItem, dueCards, emptyStore, grade, isAdded, isLeech, merge, setItemInfo, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
 
 const data = { kanji, radicals, words, sentences: {}, lessons } as unknown as Data;
 const DAY = 86_400_000;
@@ -128,5 +128,39 @@ describe("store v2", () => {
     const again = merge(m, synced);
     expect(again.cards["kanji:語:meaning"]).toBeDefined();
     expect(again.removed["kanji:語:meaning"]).toBeUndefined();
+  });
+});
+
+describe("item info", () => {
+  it("skips known items in lessons and paused items in reviews", () => {
+    const s = emptyStore();
+    const first = nextToLearn(s, data, 1)[0];
+    setItemInfo(s, first.kind, first.key, { status: "known" }, 5);
+    expect(nextToLearn(s, data, 1)[0]).not.toEqual(first);
+    expect(stageOf(s, first.kind, first.key)).toBe("mature");
+
+    addItem(s, "kanji", "語", 0);
+    setItemInfo(s, "kanji", "語", { status: "paused" }, 5);
+    expect(dueCards(s, 10)).toEqual([]);
+    setItemInfo(s, "kanji", "語", { status: undefined }, 6);
+    expect(dueCards(s, 10)).toHaveLength(2);
+    expect(s.items["kanji:語"]).toEqual({ updated: 6 });
+  });
+
+  it("keeps the newest note when merging", () => {
+    const a = emptyStore();
+    const b = emptyStore();
+    setItemInfo(a, "kanji", "語", { note: "old" }, 1);
+    setItemInfo(b, "kanji", "語", { note: "new" }, 2);
+    expect(merge(a, b).items["kanji:語"].note).toBe("new");
+    expect(merge(b, a).items["kanji:語"].note).toBe("new");
+  });
+
+  it("flags leeches", () => {
+    const s = emptyStore();
+    addItem(s, "radical", "氵", 0);
+    expect(isLeech(s, "radical", "氵")).toBe(false);
+    s.cards["radical:氵:meaning"].lapses = 8;
+    expect(isLeech(s, "radical", "氵")).toBe(true);
   });
 });

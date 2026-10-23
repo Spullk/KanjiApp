@@ -42,6 +42,17 @@ export type Settings = {
   reminder?: number;
 };
 
+/** What you've told Nekko about an item, apart from its cards. */
+export type ItemInfo = {
+  /** known: you knew it before, so it's never taught or reviewed. paused: kept, but not reviewed for now. */
+  status?: "known" | "paused";
+  /** Your own note or mnemonic. */
+  note?: string;
+  /** Extra meanings you want accepted as answers. */
+  synonyms?: string[];
+  updated: number;
+};
+
 export type Review = [card: string, rating: Grade, time: number];
 
 /** What a card looked like before an answer, so the answer can be taken back. */
@@ -52,6 +63,8 @@ export type Store = {
   cards: Record<string, StoredCard>;
   /** Cards taken out of study and when, so merging another device's copy doesn't bring them back. */
   removed: Record<string, number>;
+  /** By item id ("kanji:語"). */
+  items: Record<string, ItemInfo>;
   /** Every review, for stats and a future FSRS optimisation. A card and time identify a review. */
   log: Review[];
   settings: Settings;
@@ -65,7 +78,7 @@ export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9 };
 const UNDO_LIMIT = 20;
 
 export function emptyStore(): Store {
-  return { version: 2, cards: {}, removed: {}, log: [], settings: { ...DEFAULT_SETTINGS }, settingsUpdated: 0, undo: [] };
+  return { version: 2, cards: {}, removed: {}, items: {}, log: [], settings: { ...DEFAULT_SETTINGS }, settingsUpdated: 0, undo: [] };
 }
 
 /** Brings saved progress or a backup from any earlier version up to the current shape. */
@@ -97,6 +110,11 @@ export function merge(local: Store, other: Store): Store {
     }
   }
   for (const id of Object.keys(out.cards)) delete out.removed[id];
+  for (const items of [local.items, other.items]) {
+    for (const [id, info] of Object.entries(items)) {
+      if (!out.items[id] || info.updated > out.items[id].updated) out.items[id] = info;
+    }
+  }
   const seen = new Set<string>();
   out.log = [...local.log, ...other.log]
     .filter(([id, , t]) => !seen.has(id + "@" + t) && !!seen.add(id + "@" + t))
@@ -145,6 +163,27 @@ function scheduler(settings: Settings) {
 
 export function isAdded(store: Store, kind: ItemKind, key: string): boolean {
   return FACES[kind].some((f) => store.cards[cardId(kind, key, f)]);
+}
+
+export function itemInfo(store: Store, kind: ItemKind, key: string): ItemInfo | undefined {
+  return store.items[itemId(kind, key)];
+}
+
+/** Changes what's stored about an item; empty fields are dropped. */
+export function setItemInfo(store: Store, kind: ItemKind, key: string, change: Partial<Omit<ItemInfo, "updated">>, now = Date.now()) {
+  const id = itemId(kind, key);
+  const next: ItemInfo = { ...store.items[id], ...change, updated: now };
+  if (!next.status) delete next.status;
+  if (!next.note?.trim()) delete next.note;
+  if (!next.synonyms?.length) delete next.synonyms;
+  store.items[id] = next;
+}
+
+/** A card is a leech once you've forgotten it this many times. */
+export const LEECH_LAPSES = 8;
+
+export function isLeech(store: Store, kind: ItemKind, key: string): boolean {
+  return FACES[kind].some((f) => (store.cards[cardId(kind, key, f)]?.lapses ?? 0) >= LEECH_LAPSES);
 }
 
 /** Adds an item's cards, due right away. Returns how many cards were new. */
@@ -200,7 +239,7 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
 /** Cards due by `until`, learning cards first, then the most overdue. */
 export function dueCards(store: Store, until = Date.now()): string[] {
   return Object.entries(store.cards)
-    .filter(([, c]) => c.due <= until)
+    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status)
     .sort(([, a], [, b]) => {
       const al = a.state === State.Review ? 1 : 0;
       const bl = b.state === State.Review ? 1 : 0;
@@ -233,7 +272,7 @@ export function nextToLearn(store: Store, data: Data, n: number): { kind: ItemKi
   const out: { kind: ItemKind; key: string }[] = [];
   for (let i = 0; i < data.lessons.length; i++) {
     for (const it of lessonItems(data, i)) {
-      if (!isAdded(store, it.kind, it.key)) out.push(it);
+      if (!isAdded(store, it.kind, it.key) && !itemInfo(store, it.kind, it.key)?.status) out.push(it);
       if (out.length >= n) return out;
     }
   }
@@ -242,8 +281,9 @@ export function nextToLearn(store: Store, data: Data, n: number): { kind: ItemKi
 
 export type Stage = "none" | "learning" | "young" | "mature";
 
-/** An item's stage is its weakest card's: mature once every card holds for 21+ days. */
+/** An item's stage is its weakest card's: mature once every card holds for 21+ days. Items you marked known count as mature. */
 export function stageOf(store: Store, kind: ItemKind, key: string): Stage {
+  if (itemInfo(store, kind, key)?.status === "known") return "mature";
   const cards = FACES[kind].map((f) => store.cards[cardId(kind, key, f)]).filter(Boolean);
   if (!cards.length) return "none";
   if (cards.some((c) => c.state !== State.Review)) return "learning";

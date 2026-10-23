@@ -606,6 +606,32 @@ a.primary {
   background: #2563c9;
 }
 
+.stage.leech {
+  background: #c43d3d;
+}
+
+.note-box {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+.note-box summary {
+  color: var(--muted);
+  cursor: pointer;
+}
+.note-box textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}
+
 .next-due {
   color: var(--muted);
   font-size: 0.85rem;
