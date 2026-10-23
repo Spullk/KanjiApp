@@ -1,35 +1,50 @@
 import { useData } from "../data";
 import { href } from "../router";
+import { dueCards, nextToLearn, stageOf, useStore } from "../srs";
 import { Chips, Section } from "../components/bits";
 
 export function HomePage() {
-  const { lessons, kanji } = useData();
-  const all = Object.keys(kanji);
+  const data = useData();
+  const store = useStore();
+  const due = dueCards(store).length;
+  const next = nextToLearn(store, data, store.settings.batch);
+  const all = Object.keys(data.kanji);
+  const known = all.filter((k) => stageOf(store, "kanji", k) === "mature").length;
+  const studied = all.filter((k) => stageOf(store, "kanji", k) !== "none").length;
   // A different kanji each day, to wander the web from.
-  const day = Math.floor(Date.now() / 86_400_000);
-  const daily = all[day % all.length];
+  const daily = all[Math.floor(Date.now() / 86_400_000) % all.length];
 
   return (
     <article class="page">
       <h1 class="brand">
         Nekko <span lang="ja">根っこ</span>
       </h1>
+
+      <div class="home-actions">
+        <a class={`big-action review ${due ? "" : "quiet"}`} href={href.review()}>
+          <span class="ba-n">{due}</span>
+          <span class="ba-label">{due === 1 ? "review due" : "reviews due"}</span>
+        </a>
+        <a class={`big-action learn ${next.length ? "" : "quiet"}`} href={href.learn()}>
+          <span class="ba-n">{next.length}</span>
+          <span class="ba-label">new to learn</span>
+          {next.length > 0 && (
+            <span class="ba-preview" lang="ja">
+              {next.map((n) => (n.kind === "word" ? data.words[n.key].w : n.key)).join(" ")}
+            </span>
+          )}
+        </a>
+      </div>
+      <a class="progress-line" href={href.progress()}>
+        {studied ? `${studied} kanji studied, ${known} known of ${all.length}` : `${all.length} kanji to discover`} →
+      </a>
+
       <a class="search-link" href={href.search()}>
         Search kanji, words, readings or meanings…
       </a>
 
       <Section title="Kanji of the day">
         <Chips items={[daily]} kind="kanji" />
-      </Section>
-
-      <Section title="Start here">
-        {lessons.slice(0, 3).map((l) => (
-          <a key={l.id} class="lesson-row" href={href.lesson(l.id)}>
-            <span class="lesson-num">{l.id}</span>
-            <span class="lesson-kanji" lang="ja">{l.kanji.join("")}</span>
-          </a>
-        ))}
-        <a class="more" href={href.lessons()}>All {lessons.length} lessons</a>
       </Section>
     </article>
   );

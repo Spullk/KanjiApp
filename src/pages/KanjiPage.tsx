@@ -1,5 +1,6 @@
 import { useData } from "../data";
 import { href } from "../router";
+import { StudyButton } from "../components/ItemCards";
 import { Badges, Chip, Chips, MoreList, ReadingText, Section, SentenceView, WordRow } from "../components/bits";
 
 export function KanjiPage({ c }: { c: string }) {
@@ -25,6 +26,7 @@ export function KanjiPage({ c }: { c: string }) {
           ]}
         />
       </header>
+      <StudyButton kind="kanji" k={k.c} />
 
       <Section title="Readings" hint="Most-used first. Tap a word to see it in full.">
         {used.map((r) => (

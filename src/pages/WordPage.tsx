@@ -1,5 +1,6 @@
 import { hira, useData } from "../data";
 import { href } from "../router";
+import { StudyButton } from "../components/ItemCards";
 import { Badges, Furigana, ReadingText, Section, SentenceView } from "../components/bits";
 
 export function WordPage({ id }: { id: string }) {
@@ -26,6 +27,7 @@ export function WordPage({ id }: { id: string }) {
         <div class="hero-reading" lang="ja">{w.r}</div>
         <Badges items={[w.lesson && `Lesson ${w.lesson}`, w.usuallyKana && "Usually written in kana"]} />
       </header>
+      <StudyButton kind="word" k={w.id} />
 
       <Section title="Meaning">
         <ol class="senses">
