@@ -1,6 +1,6 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { cardId, getStore, isAdded, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type Face, type ItemKind } from "../srs";
+import { cardId, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type Face, type ItemKind } from "../srs";
 import { Chip, Furigana, ReadingText } from "./bits";
 
 /** The kanji's readings worth knowing: those that have words, each with its most common word. */
@@ -98,27 +98,67 @@ export function ReadingUse({ id }: { id: string }) {
   );
 }
 
-/** Add-to-reviews button and current stage, for kanji, word and radical pages. */
+/** Add-to-reviews button, current stage and your note, for kanji, word and radical pages. */
 export function StudyButton({ kind, k }: { kind: ItemKind; k: string }) {
   const store = useStore();
   const added = isAdded(store, kind, k);
   const stage = stageOf(store, kind, k);
+  const status = itemInfo(store, kind, k)?.status;
+  const setStatus = (st?: "known" | "paused") => update((s) => setItemInfo(s, kind, k, { status: st }));
   return (
-    <div class="study-bar">
-      {added ? (
-        <>
-          <span class={`stage ${stage}`}>{STAGE_LABEL[stage]}</span>
-          <NextDue kind={kind} k={k} />
-          <button class="link-button" onClick={() => update((s) => removeItem(s, kind, k))}>
-            Remove
-          </button>
-        </>
-      ) : (
-        <button class="primary" onClick={() => update((s) => void addItem(s, kind, k))}>
-          Add to reviews
-        </button>
-      )}
-    </div>
+    <>
+      <div class="study-bar">
+        {status === "known" ? (
+          <>
+            <span class="stage mature">Already known</span>
+            <button class="link-button" onClick={() => setStatus(undefined)}>
+              Study it after all
+            </button>
+          </>
+        ) : added ? (
+          <>
+            <span class={`stage ${stage}`}>{status === "paused" ? "Paused" : STAGE_LABEL[stage]}</span>
+            {isLeech(store, kind, k) && <span class="stage leech">Leech</span>}
+            {!status && <NextDue kind={kind} k={k} />}
+            <button class="link-button" onClick={() => setStatus(status ? undefined : "paused")}>
+              {status ? "Resume" : "Pause"}
+            </button>
+            <button class="link-button" onClick={() => update((s) => removeItem(s, kind, k))}>
+              Remove
+            </button>
+          </>
+        ) : (
+          <>
+            <button class="primary" onClick={() => update((s) => void addItem(s, kind, k))}>
+              Add to reviews
+            </button>
+            <button class="link-button" onClick={() => setStatus("known")}>
+              I already know this
+            </button>
+          </>
+        )}
+      </div>
+      <NoteBox kind={kind} k={k} />
+    </>
+  );
+}
+
+function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
+  const note = itemInfo(useStore(), kind, k)?.note ?? "";
+  return (
+    <details class="note-box" open={!!note}>
+      <summary>{note ? "Your note" : "Add a note"}</summary>
+      <textarea
+        key={`${kind}:${k}`}
+        rows={3}
+        placeholder="A mnemonic, a reminder, anything that helps."
+        defaultValue={note}
+        onBlur={(e) => {
+          const text = (e.target as HTMLTextAreaElement).value;
+          if (text !== note) update((s) => setItemInfo(s, kind, k, { note: text }));
+        }}
+      />
+    </details>
   );
 }
 

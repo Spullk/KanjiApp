@@ -8,6 +8,7 @@ export type Route =
   | { page: "review" }
   | { page: "learn" }
   | { page: "progress" }
+  | { page: "settings" }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -20,6 +21,7 @@ export const href = {
   review: () => "#/review",
   learn: () => "#/learn",
   progress: () => "#/progress",
+  settings: () => "#/settings",
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
   radical: (c: string) => `#/r/${encodeURIComponent(c)}`,
@@ -40,6 +42,8 @@ export function parse(hash: string): Route {
       return { page: "learn" };
     case "progress":
       return { page: "progress" };
+    case "settings":
+      return { page: "settings" };
     case "lesson":
       return { page: "lesson", id: Number(seg[1]) };
     case "k":
