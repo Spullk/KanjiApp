@@ -1,5 +1,6 @@
 import { useData } from "../data";
 import { href } from "../router";
+import { lessonItems, setStatusMany, update, useStore } from "../srs";
 import { Chips, MoreList, Section, WordRow } from "../components/bits";
 
 export function LessonsPage() {
@@ -27,12 +28,29 @@ export function LessonsPage() {
 }
 
 export function LessonPage({ id }: { id: number }) {
-  const { lessons } = useData();
-  const l = lessons[id - 1];
+  const data = useData();
+  const store = useStore();
+  const l = data.lessons[id - 1];
   if (!l) return <p class="empty">No lesson {id}.</p>;
+  const items = lessonItems(data, id - 1);
+  const allKnown = items.every((it) => store.items[`${it.kind}:${it.key}`]?.status === "known");
   return (
     <article class="page">
       <h1>Lesson {l.id}</h1>
+      <div class="study-bar">
+        {allKnown ? (
+          <>
+            <span class="stage mature">Already known</span>
+            <button class="link-button" onClick={() => update((s) => setStatusMany(s, items, undefined))}>
+              Study it after all
+            </button>
+          </>
+        ) : (
+          <button class="link-button" onClick={() => update((s) => setStatusMany(s, items, "known"))}>
+            I already know this whole lesson
+          </button>
+        )}
+      </div>
       {l.radicals.length > 0 && (
         <Section title="Radicals">
           <Chips items={l.radicals} kind="radical" />
@@ -48,7 +66,7 @@ export function LessonPage({ id }: { id: number }) {
       )}
       <nav class="pager">
         {l.id > 1 && <a href={href.lesson(l.id - 1)}>← Lesson {l.id - 1}</a>}
-        {l.id < lessons.length && <a href={href.lesson(l.id + 1)}>Lesson {l.id + 1} →</a>}
+        {l.id < data.lessons.length && <a href={href.lesson(l.id + 1)}>Lesson {l.id + 1} →</a>}
       </nav>
     </article>
   );

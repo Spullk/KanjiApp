@@ -1,4 +1,5 @@
 import { DEFAULT_SETTINGS, endVacation, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
+import { href } from "../router";
 import { Section } from "../components/bits";
 import { allowReminders, isNative, shareFile } from "../native";
 
@@ -35,6 +36,12 @@ export function SettingsPage() {
         </label>
       </Section>
 
+      <Section title="Already know some?">
+        <a class="more" href={href.known()}>
+          Mark kanji you know, by JLPT level or from a list, or import from WaniKani →
+        </a>
+      </Section>
+
       <Section title="Reviews">
         <label class="setting">
           Target recall
@@ -60,7 +67,9 @@ export function SettingsPage() {
             <button onClick={() => update((s) => endVacation(s))}>I'm back</button>
           </div>
         ) : (
-          <button onClick={() => update((s) => startVacation(s))}>Go on vacation</button>
+          <button class="secondary" onClick={() => update((s) => startVacation(s))}>
+            Go on vacation
+          </button>
         )}
       </Section>
 

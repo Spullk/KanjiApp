@@ -9,6 +9,7 @@ export type Route =
   | { page: "learn" }
   | { page: "progress" }
   | { page: "settings" }
+  | { page: "known" }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -22,6 +23,7 @@ export const href = {
   learn: () => "#/learn",
   progress: () => "#/progress",
   settings: () => "#/settings",
+  known: () => "#/known",
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
   radical: (c: string) => `#/r/${encodeURIComponent(c)}`,
@@ -44,6 +46,8 @@ export function parse(hash: string): Route {
       return { page: "progress" };
     case "settings":
       return { page: "settings" };
+    case "known":
+      return { page: "known" };
     case "lesson":
       return { page: "lesson", id: Number(seg[1]) };
     case "k":

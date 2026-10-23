@@ -183,6 +183,11 @@ export function setItemInfo(store: Store, kind: ItemKind, key: string, change: P
   store.items[id] = next;
 }
 
+/** Marks (or with `undefined`, unmarks) many items at once, e.g. a whole lesson as already known. */
+export function setStatusMany(store: Store, items: { kind: ItemKind; key: string }[], status: ItemInfo["status"], now = Date.now()) {
+  for (const it of items) setItemInfo(store, it.kind, it.key, { status }, now);
+}
+
 /** A card is a leech once you've forgotten it this many times. */
 export const LEECH_LAPSES = 8;
 
@@ -202,6 +207,28 @@ export function addItem(store: Store, kind: ItemKind, key: string, now = Date.no
     }
   }
   return added;
+}
+
+/** Adds an item as if you'd been reviewing it elsewhere: its cards hold for `stability` days and come back at `due`. */
+export function addReviewedItem(store: Store, kind: ItemKind, key: string, stability: number, due: number, now = Date.now()) {
+  for (const face of FACES[kind]) {
+    const id = cardId(kind, key, face);
+    store.cards[id] = {
+      due,
+      stability,
+      difficulty: 5,
+      elapsed_days: 0,
+      scheduled_days: Math.max(1, Math.round(stability)),
+      learning_steps: 0,
+      reps: 1,
+      lapses: 0,
+      state: State.Review,
+      last_review: Math.min(now, due - stability * 86_400_000),
+      added: startOfDay(now) - 1, // not new today, so it doesn't use up the daily limit
+      updated: now,
+    };
+    delete store.removed[id];
+  }
 }
 
 export function removeItem(store: Store, kind: ItemKind, key: string, now = Date.now()) {

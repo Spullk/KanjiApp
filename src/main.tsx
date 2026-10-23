@@ -13,6 +13,7 @@ import { ReviewPage } from "./pages/ReviewPage";
 import { LearnPage } from "./pages/LearnPage";
 import { ProgressPage } from "./pages/ProgressPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { KnownPage } from "./pages/KnownPage";
 import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
 import { initNative, isNative } from "./native";
 import "./style.css";
@@ -43,6 +44,8 @@ function Page({ route }: { route: Route }) {
       return <ProgressPage />;
     case "settings":
       return <SettingsPage />;
+    case "known":
+      return <KnownPage />;
     default:
       return <HomePage />;
   }
@@ -82,7 +85,7 @@ function App() {
         <a class={route.page.startsWith("lesson") ? "on" : ""} href={href.lessons()}>
           <span aria-hidden="true">課</span>Lessons
         </a>
-        <a class={route.page === "progress" || route.page === "settings" ? "on" : ""} href={href.progress()}>
+        <a class={route.page === "progress" || route.page === "settings" || route.page === "known" ? "on" : ""} href={href.progress()}>
           <span aria-hidden="true">進</span>Progress
         </a>
       </nav>

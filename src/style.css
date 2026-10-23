@@ -1074,6 +1074,8 @@ a.primary {
 }
 
 .backup button,
+.known-levels button,
+button.secondary,
 .file-button {
   background: var(--card);
   border: 1px solid var(--line);
@@ -1181,4 +1183,52 @@ a.primary {
   padding-left: 18px;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+/* ---------- already known */
+
+.known-levels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.known-levels button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 4px;
+}
+.known-levels button.on {
+  background: #2563c9;
+  border-color: #2563c9;
+  color: #fff;
+}
+.known-levels small {
+  font-size: 0.7rem;
+  text-align: center;
+}
+.paste-box,
+.token-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+}
+.wk-found button {
+  margin-right: 12px;
+}
+.hint.error {
+  color: #c43d3d;
+}
+
+button.secondary:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
