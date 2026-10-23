@@ -1,7 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { useData } from "../data";
 import { href } from "../router";
-import { dueCards, getStore, grade, parseCardId, preview, Rating, update, useStore, type Grade } from "../srs";
+import { dueCards, getStore, grade, parseCardId, preview, Rating, undoLast, update, useStore, type Grade } from "../srs";
 import { Furigana, WordSpeak } from "../components/bits";
 import { tap } from "../native";
 import { MainReadings, ReadingUse, relTime, shortInterval } from "../components/ItemCards";
@@ -19,16 +19,32 @@ export function ReviewPage() {
   const [early, setEarly] = useState(false);
   const [shown, setShown] = useState(false);
   const [done, setDone] = useState(0);
+  const [undone, setUndone] = useState<string>();
   const now = Date.now();
   const queue = dueCards(store, early ? now + EARLY_WINDOW : now);
-  const current = queue[0];
+  // A card whose answer was just taken back is asked again straight away.
+  const current = undone && queue.includes(undone) ? undone : queue[0];
 
   const answer = (g: Grade) => {
     tap(g === Rating.Again);
     update((s) => grade(s, current, g));
     setShown(false);
+    setUndone(undefined);
     setDone((d) => d + 1);
   };
+
+  const undo = () => {
+    let id: string | undefined;
+    update((s) => void (id = undoLast(s)));
+    setUndone(id);
+    setShown(false);
+    setDone((d) => Math.max(0, d - 1));
+  };
+  const undoButton = done > 0 && store.undo.length > 0 && (
+    <button class="link-button" onClick={undo}>
+      Undo last answer
+    </button>
+  );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -50,6 +66,7 @@ export function ReviewPage() {
     return (
       <article class="page review-done">
         <h1>{done ? `Nice, ${done} done` : "All caught up"}</h1>
+        {undoButton}
         {soon > 0 && (
           <button class="primary wide" onClick={() => setEarly(true)}>
             Review {soon} learning {soon === 1 ? "card" : "cards"} early
@@ -67,7 +84,7 @@ export function ReviewPage() {
   return (
     <article class="page review">
       <div class="review-count">
-        {queue.length} left{done > 0 && ` · ${done} done`}
+        {queue.length} left{done > 0 && ` · ${done} done`} {undoButton}
       </div>
       <CardFront id={current} />
       {shown ? (

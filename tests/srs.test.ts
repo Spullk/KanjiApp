@@ -4,7 +4,7 @@ import radicals from "../data/radicals.json";
 import words from "../data/words.json";
 import lessons from "../data/lessons.json";
 import type { Data } from "../src/data";
-import { addItem, dueCards, emptyStore, grade, isAdded, nextToLearn, preview, Rating, removeItem, stageOf } from "../src/srs";
+import { addItem, dueCards, emptyStore, grade, isAdded, merge, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
 
 const data = { kanji, radicals, words, sentences: {}, lessons } as unknown as Data;
 const DAY = 86_400_000;
@@ -68,5 +68,65 @@ describe("srs", () => {
     addItem(s, "kanji", "日");
     removeItem(s, "kanji", "日");
     expect(isAdded(s, "kanji", "日")).toBe(false);
+  });
+});
+
+describe("store v2", () => {
+  it("upgrades v1 progress, stamping each card with its last change", () => {
+    const v1 = {
+      version: 1,
+      cards: { "kanji:語:meaning": { ...emptyStore().cards, due: 5, added: 1, last_review: 3 }, "radical:口:meaning": { due: 5, added: 2 } },
+      log: [["kanji:語:meaning", Rating.Good, 3]],
+      settings: { batch: 10, retention: 0.85 },
+    };
+    const s = migrate(JSON.parse(JSON.stringify(v1)));
+    expect(s.version).toBe(2);
+    expect(s.cards["kanji:語:meaning"].updated).toBe(3);
+    expect(s.cards["radical:口:meaning"].updated).toBe(2);
+    expect(s.log).toHaveLength(1);
+    expect(s.settings).toEqual({ batch: 10, retention: 0.85 });
+    expect(s.removed).toEqual({});
+    expect(() => migrate({ version: 9, cards: {} })).toThrow();
+    expect(() => migrate("nope")).toThrow();
+  });
+
+  it("undoes the last answer", () => {
+    const s = emptyStore();
+    addItem(s, "radical", "氵", 0);
+    const before = s.cards["radical:氵:meaning"];
+    grade(s, "radical:氵:meaning", Rating.Easy, 10);
+    expect(undoLast(s, 20)).toBe("radical:氵:meaning");
+    expect(s.cards["radical:氵:meaning"]).toEqual({ ...before, updated: 20 });
+    expect(s.log).toEqual([]);
+    expect(undoLast(s)).toBeUndefined();
+  });
+
+  it("merges two devices: newest card wins, reviews are combined once, removals stick", () => {
+    const phone = emptyStore();
+    addItem(phone, "radical", "氵", 0);
+    addItem(phone, "kanji", "語", 0);
+    const laptop = migrate(JSON.parse(JSON.stringify(phone)));
+
+    grade(phone, "radical:氵:meaning", Rating.Good, 100);
+    grade(laptop, "radical:氵:meaning", Rating.Again, 50);
+    grade(laptop, "kanji:語:meaning", Rating.Good, 60);
+    removeItem(phone, "kanji", "語", 200);
+    laptop.settings.batch = 10;
+    laptop.settingsUpdated = 70;
+
+    const m = merge(phone, laptop);
+    expect(m.cards["radical:氵:meaning"]).toEqual(phone.cards["radical:氵:meaning"]);
+    expect(m.cards["kanji:語:meaning"]).toBeUndefined();
+    expect(m.removed["kanji:語:meaning"]).toBe(200);
+    expect(m.log.map(([, , t]) => t)).toEqual([50, 60, 100]);
+    expect(m.settings.batch).toBe(10);
+    expect(merge(m, laptop)).toEqual(m);
+
+    // Studying it again after the removal brings it back everywhere.
+    const synced = migrate(JSON.parse(JSON.stringify(m)));
+    addItem(synced, "kanji", "語", 300);
+    const again = merge(m, synced);
+    expect(again.cards["kanji:語:meaning"]).toBeDefined();
+    expect(again.removed["kanji:語:meaning"]).toBeUndefined();
   });
 });

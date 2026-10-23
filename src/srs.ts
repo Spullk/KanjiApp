@@ -31,6 +31,8 @@ export type StoredCard = {
   state: State;
   last_review?: number;
   added: number;
+  /** Last change to this card on any device; the newer copy wins when two stores are merged. */
+  updated: number;
 };
 
 export type Settings = {
@@ -40,18 +42,70 @@ export type Settings = {
   reminder?: number;
 };
 
+export type Review = [card: string, rating: Grade, time: number];
+
+/** What a card looked like before an answer, so the answer can be taken back. */
+export type Undo = { card: string; before: StoredCard; time: number };
+
 export type Store = {
-  version: 1;
+  version: 2;
   cards: Record<string, StoredCard>;
-  /** [card id, rating, time] for every review, for stats and a future FSRS optimisation. */
-  log: [string, Grade, number][];
+  /** Cards taken out of study and when, so merging another device's copy doesn't bring them back. */
+  removed: Record<string, number>;
+  /** Every review, for stats and a future FSRS optimisation. A card and time identify a review. */
+  log: Review[];
   settings: Settings;
+  settingsUpdated: number;
+  /** The last few answers on this device, newest last. Not merged. */
+  undo: Undo[];
 };
 
 export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9 };
 
+const UNDO_LIMIT = 20;
+
 export function emptyStore(): Store {
-  return { version: 1, cards: {}, log: [], settings: { ...DEFAULT_SETTINGS } };
+  return { version: 2, cards: {}, removed: {}, log: [], settings: { ...DEFAULT_SETTINGS }, settingsUpdated: 0, undo: [] };
+}
+
+/** Brings saved progress or a backup from any earlier version up to the current shape. */
+export function migrate(raw: unknown): Store {
+  const old = raw as Omit<Partial<Store>, "version"> & { version?: number };
+  if (!old || typeof old !== "object" || typeof old.cards !== "object" || ![1, 2].includes(old.version!)) {
+    throw new Error("not a Nekko backup");
+  }
+  const s = { ...emptyStore(), ...old, version: 2 } as Store;
+  s.settings = { ...DEFAULT_SETTINGS, ...old.settings };
+  if (old.version === 1) {
+    s.cards = Object.fromEntries(
+      Object.entries(old.cards!).map(([id, c]) => [id, { ...c, updated: c.last_review ?? c.added }]),
+    );
+  }
+  return s;
+}
+
+/** Combines two copies of the progress, e.g. a backup from another device with this one. */
+export function merge(local: Store, other: Store): Store {
+  const out = emptyStore();
+  for (const [id, t] of [...Object.entries(local.removed), ...Object.entries(other.removed)]) {
+    out.removed[id] = Math.max(out.removed[id] ?? 0, t);
+  }
+  for (const c of [local.cards, other.cards]) {
+    for (const [id, card] of Object.entries(c)) {
+      const have = out.cards[id];
+      if ((!have || card.updated > have.updated) && card.updated > (out.removed[id] ?? -Infinity)) out.cards[id] = card;
+    }
+  }
+  for (const id of Object.keys(out.cards)) delete out.removed[id];
+  const seen = new Set<string>();
+  out.log = [...local.log, ...other.log]
+    .filter(([id, , t]) => !seen.has(id + "@" + t) && !!seen.add(id + "@" + t))
+    .sort((a, b) => a[2] - b[2]);
+  const newer = other.settingsUpdated > local.settingsUpdated ? other : local;
+  out.settings = { ...newer.settings };
+  out.settingsUpdated = newer.settingsUpdated;
+  out.undo = local.undo;
+  return out;
 }
 
 export const itemId = (kind: ItemKind, key: string) => `${kind}:${key}`;
@@ -66,7 +120,7 @@ function toCard(c: StoredCard): Card {
   return { ...c, due: new Date(c.due), last_review: c.last_review ? new Date(c.last_review) : undefined };
 }
 
-function fromCard(c: Card, added: number): StoredCard {
+function fromCard(c: Card, added: number, updated: number): StoredCard {
   return {
     due: c.due.getTime(),
     stability: c.stability,
@@ -79,6 +133,7 @@ function fromCard(c: Card, added: number): StoredCard {
     state: c.state,
     last_review: c.last_review?.getTime(),
     added,
+    updated,
   };
 }
 
@@ -98,22 +153,37 @@ export function addItem(store: Store, kind: ItemKind, key: string, now = Date.no
   for (const face of FACES[kind]) {
     const id = cardId(kind, key, face);
     if (!store.cards[id]) {
-      store.cards[id] = fromCard(createEmptyCard(new Date(now)), now);
+      store.cards[id] = fromCard(createEmptyCard(new Date(now)), now, now);
+      delete store.removed[id];
       added++;
     }
   }
   return added;
 }
 
-export function removeItem(store: Store, kind: ItemKind, key: string) {
-  for (const face of FACES[kind]) delete store.cards[cardId(kind, key, face)];
+export function removeItem(store: Store, kind: ItemKind, key: string, now = Date.now()) {
+  for (const face of FACES[kind]) {
+    const id = cardId(kind, key, face);
+    if (store.cards[id]) store.removed[id] = now;
+    delete store.cards[id];
+  }
 }
 
 export function grade(store: Store, id: string, rating: Grade, now = Date.now()) {
   const stored = store.cards[id];
   const { card } = scheduler(store.settings).next(toCard(stored), new Date(now), rating);
-  store.cards[id] = fromCard(card, stored.added);
+  store.cards[id] = fromCard(card, stored.added, now);
   store.log.push([id, rating, now]);
+  store.undo = [...store.undo, { card: id, before: stored, time: now }].slice(-UNDO_LIMIT);
+}
+
+/** Takes back the last answer: the card goes back to how it was and the review is forgotten. */
+export function undoLast(store: Store, now = Date.now()): string | undefined {
+  const last = store.undo.pop();
+  if (!last) return undefined;
+  store.cards[last.card] = { ...last.before, updated: now };
+  store.log = store.log.filter(([id, , t]) => id !== last.card || t !== last.time);
+  return last.card;
 }
 
 /** When each answer button would bring the card back, for labelling the buttons. */
@@ -197,7 +267,7 @@ const saveHooks = new Set<(s: Store) => void>();
 
 function parseStore(raw: string | null): Store {
   try {
-    if (raw) return { ...emptyStore(), ...JSON.parse(raw) };
+    if (raw) return migrate(JSON.parse(raw));
   } catch {
     // Corrupt data: start fresh rather than crash.
   }
@@ -222,7 +292,10 @@ export function getStore(): Store {
 
 /** Applies a change, saves it and re-renders anything using useStore(). */
 export function update(fn: (s: Store) => void) {
+  const settings = JSON.stringify(store.settings);
+  const stamped = store.settingsUpdated;
   fn(store);
+  if (JSON.stringify(store.settings) !== settings && store.settingsUpdated === stamped) store.settingsUpdated = Date.now();
   store = { ...store };
   storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
   listeners.forEach((l) => l());
@@ -234,8 +307,9 @@ export function refresh() {
   listeners.forEach((l) => l());
 }
 
-export function replaceStore(next: Store) {
-  update((s) => Object.assign(s, emptyStore(), next));
+/** Folds another copy of the progress (a backup, another device's) into this one. */
+export function mergeIntoStore(other: Store) {
+  update((s) => Object.assign(s, merge(s, other)));
 }
 
 export function useStore(): Store {

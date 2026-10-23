@@ -1,6 +1,6 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { replaceStore, STAGE_LABEL, stageOf, update, useStore, type ItemKind, type Stage, type Store } from "../srs";
+import { mergeIntoStore, migrate, STAGE_LABEL, stageOf, update, useStore, type ItemKind, type Stage, type Store } from "../srs";
 import { Section } from "../components/bits";
 import { allowReminders, isNative, shareFile } from "../native";
 
@@ -120,7 +120,7 @@ export function ProgressPage() {
 
       <Section
         title="Backup"
-        hint={`Progress is saved on this ${isNative ? "phone" : "device"} only. Export now and then so you can't lose it.`}
+        hint={`Progress is saved on this ${isNative ? "phone" : "device"} only. Export now and then so you can't lose it. Importing a backup merges it with what's here, so you can also use it to bring progress over from another device.`}
       >
         <div class="backup">
           <button onClick={() => exportStore(store)}>Export progress</button>
@@ -212,9 +212,8 @@ async function importStore(input: HTMLInputElement) {
   const file = input.files?.[0];
   if (!file) return;
   try {
-    const parsed = JSON.parse(await file.text()) as Store;
-    if (parsed.version !== 1 || typeof parsed.cards !== "object") throw new Error("not a Nekko backup");
-    replaceStore(parsed);
+    mergeIntoStore(migrate(JSON.parse(await file.text())));
+    input.value = "";
   } catch (e) {
     input.value = "";
     console.error(e);
