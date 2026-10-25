@@ -1,7 +1,7 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { STAGE_LABEL, stageOf, useStore, type ItemKind, type Stage } from "../srs";
-import { Section } from "../components/bits";
+import { isLeech, PRACTICE_LABEL, practiceCards, STAGE_LABEL, stageOf, useStore, type ItemKind, type PracticeSet, type Stage } from "../srs";
+import { Chip, Section, WordRow } from "../components/bits";
 
 const STAGES: Stage[] = ["mature", "young", "learning", "none"];
 const DAY = 86_400_000;
@@ -32,6 +32,12 @@ export function ProgressPage() {
     keys: kanjiKeys.filter((k) => data.kanji[k].jlpt === n),
   }));
 
+  const leeches = [
+    ...new Set(Object.keys(store.cards).map((id) => id.slice(0, id.lastIndexOf(":")))),
+  ]
+    .map((id) => id.split(":") as [ItemKind, string])
+    .filter(([kind, key]) => isLeech(store, kind, key));
+
   // Reviews per day and streak.
   const perDay = new Map<string, number>();
   for (const [, , t] of store.log) perDay.set(dayKey(t), (perDay.get(dayKey(t)) ?? 0) + 1);
@@ -57,6 +63,29 @@ export function ProgressPage() {
         <Tile n={perDay.get(dayKey(now)) ?? 0} label="reviewed today" />
         <Tile n={streak} label={streak === 1 ? "day streak" : "days streak"} />
       </div>
+
+      <Section title="Extra practice" hint="Go over these as often as you like. It doesn't change when anything is due.">
+        <div class="practice-links">
+          {(["mistakes", "leeches", "recent"] as PracticeSet[]).map((set) => {
+            const n = practiceCards(store, set, now).length;
+            return (
+              <a key={set} class={n ? "" : "quiet"} href={href.practice(set)}>
+                <b>{n}</b>
+                {PRACTICE_LABEL[set]}
+              </a>
+            );
+          })}
+        </div>
+      </Section>
+
+      {leeches.length > 0 && (
+        <Section title="Leeches" hint="Items you've forgotten 8 or more times. A note on the item's page often helps.">
+          <div class="chips" lang="ja">
+            {leeches.map(([kind, key]) => kind !== "word" && <Chip key={`${kind}:${key}`} c={key} kind={kind} />)}
+          </div>
+          {leeches.map(([kind, key]) => kind === "word" && <WordRow key={key} id={key} />)}
+        </Section>
+      )}
 
       <Section title="What you know" hint="Known means every card for it holds for 3+ weeks.">
         {rows.map(([label, kind, keys]) => (

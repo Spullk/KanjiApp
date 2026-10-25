@@ -4,7 +4,7 @@ import radicals from "../data/radicals.json";
 import words from "../data/words.json";
 import lessons from "../data/lessons.json";
 import type { Data } from "../src/data";
-import { addItem, dueCards, emptyStore, grade, isAdded, isLeech, merge, setItemInfo, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
+import { addItem, dueCards, emptyStore, endVacation, grade, isAdded, isLeech, merge, newLeftToday, practiceCards, setItemInfo, startVacation, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
 
 const data = { kanji, radicals, words, sentences: {}, lessons } as unknown as Data;
 const DAY = 86_400_000;
@@ -84,7 +84,7 @@ describe("store v2", () => {
     expect(s.cards["kanji:語:meaning"].updated).toBe(3);
     expect(s.cards["radical:口:meaning"].updated).toBe(2);
     expect(s.log).toHaveLength(1);
-    expect(s.settings).toEqual({ batch: 10, retention: 0.85 });
+    expect(s.settings).toEqual({ batch: 10, retention: 0.85, answerMode: "self", dailyNew: 0 });
     expect(s.removed).toEqual({});
     expect(() => migrate({ version: 9, cards: {} })).toThrow();
     expect(() => migrate("nope")).toThrow();
@@ -162,5 +162,48 @@ describe("item info", () => {
     expect(isLeech(s, "radical", "氵")).toBe(false);
     s.cards["radical:氵:meaning"].lapses = 8;
     expect(isLeech(s, "radical", "氵")).toBe(true);
+  });
+});
+
+describe("daily limit and vacation", () => {
+  it("counts new items started today against the limit", () => {
+    const s = emptyStore();
+    const now = new Date(2026, 9, 23, 12).getTime();
+    expect(newLeftToday(s, now)).toBe(Infinity);
+    s.settings.dailyNew = 3;
+    addItem(s, "kanji", "語", now - DAY); // yesterday
+    addItem(s, "kanji", "日", now - 1000);
+    addItem(s, "radical", "氵", now - 1000);
+    expect(newLeftToday(s, now)).toBe(1);
+  });
+
+  it("stops reviews on vacation and moves the schedule on afterwards", () => {
+    const s = emptyStore();
+    addItem(s, "radical", "氵", 0);
+    grade(s, "radical:氵:meaning", Rating.Good, 0);
+    const due = s.cards["radical:氵:meaning"].due;
+    startVacation(s, 1000);
+    expect(dueCards(s, due + 10 * DAY)).toEqual([]);
+    endVacation(s, 1000 + 5 * DAY);
+    expect(s.settings.vacation).toBeUndefined();
+    expect(s.cards["radical:氵:meaning"].due).toBe(due + 5 * DAY);
+    expect(s.cards["radical:氵:meaning"].last_review).toBe(5 * DAY);
+  });
+});
+
+describe("practice", () => {
+  it("collects today's mistakes, leeches and this week's items without changing anything", () => {
+    const now = new Date(2026, 9, 23, 12).getTime();
+    const s = emptyStore();
+    addItem(s, "kanji", "語", now - 30 * DAY);
+    addItem(s, "radical", "氵", now - 2 * DAY);
+    grade(s, "kanji:語:meaning", Rating.Again, now - 1000);
+    grade(s, "kanji:語:reading", Rating.Again, now - 2 * DAY);
+    s.cards["kanji:語:reading"].lapses = 9;
+    const before = JSON.stringify(s);
+    expect(practiceCards(s, "mistakes", now)).toEqual(["kanji:語:meaning"]);
+    expect(practiceCards(s, "leeches", now)).toEqual(["kanji:語:reading"]);
+    expect(practiceCards(s, "recent", now)).toEqual(["radical:氵:meaning"]);
+    expect(JSON.stringify(s)).toBe(before);
   });
 });
