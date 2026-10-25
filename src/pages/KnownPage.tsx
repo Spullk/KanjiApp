@@ -1,7 +1,8 @@
 import { useState } from "preact/hooks";
 import { useData } from "../data";
 import { fetchWaniKani, jlptItems, parseKnownList, wkSchedule, type ItemRef, type WaniKaniItem } from "../known";
-import { addReviewedItem, isAdded, setItemInfo, setStatusMany, update, useStore, type Store } from "../srs";
+import { addItem, addReviewedItem, isAdded, setItemInfo, setStatusMany, update, useStore, type Store } from "../srs";
+import { matchAnki, readAnkiFile, type AnkiMatch } from "../anki";
 import { Section } from "../components/bits";
 
 const isKnown = (s: Store, it: ItemRef) => s.items[`${it.kind}:${it.key}`]?.status === "known";
@@ -17,6 +18,7 @@ export function KnownPage() {
       <JlptLevels />
       <PasteList />
       <WaniKani />
+      <Anki />
     </article>
   );
 }
@@ -149,6 +151,81 @@ function WaniKani() {
           <button class="primary" onClick={bring}>
             Bring them over
           </button>
+          <button class="link-button" onClick={() => setFound(null)}>
+            Cancel
+          </button>
+        </div>
+      )}
+      {result && <p class="hint">{result}</p>}
+    </Section>
+  );
+}
+
+function Anki() {
+  const data = useData();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [found, setFound] = useState<AnkiMatch | null>(null);
+  const [result, setResult] = useState("");
+
+  const read = async (input: HTMLInputElement) => {
+    const file = input.files?.[0];
+    input.value = "";
+    if (!file) return;
+    setBusy(true);
+    setError("");
+    setResult("");
+    try {
+      setFound(matchAnki(data, await readAnkiFile(new Uint8Array(await file.arrayBuffer()))));
+    } catch (e) {
+      console.error(e);
+      setError(e instanceof Error ? e.message : "Couldn't read that file.");
+    }
+    setBusy(false);
+  };
+
+  const bring = () => {
+    const now = Date.now();
+    let added = 0;
+    let skipped = 0;
+    update((s) => {
+      for (const it of found!.items) {
+        if (isAdded(s, it.kind, it.key) || s.items[`${it.kind}:${it.key}`]?.status) {
+          skipped++;
+          continue;
+        }
+        if ("learning" in it) addItem(s, it.kind, it.key, now);
+        else addReviewedItem(s, it.kind, it.key, it.stability, it.due, now);
+        added++;
+      }
+    });
+    setResult(`Brought over ${added} items with their Anki schedule.` + (skipped ? ` Skipped ${skipped} you already had in Nekko.` : ""));
+    setFound(null);
+  };
+
+  return (
+    <Section
+      title="From Anki"
+      hint="In Anki: File → Export…, choose “Anki Deck Package (.apkg)”, keep scheduling information, and open the file here. Notes whose front is a kanji or a word Nekko has come over with their schedule."
+    >
+      <label class={`file-button ${busy ? "busy" : ""}`}>
+        {busy ? "Reading…" : "Choose .apkg file"}
+        <input type="file" accept=".apkg,.colpkg" disabled={busy} onChange={(e) => read(e.target as HTMLInputElement)} />
+      </label>
+      {error && <p class="hint error">{error}</p>}
+      {found && (
+        <div class="wk-found">
+          <p>
+            {found.items.length
+              ? `Found ${found.items.length} kanji and words you've studied in Anki.`
+              : "None of the studied notes in that deck are Nekko kanji or words."}{" "}
+            Of {found.notes} notes, {found.unstudied} you haven't started and {found.unmatched} aren't single kanji or words Nekko knows.
+          </p>
+          {found.items.length > 0 && (
+            <button class="primary" onClick={bring}>
+              Bring them over
+            </button>
+          )}
           <button class="link-button" onClick={() => setFound(null)}>
             Cancel
           </button>

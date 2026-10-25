@@ -38,7 +38,7 @@ export function SettingsPage() {
 
       <Section title="Already know some?">
         <a class="more" href={href.known()}>
-          Mark kanji you know, by JLPT level or from a list, or import from WaniKani →
+          Mark kanji you know, by JLPT level or from a list, or import from WaniKani or Anki →
         </a>
       </Section>
 
