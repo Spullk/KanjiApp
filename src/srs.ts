@@ -2,7 +2,7 @@
 // Everything lives on this device (see storage.ts); Settings → Backup exports it as JSON.
 
 import { useEffect, useState } from "preact/hooks";
-import { createEmptyCard, fsrs, generatorParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
+import { checkParameters, createEmptyCard, fsrs, generatorParameters, migrateParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
 import type { Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
 
@@ -40,6 +40,8 @@ export type Settings = {
   retention: number;
   /** self: show the answer and grade yourself (Anki). typed: type meaning and reading (WaniKani). */
   answerMode: "self" | "typed";
+  /** FSRS weights trained on your own history (e.g. copied from Anki); default ones when unset. */
+  fsrsParams?: number[];
   /** Most new items to start per day; 0 for no limit. */
   dailyNew: number;
   /** When vacation mode was switched on. Nothing is due while it's on, and it pushes everything back when it ends. */
@@ -162,7 +164,7 @@ function fromCard(c: Card, added: number, updated: number): StoredCard {
 }
 
 function scheduler(settings: Settings) {
-  return fsrs(generatorParameters({ request_retention: settings.retention, enable_fuzz: true }));
+  return fsrs(generatorParameters({ request_retention: settings.retention, enable_fuzz: true, w: settings.fsrsParams }));
 }
 
 // ---------------------------------------------------------------- pure operations
@@ -280,6 +282,21 @@ export function dueCards(store: Store, until = Date.now()): string[] {
       return al - bl || a.due - b.due;
     })
     .map(([id]) => id);
+}
+
+/**
+ * FSRS parameters pasted from Anki (deck options → FSRS), in any of the FSRS 4.5, 5 or 6 lengths.
+ * Returns them in the FSRS 6 form Nekko uses, or throws with a message to show.
+ */
+export function parseFsrsParams(text: string): number[] {
+  const nums = text.split(/[\s,]+/).filter(Boolean).map(Number);
+  if (!nums.length || nums.some((n) => !isFinite(n))) throw new Error("Paste only the numbers, separated by commas.");
+  try {
+    checkParameters(nums);
+  } catch {
+    throw new Error(`That's ${nums.length} numbers; Anki's FSRS parameters are 17, 19 or 21.`);
+  }
+  return migrateParameters(nums);
 }
 
 export function startOfDay(t: number): number {

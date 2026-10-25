@@ -12,6 +12,7 @@ export type Route =
   | { page: "settings" }
   | { page: "known" }
   | { page: "practice"; set: PracticeSet }
+  | { page: "write"; c?: string }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -27,6 +28,7 @@ export const href = {
   settings: () => "#/settings",
   known: () => "#/known",
   practice: (set: PracticeSet) => `#/practice/${set}`,
+  write: (c?: string) => `#/write${c ? "/" + encodeURIComponent(c) : ""}`,
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
   radical: (c: string) => `#/r/${encodeURIComponent(c)}`,
@@ -51,6 +53,8 @@ export function parse(hash: string): Route {
       return { page: "settings" };
     case "known":
       return { page: "known" };
+    case "write":
+      return { page: "write", c: seg[1] };
     case "practice":
       return ["mistakes", "leeches", "recent"].includes(seg[1]) ? { page: "practice", set: seg[1] as PracticeSet } : { page: "progress" };
     case "lesson":

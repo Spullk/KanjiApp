@@ -1,6 +1,7 @@
-import { DEFAULT_SETTINGS, endVacation, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
+import { DEFAULT_SETTINGS, endVacation, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
 import { href } from "../router";
 import { Section } from "../components/bits";
+import { useState } from "preact/hooks";
 import { allowReminders, isNative, shareFile } from "../native";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
@@ -38,7 +39,7 @@ export function SettingsPage() {
 
       <Section title="Already know some?">
         <a class="more" href={href.known()}>
-          Mark kanji you know, by JLPT level or from a list, or import from WaniKani →
+          Mark kanji you know, by JLPT level or from a list, or import from WaniKani or Anki →
         </a>
       </Section>
 
@@ -67,6 +68,7 @@ export function SettingsPage() {
           Reviews are scheduled with FSRS, the same algorithm as Anki's newer scheduler. Higher recall means more
           frequent reviews; 90% is the Anki default.
         </p>
+        <FsrsParams />
       </Section>
 
       <Section
@@ -128,6 +130,45 @@ export function SettingsPage() {
         </ul>
       </Section>
     </article>
+  );
+}
+
+function FsrsParams() {
+  const store = useStore();
+  const [text, setText] = useState("");
+  const [error, setError] = useState("");
+  const params = store.settings.fsrsParams;
+  const use = () => {
+    try {
+      const w = parseFsrsParams(text);
+      update((s) => (s.settings.fsrsParams = w));
+      setText("");
+      setError("");
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+  return (
+    <details class="fsrs-params">
+      <summary>FSRS parameters: {params ? "your own" : "default"}</summary>
+      <p class="hint">
+        FSRS can be tuned to how your memory works. If you use FSRS in Anki, open a deck's options, press Optimize
+        under FSRS, then copy the numbers in the parameters box and paste them here.
+      </p>
+      {params && (
+        <p class="hint params-now">
+          {params.map((n) => n.toFixed(4)).join(", ")}{" "}
+          <button class="link-button" onClick={() => update((s) => delete s.settings.fsrsParams)}>
+            Back to default
+          </button>
+        </p>
+      )}
+      <textarea class="paste-box" rows={3} value={text} placeholder="0.212, 1.2931, 2.3065, 8.2956, …" onInput={(e) => setText((e.target as HTMLTextAreaElement).value)} />
+      <button class="secondary" disabled={!text.trim()} onClick={use}>
+        Use these
+      </button>
+      {error && <p class="hint error">{error}</p>}
+    </details>
   );
 }
 

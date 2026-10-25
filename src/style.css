@@ -1257,7 +1257,7 @@ button.secondary:disabled {
 
 .practice-links {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 .practice-links a {
@@ -1337,4 +1337,85 @@ button.next.wrong {
   justify-content: center;
   gap: 16px;
   margin-top: 10px;
+}
+
+/* ---------- writing practice */
+
+.write-prompt {
+  text-align: center;
+  margin-bottom: 12px;
+}
+.write-prompt .main-readings {
+  justify-content: center;
+}
+.write-pad {
+  display: block;
+  width: min(100%, 360px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  touch-action: none;
+  user-select: none;
+}
+.write-pad.miss {
+  border-color: #c43d3d;
+}
+.write-outline,
+.write-done,
+.write-hint,
+.write-ink {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.write-outline {
+  stroke: var(--line);
+  stroke-width: 3;
+}
+.write-done {
+  stroke: var(--text);
+  stroke-width: 3.5;
+}
+.write-hint {
+  stroke: var(--kanji);
+  stroke-width: 3;
+  stroke-dasharray: 4 3;
+}
+.write-start {
+  fill: var(--kanji);
+}
+.write-ink {
+  stroke: var(--vocab);
+  stroke-width: 3.5;
+}
+.write-status {
+  text-align: center;
+}
+.write-toggle {
+  display: block;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.write-done-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+.write-done-bar .hint {
+  width: 100%;
+  text-align: center;
+}
+
+.fsrs-params summary {
+  cursor: pointer;
+  padding: 6px 0;
+}
+.params-now {
+  word-break: break-word;
 }
