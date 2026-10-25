@@ -1411,3 +1411,11 @@ button.next.wrong {
   width: 100%;
   text-align: center;
 }
+
+.fsrs-params summary {
+  cursor: pointer;
+  padding: 6px 0;
+}
+.params-now {
+  word-break: break-word;
+}

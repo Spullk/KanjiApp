@@ -4,7 +4,7 @@ import radicals from "../data/radicals.json";
 import words from "../data/words.json";
 import lessons from "../data/lessons.json";
 import type { Data } from "../src/data";
-import { addItem, dueCards, emptyStore, endVacation, grade, isAdded, isLeech, merge, newLeftToday, practiceCards, setItemInfo, startVacation, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
+import { addItem, dueCards, emptyStore, endVacation, grade, isAdded, isLeech, merge, newLeftToday, parseFsrsParams, practiceCards, setItemInfo, startVacation, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
 
 const data = { kanji, radicals, words, sentences: {}, lessons } as unknown as Data;
 const DAY = 86_400_000;
@@ -205,5 +205,23 @@ describe("practice", () => {
     expect(practiceCards(s, "leeches", now)).toEqual(["kanji:語:reading"]);
     expect(practiceCards(s, "recent", now)).toEqual(["radical:氵:meaning"]);
     expect(JSON.stringify(s)).toBe(before);
+  });
+});
+
+describe("FSRS parameters", () => {
+  const anki = "0.212, 1.2931, 2.3065, 8.2956, 6.4133, 0.8334, 3.0194, 0.001, 1.8722, 0.1666, 0.796, 1.4835, 0.0614, 0.2629, 1.6483, 0.6014, 1.8729, 0.5425, 0.0912, 0.0658, 0.1542";
+  it("reads Anki's parameters and rejects anything else", () => {
+    expect(parseFsrsParams(anki)).toHaveLength(21);
+    expect(parseFsrsParams("0.4 0.6 2.4 5.8 4.93 0.94 0.86 0.01 1.49 0.14 0.94 2.18 0.05 0.34 1.26 0.29 2.61")).toHaveLength(21);
+    expect(() => parseFsrsParams("1, 2, 3")).toThrow(/17, 19 or 21/);
+    expect(() => parseFsrsParams("hello")).toThrow(/numbers/);
+  });
+
+  it("schedules with them", () => {
+    const s = emptyStore();
+    addItem(s, "radical", "氵", 0);
+    const before = preview(s, "radical:氵:meaning", 0)[Rating.Easy];
+    s.settings.fsrsParams = parseFsrsParams(anki.replace(/^0\.212, 1\.2931, 2\.3065, 8\.2956/, "0.212, 1.2931, 2.3065, 30"));
+    expect(preview(s, "radical:氵:meaning", 0)[Rating.Easy]).toBeGreaterThan(before);
   });
 });
