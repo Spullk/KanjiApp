@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 
 let strokes: Record<string, string[]> | null = null;
 
-async function loadStrokes() {
+export async function loadStrokes() {
   strokes ??= (await import("../../data/strokes.json")).default as unknown as Record<string, string[]>;
   return strokes;
 }

@@ -75,6 +75,10 @@ export function ProgressPage() {
               </a>
             );
           })}
+          <a href={href.write()}>
+            <b>筆</b>
+            Writing
+          </a>
         </div>
       </Section>
 

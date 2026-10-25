@@ -73,6 +73,9 @@ export function KanjiPage({ c }: { c: string }) {
 
       <Section title="Stroke order">
         <StrokeOrder c={k.c} />
+        <a class="more" href={href.write(k.c)}>
+          Practise writing it
+        </a>
       </Section>
 
       {k.soundFamily.length > 0 && k.phonetic && (
