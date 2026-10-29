@@ -10,6 +10,7 @@
   --hl: #fde68a;
   --hl-text: #1f1b24;
   --tab: rgba(255, 255, 255, 0.92);
+  --ja-font: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
   color-scheme: light;
 }
 
@@ -47,7 +48,7 @@ body {
 
 [lang="ja"],
 .furigana {
-  font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  font-family: var(--ja-font);
 }
 
 a {
@@ -1603,4 +1604,10 @@ button.next.wrong {
 .check-setting small {
   display: block;
   color: var(--muted);
+}
+.font-samples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 1.6rem;
 }

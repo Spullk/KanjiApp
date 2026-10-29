@@ -69,6 +69,8 @@ export type Settings = {
   customList?: string[];
   /** When vacation mode was switched on. Nothing is due while it's on, and it pushes everything back when it ends. */
   vacation?: number;
+  /** Show kanji and words on review cards in a different typeface each day (print, handwriting, brush). */
+  fonts?: boolean;
   /** Optional card types switched on. Switching one off keeps its cards but stops asking them. */
   extraCards?: ExtraFace[];
   /** Native app only: hour of the daily review reminder, or undefined for none. */

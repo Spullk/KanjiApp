@@ -2,7 +2,8 @@ import { addFaceToStudied, missingFace, type ExtraFace } from "../srs";
 import { DEFAULT_SETTINGS, endVacation, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
 import { href } from "../router";
 import { Section } from "../components/bits";
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
+import { loadFont, REVIEW_FONTS } from "../fonts";
 import { allowReminders, isNative, shareFile } from "../native";
 import { signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
@@ -105,6 +106,24 @@ export function SettingsPage() {
         ))}
       </Section>
 
+      <Section title="Fonts">
+        <label class="check-setting">
+          <input type="checkbox" checked={!!store.settings.fonts} onChange={() => set("fonts", !store.settings.fonts || undefined)} />
+          <span>
+            Mix up the font on review cards
+            <small>
+              Kanji look different in print, handwriting and brush. Each card gets a different typeface each day (needs a
+              connection; offline cards keep the usual font).
+            </small>
+          </span>
+        </label>
+        <div class="font-samples" lang="ja">
+          {REVIEW_FONTS.map((f) => (
+            <FontSample key={f} family={f} />
+          ))}
+        </div>
+      </Section>
+
       <Section
         title="Vacation mode"
         hint="Nothing comes due while you're away. When you come back, every review moves on by the time you were gone, so there's no pile waiting."
@@ -164,6 +183,16 @@ export function SettingsPage() {
         </ul>
       </Section>
     </article>
+  );
+}
+
+function FontSample({ family }: { family: string }) {
+  const text = "字書";
+  useEffect(() => loadFont(family, text), [family]);
+  return (
+    <span title={family} style={{ fontFamily: `"${family}", var(--ja-font)` }}>
+      {text}
+    </span>
   );
 }
 

@@ -6,7 +6,8 @@ import { useEffect } from "preact/hooks";
 import { playWord } from "./audio";
 import { useData, type Data } from "./data";
 import { href } from "./router";
-import { parseCardId, type Face, type ItemKind } from "./srs";
+import { parseCardId, useStore, type Face, type ItemKind } from "./srs";
+import { fontFor, loadFont } from "./fonts";
 import { Furigana, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
 import { readingForms } from "./answers";
@@ -135,13 +136,19 @@ export function CardFront({ id }: { id: string }) {
   const data = useData();
   const { kind, key } = parseCardId(id);
   const t = cardType(id);
+  const style = t.frontStyle ?? (kind === "word" ? "word" : "char");
+  const font = useStore().settings.fonts && kind !== "radical" && t.frontStyle === undefined ? fontFor(id) : undefined;
+  const text = kind === "word" ? data.words[key].w : key;
+  useEffect(() => {
+    if (font) loadFont(font, text);
+  }, [font, text]);
   return (
     <div class={`card-front ${kind}`}>
       <div class="card-prompt">{t.prompt}</div>
       {t.frontStyle === "english" ? (
         <div class="card-english">{t.front(data, key)}</div>
       ) : (
-        <div class={(t.frontStyle ?? (kind === "word" ? "word" : "char")) === "word" ? "card-word" : "card-char"} lang="ja">
+        <div class={style === "word" ? "card-word" : "card-char"} lang="ja" style={font ? { fontFamily: `"${font}", var(--ja-font)` } : undefined}>
           {t.front(data, key)}
         </div>
       )}
