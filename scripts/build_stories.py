@@ -30,7 +30,6 @@ CACHE = SOURCES / "stories"
 AOZORA_INDEX = "https://www.aozora.gr.jp/index_pages/list_person_all_extended_utf8.zip"
 TADOKU_START = ["https://tadoku.org/japanese/free-books/", "https://tadoku.org/japanese/en/free-books-en/"]
 TADOKU_MAX_PAGES = 200
-CREDIT_MARKS = ("多言語多読", "Tadoku", "tadoku", "クリエイティブ", "Creative", "CC BY", "http", "©")
 
 # Short modern-spelling (新字新仮名) tales, easiest first. Missing titles are reported, not fatal.
 AOZORA_WORKS = [
@@ -134,7 +133,11 @@ TAG = re.compile(r"<[^>]+>")
 
 
 def tadoku_books():
-    """Crawls the free-books pages for PDF links. Returns [(pdf url, title, level)]."""
+    """Crawls the free-books pages for PDF links → [(pdf url, title, level)]. The list is kept in the
+    download cache, so later builds skip the crawl (delete sources/stories/tadoku-books.json to look again)."""
+    saved = CACHE / "tadoku-books.json"
+    if saved.exists():
+        return json.loads(saved.read_text(encoding="utf-8"))
     seen, queue, books = set(), list(TADOKU_START), {}
     while queue and len(seen) < TADOKU_MAX_PAGES:
         url = queue.pop(0)
@@ -147,57 +150,85 @@ def tadoku_books():
             log(f"Tadoku: {url}: {e}")
             continue
         m = TITLE.search(page)
-        title = TAG.sub("", (m[1] or m[2]) if m else "").split("|")[0].split("–")[0].strip()
+        title = re.sub(r"\s*[-|–]\s*にほんごたどく.*$", "", TAG.sub("", (m[1] or m[2]) if m else "")).strip()
         level = LEVEL.search(TAG.sub(" ", page))
         for link in HREF.findall(page):
             link = urllib.parse.urljoin(url, link)
-            if link.lower().endswith(".pdf"):
+            # Each book comes as a screen PDF (…e-…) and a print PDF (…p-…) with the pages shuffled for binding.
+            if link.lower().endswith(".pdf") and not PRINT_PDF.match(Path(link).name):
                 books.setdefault(link, (title, int(level[1]) if level else None))
             elif "tadoku.org/japanese/" in link and ("free-book" in link or "/book/" in link):
                 queue.append(link)
         time.sleep(0.3)
     log(f"Tadoku: crawled {len(seen)} pages, found {len(books)} PDFs")
-    return [(u, t, l) for u, (t, l) in books.items()]
+    out = [(u, t, l) for u, (t, l) in books.items()]
+    saved.parent.mkdir(parents=True, exist_ok=True)
+    saved.write_text(json.dumps(out, ensure_ascii=False), encoding="utf-8")
+    return out
 
 
-def pdf_paragraphs(path):
-    """Each page's main text (furigana dropped by its smaller size) as one paragraph."""
+PRINT_PDF = re.compile(r"^t[a-z]?\d+p-", re.I)
+NOT_STORY = ("指導者", "この作品は", "多言語多読", "クリエイティブ", "Creative", "CC BY", "http", "©")
+PAGE_NUMBER = re.compile(r"^[\d\s\-‐‒–—―─－ー]*$")
+
+
+def page_text(chars):
+    """Reads a page's characters in order, across (yokogaki) or down in columns from the right (tategaki)."""
+    sizes = sorted(c["size"] for c in chars)
+    body = sizes[len(sizes) // 2]
+    chars = [c for c in chars if c["size"] > body * 0.75]  # furigana is smaller
+    rows, cols = defaultdict(list), defaultdict(list)
+    for c in chars:
+        rows[round(c["top"] / (body * 0.8))].append(c)
+        cols[round((c["x0"] + c["x1"]) / 2 / (body * 0.8))].append(c)
+    if len(cols) < len(rows):
+        lines = [sorted(cs, key=lambda c: c["top"]) for _, cs in sorted(cols.items(), reverse=True)]
+    else:
+        lines = [sorted(cs, key=lambda c: c["x0"]) for _, cs in sorted(rows.items())]
+    lines = ["".join(c["text"] for c in line).replace(" ", "").replace("　", "") for line in lines]
+    return "".join(line for line in lines if not PAGE_NUMBER.match(line))
+
+
+def pdf_paragraphs(data):
+    """Each page's main text as one paragraph, without the cover, credits and teachers' notes.
+    None when the PDF's fonts don't say which characters they draw."""
     import pdfplumber
 
-    paras = []
-    with pdfplumber.open(path) as pdf:
-        for page in pdf.pages:
+    paras, unknown, total = [], 0, 0
+    with pdfplumber.open(io.BytesIO(data)) as pdf:
+        for page in pdf.pages[1:]:
             chars = [c for c in page.chars if c["text"].strip()]
-            if not chars:
-                continue
-            sizes = sorted(c["size"] for c in chars)
-            body = sizes[len(sizes) // 2]
-            chars = [c for c in chars if c["size"] > body * 0.75]
-            lines = defaultdict(list)
-            for c in chars:
-                lines[round(c["top"] / (body * 0.8))].append(c)
-            text = "".join("".join(c["text"] for c in sorted(cs, key=lambda c: c["x0"]))
-                           for _, cs in sorted(lines.items()))
-            text = text.replace(" ", "").replace("　", "")
-            if not re.search(r"[ぁ-ん]", text) or any(m in text for m in CREDIT_MARKS):
-                continue
-            paras.append((text, []))
-    return paras
+            total += len(chars)
+            unknown += sum(c["text"].startswith("(cid:") for c in chars)
+            chars = [c for c in chars if not c["text"].startswith("(cid:")]
+            text = page_text(chars) if chars else ""
+            if re.search(r"[ぁ-ん]", text) and not any(m in text for m in NOT_STORY):
+                paras.append((text, []))
+    return paras if total and unknown / total < 0.02 else None
 
 
 def tadoku_stories():
-    for url, title, level in tadoku_books():
+    books = tadoku_books()
+    wanted = {Path(urllib.parse.urlparse(url).path).stem for url, _, _ in books}
+    for old in (CACHE / "tadoku").glob("*.pdf"):  # books dropped from the list (and print PDFs)
+        if old.stem not in wanted:
+            old.unlink()
+    titles = set()
+    for url, title, level in books:
         name = Path(urllib.parse.urlparse(url).path).stem
-        path = CACHE / "tadoku" / f"{name}.pdf"
+        if title in titles:
+            continue
         try:
-            get(url, path)
-            paras = pdf_paragraphs(path)
+            paras = pdf_paragraphs(get(url, CACHE / "tadoku" / f"{name}.pdf"))
         except Exception as e:
             log(f"Tadoku: {url}: {e}")
             continue
-        if paras:
-            yield {"id": "t" + re.sub(r"[^A-Za-z0-9]+", "-", name).strip("-").lower(), "title": title or name,
-                   "author": "NPO多言語多読", "source": "tadoku", "level": level, "url": url}, paras[1:] or paras
+        if not paras:
+            log(f"Tadoku: skipped {title}: no readable text")
+            continue
+        titles.add(title)
+        yield {"id": "t" + re.sub(r"[^A-Za-z0-9]+", "-", name).strip("-").lower(), "title": title or name,
+               "author": "NPO多言語多読", "source": "tadoku", "level": level, "url": url}, paras
 
 
 # ---------------------------------------------------------------- words
