@@ -61,7 +61,7 @@ export function PracticePage({ set }: { set: PracticeSet }) {
   );
 }
 
-function shuffle<T>(xs: T[]): T[] {
+export function shuffle<T>(xs: T[]): T[] {
   const a = [...xs];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

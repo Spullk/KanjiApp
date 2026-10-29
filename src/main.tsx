@@ -16,6 +16,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { KnownPage } from "./pages/KnownPage";
 import { PracticePage } from "./pages/PracticePage";
 import { WritePage } from "./pages/WritePage";
+import { ReadPage } from "./pages/ReadPage";
 import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
 import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
@@ -51,6 +52,8 @@ function Page({ route }: { route: Route }) {
       return <KnownPage />;
     case "write":
       return <WritePage c={route.c} />;
+    case "read":
+      return <ReadPage />;
     case "practice":
       return <PracticePage key={route.set} set={route.set} />;
     default:
@@ -93,7 +96,7 @@ function App() {
         <a class={route.page.startsWith("lesson") ? "on" : ""} href={href.lessons()}>
           <span aria-hidden="true">課</span>Lessons
         </a>
-        <a class={route.page === "progress" || route.page === "settings" || route.page === "known" || route.page === "practice" || route.page === "write" ? "on" : ""} href={href.progress()}>
+        <a class={route.page === "progress" || route.page === "settings" || route.page === "known" || route.page === "practice" || route.page === "write" || route.page === "read" ? "on" : ""} href={href.progress()}>
           <span aria-hidden="true">進</span>Progress
         </a>
       </nav>

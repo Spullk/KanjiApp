@@ -92,7 +92,7 @@ export function timeSpent(log: Review[], from: number, to = Infinity): number {
 export function duration(ms: number): string {
   const m = Math.round(ms / 60_000);
   if (m < 60) return `${m} min`;
-  return `${Math.floor(m / 60)} h ${m % 60} min`;
+  return `${Math.floor(m / 60)}h ${m % 60}m`;
 }
 
 export type History = Accuracy & { last?: number };

@@ -1257,7 +1257,7 @@ button.secondary:disabled {
 
 .practice-links {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
   gap: 8px;
 }
 .practice-links a {
@@ -1504,4 +1504,65 @@ button.next.wrong {
 .hard-row > :first-child {
   flex: 1;
   min-width: 0;
+}
+
+/* ---------- reading practice */
+
+.read-card {
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+.read-ja {
+  font-size: 1.5rem;
+  line-height: 1.9;
+}
+.read-word {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  border-bottom: 2px dotted var(--line);
+  cursor: pointer;
+}
+.read-word.on {
+  background: var(--hl);
+  color: var(--hl-text);
+  border-bottom-color: transparent;
+  border-radius: 4px;
+}
+.read-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+}
+.read-tools .hint {
+  margin: 0;
+}
+.read-tools a {
+  color: var(--kanji);
+  margin-left: 4px;
+}
+.read-gloss {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--bg);
+}
+.read-gloss .more {
+  display: inline;
+  margin-left: 6px;
+}
+.read-en {
+  margin-top: 8px;
+  color: var(--muted);
+}
+.tile-n.long {
+  font-size: 1.3rem;
+  line-height: 2.4rem;
+  white-space: nowrap;
 }

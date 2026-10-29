@@ -84,6 +84,10 @@ export function ProgressPage() {
             <b>筆</b>
             Writing
           </a>
+          <a href={href.read()}>
+            <b>読</b>
+            Reading
+          </a>
         </div>
       </Section>
 
@@ -124,18 +128,17 @@ export function ProgressPage() {
 
       {hardest.length > 0 && (
         <Section title="Hardest items" hint="What you miss most often, from all your answers.">
-          {hardest.map(({ kind, key, acc }) =>
-            kind === "word" ? (
-              <div class="hard-row" key={key}>
-                <WordRow id={key} />
-                <span class="acc-pct">{percent(acc)}</span>
-              </div>
-            ) : (
-              <div class="hard-row" key={key}>
-                <Chip c={key} kind={kind} />
-                <span class="acc-pct">{percent(acc)}</span>
-              </div>
-            ),
+          <div class="chips" lang="ja">
+            {hardest.map(({ kind, key, acc }) => kind !== "word" && <Chip key={key} c={key} kind={kind} note={`${percent(acc)} right`} />)}
+          </div>
+          {hardest.map(
+            ({ kind, key, acc }) =>
+              kind === "word" && (
+                <div class="hard-row" key={key}>
+                  <WordRow id={key} />
+                  <span class="acc-pct">{percent(acc)}</span>
+                </div>
+              ),
           )}
         </Section>
       )}
@@ -219,7 +222,7 @@ function Heatmap({ perDay, now }: { perDay: Map<string, number>; now: number }) 
 function Tile({ n, label }: { n: number | string; label: string }) {
   return (
     <div class="tile">
-      <div class="tile-n">{n}</div>
+      <div class={String(n).length > 5 ? "tile-n long" : "tile-n"}>{n}</div>
       <div class="tile-label">{label}</div>
     </div>
   );
