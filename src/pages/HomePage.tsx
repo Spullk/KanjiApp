@@ -11,6 +11,8 @@ export function HomePage() {
   const all = Object.keys(data.kanji);
   const known = all.filter((k) => stageOf(store, "kanji", k) === "mature").length;
   const studied = all.filter((k) => stageOf(store, "kanji", k) !== "none").length;
+  // The first lesson with a kanji you haven't started.
+  const lesson = data.lessons.find((l) => l.kanji.some((k) => stageOf(store, "kanji", k) === "none")) ?? data.lessons[0];
   // A different kanji each day, to wander the web from.
   const daily = all[Math.floor(Date.now() / 86_400_000) % all.length];
 
@@ -47,6 +49,17 @@ export function HomePage() {
       <a class="search-link" href={href.search()}>
         Search kanji, words, readings or meanings…
       </a>
+
+      <Section title="Lessons">
+        <a class="lesson-row" href={href.lesson(lesson.id)}>
+          <span class="lesson-num">{lesson.id}</span>
+          <span class="lesson-kanji" lang="ja">{lesson.kanji.join("")}</span>
+          <span class="lesson-level">Up next</span>
+        </a>
+        <a class="more" href={href.lessons()}>
+          All {data.lessons.length} lessons →
+        </a>
+      </Section>
 
       <Section title="Kanji of the day">
         <Chips items={[daily]} kind="kanji" />

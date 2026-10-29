@@ -7,7 +7,7 @@ import { getStore } from "../srs";
 
 const SEEN = "nekko.tour";
 
-type Tab = "home" | "review" | "search" | "lessons" | "progress";
+type Tab = "home" | "review" | "read" | "search" | "progress";
 type Step = { tab?: Tab; title: string; body: ComponentChildren };
 
 const STEPS: Step[] = [
@@ -26,7 +26,12 @@ const STEPS: Step[] = [
   {
     tab: "home",
     title: "Home",
-    body: <p>What's due now and what's next to learn, with a kanji of the day to wander from. Tap anything in Nekko to open it and follow its connections.</p>,
+    body: (
+      <>
+        <p>What's due now and what's next to learn, with a kanji of the day to wander from. Tap anything in Nekko to open it and follow its connections.</p>
+        <p>Your lessons are here too: all 2,136 Jōyō kanji in 206 lessons, related kanji side by side. Already know a lesson? Mark it known and it's skipped.</p>
+      </>
+    ),
   },
   {
     tab: "review",
@@ -39,21 +44,21 @@ const STEPS: Step[] = [
     ),
   },
   {
+    tab: "read",
+    title: "Read",
+    body: <p>Short stories and folk tales, sorted by how many of their words you know. Tap any word you don't know, and learn a story's new words in one go. Sentence practice is here too.</p>,
+  },
+  {
     tab: "search",
     title: "Search",
     body: <p>Type kanji, kana, romaji or English. Don't know how to type a kanji? Find it by the parts you can see, or draw it.</p>,
-  },
-  {
-    tab: "lessons",
-    title: "Lessons",
-    body: <p>All 2,136 Jōyō kanji in 206 lessons, with related kanji side by side. Already know a lesson? Mark it known and it's skipped.</p>,
   },
   {
     tab: "progress",
     title: "Progress",
     body: (
       <>
-        <p>Your stats, review calendar and the kanji you know. Extra practice lives here too: today's mistakes, leeches, writing and reading.</p>
+        <p>Your stats, review calendar and the kanji you know. Extra practice lives here too: today's mistakes, leeches and writing.</p>
         <p>
           Settings is at the top of Progress. Sign in there to sync between devices, and change the study order, card types
           and more.

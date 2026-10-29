@@ -85,10 +85,6 @@ export function ProgressPage() {
             <b>筆</b>
             Writing
           </a>
-          <a href={href.read()}>
-            <b>読</b>
-            Reading
-          </a>
         </div>
       </Section>
 

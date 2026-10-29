@@ -16,7 +16,9 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { KnownPage } from "./pages/KnownPage";
 import { PracticePage } from "./pages/PracticePage";
 import { WritePage } from "./pages/WritePage";
-import { ReadPage } from "./pages/ReadPage";
+import { SentencesPage } from "./pages/SentencesPage";
+import { StoriesPage } from "./pages/StoriesPage";
+import { StoryPage } from "./pages/StoryPage";
 import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
 import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
@@ -44,7 +46,7 @@ function Page({ route }: { route: Route }) {
     case "review":
       return <ReviewPage />;
     case "learn":
-      return <LearnPage />;
+      return <LearnPage story={route.story} />;
     case "progress":
       return <ProgressPage />;
     case "settings":
@@ -54,13 +56,26 @@ function Page({ route }: { route: Route }) {
     case "write":
       return <WritePage c={route.c} />;
     case "read":
-      return <ReadPage />;
+      return <StoriesPage />;
+    case "sentences":
+      return <SentencesPage />;
+    case "story":
+      return <StoryPage id={route.id} />;
     case "practice":
       return <PracticePage key={route.set} set={route.set} />;
     default:
       return <HomePage />;
   }
 }
+
+/** The tab bar, and which pages light up each tab. */
+const TABS: { tab: string; icon: string; label: string; href: string; pages: Route["page"][] }[] = [
+  { tab: "home", icon: "根", label: "Home", href: href.home(), pages: ["home", "lessons", "lesson"] },
+  { tab: "review", icon: "復", label: "Review", href: href.review(), pages: ["review", "learn"] },
+  { tab: "read", icon: "読", label: "Read", href: href.read(), pages: ["read", "sentences", "story"] },
+  { tab: "search", icon: "探", label: "Search", href: href.search(), pages: ["search"] },
+  { tab: "progress", icon: "進", label: "Progress", href: href.progress(), pages: ["progress", "settings", "known", "practice", "write"] },
+];
 
 function App() {
   const [ready, setReady] = useState(false);
@@ -84,22 +99,13 @@ function App() {
         {error ? <p class="empty">Couldn't load the dictionary: {error}</p> : ready ? <Page route={route} /> : <Loading />}
       </main>
       <nav class="tabbar">
-        <a data-tab="home" class={route.page === "home" ? "on" : ""} href={href.home()}>
-          <span aria-hidden="true">根</span>Home
-        </a>
-        <a data-tab="review" class={route.page === "review" || route.page === "learn" ? "on" : ""} href={href.review()}>
-          <span aria-hidden="true">復</span>Review
-          {due > 0 && <b class="tab-badge">{due}</b>}
-        </a>
-        <a data-tab="search" class={route.page === "search" ? "on" : ""} href={href.search()}>
-          <span aria-hidden="true">探</span>Search
-        </a>
-        <a data-tab="lessons" class={route.page.startsWith("lesson") ? "on" : ""} href={href.lessons()}>
-          <span aria-hidden="true">課</span>Lessons
-        </a>
-        <a data-tab="progress" class={route.page === "progress" || route.page === "settings" || route.page === "known" || route.page === "practice" || route.page === "write" || route.page === "read" ? "on" : ""} href={href.progress()}>
-          <span aria-hidden="true">進</span>Progress
-        </a>
+        {TABS.map((t) => (
+          <a key={t.tab} data-tab={t.tab} class={t.pages.includes(route.page) ? "on" : ""} href={t.href}>
+            <span aria-hidden="true">{t.icon}</span>
+            {t.label}
+            {t.tab === "review" && due > 0 && <b class="tab-badge">{due}</b>}
+          </a>
+        ))}
       </nav>
       {ready && <Tour />}
     </>

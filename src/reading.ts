@@ -1,13 +1,13 @@
 // Reading practice: example sentences you can already read, or nearly.
 
 import { isKanji, type Data } from "./data";
-import { cardId, itemInfo, type Store } from "./srs";
+import { isAdded, itemInfo, type Store } from "./srs";
 
-/** Kanji you study or marked as known. */
+/** Kanji you've been taught (studying them, at any stage) or marked as known: no furigana over these. */
 export function studiedKanji(store: Store, data: Data): Set<string> {
   const out = new Set<string>();
   for (const c of Object.keys(data.kanji)) {
-    if (store.cards[cardId("kanji", c, "meaning")] || itemInfo(store, "kanji", c)?.status === "known") out.add(c);
+    if (isAdded(store, "kanji", c) || itemInfo(store, "kanji", c)?.status === "known") out.add(c);
   }
   return out;
 }

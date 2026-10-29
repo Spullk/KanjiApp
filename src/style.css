@@ -1562,6 +1562,84 @@ button.next.wrong {
   margin-top: 8px;
   color: var(--muted);
 }
+/* ---------- stories */
+
+.story-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+}
+.story-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.story-title {
+  font-size: 1.1rem;
+}
+.story-done {
+  color: var(--vocab);
+}
+.story-meta {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.story-pct {
+  font-weight: 700;
+  color: var(--muted);
+}
+.story-pct.ready {
+  color: var(--vocab);
+}
+.story-pct.almost {
+  color: var(--text);
+}
+.story-text {
+  font-size: 1.25rem;
+  line-height: 2.2;
+}
+.story-text p {
+  margin: 0 0 0.8em;
+  text-indent: 1em;
+}
+.story-text rt {
+  font-size: 0.5em;
+  color: var(--muted);
+}
+.story .read-word {
+  border-bottom: none;
+}
+.story .read-word.new {
+  border-bottom: 2px solid var(--vocab);
+}
+.story .read-word.learning {
+  border-bottom: 2px dotted var(--vocab);
+}
+.story .read-word.on {
+  border-bottom-color: transparent;
+}
+.story-gloss {
+  position: sticky;
+  bottom: calc(64px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  padding: 4px 0;
+}
+.story-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 12px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .tile-n.long {
   font-size: 1.3rem;
   line-height: 2.4rem;
@@ -1771,7 +1849,7 @@ body[data-tour] .tabbar a {
 body[data-tour="home"] .tabbar a[data-tab="home"],
 body[data-tour="review"] .tabbar a[data-tab="review"],
 body[data-tour="search"] .tabbar a[data-tab="search"],
-body[data-tour="lessons"] .tabbar a[data-tab="lessons"],
+body[data-tour="read"] .tabbar a[data-tab="read"],
 body[data-tour="progress"] .tabbar a[data-tab="progress"] {
   opacity: 1;
   color: var(--kanji);

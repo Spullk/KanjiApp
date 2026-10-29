@@ -137,6 +137,23 @@ export function WordSpeak({ w }: { w: Word }) {
 }
 
 /** A KANJIDIC reading: on in katakana, kun with its okurigana dimmed (い.きる → い・きる). */
+/** A tapped word's reading and meaning, with a link to its page (reading practice and stories). */
+export function WordGloss({ id }: { id: string }) {
+  const w = useData().words[id];
+  if (!w) return null;
+  return (
+    <div class="read-gloss">
+      <span lang="ja">
+        <Furigana segments={w.furigana} link={false} />
+      </span>{" "}
+      {glossLine(w)}{" "}
+      <a class="more" href={href.word(w.id)}>
+        Open
+      </a>
+    </div>
+  );
+}
+
 export function ReadingText({ r }: { r: string }) {
   const [stem, oku] = r.split(".");
   return (

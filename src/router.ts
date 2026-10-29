@@ -7,13 +7,15 @@ export type Route =
   | { page: "search"; q: string }
   | { page: "lessons" }
   | { page: "review" }
-  | { page: "learn" }
+  | { page: "learn"; story?: string }
   | { page: "progress" }
   | { page: "settings" }
   | { page: "known" }
   | { page: "practice"; set: PracticeSet }
   | { page: "write"; c?: string }
   | { page: "read" }
+  | { page: "sentences" }
+  | { page: "story"; id: string }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -24,12 +26,14 @@ export const href = {
   search: (q = "") => `#/search${q ? "?q=" + encodeURIComponent(q) : ""}`,
   lessons: () => "#/lessons",
   review: () => "#/review",
-  learn: () => "#/learn",
+  learn: (story?: string) => `#/learn${story ? "/" + story : ""}`,
   progress: () => "#/progress",
   settings: () => "#/settings",
   known: () => "#/known",
   practice: (set: PracticeSet) => `#/practice/${set}`,
   read: () => "#/read",
+  sentences: () => "#/sentences",
+  story: (id: string) => `#/story/${id}`,
   write: (c?: string) => `#/write${c ? "/" + encodeURIComponent(c) : ""}`,
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
@@ -48,7 +52,7 @@ export function parse(hash: string): Route {
     case "review":
       return { page: "review" };
     case "learn":
-      return { page: "learn" };
+      return { page: "learn", story: seg[1] };
     case "progress":
       return { page: "progress" };
     case "settings":
@@ -57,6 +61,10 @@ export function parse(hash: string): Route {
       return { page: "known" };
     case "read":
       return { page: "read" };
+    case "sentences":
+      return { page: "sentences" };
+    case "story":
+      return { page: "story", id: seg[1] };
     case "write":
       return { page: "write", c: seg[1] };
     case "practice":
