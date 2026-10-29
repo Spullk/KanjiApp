@@ -1777,3 +1777,6 @@ body[data-tour="progress"] .tabbar a[data-tab="progress"] {
   color: var(--kanji);
   transform: scale(1.12);
 }
+.history-line {
+  margin: 4px 0 0;
+}

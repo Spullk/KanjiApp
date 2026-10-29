@@ -121,7 +121,6 @@ export function StudyButton({ kind, k }: { kind: ItemKind; k: string }) {
             <span class={`stage ${stage}`}>{status === "paused" ? "Paused" : STAGE_LABEL[stage]}</span>
             {isLeech(store, kind, k) && <span class="stage leech">Leech</span>}
             {!status && <NextDue kind={kind} k={k} />}
-            <HistoryLine kind={kind} k={k} />
             <button class="link-button" onClick={() => setStatus(status ? undefined : "paused")}>
               {status ? "Resume" : "Pause"}
             </button>
@@ -140,6 +139,7 @@ export function StudyButton({ kind, k }: { kind: ItemKind; k: string }) {
           </>
         )}
       </div>
+      <HistoryLine kind={kind} k={k} />
       <NoteBox kind={kind} k={k} />
     </>
   );
@@ -185,9 +185,9 @@ function HistoryLine({ kind, k }: { kind: ItemKind; k: string }) {
   const h = itemHistory(useStore().log, `${kind}:${k}`);
   if (!h.total) return null;
   return (
-    <span class="next-due">
-      {h.total} {h.total === 1 ? "review" : "reviews"}, {percent(h)} right
-    </span>
+    <p class="hint history-line">
+      {h.total} {h.total === 1 ? "answer" : "answers"} so far, {percent(h)} right
+    </p>
   );
 }
 

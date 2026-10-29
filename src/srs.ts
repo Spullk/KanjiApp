@@ -463,7 +463,8 @@ export type Stage = "none" | "learning" | "young" | "mature";
 /** An item's stage is its weakest card's: mature once every card holds for 21+ days. Items you marked known count as mature. */
 export function stageOf(store: Store, kind: ItemKind, key: string): Stage {
   if (itemInfo(store, kind, key)?.status === "known") return "mature";
-  const cards = allFaces(kind).map((f) => store.cards[cardId(kind, key, f)]).filter(Boolean);
+  // The optional card types don't count, so switching one on doesn't knock known words back to learning.
+  const cards = FACES[kind].map((f) => store.cards[cardId(kind, key, f)]).filter(Boolean);
   if (!cards.length) return "none";
   if (cards.some((c) => c.state !== State.Review)) return "learning";
   const s = Math.min(...cards.map((c) => c.scheduled_days));
