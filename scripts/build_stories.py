@@ -188,7 +188,8 @@ def page_text(chars):
         lines = [sorted(cs, key=lambda c: c["x0"]) for _, cs in sorted(rows.items())]
     # Furigana over big title text slips past the size check: a kana-only line much smaller than the next.
     size = [sorted(c["size"] for c in line)[len(line) // 2] for line in lines]
-    text = ["".join(c["text"] for c in line).replace(" ", "").replace("　", "") for line in lines]
+    # Spacing comes from the layout, except between English words.
+    text = [re.sub(r"\s+(?![A-Za-z])|(?<![A-Za-z])\s+", "", "".join(c["text"] for c in line)) for line in lines]
     return "".join(t for i, t in enumerate(text) if not PAGE_NUMBER.match(t)
                    and not (i + 1 < len(text) and KANA_ONLY.match(t) and size[i] < size[i + 1] * 0.75))
 
@@ -208,9 +209,15 @@ def pdf_paragraphs(data):
             text = page_text(chars) if chars else ""
             # Leftovers from covers and pictures are short and have no sentence punctuation.
             if re.search(r"[ぁ-ん]", text) and not any(m in text for m in NOT_STORY) \
-                    and (len(text) >= 12 or re.search(r"[。！？!?」]", text)):
+                    and (len(text) >= 12 or re.search(r"[。！？!?」]", text)) and latin(text) < 0.3:
                 paras.append((text, []))
-    return paras if total and unknown / total < 0.02 else None
+    # Some PDFs draw characters with fonts that map to the wrong letters (少年Kは%一人で…3): skip those.
+    readable = total and unknown / total < 0.02 and latin("".join(t for t, _ in paras)) < 0.05
+    return paras if readable and len(paras) >= 3 else None
+
+
+def latin(text):
+    return len(re.findall(r"[A-Za-z%]", text)) / max(1, len(text))
 
 
 def tadoku_stories():
