@@ -2,6 +2,8 @@ import { useData } from "../data";
 import { href } from "../router";
 import { dueCards, newLeftToday, nextToLearn, stageOf, useStore } from "../srs";
 import { Chips, Section } from "../components/bits";
+import { TOOLS } from "../tools";
+import { startNext } from "./GrammarPages";
 
 export function HomePage() {
   const data = useData();
@@ -27,6 +29,7 @@ export function HomePage() {
           Vacation mode is on, so nothing is due. Turn it off in Settings →
         </a>
       )}
+      {store.settings.start === "new" && <StartHere />}
       <div class="home-actions">
         <a class={`big-action review ${due ? "" : "quiet"}`} href={href.review()}>
           <span class="ba-n">{due}</span>
@@ -64,6 +67,32 @@ export function HomePage() {
       <Section title="Kanji of the day">
         <Chips items={[daily]} kind="kanji" />
       </Section>
+
+      <Section title="All tools">
+        <div class="tool-grid">
+          {TOOLS.map((t) => (
+            <a key={t.tab} class="tool" href={t.href}>
+              <span class="tool-icon" lang="ja">
+                {t.icon}
+              </span>
+              <b>{t.label}</b>
+              <span class="tool-about">{t.about}</span>
+            </a>
+          ))}
+        </div>
+      </Section>
     </article>
+  );
+}
+
+/** For beginners until Start here is done: the next step in it. */
+function StartHere() {
+  const next = startNext(useStore(), Object.values(useData().grammar));
+  if (!next) return null;
+  return (
+    <a class="start-here" href={next.to}>
+      <span class="start-here-label">Start here · next up</span>
+      <b lang="ja">{next.title}</b>
+    </a>
   );
 }

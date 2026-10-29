@@ -5,6 +5,8 @@ import { Section } from "../components/bits";
 import { useEffect, useState } from "preact/hooks";
 import { loadFont, REVIEW_FONTS } from "../fonts";
 import { startTour } from "../components/Tour";
+import { openWelcome } from "../components/Welcome";
+import { barTools, PICKS, TOOLS } from "../tools";
 import { allowReminders, isNative, shareFile } from "../native";
 import { installed, prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
@@ -27,6 +29,34 @@ export function SettingsPage() {
       <h1>Settings</h1>
 
       {syncAvailable && <Account />}
+
+      <Section title="Bottom bar" hint="Home is always first. Pick the other four; every tool is also on Home.">
+        {Array.from({ length: PICKS }, (_, i) => {
+          const tabs = barTools(store.settings).slice(1).map((t) => t.tab);
+          return (
+            <label class="setting" key={i}>
+              Tab {i + 2}
+              <select
+                value={tabs[i]}
+                onChange={(e) => {
+                  const next = [...tabs];
+                  const pick = (e.target as HTMLSelectElement).value;
+                  const was = next.indexOf(pick);
+                  if (was >= 0) next[was] = next[i]; // swap, so a tool is never on the bar twice
+                  next[i] = pick;
+                  set("tabs", next);
+                }}
+              >
+                {TOOLS.map((t) => (
+                  <option key={t.tab} value={t.tab}>
+                    {t.icon} {t.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          );
+        })}
+      </Section>
 
       <Section title="Lessons">
         <label class="setting">
@@ -194,9 +224,14 @@ export function SettingsPage() {
       </Section>
 
       <Section title="Help">
-        <button class="secondary" onClick={startTour}>
-          Show the tour again
-        </button>
+        <div class="button-row">
+          <button class="secondary" onClick={startTour}>
+            Show the tour again
+          </button>
+          <button class="secondary" onClick={openWelcome}>
+            Change where I'm starting from
+          </button>
+        </div>
       </Section>
 
       <Section title="Version and debug">
