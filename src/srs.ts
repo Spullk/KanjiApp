@@ -5,6 +5,7 @@ import { useEffect, useState } from "preact/hooks";
 import { checkParameters, createEmptyCard, fsrs, generatorParameters, migrateParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
 import type { Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
+import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order";
 
 export { Rating, State };
 export type { Grade };
@@ -44,6 +45,10 @@ export type Settings = {
   fsrsParams?: number[];
   /** Most new items to start per day; 0 for no limit. */
   dailyNew: number;
+  /** The order new items are taught in. */
+  order: StudyOrder;
+  /** Item ids ("kanji:語", "word:1234") to learn first, in order, when `order` is "custom". */
+  customList?: string[];
   /** When vacation mode was switched on. Nothing is due while it's on, and it pushes everything back when it ends. */
   vacation?: number;
   /** Native app only: hour of the daily review reminder, or undefined for none. */
@@ -81,7 +86,7 @@ export type Store = {
   undo: Undo[];
 };
 
-export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, answerMode: "self", dailyNew: 0 };
+export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, answerMode: "self", dailyNew: 0, order: "lessons" };
 
 const UNDO_LIMIT = 20;
 
@@ -376,14 +381,28 @@ export function lessonItems(data: Data, lessonIndex: number): { kind: ItemKind; 
   return out;
 }
 
-/** The next items to learn in lesson order, skipping what's already added. */
+/** The next items to learn in the order chosen in Settings, skipping what's already added or marked. */
 export function nextToLearn(store: Store, data: Data, n: number): { kind: ItemKind; key: string }[] {
   const out: { kind: ItemKind; key: string }[] = [];
+  if (n <= 0) return out;
+  const seen = new Set<string>();
+  /** Adds the item if it's new; true once there are enough. */
+  const take = (it: { kind: ItemKind; key: string }) => {
+    const id = itemId(it.kind, it.key);
+    if (!seen.has(id) && !isAdded(store, it.kind, it.key) && !itemInfo(store, it.kind, it.key)?.status) out.push(it);
+    seen.add(id);
+    return out.length >= n;
+  };
+  const order = store.settings.order ?? "lessons";
+  if (order === "custom") {
+    for (const it of customOrder(data, store.settings.customList ?? [])) if (take(it)) return out;
+  } else if (order !== "lessons") {
+    const studied = new Set(Object.keys(data.kanji).filter((k) => isAdded(store, "kanji", k) || itemInfo(store, "kanji", k)?.status === "known"));
+    for (const it of teachingOrder(data, kanjiOrder(data, order), studied)) if (take(it)) return out;
+  }
+  // Nekko's lessons, and what comes after your own list.
   for (let i = 0; i < data.lessons.length; i++) {
-    for (const it of lessonItems(data, i)) {
-      if (!isAdded(store, it.kind, it.key) && !itemInfo(store, it.kind, it.key)?.status) out.push(it);
-      if (out.length >= n) return out;
-    }
+    for (const it of lessonItems(data, i)) if (take(it)) return out;
   }
   return out;
 }

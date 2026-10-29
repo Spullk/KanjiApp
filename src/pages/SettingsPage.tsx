@@ -4,6 +4,9 @@ import { Section } from "../components/bits";
 import { useState } from "preact/hooks";
 import { allowReminders, isNative, shareFile } from "../native";
 import { signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
+import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
+import { wordsBySpelling } from "../known";
+import { useData } from "../data";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
 // A new option gets a field there, a default, and a row here.
@@ -38,6 +41,27 @@ export function SettingsPage() {
             ))}
           </select>
         </label>
+      </Section>
+
+      <Section title="What to learn next">
+        <label class="setting">
+          Order
+          <select value={store.settings.order} onChange={(e) => set("order", (e.target as HTMLSelectElement).value as StudyOrder)}>
+            {(Object.keys(ORDER_LABEL) as StudyOrder[]).map((o) => (
+              <option key={o} value={o}>{ORDER_LABEL[o]}</option>
+            ))}
+          </select>
+        </label>
+        {store.settings.order === "custom" ? (
+          <StudyList list={store.settings.customList ?? []} />
+        ) : (
+          <p class="hint">
+            {store.settings.order === "lessons"
+              ? "Kanji that share parts or sounds come together, roughly easiest first."
+              : "Each kanji comes after the radicals it's built from, and words come as soon as you've learned their kanji."}{" "}
+            Changing this never touches what you've already learned.
+          </p>
+        )}
       </Section>
 
       <Section title="Already know some?">
@@ -133,6 +157,31 @@ export function SettingsPage() {
         </ul>
       </Section>
     </article>
+  );
+}
+
+/** Your own study list, e.g. a textbook chapter's kanji and words. */
+function StudyList({ list }: { list: string[] }) {
+  const data = useData();
+  const asText = list.map((id) => (id.startsWith("word:") ? data.words[id.slice(5)]?.w : id.slice(6))).join(" ");
+  const [text, setText] = useState(asText);
+  const parsed = text === asText ? list : parseStudyList(data, text, wordsBySpelling(data));
+  return (
+    <>
+      <p class="hint">
+        Paste kanji and words in the order you want them, for example from your textbook. Single characters are taught as
+        kanji, longer entries as words. When the list is done, Nekko carries on with its own lessons.
+      </p>
+      <textarea class="paste-box" rows={4} lang="ja" placeholder="日 本 人 日本人 学生…" value={text} onInput={(e) => setText((e.target as HTMLTextAreaElement).value)} />
+      <div class="backup">
+        <span>
+          {parsed.filter((id) => id.startsWith("kanji:")).length} kanji, {parsed.filter((id) => id.startsWith("word:")).length} words
+        </span>
+        <button disabled={text === asText} onClick={() => update((s) => (s.settings.customList = parsed))}>
+          Save list
+        </button>
+      </div>
+    </>
   );
 }
 
