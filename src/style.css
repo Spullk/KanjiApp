@@ -642,9 +642,8 @@ a.primary {
   margin-top: 10px;
   font-size: 0.9rem;
 }
-.note-box summary {
+.note-box label {
   color: var(--muted);
-  cursor: pointer;
 }
 .note-box textarea {
   display: block;
