@@ -168,7 +168,8 @@ def tadoku_books():
 
 
 PRINT_PDF = re.compile(r"^t[a-z]?\d+p-", re.I)
-NOT_STORY = ("指導者", "この作品は", "多言語多読", "クリエイティブ", "Creative", "CC BY", "http", "©")
+NOT_STORY = ("指導者", "この作品は", "多言語多読", "読む前に", "朗読音声", "クリエイティブ", "Creative", "CC BY", "http", "©")
+KANA_ONLY = re.compile(r"^[ぁ-んァ-ヶー]+$")
 PAGE_NUMBER = re.compile(r"^[\d\s\-‐‒–—―─－ー]*$")
 
 
@@ -185,8 +186,11 @@ def page_text(chars):
         lines = [sorted(cs, key=lambda c: c["top"]) for _, cs in sorted(cols.items(), reverse=True)]
     else:
         lines = [sorted(cs, key=lambda c: c["x0"]) for _, cs in sorted(rows.items())]
-    lines = ["".join(c["text"] for c in line).replace(" ", "").replace("　", "") for line in lines]
-    return "".join(line for line in lines if not PAGE_NUMBER.match(line))
+    # Furigana over big title text slips past the size check: a kana-only line much smaller than the next.
+    size = [sorted(c["size"] for c in line)[len(line) // 2] for line in lines]
+    text = ["".join(c["text"] for c in line).replace(" ", "").replace("　", "") for line in lines]
+    return "".join(t for i, t in enumerate(text) if not PAGE_NUMBER.match(t)
+                   and not (i + 1 < len(text) and KANA_ONLY.match(t) and size[i] < size[i + 1] * 0.75))
 
 
 def pdf_paragraphs(data):
@@ -202,7 +206,9 @@ def pdf_paragraphs(data):
             unknown += sum(c["text"].startswith("(cid:") for c in chars)
             chars = [c for c in chars if not c["text"].startswith("(cid:")]
             text = page_text(chars) if chars else ""
-            if re.search(r"[ぁ-ん]", text) and not any(m in text for m in NOT_STORY):
+            # Leftovers from covers and pictures are short and have no sentence punctuation.
+            if re.search(r"[ぁ-ん]", text) and not any(m in text for m in NOT_STORY) \
+                    and (len(text) >= 12 or re.search(r"[。！？!?」]", text)):
                 paras.append((text, []))
     return paras if total and unknown / total < 0.02 else None
 
@@ -215,6 +221,7 @@ def tadoku_stories():
             old.unlink()
     titles = set()
     for url, title, level in books:
+        title = re.sub(r"\s+", " ", title)
         name = Path(urllib.parse.urlparse(url).path).stem
         if title in titles:
             continue
