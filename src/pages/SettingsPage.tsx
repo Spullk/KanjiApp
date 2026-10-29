@@ -3,6 +3,7 @@ import { href } from "../router";
 import { Section } from "../components/bits";
 import { useState } from "preact/hooks";
 import { allowReminders, isNative, shareFile } from "../native";
+import { signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
 // A new option gets a field there, a default, and a row here.
@@ -17,6 +18,8 @@ export function SettingsPage() {
   return (
     <article class="page">
       <h1>Settings</h1>
+
+      {syncAvailable && <Account />}
 
       <Section title="Lessons">
         <label class="setting">
@@ -130,6 +133,50 @@ export function SettingsPage() {
         </ul>
       </Section>
     </article>
+  );
+}
+
+function ago(t: number): string {
+  const m = Math.floor((Date.now() - t) / 60_000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  return `at ${new Date(t).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`;
+}
+
+function Account() {
+  const sync = useSync();
+  if (!sync.user) {
+    return (
+      <Section title="Account" hint="Sign in to keep your progress in sync between your phone and computer. Your progress on this device is kept and merged in.">
+        <button class="secondary" onClick={signIn}>
+          Sign in with Google
+        </button>
+        {sync.error && <p class="hint error">{sync.error}</p>}
+      </Section>
+    );
+  }
+  return (
+    <Section title="Account">
+      <p class="account-line">
+        Signed in as <b>{sync.user.name || sync.user.email}</b>
+        {sync.user.name && sync.user.email && <span class="hint"> · {sync.user.email}</span>}
+      </p>
+      <p class="hint">
+        {sync.status === "syncing"
+          ? "Syncing…"
+          : sync.status === "error"
+            ? sync.error
+            : sync.last
+              ? `Synced ${ago(sync.last)}.`
+              : "Syncs a few seconds after each change."}
+      </p>
+      <div class="backup">
+        <button disabled={sync.status === "syncing"} onClick={syncNow}>
+          Sync now
+        </button>
+        <button onClick={signOut}>Sign out</button>
+      </div>
+    </Section>
   );
 }
 

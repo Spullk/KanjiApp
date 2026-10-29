@@ -1419,3 +1419,7 @@ button.next.wrong {
 .params-now {
   word-break: break-word;
 }
+
+.account-line {
+  margin: 0 0 4px;
+}

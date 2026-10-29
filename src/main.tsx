@@ -18,6 +18,7 @@ import { PracticePage } from "./pages/PracticePage";
 import { WritePage } from "./pages/WritePage";
 import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
 import { initNative, isNative } from "./native";
+import { initSync } from "./sync";
 import "./style.css";
 
 // The app store build ships every file inside the app, so only the website needs the offline cache.
@@ -67,6 +68,7 @@ function App() {
       () => {
         setReady(true);
         initNative(getStore);
+        initSync();
       },
       (e) => setError(String(e)),
     );
