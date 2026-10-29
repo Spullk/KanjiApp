@@ -72,7 +72,7 @@ const FLAG = "nekko.sync"; // set while someone is signed in here, so Firebase i
 
 const RETURN = "nekko.signin"; // the random state we sent to Google, to check the answer is ours
 
-const installed = typeof window !== "undefined" && (matchMedia?.("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone === true);
+export const installed = typeof window !== "undefined" && (matchMedia?.("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone === true);
 
 function signInFullPage() {
   const state = Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");

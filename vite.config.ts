@@ -1,6 +1,19 @@
 import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { execSync } from "node:child_process";
+
+// Which build this is: the commit and when it was built. Settings shows it, and version.json (never cached) lets
+// the app ask the server whether a newer build is out.
+function commit(): string {
+  if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 7);
+  try {
+    return execSync("git rev-parse --short HEAD").toString().trim();
+  } catch {
+    return "dev";
+  }
+}
+const BUILD = { id: commit(), time: new Date().toISOString() };
 
 export default defineConfig({
   // Served from https://<user>.github.io/<repo>/ on GitHub Pages.
@@ -8,8 +21,15 @@ export default defineConfig({
   json: { stringify: true },
   // The dictionary files are large on purpose; they load once and are cached offline.
   build: { chunkSizeWarningLimit: 6000 },
+  define: { __BUILD__: JSON.stringify(BUILD) },
   plugins: [
     preact(),
+    {
+      name: "nekko-version",
+      generateBundle() {
+        this.emitFile({ type: "asset", fileName: "version.json", source: JSON.stringify(BUILD) });
+      },
+    },
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg"],
