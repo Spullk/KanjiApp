@@ -46,7 +46,7 @@ AOZORA_WORKS = [
 # Not counted as words: grammar, punctuation, numbers and names.
 SKIP_POS = {"助詞", "助動詞", "補助記号", "記号", "空白"}
 SKIP_SUB = {("名詞", "固有名詞"), ("名詞", "数詞")}
-FREE_RANK = 25  # kana-only words at least this common count as known (ある, いる, これ…)
+COMMON = {"news1", "ichi1", "spec1", "spec2", "gai1"}  # JMdict's "common word" tags
 
 
 def log(*args):
@@ -256,6 +256,8 @@ class Linker:
         for idseq, t in tags.items():
             rank[idseq] = priority_rank(t)
         self.rank = rank
+        # Common words written in kana count as known (ある, いる, これ, なる…): they're learned by reading.
+        self.common = {i for i, t in tags.items() if t & COMMON}
 
     @lru_cache(maxsize=None)
     def lemma_reading(self, lemma):
@@ -308,7 +310,7 @@ class Linker:
                 wid = self.best(hit[1], hit[2])
                 links.append([start, stop - start, str(wid)])
                 kana_only = not any(is_kanji(c) for c in surface)
-                counted.append((str(wid), kana_only and (self.rank.get(wid) or 99) <= FREE_RANK))
+                counted.append((str(wid), kana_only and wid in self.common))
             if any(is_kanji(c) for c in surface):
                 readings.append(trim_reading(start, surface, reading))
             i = end
