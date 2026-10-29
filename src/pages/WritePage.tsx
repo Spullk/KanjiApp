@@ -4,6 +4,7 @@ import { href } from "../router";
 import { getStore, parseCardId } from "../srs";
 import { checkStroke, type Point } from "../strokes";
 import { loadStrokes } from "../components/StrokeOrder";
+import { useNoScroll } from "../components/useNoScroll";
 
 const BOX = 109;
 
@@ -51,6 +52,7 @@ function Writer({ c }: { c: string }) {
   const [message, setMessage] = useState("");
   const [outline, setOutline] = useState(true);
   const svg = useRef<SVGSVGElement>(null);
+  useNoScroll(svg);
 
   useEffect(() => {
     loadStrokes().then((s) => setPaths(s[c] ?? []));
