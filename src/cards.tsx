@@ -4,6 +4,7 @@
 import type { ComponentChildren } from "preact";
 import { useEffect } from "preact/hooks";
 import { playWord } from "./audio";
+import { PitchAccent } from "./components/Pitch";
 import { useData, type Data } from "./data";
 import { href } from "./router";
 import { parseCardId, useStore, type Face, type ItemKind } from "./srs";
@@ -43,6 +44,9 @@ function wordBack(data: Data, key: string, use = true) {
     <>
       <div class="answer-word" lang="ja">
         <Furigana segments={w.furigana} link={false} /> <WordSpeak w={w} />
+      </div>
+      <div class="answer-pitch">
+        <PitchAccent w={w} />
       </div>
       <div class="answer-main">{w.senses.slice(0, 2).map((s) => s.gloss.slice(0, 3).join(", ")).join("; ")}</div>
       {use && <ReadingUse id={key} />}

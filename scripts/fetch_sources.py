@@ -25,6 +25,7 @@ SOURCES = Path(__file__).resolve().parent.parent / "sources"
 JAMDICT_DATA = "jamdict-data==1.5"
 JLPT_URL = "https://raw.githubusercontent.com/davidluzgouveia/kanji-data/master/kanji.json"
 KANJIALIVE_URL = "https://raw.githubusercontent.com/kanjialive/kanji-data-media/master/language-data/ka_data.csv"
+ACCENTS_URL = "https://raw.githubusercontent.com/mifunetoshiro/kanjium/master/data/source_files/raw/accents.txt"
 KANJIVG_URL = "https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/{}.svg"
 TATOEBA = {
     "jpn_indices.tar.bz2": "https://downloads.tatoeba.org/exports/jpn_indices.tar.bz2",
@@ -95,6 +96,8 @@ def main():
     print("JLPT levels: ok")
     download(KANJIALIVE_URL, SOURCES / "ka_data.csv")
     print("Kanji alive audio list: ok")
+    download(ACCENTS_URL, SOURCES / "accents.txt")
+    print("Pitch accents: ok")
     fetch_kanjivg(db)
     if args.sentences:
         fetch_sentences()

@@ -1676,3 +1676,37 @@ button.next.wrong {
   justify-content: center;
   margin-top: 8px;
 }
+
+/* ---------- pitch accent */
+
+.pitch-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  justify-content: center;
+  align-items: baseline;
+}
+.pitch {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.pitch [lang="ja"] > span {
+  padding: 2px 1px 0;
+  border-top: 2px solid transparent;
+  border-right: 2px solid transparent;
+}
+.pitch [lang="ja"] > .hi {
+  border-top-color: currentColor;
+}
+.pitch [lang="ja"] > .drop,
+.pitch [lang="ja"] > .rise {
+  border-right-color: currentColor;
+}
+.pitch-name {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+.answer-pitch {
+  margin-top: 4px;
+}
