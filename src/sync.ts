@@ -7,7 +7,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { gunzipSync, gzipSync, strFromU8, strToU8 } from "fflate";
 import type { Bytes } from "firebase/firestore";
-import { firebaseConfig } from "./firebase-config";
+import { firebaseConfig, googleWebClientId } from "./firebase-config";
 import { getStore, merge, migrate, onSave, update, type Store } from "./srs";
 import { isNative } from "./native";
 
@@ -64,6 +64,50 @@ export function unpack(parts: Uint8Array[]): Store {
 
 const FLAG = "nekko.sync"; // set while someone is signed in here, so Firebase is loaded on start
 
+// ---------------------------------------------------------------- full-page sign-in
+
+// A home-screen app on iPhone can open Google's sign-in window but never hears back from it, and Firebase's own
+// full-page sign-in needs storage Safari keeps from other sites. So installed apps go to Google directly and come
+// back to this page with a token in the address, which Firebase then signs in with.
+
+const RETURN = "nekko.signin"; // the random state we sent to Google, to check the answer is ours
+
+const installed = typeof window !== "undefined" && (matchMedia?.("(display-mode: standalone)").matches || (navigator as { standalone?: boolean }).standalone === true);
+
+function signInFullPage() {
+  const state = Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");
+  localStorage.setItem(RETURN, state);
+  const params = new URLSearchParams({
+    client_id: googleWebClientId,
+    redirect_uri: location.origin + location.pathname,
+    response_type: "token",
+    scope: "openid email profile",
+    state,
+    prompt: "select_account",
+  });
+  location.assign("https://accounts.google.com/o/oauth2/v2/auth?" + params);
+}
+
+/** Google's answer when we've just come back from signing in, taken out of the address before the app reads it. */
+function takeReturn(): { token?: string; error?: string } | null {
+  if (typeof location === "undefined" || !/[#&](access_token|error)=/.test(location.hash)) return null;
+  const p = new URLSearchParams(location.hash.slice(1));
+  history.replaceState(null, "", location.pathname + location.search + "#/settings");
+  let expected: string | null = null;
+  try {
+    expected = localStorage.getItem(RETURN);
+    localStorage.removeItem(RETURN);
+  } catch {
+    // private mode
+  }
+  if (!expected || p.get("state") !== expected) return null;
+  if (p.get("error")) return { error: p.get("error") === "access_denied" ? undefined : `Google said: ${p.get("error")}` };
+  return { token: p.get("access_token") ?? undefined };
+}
+
+// Runs on import, before the router looks at the address.
+const returned = takeReturn();
+
 type Fb = Awaited<ReturnType<typeof loadFirebase>>;
 let fb: Promise<Fb> | null = null;
 /** Firebase once it has loaded, so a tap can open the sign-in window straight away. */
@@ -107,6 +151,13 @@ export function initSync() {
     // private mode
   }
   if (flag) firebase();
+  if (returned?.error) set({ status: "error", error: returned.error });
+  if (returned?.token) {
+    set({ status: "signing-in" });
+    firebase()
+      .then(({ auth, authMod }) => authMod.signInWithCredential(auth, authMod.GoogleAuthProvider.credential(null, returned.token)))
+      .catch((e) => set({ status: "error", error: signInError(e) }));
+  }
   let timer: ReturnType<typeof setTimeout> | undefined;
   onSave(() => {
     if (!state.user || busy) return;
@@ -126,6 +177,11 @@ export function prepareSignIn() {
   if (syncAvailable) firebase().catch(() => {});
 }
 
+function signInError(e: unknown): string {
+  const code = (e as { code?: string }).code;
+  return `Sign-in didn't work (${code ?? String((e as Error).message ?? e)}). Try again in a moment.`;
+}
+
 export async function signIn() {
   set({ status: "signing-in", error: undefined });
   const { auth, authMod } = ready ?? (await firebase());
@@ -135,6 +191,8 @@ export async function signIn() {
       const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
       const result = await FirebaseAuthentication.signInWithGoogle();
       await authMod.signInWithCredential(auth, authMod.GoogleAuthProvider.credential(result.credential?.idToken));
+    } else if (installed) {
+      signInFullPage();
     } else {
       await authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider());
     }
@@ -144,7 +202,7 @@ export async function signIn() {
       set({ status: "idle" });
       return;
     }
-    set({ status: "error", error: code === "auth/popup-blocked" ? "Your browser blocked the sign-in window. Tap the button again, or allow pop-ups for this site." : `Sign-in didn't work: ${String((e as Error).message ?? e)}` });
+    set({ status: "error", error: code === "auth/popup-blocked" ? "Your browser blocked the sign-in window. Tap the button again, or allow pop-ups for this site." : signInError(e) });
   }
 }
 
