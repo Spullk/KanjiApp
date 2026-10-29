@@ -225,3 +225,27 @@ describe("FSRS parameters", () => {
     expect(preview(s, "radical:氵:meaning", 0)[Rating.Easy]).toBeGreaterThan(before);
   });
 });
+
+describe("extra card types", () => {
+  it("adds switched-on cards to new words and spreads them over studied ones", async () => {
+    const { addFaceToStudied, missingFace } = await import("../src/srs");
+    const s = emptyStore();
+    const now = new Date(2026, 9, 29, 12).getTime();
+    addItem(s, "word", "1", now - 3000);
+    addItem(s, "word", "2", now - 2000);
+    addItem(s, "word", "3", now - 1000);
+    addItem(s, "kanji", "語", now);
+    s.settings.extraCards = ["recall"];
+    expect(missingFace(s, "recall")).toBe(3);
+    expect(addFaceToStudied(s, "recall", 2, now)).toBe(3);
+    expect(missingFace(s, "recall")).toBe(0);
+    expect(s.cards["word:1:recall"].due).toBe(now);
+    expect(s.cards["word:3:recall"].due).toBeGreaterThan(now);
+    expect(addItem(s, "word", "4", now)).toBe(2);
+    expect(dueCards(s, now)).toContain("word:2:recall");
+    s.settings.extraCards = [];
+    expect(dueCards(s, now).some((id) => id.endsWith(":recall"))).toBe(false);
+    removeItem(s, "word", "1", now);
+    expect(s.cards["word:1:recall"]).toBeUndefined();
+  });
+});

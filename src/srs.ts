@@ -11,14 +11,32 @@ export { Rating, State };
 export type { Grade };
 
 export type ItemKind = "radical" | "kanji" | "word";
-export type Face = "meaning" | "reading" | "word";
+export type Face = "meaning" | "reading" | "word" | "recall" | "listen";
 
-/** A study item ("kanji:語") and the cards it makes ("kanji:語:meaning", "kanji:語:reading"). */
+/** A study item ("kanji:語") and the cards it always makes ("kanji:語:meaning", "kanji:語:reading"). */
 export const FACES: Record<ItemKind, Face[]> = {
   radical: ["meaning"],
   kanji: ["meaning", "reading"],
   word: ["word"],
 };
+
+/** Optional cards you can switch on in Settings: recall (English → Japanese) and listening, for words. */
+export type ExtraFace = "recall" | "listen";
+export const EXTRA_FACES: Record<ItemKind, ExtraFace[]> = { radical: [], kanji: [], word: ["recall", "listen"] };
+
+/** Every card an item can have, switched on or not. */
+export function allFaces(kind: ItemKind): Face[] {
+  return [...FACES[kind], ...EXTRA_FACES[kind]];
+}
+
+/** The cards a new item gets with the current settings. */
+export function facesFor(settings: Settings, kind: ItemKind): Face[] {
+  return [...FACES[kind], ...EXTRA_FACES[kind].filter((f) => settings.extraCards?.includes(f))];
+}
+
+function faceOn(settings: Settings, face: Face): boolean {
+  return !(EXTRA_FACES.word as Face[]).includes(face) || !!settings.extraCards?.includes(face as ExtraFace);
+}
 
 export type StoredCard = {
   due: number;
@@ -51,6 +69,8 @@ export type Settings = {
   customList?: string[];
   /** When vacation mode was switched on. Nothing is due while it's on, and it pushes everything back when it ends. */
   vacation?: number;
+  /** Optional card types switched on. Switching one off keeps its cards but stops asking them. */
+  extraCards?: ExtraFace[];
   /** Native app only: hour of the daily review reminder, or undefined for none. */
   reminder?: number;
 };
@@ -201,13 +221,13 @@ export function setStatusMany(store: Store, items: { kind: ItemKind; key: string
 export const LEECH_LAPSES = 8;
 
 export function isLeech(store: Store, kind: ItemKind, key: string): boolean {
-  return FACES[kind].some((f) => (store.cards[cardId(kind, key, f)]?.lapses ?? 0) >= LEECH_LAPSES);
+  return allFaces(kind).some((f) => (store.cards[cardId(kind, key, f)]?.lapses ?? 0) >= LEECH_LAPSES);
 }
 
 /** Adds an item's cards, due right away. Returns how many cards were new. */
 export function addItem(store: Store, kind: ItemKind, key: string, now = Date.now()): number {
   let added = 0;
-  for (const face of FACES[kind]) {
+  for (const face of facesFor(store.settings, kind)) {
     const id = cardId(kind, key, face);
     if (!store.cards[id]) {
       store.cards[id] = fromCard(createEmptyCard(new Date(now)), now, now);
@@ -241,11 +261,40 @@ export function addReviewedItem(store: Store, kind: ItemKind, key: string, stabi
 }
 
 export function removeItem(store: Store, kind: ItemKind, key: string, now = Date.now()) {
-  for (const face of FACES[kind]) {
+  for (const face of allFaces(kind)) {
     const id = cardId(kind, key, face);
     if (store.cards[id]) store.removed[id] = now;
     delete store.cards[id];
   }
+}
+
+/**
+ * Gives the items you already study a newly switched-on card type, `perDay` items a day starting today
+ * (oldest first), so they don't all arrive at once. Returns how many cards were added.
+ */
+export function addFaceToStudied(store: Store, face: ExtraFace, perDay: number, now = Date.now()): number {
+  const kinds = (Object.keys(EXTRA_FACES) as ItemKind[]).filter((k) => EXTRA_FACES[k].includes(face));
+  const items = Object.entries(store.cards)
+    .map(([id, c]) => ({ ...parseCardId(id), added: c.added }))
+    .filter((c) => kinds.includes(c.kind) && c.face === FACES[c.kind][0] && !store.cards[cardId(c.kind, c.key, face)])
+    .sort((a, b) => a.added - b.added);
+  const today = startOfDay(now);
+  items.forEach((it, i) => {
+    const day = new Date(today);
+    day.setDate(day.getDate() + Math.floor(i / perDay));
+    const due = i < perDay ? now : day.getTime();
+    store.cards[cardId(it.kind, it.key, face)] = fromCard(createEmptyCard(new Date(due)), due, now);
+    delete store.removed[cardId(it.kind, it.key, face)];
+  });
+  return items.length;
+}
+
+/** Items you study that don't have this card type yet. */
+export function missingFace(store: Store, face: ExtraFace): number {
+  return Object.keys(store.cards).filter((id) => {
+    const c = parseCardId(id);
+    return EXTRA_FACES[c.kind].includes(face) && c.face === FACES[c.kind][0] && !store.cards[cardId(c.kind, c.key, face)];
+  }).length;
 }
 
 export function grade(store: Store, id: string, rating: Grade, now = Date.now()) {
@@ -280,7 +329,7 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
 export function dueCards(store: Store, until = Date.now()): string[] {
   if (store.settings.vacation) return [];
   return Object.entries(store.cards)
-    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status)
+    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, parseCardId(id).face))
     .sort(([, a], [, b]) => {
       const al = a.state === State.Review ? 1 : 0;
       const bl = b.state === State.Review ? 1 : 0;
@@ -412,7 +461,7 @@ export type Stage = "none" | "learning" | "young" | "mature";
 /** An item's stage is its weakest card's: mature once every card holds for 21+ days. Items you marked known count as mature. */
 export function stageOf(store: Store, kind: ItemKind, key: string): Stage {
   if (itemInfo(store, kind, key)?.status === "known") return "mature";
-  const cards = FACES[kind].map((f) => store.cards[cardId(kind, key, f)]).filter(Boolean);
+  const cards = allFaces(kind).map((f) => store.cards[cardId(kind, key, f)]).filter(Boolean);
   if (!cards.length) return "none";
   if (cards.some((c) => c.state !== State.Review)) return "learning";
   const s = Math.min(...cards.map((c) => c.scheduled_days));

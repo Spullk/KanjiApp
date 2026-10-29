@@ -1566,3 +1566,41 @@ button.next.wrong {
   line-height: 2.4rem;
   white-space: nowrap;
 }
+
+/* ---------- extra card types */
+
+.card-english {
+  font-size: 28px;
+  line-height: 1.35;
+  padding: 30px 8px;
+}
+.listen-button {
+  width: 96px;
+  height: 96px;
+  margin: 10px 0 0;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+.listen-button svg {
+  width: 52px;
+  height: 52px;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.check-setting {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 0;
+}
+.check-setting input {
+  margin-top: 5px;
+}
+.check-setting small {
+  display: block;
+  color: var(--muted);
+}

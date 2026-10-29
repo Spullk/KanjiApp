@@ -1,6 +1,6 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { cardId, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type Face, type ItemKind } from "../srs";
+import { allFaces, cardId, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type ItemKind } from "../srs";
 import { Chip, Furigana, ReadingText } from "./bits";
 import { itemHistory, percent } from "../stats";
 
@@ -192,8 +192,7 @@ function HistoryLine({ kind, k }: { kind: ItemKind; k: string }) {
 }
 
 function NextDue({ kind, k }: { kind: ItemKind; k: string }) {
-  const faces: Face[] = kind === "kanji" ? ["meaning", "reading"] : kind === "radical" ? ["meaning"] : ["word"];
-  const due = Math.min(...faces.map((f) => getStore().cards[cardId(kind, k, f)]?.due ?? Infinity));
+  const due = Math.min(...allFaces(kind).map((f) => getStore().cards[cardId(kind, k, f)]?.due ?? Infinity));
   if (!isFinite(due)) return null;
   return <span class="next-due">{due <= Date.now() ? "Due now" : `Next review ${relTime(due)}`}</span>;
 }

@@ -1,3 +1,4 @@
+import { addFaceToStudied, missingFace, type ExtraFace } from "../srs";
 import { DEFAULT_SETTINGS, endVacation, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
 import { href } from "../router";
 import { Section } from "../components/bits";
@@ -98,6 +99,12 @@ export function SettingsPage() {
         <FsrsParams />
       </Section>
 
+      <Section title="Extra card types" hint="Words always get a card asking their reading and meaning. These add more ways to practise them. Words you learn from now on get the cards you switch on.">
+        {EXTRA_CARDS.map(([face, label, about]) => (
+          <ExtraCard key={face} face={face} label={label} about={about} />
+        ))}
+      </Section>
+
       <Section
         title="Vacation mode"
         hint="Nothing comes due while you're away. When you come back, every review moves on by the time you were gone, so there's no pile waiting."
@@ -157,6 +164,39 @@ export function SettingsPage() {
         </ul>
       </Section>
     </article>
+  );
+}
+
+const EXTRA_CARDS: [ExtraFace, string, string][] = [
+  ["recall", "English → Japanese", "See the meaning, recall the word. The hardest direction, and the one you need for speaking."],
+  ["listen", "Listening", "Hear the word, say what it means. Uses the recording if there is one, otherwise your device's voice."],
+];
+const SPREAD_PER_DAY = 10;
+
+function ExtraCard({ face, label, about }: { face: ExtraFace; label: string; about: string }) {
+  const store = useStore();
+  const on = !!store.settings.extraCards?.includes(face);
+  const missing = on ? missingFace(store, face) : 0;
+  const toggle = () =>
+    update((s) => {
+      const now = s.settings.extraCards ?? [];
+      s.settings.extraCards = on ? now.filter((f) => f !== face) : [...now, face];
+    });
+  return (
+    <div>
+      <label class="check-setting">
+        <input type="checkbox" checked={on} onChange={toggle} />
+        <span>
+          {label}
+          <small>{about}</small>
+        </span>
+      </label>
+      {missing > 0 && (
+        <button class="secondary" onClick={() => update((s) => void addFaceToStudied(s, face, SPREAD_PER_DAY))}>
+          Add to the {missing} {missing === 1 ? "word" : "words"} you already study ({SPREAD_PER_DAY} a day)
+        </button>
+      )}
+    </div>
   );
 }
 
