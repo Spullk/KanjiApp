@@ -105,6 +105,24 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
       }),
     ],
   },
+  "kanji:both": {
+    prompt: "Kanji · meaning and reading?",
+    front: char,
+    back: (data, key) => (
+      <>
+        <div class="answer-main">{data.kanji[key].meanings.slice(0, 4).join(", ")}</div>
+        <MainReadings c={key} max={4} />
+      </>
+    ),
+    link: href.kanji,
+    asks: [
+      meaning((data, key) => data.kanji[key].meanings),
+      reading((data, key) => {
+        const k = data.kanji[key];
+        return [...k.readings.map((r) => r.r), ...k.on, ...k.kun].flatMap(readingForms);
+      }),
+    ],
+  },
   "word:word": {
     prompt: "Word · reading and meaning?",
     front: word,

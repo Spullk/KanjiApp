@@ -10,6 +10,7 @@ const TYPE_LABEL: [string, string][] = [
   ["radical:meaning", "Radical names"],
   ["kanji:meaning", "Kanji meanings"],
   ["kanji:reading", "Kanji readings"],
+  ["kanji:both", "Kanji (meaning + reading)"],
   ["word:word", "Words"],
   ["word:recall", "English → Japanese"],
   ["word:listen", "Listening"],

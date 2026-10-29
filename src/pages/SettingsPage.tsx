@@ -1,4 +1,4 @@
-import { addFaceToStudied, missingFace, type ExtraFace } from "../srs";
+import { addFaceToStudied, missingFace, setKanjiCards, type ExtraFace } from "../srs";
 import { DEFAULT_SETTINGS, endVacation, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
 import { href } from "../router";
 import { Section } from "../components/bits";
@@ -87,6 +87,21 @@ export function SettingsPage() {
             : "Like Anki: think of the answer, show it, then say how well you knew it."}
         </p>
         <label class="setting">
+          Kanji cards
+          <select
+            value={store.settings.kanjiCards ?? "split"}
+            onChange={(e) => update((s) => setKanjiCards(s, (e.target as HTMLSelectElement).value as "split" | "one"))}
+          >
+            <option value="split">Meaning and reading apart</option>
+            <option value="one">One card for both</option>
+          </select>
+        </label>
+        <p class="hint">
+          {store.settings.kanjiCards === "one"
+            ? "Each kanji is one card: recall its meaning and its readings together. Your progress carried over from the weaker of its two old cards."
+            : "Each kanji has a meaning card and a reading card, scheduled separately."}
+        </p>
+        <label class="setting">
           Target recall
           <select value={store.settings.retention} onChange={(e) => set("retention", Number((e.target as HTMLSelectElement).value))}>
             {[0.8, 0.85, 0.9, 0.95].map((n) => (
@@ -156,7 +171,10 @@ export function SettingsPage() {
       )}
 
       {!isDefault && (
-        <button class="link-button" onClick={() => update((s) => (s.settings = { ...DEFAULT_SETTINGS, reminder: s.settings.reminder, vacation: s.settings.vacation }))}>
+        <button class="link-button" onClick={() => update((s) => {
+            if (s.settings.kanjiCards === "one") setKanjiCards(s, "split");
+            s.settings = { ...DEFAULT_SETTINGS, reminder: s.settings.reminder, vacation: s.settings.vacation };
+          })}>
           Reset to defaults
         </button>
       )}
