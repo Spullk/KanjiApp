@@ -1,6 +1,6 @@
 name: Build data
 
-# Rebuilds data/ with example sentences (Tatoeba) and commits the result to the same branch.
+# Rebuilds data/ with example sentences (Tatoeba) and stories, and commits the result to the same branch.
 on:
   workflow_dispatch:
   push:
@@ -29,6 +29,18 @@ jobs:
 
       - name: Fetch sources
         run: python scripts/fetch_sources.py --sentences
+
+      - name: Cache story downloads
+        uses: actions/cache@v4
+        with:
+          path: sources/stories
+          key: stories-${{ hashFiles('scripts/build_stories.py') }}
+          restore-keys: stories-
+
+      - name: Build stories
+        run: |
+          pip install -q sudachipy==0.7.0 sudachidict_core==20261015 pdfplumber==0.11.10
+          python scripts/build_stories.py
 
       - name: Build data
         run: |
