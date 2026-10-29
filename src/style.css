@@ -1611,3 +1611,68 @@ button.next.wrong {
   gap: 6px 14px;
   font-size: 1.6rem;
 }
+
+/* ---------- search by parts / drawing */
+
+.seg-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: var(--line);
+}
+.seg-tabs button {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.seg-tabs button.on {
+  background: var(--card);
+  color: var(--text);
+  font-weight: 600;
+}
+.search-box.small {
+  font-size: 0.95rem;
+  padding: 8px 12px;
+  margin: 8px 0;
+}
+.part-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 4px;
+}
+.part {
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0;
+}
+.part.on {
+  background: var(--radical);
+  border-color: var(--radical);
+  color: #fff;
+}
+.part:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+.draw-results {
+  min-height: 72px;
+}
+.draw-tools {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
+}
