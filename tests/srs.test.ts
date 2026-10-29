@@ -249,3 +249,28 @@ describe("extra card types", () => {
     expect(s.cards["word:1:recall"]).toBeUndefined();
   });
 });
+
+describe("one card per kanji", () => {
+  it("merges a kanji's two cards into one and splits them back", async () => {
+    const { setKanjiCards, mainFaces } = await import("../src/srs");
+    const s = emptyStore();
+    addItem(s, "kanji", "語", 0);
+    addItem(s, "kanji", "日", 0);
+    s.cards["kanji:語:meaning"].stability = 20;
+    s.cards["kanji:語:reading"].stability = 3;
+    setKanjiCards(s, "one", 10);
+    expect(mainFaces(s.settings, "kanji")).toEqual(["both"]);
+    expect(s.cards["kanji:語:both"].stability).toBe(3);
+    expect(s.cards["kanji:語:meaning"]).toBeUndefined();
+    expect(s.removed["kanji:語:reading"]).toBe(10);
+    expect(isAdded(s, "kanji", "語")).toBe(true);
+    expect(dueCards(s, 10).filter((id) => id.startsWith("kanji:日"))).toEqual(["kanji:日:both"]);
+    expect(addItem(s, "kanji", "本", 10)).toBe(1);
+    expect(s.cards["kanji:本:both"]).toBeDefined();
+    setKanjiCards(s, "split", 20);
+    expect(s.cards["kanji:語:both"]).toBeUndefined();
+    expect(s.cards["kanji:語:meaning"].stability).toBe(3);
+    expect(s.cards["kanji:本:reading"]).toBeDefined();
+    expect(dueCards(s, 20).some((id) => id.endsWith(":both"))).toBe(false);
+  });
+});

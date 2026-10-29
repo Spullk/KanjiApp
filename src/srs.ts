@@ -11,7 +11,7 @@ export { Rating, State };
 export type { Grade };
 
 export type ItemKind = "radical" | "kanji" | "word";
-export type Face = "meaning" | "reading" | "word" | "recall" | "listen";
+export type Face = "meaning" | "reading" | "word" | "recall" | "listen" | "both";
 
 /** A study item ("kanji:語") and the cards it always makes ("kanji:語:meaning", "kanji:語:reading"). */
 export const FACES: Record<ItemKind, Face[]> = {
@@ -24,18 +24,28 @@ export const FACES: Record<ItemKind, Face[]> = {
 export type ExtraFace = "recall" | "listen";
 export const EXTRA_FACES: Record<ItemKind, ExtraFace[]> = { radical: [], kanji: [], word: ["recall", "listen"] };
 
+/** With Settings.kanjiCards "one", a kanji has a single card asking meaning and reading together. */
+const ONE_CARD: Partial<Record<ItemKind, Face[]>> = { kanji: ["both"] };
+
+/** The main cards an item has with these settings: two per kanji, or one if you chose one card per kanji. */
+export function mainFaces(settings: Settings, kind: ItemKind): Face[] {
+  return settings.kanjiCards === "one" && ONE_CARD[kind] ? ONE_CARD[kind]! : FACES[kind];
+}
+
 /** Every card an item can have, switched on or not. */
 export function allFaces(kind: ItemKind): Face[] {
-  return [...FACES[kind], ...EXTRA_FACES[kind]];
+  return [...FACES[kind], ...(ONE_CARD[kind] ?? []), ...EXTRA_FACES[kind]];
 }
 
 /** The cards a new item gets with the current settings. */
 export function facesFor(settings: Settings, kind: ItemKind): Face[] {
-  return [...FACES[kind], ...EXTRA_FACES[kind].filter((f) => settings.extraCards?.includes(f))];
+  return [...mainFaces(settings, kind), ...EXTRA_FACES[kind].filter((f) => settings.extraCards?.includes(f))];
 }
 
-function faceOn(settings: Settings, face: Face): boolean {
-  return !(EXTRA_FACES.word as Face[]).includes(face) || !!settings.extraCards?.includes(face as ExtraFace);
+/** Whether this kind of card is asked with the current settings. */
+function faceOn(settings: Settings, kind: ItemKind, face: Face): boolean {
+  if ((EXTRA_FACES[kind] as Face[]).includes(face)) return !!settings.extraCards?.includes(face as ExtraFace);
+  return mainFaces(settings, kind).includes(face);
 }
 
 export type StoredCard = {
@@ -71,6 +81,8 @@ export type Settings = {
   vacation?: number;
   /** Show kanji and words on review cards in a different typeface each day (print, handwriting, brush). */
   fonts?: boolean;
+  /** Kanji as two cards (meaning, reading) or one card asking both. Unset means two. */
+  kanjiCards?: "split" | "one";
   /** Optional card types switched on. Switching one off keeps its cards but stops asking them. */
   extraCards?: ExtraFace[];
   /** Native app only: hour of the daily review reminder, or undefined for none. */
@@ -197,7 +209,7 @@ function scheduler(settings: Settings) {
 // ---------------------------------------------------------------- pure operations
 
 export function isAdded(store: Store, kind: ItemKind, key: string): boolean {
-  return FACES[kind].some((f) => store.cards[cardId(kind, key, f)]);
+  return [...FACES[kind], ...(ONE_CARD[kind] ?? [])].some((f) => store.cards[cardId(kind, key, f)]);
 }
 
 export function itemInfo(store: Store, kind: ItemKind, key: string): ItemInfo | undefined {
@@ -242,7 +254,7 @@ export function addItem(store: Store, kind: ItemKind, key: string, now = Date.no
 
 /** Adds an item as if you'd been reviewing it elsewhere: its cards hold for `stability` days and come back at `due`. */
 export function addReviewedItem(store: Store, kind: ItemKind, key: string, stability: number, due: number, now = Date.now()) {
-  for (const face of FACES[kind]) {
+  for (const face of mainFaces(store.settings, kind)) {
     const id = cardId(kind, key, face);
     store.cards[id] = {
       due,
@@ -299,6 +311,38 @@ export function missingFace(store: Store, face: ExtraFace): number {
   }).length;
 }
 
+/**
+ * Switches kanji between two cards (meaning, reading) and one card for both, carrying your progress over:
+ * the single card starts from the weaker of the two, and two cards both start from the single one.
+ */
+export function setKanjiCards(store: Store, mode: "split" | "one", now = Date.now()) {
+  store.settings.kanjiCards = mode;
+  const keys = new Set(Object.keys(store.cards).filter((id) => id.startsWith("kanji:")).map((id) => parseCardId(id).key));
+  const take = (id: string) => {
+    store.removed[id] = now;
+    delete store.cards[id];
+  };
+  for (const key of keys) {
+    const [m, r, b] = (["meaning", "reading", "both"] as Face[]).map((f) => cardId("kanji", key, f));
+    if (mode === "one") {
+      const from = [store.cards[m], store.cards[r]].filter(Boolean).sort((x, y) => x.stability - y.stability)[0];
+      if (from && !store.cards[b]) {
+        store.cards[b] = { ...from, updated: now };
+        delete store.removed[b];
+      }
+      if (store.cards[b]) [m, r].forEach((id) => store.cards[id] && take(id));
+    } else if (store.cards[b]) {
+      for (const id of [m, r]) {
+        if (!store.cards[id]) {
+          store.cards[id] = { ...store.cards[b], updated: now };
+          delete store.removed[id];
+        }
+      }
+      take(b);
+    }
+  }
+}
+
 export function grade(store: Store, id: string, rating: Grade, now = Date.now()) {
   const stored = store.cards[id];
   const { card } = scheduler(store.settings).next(toCard(stored), new Date(now), rating);
@@ -331,7 +375,7 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
 export function dueCards(store: Store, until = Date.now()): string[] {
   if (store.settings.vacation) return [];
   return Object.entries(store.cards)
-    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, parseCardId(id).face))
+    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, parseCardId(id).kind, parseCardId(id).face))
     .sort(([, a], [, b]) => {
       const al = a.state === State.Review ? 1 : 0;
       const bl = b.state === State.Review ? 1 : 0;
@@ -464,7 +508,7 @@ export type Stage = "none" | "learning" | "young" | "mature";
 export function stageOf(store: Store, kind: ItemKind, key: string): Stage {
   if (itemInfo(store, kind, key)?.status === "known") return "mature";
   // The optional card types don't count, so switching one on doesn't knock known words back to learning.
-  const cards = FACES[kind].map((f) => store.cards[cardId(kind, key, f)]).filter(Boolean);
+  const cards = mainFaces(store.settings, kind).map((f) => store.cards[cardId(kind, key, f)]).filter(Boolean);
   if (!cards.length) return "none";
   if (cards.some((c) => c.state !== State.Review)) return "learning";
   const s = Math.min(...cards.map((c) => c.scheduled_days));
