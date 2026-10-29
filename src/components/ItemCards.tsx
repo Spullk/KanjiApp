@@ -2,6 +2,7 @@ import { useData } from "../data";
 import { href } from "../router";
 import { cardId, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type Face, type ItemKind } from "../srs";
 import { Chip, Furigana, ReadingText } from "./bits";
+import { itemHistory, percent } from "../stats";
 
 /** The kanji's readings worth knowing: those that have words, each with its most common word. */
 export function MainReadings({ c, max = 3 }: { c: string; max?: number }) {
@@ -120,6 +121,7 @@ export function StudyButton({ kind, k }: { kind: ItemKind; k: string }) {
             <span class={`stage ${stage}`}>{status === "paused" ? "Paused" : STAGE_LABEL[stage]}</span>
             {isLeech(store, kind, k) && <span class="stage leech">Leech</span>}
             {!status && <NextDue kind={kind} k={k} />}
+            <HistoryLine kind={kind} k={k} />
             <button class="link-button" onClick={() => setStatus(status ? undefined : "paused")}>
               {status ? "Resume" : "Pause"}
             </button>
@@ -176,6 +178,16 @@ function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
         </div>
       )}
     </details>
+  );
+}
+
+function HistoryLine({ kind, k }: { kind: ItemKind; k: string }) {
+  const h = itemHistory(useStore().log, `${kind}:${k}`);
+  if (!h.total) return null;
+  return (
+    <span class="next-due">
+      {h.total} {h.total === 1 ? "review" : "reviews"}, {percent(h)} right
+    </span>
   );
 }
 
