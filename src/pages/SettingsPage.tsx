@@ -4,6 +4,7 @@ import { href } from "../router";
 import { Section } from "../components/bits";
 import { useEffect, useState } from "preact/hooks";
 import { loadFont, REVIEW_FONTS } from "../fonts";
+import { startTour } from "../components/Tour";
 import { allowReminders, isNative, shareFile } from "../native";
 import { signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
@@ -171,6 +172,12 @@ export function SettingsPage() {
             <input type="file" accept="application/json" onChange={(e) => importStore(e.target as HTMLInputElement)} />
           </label>
         </div>
+      </Section>
+
+      <Section title="Help">
+        <button class="secondary" onClick={startTour}>
+          Show the tour again
+        </button>
       </Section>
 
       <Section title="Credits">
