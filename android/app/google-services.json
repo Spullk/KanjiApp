@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "440840488826",
+    "project_id": "nekko-76274",
+    "storage_bucket": "nekko-76274.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440840488826:android:25100354853f4bd728b8c3",
+        "android_client_info": {
+          "package_name": "com.spullk.nekko"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440840488826-vn3149neo4je6eg4pp31kr54g7in4j2q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6hA12CWarMH5gPsf5SEEo_dhrYJZwmMQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440840488826-vn3149neo4je6eg4pp31kr54g7in4j2q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "440840488826-hgd8rtbb4997ccmt5kat0snt6qcudcgt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.spullk.nekko"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
