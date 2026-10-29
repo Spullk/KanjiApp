@@ -31,7 +31,9 @@ jobs:
         run: python scripts/fetch_sources.py --sentences
 
       - name: Build data
-        run: python scripts/build_data.py
+        run: |
+          python scripts/build_data.py
+          python scripts/build_pitch.py
 
       - name: Commit data
         run: |

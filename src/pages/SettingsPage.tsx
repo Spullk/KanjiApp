@@ -1,9 +1,15 @@
+import { addFaceToStudied, missingFace, type ExtraFace } from "../srs";
 import { DEFAULT_SETTINGS, endVacation, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
 import { href } from "../router";
 import { Section } from "../components/bits";
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
+import { loadFont, REVIEW_FONTS } from "../fonts";
+import { startTour } from "../components/Tour";
 import { allowReminders, isNative, shareFile } from "../native";
 import { signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
+import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
+import { wordsBySpelling } from "../known";
+import { useData } from "../data";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
 // A new option gets a field there, a default, and a row here.
@@ -40,6 +46,27 @@ export function SettingsPage() {
         </label>
       </Section>
 
+      <Section title="What to learn next">
+        <label class="setting">
+          Order
+          <select value={store.settings.order} onChange={(e) => set("order", (e.target as HTMLSelectElement).value as StudyOrder)}>
+            {(Object.keys(ORDER_LABEL) as StudyOrder[]).map((o) => (
+              <option key={o} value={o}>{ORDER_LABEL[o]}</option>
+            ))}
+          </select>
+        </label>
+        {store.settings.order === "custom" ? (
+          <StudyList list={store.settings.customList ?? []} />
+        ) : (
+          <p class="hint">
+            {store.settings.order === "lessons"
+              ? "Kanji that share parts or sounds come together, roughly easiest first."
+              : "Each kanji comes after the radicals it's built from, and words come as soon as you've learned their kanji."}{" "}
+            Changing this never touches what you've already learned.
+          </p>
+        )}
+      </Section>
+
       <Section title="Already know some?">
         <a class="more" href={href.known()}>
           Mark kanji you know, by JLPT level or from a list, or import from WaniKani or Anki →
@@ -72,6 +99,30 @@ export function SettingsPage() {
           frequent reviews; 90% is the Anki default.
         </p>
         <FsrsParams />
+      </Section>
+
+      <Section title="Extra card types" hint="Words always get a card asking their reading and meaning. These add more ways to practise them. Words you learn from now on get the cards you switch on.">
+        {EXTRA_CARDS.map(([face, label, about]) => (
+          <ExtraCard key={face} face={face} label={label} about={about} />
+        ))}
+      </Section>
+
+      <Section title="Fonts">
+        <label class="check-setting">
+          <input type="checkbox" checked={!!store.settings.fonts} onChange={() => set("fonts", !store.settings.fonts || undefined)} />
+          <span>
+            Mix up the font on review cards
+            <small>
+              Kanji look different in print, handwriting and brush. Each card gets a different typeface each day (needs a
+              connection; offline cards keep the usual font).
+            </small>
+          </span>
+        </label>
+        <div class="font-samples" lang="ja">
+          {REVIEW_FONTS.map((f) => (
+            <FontSample key={f} family={f} />
+          ))}
+        </div>
       </Section>
 
       <Section
@@ -123,16 +174,91 @@ export function SettingsPage() {
         </div>
       </Section>
 
+      <Section title="Help">
+        <button class="secondary" onClick={startTour}>
+          Show the tour again
+        </button>
+      </Section>
+
       <Section title="Credits">
         <ul class="credits">
           <li>Dictionary: JMdict and KANJIDIC2, EDRDG, CC BY-SA 4.0</li>
           <li>Kanji parts and stroke order: KanjiVG, Ulrich Apel, CC BY-SA 3.0</li>
           <li>Example sentences and their recordings: Tatoeba Project, CC BY 2.0 FR</li>
           <li>Word recordings: Kanji alive, CC BY 4.0</li>
+          <li>Pitch accents: Kanjium, CC BY-SA 4.0</li>
           <li>JLPT levels: Jonathan Waller's lists</li>
         </ul>
       </Section>
     </article>
+  );
+}
+
+function FontSample({ family }: { family: string }) {
+  const text = "字書";
+  useEffect(() => loadFont(family, text), [family]);
+  return (
+    <span title={family} style={{ fontFamily: `"${family}", var(--ja-font)` }}>
+      {text}
+    </span>
+  );
+}
+
+const EXTRA_CARDS: [ExtraFace, string, string][] = [
+  ["recall", "English → Japanese", "See the meaning, recall the word. The hardest direction, and the one you need for speaking."],
+  ["listen", "Listening", "Hear the word, say what it means. Uses the recording if there is one, otherwise your device's voice."],
+];
+const SPREAD_PER_DAY = 10;
+
+function ExtraCard({ face, label, about }: { face: ExtraFace; label: string; about: string }) {
+  const store = useStore();
+  const on = !!store.settings.extraCards?.includes(face);
+  const missing = on ? missingFace(store, face) : 0;
+  const toggle = () =>
+    update((s) => {
+      const now = s.settings.extraCards ?? [];
+      s.settings.extraCards = on ? now.filter((f) => f !== face) : [...now, face];
+    });
+  return (
+    <div>
+      <label class="check-setting">
+        <input type="checkbox" checked={on} onChange={toggle} />
+        <span>
+          {label}
+          <small>{about}</small>
+        </span>
+      </label>
+      {missing > 0 && (
+        <button class="secondary" onClick={() => update((s) => void addFaceToStudied(s, face, SPREAD_PER_DAY))}>
+          Add to the {missing} {missing === 1 ? "word" : "words"} you already study ({SPREAD_PER_DAY} a day)
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** Your own study list, e.g. a textbook chapter's kanji and words. */
+function StudyList({ list }: { list: string[] }) {
+  const data = useData();
+  const asText = list.map((id) => (id.startsWith("word:") ? data.words[id.slice(5)]?.w : id.slice(6))).join(" ");
+  const [text, setText] = useState(asText);
+  const parsed = text === asText ? list : parseStudyList(data, text, wordsBySpelling(data));
+  return (
+    <>
+      <p class="hint">
+        Paste kanji and words in the order you want them, for example from your textbook. Single characters are taught as
+        kanji, longer entries as words. When the list is done, Nekko carries on with its own lessons.
+      </p>
+      <textarea class="paste-box" rows={4} lang="ja" placeholder="日 本 人 日本人 学生…" value={text} onInput={(e) => setText((e.target as HTMLTextAreaElement).value)} />
+      <div class="backup">
+        <span>
+          {parsed.filter((id) => id.startsWith("kanji:")).length} kanji, {parsed.filter((id) => id.startsWith("word:")).length} words
+        </span>
+        <button disabled={text === asText} onClick={() => update((s) => (s.settings.customList = parsed))}>
+          Save list
+        </button>
+      </div>
+    </>
   );
 }
 

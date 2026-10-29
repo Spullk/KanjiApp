@@ -1,7 +1,8 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { cardId, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type Face, type ItemKind } from "../srs";
+import { allFaces, cardId, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type ItemKind } from "../srs";
 import { Chip, Furigana, ReadingText } from "./bits";
+import { itemHistory, percent } from "../stats";
 
 /** The kanji's readings worth knowing: those that have words, each with its most common word. */
 export function MainReadings({ c, max = 3 }: { c: string; max?: number }) {
@@ -138,6 +139,7 @@ export function StudyButton({ kind, k }: { kind: ItemKind; k: string }) {
           </>
         )}
       </div>
+      <HistoryLine kind={kind} k={k} />
       <NoteBox kind={kind} k={k} />
     </>
   );
@@ -179,9 +181,18 @@ function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
   );
 }
 
+function HistoryLine({ kind, k }: { kind: ItemKind; k: string }) {
+  const h = itemHistory(useStore().log, `${kind}:${k}`);
+  if (!h.total) return null;
+  return (
+    <p class="hint history-line">
+      {h.total} {h.total === 1 ? "answer" : "answers"} so far, {percent(h)} right
+    </p>
+  );
+}
+
 function NextDue({ kind, k }: { kind: ItemKind; k: string }) {
-  const faces: Face[] = kind === "kanji" ? ["meaning", "reading"] : kind === "radical" ? ["meaning"] : ["word"];
-  const due = Math.min(...faces.map((f) => getStore().cards[cardId(kind, k, f)]?.due ?? Infinity));
+  const due = Math.min(...allFaces(kind).map((f) => getStore().cards[cardId(kind, k, f)]?.due ?? Infinity));
   if (!isFinite(due)) return null;
   return <span class="next-due">{due <= Date.now() ? "Due now" : `Next review ${relTime(due)}`}</span>;
 }

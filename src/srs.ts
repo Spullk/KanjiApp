@@ -5,19 +5,38 @@ import { useEffect, useState } from "preact/hooks";
 import { checkParameters, createEmptyCard, fsrs, generatorParameters, migrateParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
 import type { Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
+import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order";
 
 export { Rating, State };
 export type { Grade };
 
 export type ItemKind = "radical" | "kanji" | "word";
-export type Face = "meaning" | "reading" | "word";
+export type Face = "meaning" | "reading" | "word" | "recall" | "listen";
 
-/** A study item ("kanji:語") and the cards it makes ("kanji:語:meaning", "kanji:語:reading"). */
+/** A study item ("kanji:語") and the cards it always makes ("kanji:語:meaning", "kanji:語:reading"). */
 export const FACES: Record<ItemKind, Face[]> = {
   radical: ["meaning"],
   kanji: ["meaning", "reading"],
   word: ["word"],
 };
+
+/** Optional cards you can switch on in Settings: recall (English → Japanese) and listening, for words. */
+export type ExtraFace = "recall" | "listen";
+export const EXTRA_FACES: Record<ItemKind, ExtraFace[]> = { radical: [], kanji: [], word: ["recall", "listen"] };
+
+/** Every card an item can have, switched on or not. */
+export function allFaces(kind: ItemKind): Face[] {
+  return [...FACES[kind], ...EXTRA_FACES[kind]];
+}
+
+/** The cards a new item gets with the current settings. */
+export function facesFor(settings: Settings, kind: ItemKind): Face[] {
+  return [...FACES[kind], ...EXTRA_FACES[kind].filter((f) => settings.extraCards?.includes(f))];
+}
+
+function faceOn(settings: Settings, face: Face): boolean {
+  return !(EXTRA_FACES.word as Face[]).includes(face) || !!settings.extraCards?.includes(face as ExtraFace);
+}
 
 export type StoredCard = {
   due: number;
@@ -44,8 +63,16 @@ export type Settings = {
   fsrsParams?: number[];
   /** Most new items to start per day; 0 for no limit. */
   dailyNew: number;
+  /** The order new items are taught in. */
+  order: StudyOrder;
+  /** Item ids ("kanji:語", "word:1234") to learn first, in order, when `order` is "custom". */
+  customList?: string[];
   /** When vacation mode was switched on. Nothing is due while it's on, and it pushes everything back when it ends. */
   vacation?: number;
+  /** Show kanji and words on review cards in a different typeface each day (print, handwriting, brush). */
+  fonts?: boolean;
+  /** Optional card types switched on. Switching one off keeps its cards but stops asking them. */
+  extraCards?: ExtraFace[];
   /** Native app only: hour of the daily review reminder, or undefined for none. */
   reminder?: number;
 };
@@ -81,7 +108,7 @@ export type Store = {
   undo: Undo[];
 };
 
-export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, answerMode: "self", dailyNew: 0 };
+export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, answerMode: "self", dailyNew: 0, order: "lessons" };
 
 const UNDO_LIMIT = 20;
 
@@ -196,13 +223,13 @@ export function setStatusMany(store: Store, items: { kind: ItemKind; key: string
 export const LEECH_LAPSES = 8;
 
 export function isLeech(store: Store, kind: ItemKind, key: string): boolean {
-  return FACES[kind].some((f) => (store.cards[cardId(kind, key, f)]?.lapses ?? 0) >= LEECH_LAPSES);
+  return allFaces(kind).some((f) => (store.cards[cardId(kind, key, f)]?.lapses ?? 0) >= LEECH_LAPSES);
 }
 
 /** Adds an item's cards, due right away. Returns how many cards were new. */
 export function addItem(store: Store, kind: ItemKind, key: string, now = Date.now()): number {
   let added = 0;
-  for (const face of FACES[kind]) {
+  for (const face of facesFor(store.settings, kind)) {
     const id = cardId(kind, key, face);
     if (!store.cards[id]) {
       store.cards[id] = fromCard(createEmptyCard(new Date(now)), now, now);
@@ -236,11 +263,40 @@ export function addReviewedItem(store: Store, kind: ItemKind, key: string, stabi
 }
 
 export function removeItem(store: Store, kind: ItemKind, key: string, now = Date.now()) {
-  for (const face of FACES[kind]) {
+  for (const face of allFaces(kind)) {
     const id = cardId(kind, key, face);
     if (store.cards[id]) store.removed[id] = now;
     delete store.cards[id];
   }
+}
+
+/**
+ * Gives the items you already study a newly switched-on card type, `perDay` items a day starting today
+ * (oldest first), so they don't all arrive at once. Returns how many cards were added.
+ */
+export function addFaceToStudied(store: Store, face: ExtraFace, perDay: number, now = Date.now()): number {
+  const kinds = (Object.keys(EXTRA_FACES) as ItemKind[]).filter((k) => EXTRA_FACES[k].includes(face));
+  const items = Object.entries(store.cards)
+    .map(([id, c]) => ({ ...parseCardId(id), added: c.added }))
+    .filter((c) => kinds.includes(c.kind) && c.face === FACES[c.kind][0] && !store.cards[cardId(c.kind, c.key, face)])
+    .sort((a, b) => a.added - b.added);
+  const today = startOfDay(now);
+  items.forEach((it, i) => {
+    const day = new Date(today);
+    day.setDate(day.getDate() + Math.floor(i / perDay));
+    const due = i < perDay ? now : day.getTime();
+    store.cards[cardId(it.kind, it.key, face)] = fromCard(createEmptyCard(new Date(due)), due, now);
+    delete store.removed[cardId(it.kind, it.key, face)];
+  });
+  return items.length;
+}
+
+/** Items you study that don't have this card type yet. */
+export function missingFace(store: Store, face: ExtraFace): number {
+  return Object.keys(store.cards).filter((id) => {
+    const c = parseCardId(id);
+    return EXTRA_FACES[c.kind].includes(face) && c.face === FACES[c.kind][0] && !store.cards[cardId(c.kind, c.key, face)];
+  }).length;
 }
 
 export function grade(store: Store, id: string, rating: Grade, now = Date.now()) {
@@ -275,7 +331,7 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
 export function dueCards(store: Store, until = Date.now()): string[] {
   if (store.settings.vacation) return [];
   return Object.entries(store.cards)
-    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status)
+    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, parseCardId(id).face))
     .sort(([, a], [, b]) => {
       const al = a.state === State.Review ? 1 : 0;
       const bl = b.state === State.Review ? 1 : 0;
@@ -376,14 +432,28 @@ export function lessonItems(data: Data, lessonIndex: number): { kind: ItemKind; 
   return out;
 }
 
-/** The next items to learn in lesson order, skipping what's already added. */
+/** The next items to learn in the order chosen in Settings, skipping what's already added or marked. */
 export function nextToLearn(store: Store, data: Data, n: number): { kind: ItemKind; key: string }[] {
   const out: { kind: ItemKind; key: string }[] = [];
+  if (n <= 0) return out;
+  const seen = new Set<string>();
+  /** Adds the item if it's new; true once there are enough. */
+  const take = (it: { kind: ItemKind; key: string }) => {
+    const id = itemId(it.kind, it.key);
+    if (!seen.has(id) && !isAdded(store, it.kind, it.key) && !itemInfo(store, it.kind, it.key)?.status) out.push(it);
+    seen.add(id);
+    return out.length >= n;
+  };
+  const order = store.settings.order ?? "lessons";
+  if (order === "custom") {
+    for (const it of customOrder(data, store.settings.customList ?? [])) if (take(it)) return out;
+  } else if (order !== "lessons") {
+    const studied = new Set(Object.keys(data.kanji).filter((k) => isAdded(store, "kanji", k) || itemInfo(store, "kanji", k)?.status === "known"));
+    for (const it of teachingOrder(data, kanjiOrder(data, order), studied)) if (take(it)) return out;
+  }
+  // Nekko's lessons, and what comes after your own list.
   for (let i = 0; i < data.lessons.length; i++) {
-    for (const it of lessonItems(data, i)) {
-      if (!isAdded(store, it.kind, it.key) && !itemInfo(store, it.kind, it.key)?.status) out.push(it);
-      if (out.length >= n) return out;
-    }
+    for (const it of lessonItems(data, i)) if (take(it)) return out;
   }
   return out;
 }
@@ -393,6 +463,7 @@ export type Stage = "none" | "learning" | "young" | "mature";
 /** An item's stage is its weakest card's: mature once every card holds for 21+ days. Items you marked known count as mature. */
 export function stageOf(store: Store, kind: ItemKind, key: string): Stage {
   if (itemInfo(store, kind, key)?.status === "known") return "mature";
+  // The optional card types don't count, so switching one on doesn't knock known words back to learning.
   const cards = FACES[kind].map((f) => store.cards[cardId(kind, key, f)]).filter(Boolean);
   if (!cards.length) return "none";
   if (cards.some((c) => c.state !== State.Review)) return "learning";

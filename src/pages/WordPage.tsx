@@ -1,6 +1,7 @@
 import { hira, useData } from "../data";
 import { href } from "../router";
 import { StudyButton } from "../components/ItemCards";
+import { PitchAccent } from "../components/Pitch";
 import { Badges, Furigana, ReadingText, Section, SentenceView, WordSpeak } from "../components/bits";
 
 export function WordPage({ id }: { id: string }) {
@@ -25,7 +26,7 @@ export function WordPage({ id }: { id: string }) {
           <Furigana segments={w.furigana} />
         </div>
         <div class="hero-reading" lang="ja">
-          {w.r} <WordSpeak w={w} />
+          <PitchAccent w={w} fallback={w.r} /> <WordSpeak w={w} />
         </div>
         <Badges items={[w.lesson && `Lesson ${w.lesson}`, w.usuallyKana && "Usually written in kana"]} />
       </header>

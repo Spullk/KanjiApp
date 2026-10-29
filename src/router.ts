@@ -13,6 +13,7 @@ export type Route =
   | { page: "known" }
   | { page: "practice"; set: PracticeSet }
   | { page: "write"; c?: string }
+  | { page: "read" }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -28,6 +29,7 @@ export const href = {
   settings: () => "#/settings",
   known: () => "#/known",
   practice: (set: PracticeSet) => `#/practice/${set}`,
+  read: () => "#/read",
   write: (c?: string) => `#/write${c ? "/" + encodeURIComponent(c) : ""}`,
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
@@ -53,6 +55,8 @@ export function parse(hash: string): Route {
       return { page: "settings" };
     case "known":
       return { page: "known" };
+    case "read":
+      return { page: "read" };
     case "write":
       return { page: "write", c: seg[1] };
     case "practice":

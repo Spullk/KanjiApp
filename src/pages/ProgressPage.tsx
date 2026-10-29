@@ -2,14 +2,18 @@ import { useData } from "../data";
 import { href } from "../router";
 import { isLeech, PRACTICE_LABEL, practiceCards, STAGE_LABEL, stageOf, useStore, type ItemKind, type PracticeSet, type Stage } from "../srs";
 import { Chip, Section, WordRow } from "../components/bits";
+import { accuracyByType, DAY, dayKey, duration, hardestItems, heatmap, percent, reviewsPerDay, streak as streakOf, timeSpent, type Accuracy } from "../stats";
 
 const STAGES: Stage[] = ["mature", "young", "learning", "none"];
-const DAY = 86_400_000;
 
-function dayKey(t: number) {
-  const d = new Date(t);
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
+const TYPE_LABEL: [string, string][] = [
+  ["radical:meaning", "Radical names"],
+  ["kanji:meaning", "Kanji meanings"],
+  ["kanji:reading", "Kanji readings"],
+  ["word:word", "Words"],
+  ["word:recall", "English → Japanese"],
+  ["word:listen", "Listening"],
+];
 
 export function ProgressPage() {
   const data = useData();
@@ -38,11 +42,12 @@ export function ProgressPage() {
     .map((id) => id.split(":") as [ItemKind, string])
     .filter(([kind, key]) => isLeech(store, kind, key));
 
-  // Reviews per day and streak.
-  const perDay = new Map<string, number>();
-  for (const [, , t] of store.log) perDay.set(dayKey(t), (perDay.get(dayKey(t)) ?? 0) + 1);
-  let streak = 0;
-  for (let t = perDay.has(dayKey(now)) ? now : now - DAY; perDay.has(dayKey(t)); t -= DAY) streak++;
+  const perDay = reviewsPerDay(store.log);
+  const streak = streakOf(perDay, now);
+  const monthAgo = now - 30 * DAY;
+  const acc = accuracyByType(store.log, monthAgo);
+  const accAll = Object.values(acc).reduce<Accuracy>((a, b) => ({ right: a.right + b.right, total: a.total + b.total }), { right: 0, total: 0 });
+  const hardest = hardestItems(store.log, 12).map(({ item, acc }) => ({ ...item_(item), acc }));
   const forecast = Array.from({ length: 7 }, (_, i) => {
     const end = new Date(now + i * DAY);
     end.setHours(23, 59, 59, 999);
@@ -79,7 +84,37 @@ export function ProgressPage() {
             <b>筆</b>
             Writing
           </a>
+          <a href={href.read()}>
+            <b>読</b>
+            Reading
+          </a>
         </div>
+      </Section>
+
+      {store.log.length > 0 && (
+        <Section title="Last 30 days">
+          <div class="stat-tiles">
+            <Tile n={accAll.total} label="answers" />
+            <Tile n={percent(accAll)} label="right first time" />
+            <Tile n={duration(timeSpent(store.log, monthAgo))} label="spent reviewing" />
+          </div>
+          <table class="acc-table">
+            <tbody>
+              {TYPE_LABEL.filter(([t]) => acc[t]).map(([t, label]) => (
+                <tr key={t}>
+                  <td>{label}</td>
+                  <td>{acc[t].total} answers</td>
+                  <td class="acc-pct">{percent(acc[t])}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="hint">Today: {duration(timeSpent(store.log, new Date(now).setHours(0, 0, 0, 0)))}. Time is worked out from the gaps between your answers.</p>
+        </Section>
+      )}
+
+      <Section title="Review calendar">
+        <Heatmap perDay={perDay} now={now} />
       </Section>
 
       {leeches.length > 0 && (
@@ -88,6 +123,23 @@ export function ProgressPage() {
             {leeches.map(([kind, key]) => kind !== "word" && <Chip key={`${kind}:${key}`} c={key} kind={kind} />)}
           </div>
           {leeches.map(([kind, key]) => kind === "word" && <WordRow key={key} id={key} />)}
+        </Section>
+      )}
+
+      {hardest.length > 0 && (
+        <Section title="Hardest items" hint="What you miss most often, from all your answers.">
+          <div class="chips" lang="ja">
+            {hardest.map(({ kind, key, acc }) => kind !== "word" && <Chip key={key} c={key} kind={kind} note={`${percent(acc)} right`} />)}
+          </div>
+          {hardest.map(
+            ({ kind, key, acc }) =>
+              kind === "word" && (
+                <div class="hard-row" key={key}>
+                  <WordRow id={key} />
+                  <span class="acc-pct">{percent(acc)}</span>
+                </div>
+              ),
+          )}
         </Section>
       )}
 
@@ -129,10 +181,48 @@ export function ProgressPage() {
   );
 }
 
-function Tile({ n, label }: { n: number; label: string }) {
+function item_(item: string): { kind: ItemKind; key: string } {
+  const [kind, key] = item.split(":") as [ItemKind, string];
+  return { kind, key };
+}
+
+function Heatmap({ perDay, now }: { perDay: Map<string, number>; now: number }) {
+  const weeks = heatmap(perDay, now);
+  const max = Math.max(1, ...weeks.flat().map((c) => c.n));
+  const level = (n: number) => (n === 0 ? 0 : Math.min(4, Math.ceil((n / max) * 4)));
+  return (
+    <>
+      <div class="heatmap" style={{ gridTemplateColumns: `repeat(${weeks.length}, 1fr)` }}>
+        {weeks.map((col, i) => (
+          <div class="hm-col" key={i}>
+            {col.map((c) => (
+              <div
+                key={c.t}
+                class={`hm-cell l${level(c.n)}${c.future ? " future" : ""}${dayKey(c.t) === dayKey(now) ? " today" : ""}`}
+                title={`${new Date(c.t).toLocaleDateString()}: ${c.n} ${c.n === 1 ? "review" : "reviews"}`}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div class="hm-legend">
+        <span>{new Date(weeks[0][0].t).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+        <span class="hm-scale">
+          Less
+          {[0, 1, 2, 3, 4].map((l) => (
+            <i key={l} class={`hm-cell l${l}`} />
+          ))}
+          More
+        </span>
+      </div>
+    </>
+  );
+}
+
+function Tile({ n, label }: { n: number | string; label: string }) {
   return (
     <div class="tile">
-      <div class="tile-n">{n}</div>
+      <div class={String(n).length > 5 ? "tile-n long" : "tile-n"}>{n}</div>
       <div class="tile-label">{label}</div>
     </div>
   );
