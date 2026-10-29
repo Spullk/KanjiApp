@@ -1199,7 +1199,8 @@ button.secondary,
   fill: var(--kanji);
 }
 
-.credits {
+.credits,
+.debug {
   margin: 0;
   padding-left: 18px;
   color: var(--muted);

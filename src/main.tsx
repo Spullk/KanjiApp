@@ -1,6 +1,5 @@
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { registerSW } from "virtual:pwa-register";
 import { loadData } from "./data";
 import { href, useRoute, type Route } from "./router";
 import { HomePage } from "./pages/HomePage";
@@ -21,10 +20,11 @@ import { dueCards, getStore, initStore, requestPersistence, useStore } from "./s
 import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
 import { Tour } from "./components/Tour";
+import { initUpdates } from "./update";
 import "./style.css";
 
 // The app store build ships every file inside the app, so only the website needs the offline cache.
-if (!isNative) registerSW({ immediate: true });
+if (!isNative) initUpdates();
 requestPersistence();
 
 function Page({ route }: { route: Route }) {
