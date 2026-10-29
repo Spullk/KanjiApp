@@ -1,6 +1,8 @@
 // Sign-in and sync. Each person's progress is one compressed copy of the store in Firestore
 // (users/{uid}, split into parts under 1 MB). Syncing is always pull → merge → push, so changes made on
 // any device survive (see merge() in srs.ts). Firebase loads only once someone has signed in on this device.
+// In the iPhone/Android app, Google sign-in runs natively (@capacitor-firebase/authentication) and hands its
+// token to the same Firebase JS SDK, so syncing works the same everywhere.
 
 import { useEffect, useState } from "preact/hooks";
 import { gunzipSync, gzipSync, strFromU8, strToU8 } from "fflate";
@@ -9,7 +11,7 @@ import { firebaseConfig } from "./firebase-config";
 import { getStore, merge, migrate, onSave, update, type Store } from "./srs";
 import { isNative } from "./native";
 
-export const syncAvailable = !!firebaseConfig && !isNative;
+export const syncAvailable = !!firebaseConfig;
 
 export type SyncState = {
   user: { name: string; email: string } | null;
@@ -68,7 +70,9 @@ let fb: Promise<Fb> | null = null;
 async function loadFirebase() {
   const [{ initializeApp }, auth, fs] = await Promise.all([import("firebase/app"), import("firebase/auth"), import("firebase/firestore")]);
   const app = initializeApp(firebaseConfig!);
-  return { auth: auth.getAuth(app), db: fs.getFirestore(app), authMod: auth, fs };
+  // The app's web view can't use the website's sign-in pop-up, and keeps the session in IndexedDB.
+  const a = isNative ? auth.initializeAuth(app, { persistence: auth.indexedDBLocalPersistence }) : auth.getAuth(app);
+  return { auth: a, db: fs.getFirestore(app), authMod: auth, fs };
 }
 
 function firebase(): Promise<Fb> {
@@ -114,10 +118,18 @@ export function initSync() {
 export async function signIn() {
   const { auth, authMod } = await firebase();
   try {
-    await authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider());
+    if (isNative) {
+      // The phone's own Google sign-in sheet, then the same Firebase account as on the website.
+      const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
+      const result = await FirebaseAuthentication.signInWithGoogle();
+      await authMod.signInWithCredential(auth, authMod.GoogleAuthProvider.credential(result.credential?.idToken));
+    } else {
+      await authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider());
+    }
   } catch (e) {
     const code = (e as { code?: string }).code;
     if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return;
+    if (isNative && /cancel/i.test(String((e as Error).message ?? e))) return;
     set({ status: "error", error: code === "auth/popup-blocked" ? "Your browser blocked the sign-in window. Allow pop-ups for this site and try again." : String((e as Error).message ?? e) });
   }
 }
@@ -125,6 +137,11 @@ export async function signIn() {
 export async function signOut() {
   const { auth, authMod } = await firebase();
   await authMod.signOut(auth);
+  if (isNative) {
+    // Also forget the Google account on the phone, so the next sign-in can pick another one.
+    const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
+    await FirebaseAuthentication.signOut().catch(() => {});
+  }
 }
 
 let busy = false;
