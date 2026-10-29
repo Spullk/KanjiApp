@@ -15,7 +15,7 @@ export const syncAvailable = !!firebaseConfig;
 
 export type SyncState = {
   user: { name: string; email: string } | null;
-  status: "idle" | "syncing" | "synced" | "error";
+  status: "idle" | "signing-in" | "syncing" | "synced" | "error";
   last?: number;
   error?: string;
 };
@@ -66,6 +66,8 @@ const FLAG = "nekko.sync"; // set while someone is signed in here, so Firebase i
 
 type Fb = Awaited<ReturnType<typeof loadFirebase>>;
 let fb: Promise<Fb> | null = null;
+/** Firebase once it has loaded, so a tap can open the sign-in window straight away. */
+let ready: Fb | null = null;
 
 async function loadFirebase() {
   const [{ initializeApp }, auth, fs] = await Promise.all([import("firebase/app"), import("firebase/auth"), import("firebase/firestore")]);
@@ -78,6 +80,7 @@ async function loadFirebase() {
 function firebase(): Promise<Fb> {
   if (!fb) {
     fb = loadFirebase();
+    fb.then((f) => (ready = f));
     fb.then(({ auth, authMod }) =>
       authMod.onAuthStateChanged(auth, (u) => {
         if (u) {
@@ -115,8 +118,17 @@ export function initSync() {
   });
 }
 
+/**
+ * Starts loading Firebase before the sign-in button is tapped. Browsers, Safari above all, only allow a sign-in
+ * window that opens right away from the tap; one opened after waiting for a download is silently blocked.
+ */
+export function prepareSignIn() {
+  if (syncAvailable) firebase().catch(() => {});
+}
+
 export async function signIn() {
-  const { auth, authMod } = await firebase();
+  set({ status: "signing-in", error: undefined });
+  const { auth, authMod } = ready ?? (await firebase());
   try {
     if (isNative) {
       // The phone's own Google sign-in sheet, then the same Firebase account as on the website.
@@ -128,9 +140,11 @@ export async function signIn() {
     }
   } catch (e) {
     const code = (e as { code?: string }).code;
-    if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") return;
-    if (isNative && /cancel/i.test(String((e as Error).message ?? e))) return;
-    set({ status: "error", error: code === "auth/popup-blocked" ? "Your browser blocked the sign-in window. Allow pop-ups for this site and try again." : String((e as Error).message ?? e) });
+    if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request" || (isNative && /cancel/i.test(String((e as Error).message ?? e)))) {
+      set({ status: "idle" });
+      return;
+    }
+    set({ status: "error", error: code === "auth/popup-blocked" ? "Your browser blocked the sign-in window. Tap the button again, or allow pop-ups for this site." : `Sign-in didn't work: ${String((e as Error).message ?? e)}` });
   }
 }
 

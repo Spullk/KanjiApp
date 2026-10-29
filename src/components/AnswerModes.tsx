@@ -11,6 +11,11 @@ import { shortInterval } from "./ItemCards";
 
 export type AnswerProps = { id: string; onAnswer: (g: Grade) => void };
 
+// Where you are on the current card, kept outside the components: opening the full page and swiping back
+// remounts the review screen, and you should come back to the answer you'd already revealed or typed.
+let revealed: string | null = null;
+let typed: { id: string; results: Result[] } | null = null;
+
 const BUTTONS: [Grade, string][] = [
   [Rating.Again, "Again"],
   [Rating.Hard, "Hard"],
@@ -19,8 +24,16 @@ const BUTTONS: [Grade, string][] = [
 ];
 
 /** Anki style: show the answer, then say how well you knew it. */
-export function SelfGrade({ id, onAnswer }: AnswerProps) {
-  const [shown, setShown] = useState(false);
+export function SelfGrade({ id, onAnswer: answer }: AnswerProps) {
+  const [shown, setShownState] = useState(() => revealed === id);
+  const setShown = (v: boolean) => {
+    revealed = v ? id : null;
+    setShownState(v);
+  };
+  const onAnswer = (g: Grade) => {
+    revealed = null;
+    answer(g);
+  };
   const store = useStore();
   const { kind, key } = parseCardId(id);
 
@@ -63,13 +76,23 @@ export function SelfGrade({ id, onAnswer }: AnswerProps) {
 type Result = { ask: Ask; input: string; verdict: Verdict };
 
 /** WaniKani style: type the meaning in English and the reading in kana; right is Good, wrong is Again. */
-export function TypedAnswer({ id, onAnswer }: AnswerProps) {
+export function TypedAnswer({ id, onAnswer: answer }: AnswerProps) {
   const data = useData();
   const store = useStore();
   const { kind, key } = parseCardId(id);
   const info = itemInfo(store, kind, key);
   const asks = cardType(id).asks;
-  const [results, setResults] = useState<Result[]>([]);
+  const [results, setResultsState] = useState<Result[]>(() => (typed?.id === id ? typed.results : []));
+  const setResults = (fn: (rs: Result[]) => Result[]) =>
+    setResultsState((rs) => {
+      const next = fn(rs);
+      typed = { id, results: next };
+      return next;
+    });
+  const onAnswer = (g: Grade) => {
+    typed = null;
+    answer(g);
+  };
   const [hint, setHint] = useState("");
   const input = useRef<HTMLInputElement>(null);
   const ask = asks[results.length] as Ask | undefined;

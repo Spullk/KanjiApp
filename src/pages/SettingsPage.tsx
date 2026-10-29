@@ -6,7 +6,7 @@ import { useEffect, useState } from "preact/hooks";
 import { loadFont, REVIEW_FONTS } from "../fonts";
 import { startTour } from "../components/Tour";
 import { allowReminders, isNative, shareFile } from "../native";
-import { signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
+import { prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
 import { wordsBySpelling } from "../known";
 import { useData } from "../data";
@@ -271,11 +271,14 @@ function ago(t: number): string {
 
 function Account() {
   const sync = useSync();
+  useEffect(() => {
+    if (!sync.user) prepareSignIn();
+  }, [!sync.user]);
   if (!sync.user) {
     return (
       <Section title="Account" hint="Sign in to keep your progress in sync between your phone and computer. Your progress on this device is kept and merged in.">
-        <button class="secondary" onClick={signIn}>
-          Sign in with Google
+        <button class="secondary" disabled={sync.status === "signing-in"} onClick={signIn}>
+          {sync.status === "signing-in" ? "Opening Google sign-in…" : "Sign in with Google"}
         </button>
         {sync.error && <p class="hint error">{sync.error}</p>}
       </Section>

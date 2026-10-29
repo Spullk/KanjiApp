@@ -7,6 +7,7 @@ import { kanjiStrokePoints, recognize } from "../handwriting";
 import type { Point } from "../strokes";
 import { loadStrokes } from "./StrokeOrder";
 import { Chips, Section } from "./bits";
+import { useNoScroll } from "./useNoScroll";
 
 const SHOWN_PARTS = 120;
 
@@ -65,6 +66,7 @@ const BOX = 109;
 /** Draw a kanji, in the usual stroke order; the closest matches update after each stroke. */
 export function DrawLookup() {
   const svg = useRef<SVGSVGElement>(null);
+  useNoScroll(svg);
   const [strokes, setStrokes] = useState<Point[][]>([]);
   const [ink, setInk] = useState<Point[] | null>(null);
   const [kanji, setKanji] = useState<Map<string, Point[][]> | null>(null);
