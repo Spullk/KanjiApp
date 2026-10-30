@@ -684,7 +684,7 @@ def main():
             else [[e["form"], e["reading"] if any(map(is_kanji, e["form"])) else None]],
             "uses": [], "special": [], "senses": e["senses"], "rank": e["rank"], "usuallyKana": e["usuallyKana"],
         }
-    for wid in shipped.keys() - words.keys():
+    for wid in sorted(shipped.keys() - words.keys(), key=int):  # sorted, so the same data gives the same file
         words[wid] = {**{k: v for k, v in shipped[wid].items() if k not in ("sentences", "lesson")}, "uses": []}
     for k in joyo:
         for r in kanji[k]["readings"]:
