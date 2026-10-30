@@ -80,6 +80,8 @@ jobs:
             echo "Data unchanged"
           else
             git commit -m "Rebuild data"
+            # Someone may have pushed to the branch while this ran; put the data commit on top.
+            git pull --rebase
             git push
             # A push made with this workflow's token doesn't start other workflows, so publish the app here.
             if [ "$GITHUB_REF" = "refs/heads/main" ]; then
