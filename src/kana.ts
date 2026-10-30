@@ -22,10 +22,8 @@ const HIRA_ROWS: [string, string][] = [
   ["da", "だぢづでど"],
   ["ba", "ばびぶべぼ"],
   ["pa", "ぱぴぷぺぽ"],
-  ["kya", "きゃ きゅ きょ しゃ しゅ しょ ちゃ ちゅ ちょ"],
-  ["nya", "にゃ にゅ にょ ひゃ ひゅ ひょ みゃ みゅ みょ りゃ りゅ りょ"],
-  ["gya", "ぎゃ ぎゅ ぎょ じゃ じゅ じょ びゃ びゅ びょ ぴゃ ぴゅ ぴょ"],
 ];
+// Combinations like きゃ aren't drilled: they're just き plus a small ゃ, so the rows above cover them.
 
 /** Katakana-only sounds for foreign words, with their spellings (wanakana doesn't know these). */
 const EXTRA: [string, string[]][] = [

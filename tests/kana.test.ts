@@ -6,7 +6,7 @@ import { emptyStore, merge } from "../src/srs";
 describe("kana", () => {
   it("has every kana once", () => {
     expect(new Set(ALL_KANA).size).toBe(ALL_KANA.length);
-    expect(KANA_ROWS.filter((r) => r.script === "hira").flatMap((r) => r.kana)).toHaveLength(104);
+    expect(KANA_ROWS.filter((r) => r.script === "hira").flatMap((r) => r.kana)).toHaveLength(71);
   });
 
   it("accepts the common romaji spellings", () => {
