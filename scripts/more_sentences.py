@@ -92,7 +92,11 @@ def jesc_pairs():
     if files:
         import pyarrow.parquet as pq  # only needed for the copy
         for path in files:
-            for row in pq.read_table(path, columns=["translation"]).column("translation").to_pylist():
+            table = pq.read_table(path)
+            # Pairs as {"translation": {"en", "ja"}}, or in "en" and "ja" columns.
+            rows = (table.column("translation").to_pylist() if "translation" in table.column_names
+                    else table.select(["en", "ja"]).to_pylist())
+            for row in rows:
                 yield row.get("en") or "", row.get("ja") or ""
 
 
