@@ -26,7 +26,7 @@ export function LearnPage({ story }: { story?: string }) {
   if (!left) {
     return (
       <p class="empty">
-        That's today's {store.settings.dailyNew} new items. More tomorrow, or raise the limit in <a href={href.settings()}>Settings</a>.
+        That's today's {store.settings.dailyNew} new items. More tomorrow, or raise the limit in <a href={href.settings("learning")}>Settings</a>.
       </p>
     );
   }

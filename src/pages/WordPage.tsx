@@ -30,7 +30,12 @@ export function WordPage({ id }: { id: string }) {
           <PitchAccent w={w} fallback={w.r} /> <WordSpeak w={w} />
         </div>
         <Romaji kana={w.r} />
-        <Badges items={[w.lesson && `Lesson ${w.lesson}`, w.usuallyKana && "Usually written in kana"]} />
+        <Badges items={[w.lesson && `Lesson ${w.lesson}`, w.usuallyKana && "Usually written in kana", w.rare && "Uncommon word"]} />
+        {w.rec && !w.audio && (
+          <a class="rec-credit" href={`https://commons.wikimedia.org/wiki/File:${encodeURIComponent(w.rec[1].replaceAll(" ", "_"))}`}>
+            Recording: {w.rec[2] || "Wikimedia Commons"}, {w.rec[3]}
+          </a>
+        )}
       </header>
       <StudyButton kind="word" k={w.id} />
 

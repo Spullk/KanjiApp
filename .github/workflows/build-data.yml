@@ -1,16 +1,21 @@
 name: Build data
 
 # Rebuilds data/ with example sentences (Tatoeba) and stories, and commits the result to the same branch.
-# Once a week it also downloads the current dictionary, so the app follows JMdict's updates; the app only
+# Once a month it also downloads the current dictionary, so the app follows JMdict's updates; the app only
 # downloads data files that changed, the next time it's updated.
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 4 * * 1" # Mondays 04:17 UTC
+    - cron: "17 4 1 * *" # the 1st of each month, 04:17 UTC
   push:
     paths:
       - "scripts/**"
       - ".github/workflows/build-data.yml"
+
+# Two quick pushes would otherwise run two builds that both commit data; the newer one wins.
+concurrency:
+  group: build-data-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -32,15 +37,19 @@ jobs:
           path: |
             sources
             !sources/jamdict.db
+            !sources/commons_audio.json
             !sources/*.gz
           key: sources-${{ hashFiles('scripts/fetch_sources.py') }}
 
-      # The dictionary has its own cache, saved again whenever it's downloaded fresh, so pushes build with the latest.
+      # The dictionary and the list of Commons recordings have their own cache, saved again whenever they're
+      # downloaded fresh, so pushes build with the latest.
       - name: Restore dictionary
         id: dictionary
         uses: actions/cache/restore@v4
         with:
-          path: sources/jamdict.db
+          path: |
+            sources/jamdict.db
+            sources/commons_audio.json
           key: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-${{ github.run_id }}
           restore-keys: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-
 
@@ -51,7 +60,9 @@ jobs:
         if: github.event_name != 'push' || steps.dictionary.outputs.cache-matched-key == ''
         uses: actions/cache/save@v4
         with:
-          path: sources/jamdict.db
+          path: |
+            sources/jamdict.db
+            sources/commons_audio.json
           key: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-${{ github.run_id }}
 
       - name: Cache story downloads
@@ -80,6 +91,8 @@ jobs:
             echo "Data unchanged"
           else
             git commit -m "Rebuild data"
+            # Someone may have pushed to the branch while this ran; put the data commit on top.
+            git pull --rebase
             git push
             # A push made with this workflow's token doesn't start other workflows, so publish the app here.
             if [ "$GITHUB_REF" = "refs/heads/main" ]; then

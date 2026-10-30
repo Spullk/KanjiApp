@@ -1,6 +1,6 @@
 import { addFaceToStudied, missingFace, setKanjiCards, type ExtraFace } from "../srs";
 import { DEFAULT_SETTINGS, endVacation, getStore, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
-import { href } from "../router";
+import { href, type SettingsGroup } from "../router";
 import { Section } from "../components/bits";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { default_w } from "ts-fsrs";
@@ -24,211 +24,269 @@ import { allRecordings, savedRecordings, saveRecordings } from "../audio";
 // A new option gets a field there, a default, and a row here.
 
 
-export function SettingsPage() {
+/** The settings in five groups, each its own page (#/settings/<group>), so no page is a long scroll. */
+const SETTINGS_GROUPS: { id: SettingsGroup; title: string; about: string | null }[] = [
+  { id: "account", title: "Account and backup", about: null },
+  { id: "learning", title: "Learning", about: "New items, their order, and what you already know" },
+  { id: "reviews", title: "Reviews", about: "Answering, card types, romaji and fonts" },
+  { id: "app", title: "App", about: "Bottom bar, reminders and vacation" },
+  { id: "about", title: "About", about: "Help, version and updates, credits" },
+];
+
+export function SettingsPage({ group }: { group?: SettingsGroup }) {
   const store = useStore();
+  const sync = useSync();
   const set = <K extends keyof Settings>(key: K, value: Settings[K]) => update((s) => (s.settings[key] = value));
   const isDefault = (Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[]).every((k) => store.settings[k] === DEFAULT_SETTINGS[k]);
-
+  const current = SETTINGS_GROUPS.find((g) => g.id === group);
+  if (!current) {
+    return (
+      <article class="page">
+        <h1>Settings</h1>
+        <nav class="settings-groups">
+          {SETTINGS_GROUPS.map((g) => (
+            <a key={g.id} href={href.settings(g.id)}>
+              <b>{g.title}</b>
+              <small>
+                {g.about ?? (sync.user ? `Signed in as ${sync.user.name || sync.user.email}` : syncAvailable ? "Sign in to sync, or back up by hand" : "Back up your progress")}
+              </small>
+            </a>
+          ))}
+        </nav>
+        {!isDefault && (
+          <button
+            class="link-button"
+            onClick={() =>
+              update((s) => {
+                if (s.settings.kanjiCards === "one") setKanjiCards(s, "split");
+                s.settings = { ...DEFAULT_SETTINGS, reminder: s.settings.reminder, vacation: s.settings.vacation };
+              })
+            }
+          >
+            Reset all settings to defaults
+          </button>
+        )}
+      </article>
+    );
+  }
   return (
     <article class="page">
-      <h1>Settings</h1>
-
-      {syncAvailable && <Account />}
-
-      <Section title="Bottom bar" hint="Home and Progress are always at the ends, with three tools of your choice between them. Every tool is also on Home.">
-        <BarSetting />
-      </Section>
-
-      <Section title="Lessons">
-        <label class="setting">
-          New items per batch
-          <select value={store.settings.batch} onChange={(e) => set("batch", Number((e.target as HTMLSelectElement).value))}>
-            {[3, 5, 10, 15, 20].map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-        </label>
-        <label class="setting">
-          New items per day
-          <select value={store.settings.dailyNew} onChange={(e) => set("dailyNew", Number((e.target as HTMLSelectElement).value))}>
-            {[0, 5, 10, 15, 20, 30, 50].map((n) => (
-              <option key={n} value={n}>{n || "No limit"}</option>
-            ))}
-          </select>
-        </label>
-      </Section>
-
-      <Section title="What to learn next">
-        <label class="setting">
-          Order
-          <select value={store.settings.order} onChange={(e) => set("order", (e.target as HTMLSelectElement).value as StudyOrder)}>
-            {(Object.keys(ORDER_LABEL) as StudyOrder[]).map((o) => (
-              <option key={o} value={o}>{ORDER_LABEL[o]}</option>
-            ))}
-          </select>
-        </label>
-        {store.settings.order === "custom" ? (
-          <StudyList list={store.settings.customList ?? []} />
-        ) : (
-          <p class="hint">
-            {store.settings.order === "lessons"
-              ? "Kanji that share parts or sounds come together, roughly easiest first."
-              : "Each kanji comes after the radicals it's built from, and words come as soon as you've learned their kanji."}{" "}
-            Changing this never touches what you've already learned.
-          </p>
-        )}
-      </Section>
-
-      <Section title="Already known">
-        <a class="more" href={href.known()}>
-          Mark kanji you know, by JLPT level or from a list, or import from WaniKani or Anki →
-        </a>
-      </Section>
-
-      <Section title="Reviews">
-        <label class="setting">
-          How you answer
-          <select value={store.settings.answerMode} onChange={(e) => set("answerMode", (e.target as HTMLSelectElement).value as Settings["answerMode"])}>
-            <option value="self">Show and grade yourself</option>
-            <option value="typed">Type the answer</option>
-          </select>
-        </label>
-        <p class="hint">
-          {store.settings.answerMode === "typed"
-            ? "Like WaniKani: type the meaning in English and the reading in kana. Small typos in meanings are fine."
-            : "Like Anki: think of the answer, show it, then say how well you knew it."}
-        </p>
-        <label class="setting">
-          Kanji cards
-          <select
-            value={store.settings.kanjiCards ?? "split"}
-            onChange={(e) => update((s) => setKanjiCards(s, (e.target as HTMLSelectElement).value as "split" | "one"))}
-          >
-            <option value="split">Meaning and reading apart</option>
-            <option value="one">One card for both</option>
-          </select>
-        </label>
-        <p class="hint">
-          {store.settings.kanjiCards === "one"
-            ? "Each kanji is one card: recall its meaning and its readings together. Your progress carried over from the weaker of its two old cards."
-            : "Each kanji has a meaning card and a reading card, scheduled separately."}
-        </p>
-        <label class="setting">
-          Target recall
-          <select value={store.settings.retention} onChange={(e) => set("retention", Number((e.target as HTMLSelectElement).value))}>
-            {[0.8, 0.85, 0.9, 0.95].map((n) => (
-              <option key={n} value={n}>{Math.round(n * 100)}%</option>
-            ))}
-          </select>
-        </label>
-        <p class="hint">
-          Reviews are scheduled with FSRS, the same algorithm as Anki's newer scheduler. Higher recall means more
-          frequent reviews; 90% is the Anki default.
-        </p>
-        <FsrsParams />
-      </Section>
-
-      <Section title="Extra card types" hint="Words always get a card asking their reading and meaning. These add more ways to practise them. Words you learn from now on get the cards you switch on.">
-        {EXTRA_CARDS.map(([face, label, about]) => (
-          <ExtraCard key={face} face={face} label={label} about={about} />
-        ))}
-      </Section>
-
-      <Section title="Romaji">
-        <label class="check-setting">
-          <input type="checkbox" checked={!!store.settings.romaji} onChange={() => set("romaji", !store.settings.romaji || undefined)} />
-          <span>
-            Show romaji under readings
-            <small>For beginners: words, review answers and grammar examples also show the reading in Latin letters. Best switched off once kana feel easy.</small>
-          </span>
-        </label>
-      </Section>
-
-      <Section title="Fonts">
-        <label class="check-setting">
-          <input type="checkbox" checked={!!store.settings.fonts} onChange={() => set("fonts", !store.settings.fonts || undefined)} />
-          <span>
-            Mix up the font on review cards
-            <small>
-              Kanji look different in print, handwriting and brush. Each card gets a different typeface each day (needs a
-              connection; offline cards keep the usual font).
-            </small>
-          </span>
-        </label>
-        <div class="font-samples" lang="ja">
-          {REVIEW_FONTS.map((f) => (
-            <FontSample key={f} family={f} />
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        title="Vacation mode"
-        hint="Nothing comes due while you're away. When you come back, every review moves on by the time you were gone, so there's no pile waiting."
-      >
-        {store.settings.vacation ? (
-          <div class="backup">
-            <span>On since {relDate(store.settings.vacation)}</span>
-            <button onClick={() => update((s) => endVacation(s))}>I'm back</button>
-          </div>
-        ) : (
-          <button class="secondary" onClick={() => update((s) => startVacation(s))}>
-            Go on vacation
-          </button>
-        )}
-      </Section>
-
-      <Section title="Reminders">{isNative ? <NativeReminder /> : <WebReminder />}</Section>
-
-      {!isDefault && (
-        <button class="link-button" onClick={() => update((s) => {
-            if (s.settings.kanjiCards === "one") setKanjiCards(s, "split");
-            s.settings = { ...DEFAULT_SETTINGS, reminder: s.settings.reminder, vacation: s.settings.vacation };
-          })}>
-          Reset to defaults
-        </button>
-      )}
-
-      <Section
-        title="Backup"
-        hint={`Progress is saved on this ${isNative ? "phone" : "device"} only. Export now and then so you can't lose it. Importing a backup merges it with what's here, so you can also use it to bring progress over from another device.`}
-      >
-        <div class="backup">
-          <button onClick={() => exportStore(store)}>Export progress</button>
-          <label class="file-button">
-            Import
-            <input type="file" accept="application/json" onChange={(e) => importStore(e.target as HTMLInputElement)} />
-          </label>
-        </div>
-      </Section>
-
-      <Section title="Help">
-        <div class="button-row">
-          <button class="secondary" onClick={startTour}>
-            Show the tour again
-          </button>
-          <button class="secondary" onClick={openWelcome}>
-            Change where I'm starting from
-          </button>
-        </div>
-      </Section>
-
-      <Section title="Version and debug">
-        <Version />
-      </Section>
-
-      <Section title="Credits">
-        <ul class="credits">
-          <li>Dictionary: JMdict and KANJIDIC2, EDRDG, CC BY-SA 4.0</li>
-          <li>Kanji parts and stroke order: KanjiVG, Ulrich Apel, CC BY-SA 3.0</li>
-          <li>Example sentences and their recordings: Tatoeba Project, CC BY 2.0 FR</li>
-          <li>Word recordings: Kanji alive, CC BY 4.0</li>
-          <li>Pitch accents: Kanjium, CC BY-SA 4.0</li>
-          <li>JLPT levels: Jonathan Waller's lists</li>
-        </ul>
-      </Section>
+      <a class="back-link" href={href.settings()}>
+        ← Settings
+      </a>
+      <h1>{current.title}</h1>
+      {groupBody()}
     </article>
   );
+
+  function groupBody() {
+    switch (current!.id) {
+      case "account":
+        return (
+          <>
+            {syncAvailable && <Account />}
+            <Section
+              title="Backup"
+              hint={
+                sync.user
+                  ? "Your progress is kept in your account and synced. A backup file is an extra copy you keep yourself. Importing a backup merges it with your progress."
+                  : `Progress is saved on this ${isNative ? "phone" : "device"} only. Sign in above, or export now and then, so you can't lose it. Importing a backup merges it with your progress.`
+              }
+            >
+              <div class="backup">
+                <button onClick={() => exportStore(store)}>Export progress</button>
+                <label class="file-button">
+                  Import
+                  <input type="file" accept="application/json" onChange={(e) => importStore(e.target as HTMLInputElement)} />
+                </label>
+              </div>
+            </Section>
+          </>
+        );
+      case "learning":
+        return (
+          <>
+            <Section title="Lessons">
+              <label class="setting">
+                New items per batch
+                <select value={store.settings.batch} onChange={(e) => set("batch", Number((e.target as HTMLSelectElement).value))}>
+                  {[3, 5, 10, 15, 20].map((n) => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </label>
+              <label class="setting">
+                New items per day
+                <select value={store.settings.dailyNew} onChange={(e) => set("dailyNew", Number((e.target as HTMLSelectElement).value))}>
+                  {[0, 5, 10, 15, 20, 30, 50].map((n) => (
+                    <option key={n} value={n}>{n || "No limit"}</option>
+                  ))}
+                </select>
+              </label>
+            </Section>
+            <Section title="What to learn next">
+              <label class="setting">
+                Order
+                <select value={store.settings.order} onChange={(e) => set("order", (e.target as HTMLSelectElement).value as StudyOrder)}>
+                  {(Object.keys(ORDER_LABEL) as StudyOrder[]).map((o) => (
+                    <option key={o} value={o}>{ORDER_LABEL[o]}</option>
+                  ))}
+                </select>
+              </label>
+              {store.settings.order === "custom" ? (
+                <StudyList list={store.settings.customList ?? []} />
+              ) : (
+                <p class="hint">
+                  {store.settings.order === "lessons"
+                    ? "Kanji that share parts or sounds come together, roughly easiest first."
+                    : "Each kanji comes after the radicals it's built from, and words come as soon as you've learned their kanji."}{" "}
+                  Changing this never touches what you've already learned.
+                </p>
+              )}
+            </Section>
+            <Section title="Already known">
+              <a class="more" href={href.known()}>
+                Mark kanji you know, by JLPT level or from a list, or import from WaniKani or Anki →
+              </a>
+            </Section>
+          </>
+        );
+      case "reviews":
+        return (
+          <>
+            <Section title="Reviews">
+              <label class="setting">
+                How you answer
+                <select value={store.settings.answerMode} onChange={(e) => set("answerMode", (e.target as HTMLSelectElement).value as Settings["answerMode"])}>
+                  <option value="self">Show and grade yourself</option>
+                  <option value="typed">Type the answer</option>
+                </select>
+              </label>
+              <p class="hint">
+                {store.settings.answerMode === "typed"
+                  ? "Like WaniKani: type the meaning in English and the reading in kana. Small typos in meanings are fine."
+                  : "Like Anki: think of the answer, show it, then say how well you knew it."}
+              </p>
+              <label class="setting">
+                Kanji cards
+                <select
+                  value={store.settings.kanjiCards ?? "split"}
+                  onChange={(e) => update((s) => setKanjiCards(s, (e.target as HTMLSelectElement).value as "split" | "one"))}
+                >
+                  <option value="split">Meaning and reading apart</option>
+                  <option value="one">One card for both</option>
+                </select>
+              </label>
+              <p class="hint">
+                {store.settings.kanjiCards === "one"
+                  ? "Each kanji is one card: recall its meaning and its readings together. Your progress carried over from the weaker of its two old cards."
+                  : "Each kanji has a meaning card and a reading card, scheduled separately."}
+              </p>
+              <details class="advanced">
+                <summary>Advanced</summary>
+                <label class="setting">
+                  Target recall
+                  <select value={store.settings.retention} onChange={(e) => set("retention", Number((e.target as HTMLSelectElement).value))}>
+                    {[0.8, 0.85, 0.9, 0.95].map((n) => (
+                      <option key={n} value={n}>{Math.round(n * 100)}%</option>
+                    ))}
+                  </select>
+                </label>
+                <p class="hint">
+                  Reviews are scheduled with FSRS, the same algorithm as Anki's newer scheduler. Higher recall means more
+                  frequent reviews; 90% is the Anki default.
+                </p>
+                <FsrsParams />
+              </details>
+            </Section>
+            <Section title="Extra card types" hint="Words always get a card asking their reading and meaning. These add more ways to practise them. Words you learn from now on get the cards you switch on.">
+              {EXTRA_CARDS.map(([face, label, about]) => (
+                <ExtraCard key={face} face={face} label={label} about={about} />
+              ))}
+            </Section>
+            <Section title="Romaji">
+              <label class="check-setting">
+                <input type="checkbox" checked={!!store.settings.romaji} onChange={() => set("romaji", !store.settings.romaji || undefined)} />
+                <span>
+                  Show romaji under readings
+                  <small>For beginners: words, review answers and grammar examples also show the reading in Latin letters. Best switched off once kana feel easy.</small>
+                </span>
+              </label>
+            </Section>
+            <Section title="Fonts">
+              <label class="check-setting">
+                <input type="checkbox" checked={!!store.settings.fonts} onChange={() => set("fonts", !store.settings.fonts || undefined)} />
+                <span>
+                  Mix up the font on review cards
+                  <small>
+                    Kanji look different in print, handwriting and brush. Each card gets a different typeface each day (needs a
+                    connection; offline cards keep the usual font).
+                  </small>
+                </span>
+              </label>
+              <div class="font-samples" lang="ja">
+                {REVIEW_FONTS.map((f) => (
+                  <FontSample key={f} family={f} />
+                ))}
+              </div>
+            </Section>
+          </>
+        );
+      case "app":
+        return (
+          <>
+            <Section title="Bottom bar" hint="Home and Progress are always at the ends, with three tools of your choice between them. Every tool is also on Home.">
+              <BarSetting />
+            </Section>
+            <Section title="Reminders">{isNative ? <NativeReminder /> : <WebReminder />}</Section>
+            <Section
+              title="Vacation mode"
+              hint="Nothing comes due while you're away. When you come back, every review moves on by the time you were gone, so there's no pile waiting."
+            >
+              {store.settings.vacation ? (
+                <div class="backup">
+                  <span>On since {relDate(store.settings.vacation)}</span>
+                  <button onClick={() => update((s) => endVacation(s))}>I'm back</button>
+                </div>
+              ) : (
+                <button class="secondary" onClick={() => update((s) => startVacation(s))}>
+                  Go on vacation
+                </button>
+              )}
+            </Section>
+          </>
+        );
+      case "about":
+        return (
+          <>
+            <Section title="Help">
+              <div class="button-row">
+                <button class="secondary" onClick={startTour}>
+                  Show the tour again
+                </button>
+                <button class="secondary" onClick={openWelcome}>
+                  Change where I'm starting from
+                </button>
+              </div>
+            </Section>
+            <Section title="Version and debug">
+              <Version />
+            </Section>
+            <Section title="Credits">
+              <ul class="credits">
+                <li>Dictionary: JMdict and KANJIDIC2, EDRDG, CC BY-SA 4.0</li>
+                <li>Kanji parts and stroke order: KanjiVG, Ulrich Apel, CC BY-SA 3.0</li>
+                <li>Example sentences and their recordings: Tatoeba Project, CC BY 2.0 FR</li>
+                <li>More example sentences: Wiktionary contributors (via kaikki.org), CC BY-SA 4.0</li>
+                <li>Word recordings: Kanji alive, CC BY 4.0; volunteers on Wikimedia Commons and Lingua Libre (named on each word's page)</li>
+                <li>Pitch accents: Kanjium, CC BY-SA 4.0</li>
+                <li>JLPT levels: Jonathan Waller's lists</li>
+              </ul>
+            </Section>
+          </>
+        );
+    }
+  }
 }
 
 const UPDATE_TEXT: Record<UpdateCheck | "checking", string> = {
@@ -315,7 +373,7 @@ function FontSample({ family }: { family: string }) {
 
 const EXTRA_CARDS: [ExtraFace, string, string][] = [
   ["recall", "English → Japanese", "See the meaning, recall the word. The hardest direction, and the one you need for speaking."],
-  ["listen", "Listening", "Hear the word, say what it means. Uses the recording if there is one, otherwise your device's voice."],
+  ["listen", "Listening", "Hear the word, say what it means. Only for words with a real recording."],
   ["context", "Words in sentences", "Read the word inside an example sentence made of words you know, then give its reading and meaning."],
 ];
 const SPREAD_PER_DAY = 10;
@@ -407,9 +465,8 @@ function Account() {
             ? sync.error
             : sync.last
               ? `Synced ${ago(sync.last)}.`
-              : "Syncs a few seconds after each change."}{" "}
-        Changes go up a few seconds after you make them and when you leave the app; other devices with Nekko open get
-        them within seconds.
+              : "Not synced yet."}{" "}
+        Syncs when you open or leave the app, when you finish your reviews, and a few seconds after other changes.
       </p>
       <div class="backup">
         <button disabled={sync.status === "syncing"} onClick={syncNow}>

@@ -27,7 +27,7 @@ export function HomePage() {
       </h1>
 
       {store.settings.vacation && (
-        <a class="vacation-note" href={href.settings()}>
+        <a class="vacation-note" href={href.settings("app")}>
           Vacation mode is on, so nothing is due. Turn it off in Settings →
         </a>
       )}

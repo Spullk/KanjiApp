@@ -8,6 +8,7 @@ Writes data/*.json. Example sentences are included when sources/tatoeba/ exists.
 
 import bz2
 import csv
+import hashlib
 import json
 import re
 import sqlite3
@@ -17,7 +18,7 @@ from collections import defaultdict
 from functools import lru_cache
 from pathlib import Path
 
-from component_names import COMPONENT_NAMES
+from component_names import RADICAL_NAMES
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ROOT / "sources"
@@ -30,6 +31,8 @@ WORDS_PER_KANJI = 15       # words listed on a kanji's page
 WORDS_PER_READING = 3      # guaranteed words for each reading that has any
 STUDY_WORDS_PER_KANJI = 3  # words added to the review queue per kanji
 STUDY_MAX_RANK = 25        # only fairly common words go into reviews (see priority_rank)
+MIN_WORDS_PER_KANJI = 3    # rare kanji get uncommon words up to this many, so their page isn't empty
+RARE_RANK = 99             # rank of words with no frequency tag at all (marked "rare")
 SENTENCES_PER_WORD = 3
 SENTENCES_PER_LESSON_WORD = 5  # words Nekko teaches get more, so the app can pick ones you can already read
 
@@ -200,12 +203,20 @@ def load_words(con, joyo_set):
 
     entries = {}
     for idseq, forms in kforms.items():
+        rare = None
         for n, (fid, text) in enumerate(forms):
+            if any(b in i for i in kinf[fid] for b in BAD_FORM):
+                continue
             rank = priority_rank(kpri[fid])
-            if rank is None or any(b in i for i in kinf[fid] for b in BAD_FORM):
+            if rank is None:
+                rare = rare or text
                 continue
             entries[idseq] = {"form": text, "rank": rank + n * 5}  # first listed form is preferred
             break
+        else:
+            # No common spelling: kept as an uncommon word, shown only where a kanji or reading has nothing better.
+            if rare:
+                entries[idseq] = {"form": rare, "rank": RARE_RANK, "rare": True}
     ids = set(entries)
 
     kana = defaultdict(list)
@@ -490,6 +501,47 @@ def load_word_audio(words):
     return linked
 
 
+COMMONS_TITLE = (
+    re.compile(r"^LL-Q5287 \(jpn\)-(?P<speaker>[^-]+)-(?P<word>.+)\.\w+$"),  # Lingua Libre
+    re.compile(r"^Ja-(?P<word>.+?)(?:-\d+)?\.\w+$"),                            # made for Wiktionary
+)
+
+
+def load_commons_audio(words):
+    """Words with no Kanji alive recording get one from Wikimedia Commons: w["rec"] = [id, file, author, licence].
+
+    A recording is matched by how the word is written, and only when that spelling belongs to one Nekko word
+    (a kana-only title, only to a word normally written in that kana), so no word gets someone else's audio.
+    """
+    path = SOURCES / "commons_audio.json"
+    if not path.exists():
+        return 0
+    by_spelling = defaultdict(list)
+    for wid, w in words.items():
+        by_spelling[w["w"]].append(wid)
+        if w["usuallyKana"] or not any(map(is_kanji, w["w"])):
+            by_spelling[hira(w["r"])].append(wid)
+    linked = 0
+    # Sorted, so the same list always gives the same choices.
+    for file, (author, licence) in sorted(json.loads(path.read_text(encoding="utf-8")).items()):
+        m = next((m for m in (t.match(file) for t in COMMONS_TITLE) if m), None)
+        if not m or not re.search(r"[\u3040-\u30ff\u4e00-\u9fff]", m["word"]):
+            continue
+        spelling = m["word"].strip()
+        ids = set(by_spelling.get(spelling, ())) | set(by_spelling.get(hira(spelling), ()) if not any(map(is_kanji, spelling)) else ())
+        if len(ids) != 1:
+            continue
+        w = words[ids.pop()]
+        if "audio" in w or "rec" in w:
+            continue
+        # Lingua Libre's author field reads "Speaker: X / Recorder: Y"; the speaker is the one to credit.
+        speaker = re.search(r"Speaker:\s*([^\n]+)", author)
+        author = (speaker[1] if speaker else author.splitlines()[0] if author else m.groupdict().get("speaker") or "").strip()
+        w["rec"] = [hashlib.md5(file.encode()).hexdigest()[:12], file, author, licence]
+        linked += 1
+    return linked
+
+
 def load_sentence_audio(sentences):
     """Mark sentences that have a freely licensed Tatoeba recording: s["audio"] = [audio id, speaker]."""
     path = SOURCES / "tatoeba" / "sentences_with_audio.tar.bz2"
@@ -599,13 +651,12 @@ def main():
         if el in joyo_set:
             continue
         orig = next((o for ps2 in parts.values() for e, _, o in ps2 or () if e == el and o), None)
-        meaning = COMPONENT_NAMES.get(el)
-        if not meaning and el in kanjidic and kanjidic[el]["meanings"]:
-            meaning = kanjidic[el]["meanings"][:3]
-        if not meaning and orig in kanjidic:
-            meaning = kanjidic[orig]["meanings"][:3]
+        meaning = RADICAL_NAMES.get(el) or next(
+            (m for c in (el, orig) if c in kanjidic for m in kanjidic[c]["meanings"][:1]), None)
+        if el not in RADICAL_NAMES:
+            print(f"Component without a name in component_names.py: {el} (using {meaning!r})")
         radicals[el] = {
-            "c": el, "meanings": meaning if isinstance(meaning, list) else [meaning] if meaning else [],
+            "c": el, "meanings": [meaning] if meaning else [el],
             "original": orig, "parts": [{"c": e, "phonetic": p} for e, p, _ in ps or ()],
             "readings": (kanjidic[el]["on"] + kanjidic[el]["kun"]) if el in kanjidic else [],
         }
@@ -640,6 +691,7 @@ def main():
             "uses": [[k, key] for _, _, k, key in segs if k],
             "special": [t for t, _, k, key in segs if key == "*"],
             "senses": e["senses"], "rank": e["rank"], "usuallyKana": e["usuallyKana"],
+            **({"rare": True} if e.get("rare") else {}),
         }
 
     # Per kanji: words grouped by the reading they use
@@ -651,20 +703,26 @@ def main():
             for k in run:
                 if k in joyo_set:
                     by_kanji[k]["*"].append(wid)
-    order_key = lambda wid: (words[wid]["usuallyKana"], words[wid]["rank"], len(words[wid]["w"]), int(wid))
+    order_key = lambda wid: (words[wid].get("rare", False), words[wid]["usuallyKana"], words[wid]["rank"],
+                             len(words[wid]["w"]), int(wid))
+    common = lambda ws: [w for w in ws if not words[w].get("rare")]
     keep = set()
     for k in joyo:
         groups = {key: sorted(set(ws), key=order_key) for key, ws in by_kanji[k].items()}
         chosen = []
         for key in groups:
-            chosen += [w for w in groups[key][:WORDS_PER_READING] if w not in chosen]
-        rest = sorted({w for ws in groups.values() for w in ws} - set(chosen), key=order_key)
+            # A reading no common word uses gets its best uncommon one, so every reading has an example.
+            chosen += [w for w in common(groups[key])[:WORDS_PER_READING] or groups[key][:1] if w not in chosen]
+        rest = sorted({w for ws in groups.values() for w in common(ws)} - set(chosen), key=order_key)
         chosen += rest[:max(0, WORDS_PER_KANJI - len(chosen))]
+        if len(chosen) < MIN_WORDS_PER_KANJI:
+            more = sorted({w for ws in groups.values() for w in ws} - set(chosen), key=order_key)
+            chosen += more[:MIN_WORDS_PER_KANJI - len(chosen)]
         chosen_set = set(chosen)
         readings = []
         for key, rtype in [(r, "on") for r in kanji[k]["on"]] + [(r, "kun") for r in kanji[k]["kun"]]:
             ws = [w for w in groups.get(key, []) if w in chosen_set]
-            readings.append({"r": key, "type": rtype, "words": ws, "count": len(groups.get(key, []))})
+            readings.append({"r": key, "type": rtype, "words": ws, "count": len(common(groups.get(key, [])))})
         # Most-used readings first, so the ones worth learning are on top.
         readings.sort(key=lambda r: (-r["count"], r["type"] != "on"))
         kanji[k]["readings"] = readings
@@ -684,7 +742,7 @@ def main():
             else [[e["form"], e["reading"] if any(map(is_kanji, e["form"])) else None]],
             "uses": [], "special": [], "senses": e["senses"], "rank": e["rank"], "usuallyKana": e["usuallyKana"],
         }
-    for wid in shipped.keys() - words.keys():
+    for wid in sorted(shipped.keys() - words.keys(), key=int):  # sorted, so the same data gives the same file
         words[wid] = {**{k: v for k, v in shipped[wid].items() if k not in ("sentences", "lesson")}, "uses": []}
     for k in joyo:
         for r in kanji[k]["readings"]:
@@ -736,8 +794,16 @@ def main():
             key=lambda o: lesson_of[o])
     radicals = {el: r for el, r in radicals.items() if r["lesson"] or r["usedIn"]}
 
-    sentences = load_sentences(words, {k: v["lesson"] for k, v in kanji.items() if v.get("lesson")})
+    kanji_lesson = {k: v["lesson"] for k, v in kanji.items() if v.get("lesson")}
+    sentences = load_sentences(words, kanji_lesson)
+    for w in words.values():
+        w.setdefault("sentences", [])
+    levels = {wid: word_level(w, kanji_lesson) for wid, w in words.items()}
+    from more_sentences import add_sentences  # it imports this module, so only once it's loaded
+    add_sentences(words, sentences, con, levels.get,
+                  lambda wid: SENTENCES_PER_LESSON_WORD if words[wid].get("lesson") else SENTENCES_PER_WORD)
     audio_words = load_word_audio(words)
+    commons_words = load_commons_audio(words)
     audio_sentences = load_sentence_audio(sentences)
     strokes = load_strokes(joyo)
     for w in words.values():
@@ -748,13 +814,15 @@ def main():
     meta = {
         "counts": {"kanji": len(kanji), "radicals": len(radicals), "words": len(words),
                    "studyWords": len(study_words), "sentences": len(sentences), "lessons": len(lesson_out),
-                   "wordAudio": audio_words, "sentenceAudio": audio_sentences},
+                   "wordAudio": audio_words, "commonsAudio": commons_words, "sentenceAudio": audio_sentences},
         "sources": {
             "JMdict / KANJIDIC2": "Electronic Dictionary Research and Development Group, CC BY-SA 4.0",
             "KanjiVG": "Ulrich Apel and contributors, CC BY-SA 3.0",
             "JLPT levels": "Jonathan Waller's lists via davidluzgouveia/kanji-data, MIT",
-            "Example sentences": "Tatoeba Project, CC BY 2.0 FR; recordings by the named Tatoeba speakers",
-            "Word audio": "Kanji alive, CC BY 4.0",
+            "Example sentences": "Tatoeba Project, CC BY 2.0 FR; recordings by the named Tatoeba speakers; "
+                                 "Wiktionary usage examples via kaikki.org, CC BY-SA 4.0",
+            "Word audio": "Kanji alive, CC BY 4.0; volunteers on Wikimedia Commons and Lingua Libre (each "
+                          "recording's author and licence are listed with it)",
             "Stories": "Aozora Bunko (public domain); Tadoku free readers by NPO多言語多読, CC BY-NC-ND 4.0",
         },
     }

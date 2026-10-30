@@ -5,6 +5,7 @@ import { CardFront } from "../cards";
 import { SelfGrade, TypedAnswer } from "../components/AnswerModes";
 import { tap } from "../native";
 import { relTime } from "../components/ItemCards";
+import { useSyncHold } from "../sync";
 
 const EARLY_WINDOW = 20 * 60 * 1000; // learning steps due within 20 min can be done now
 
@@ -17,6 +18,8 @@ export function ReviewPage() {
   const queue = dueCards(store, early ? now + EARLY_WINDOW : now);
   // A card whose answer was just taken back is asked again straight away.
   const current = undone && queue.includes(undone) ? undone : queue[0];
+  // Answers sync together when the reviews run out or you leave this page.
+  useSyncHold(!!current);
 
   const answer = (g: Grade) => {
     tap(g === Rating.Again);
@@ -46,7 +49,7 @@ export function ReviewPage() {
         <h1>{store.settings.vacation ? "On vacation" : done ? `Nice, ${done} done` : "All caught up"}</h1>
         {store.settings.vacation && (
           <p class="hint">
-            Reviews are paused. Switch vacation mode off in <a href={href.settings()}>Settings</a> when you're back.
+            Reviews are paused. Switch vacation mode off in <a href={href.settings("app")}>Settings</a> when you're back.
           </p>
         )}
         {undoButton}
