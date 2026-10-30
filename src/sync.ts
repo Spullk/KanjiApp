@@ -10,6 +10,7 @@ import type { Bytes } from "firebase/firestore";
 import { firebaseConfig, googleWebClientId } from "./firebase-config";
 import { getStore, merge, migrate, onSave, update, type Store } from "./srs";
 import { isNative } from "./native";
+import { savePushState } from "./push";
 
 export const syncAvailable = !!firebaseConfig;
 
@@ -118,7 +119,7 @@ async function loadFirebase() {
   const app = initializeApp(firebaseConfig!);
   // The app's web view can't use the website's sign-in pop-up, and keeps the session in IndexedDB.
   const a = isNative ? auth.initializeAuth(app, { persistence: auth.indexedDBLocalPersistence }) : auth.getAuth(app);
-  return { auth: a, db: fs.getFirestore(app), authMod: auth, fs };
+  return { app, auth: a, db: fs.getFirestore(app), authMod: auth, fs };
 }
 
 function firebase(): Promise<Fb> {
@@ -218,10 +219,17 @@ export async function signOut() {
 
 let busy = false;
 
+/** What reminders need to reach your account, once you're signed in. */
+export async function account() {
+  const f = await firebase();
+  const uid = f.auth.currentUser?.uid;
+  return uid ? { app: f.app, db: f.db, fs: f.fs, uid } : undefined;
+}
+
 /** Pulls this account's progress, merges it with this device's, and pushes the result back. */
 export async function syncNow() {
   if (busy) return;
-  const { auth, db, fs } = await firebase();
+  const { app, auth, db, fs } = await firebase();
   const uid = auth.currentUser?.uid;
   if (!uid) return;
   busy = true;
@@ -246,6 +254,7 @@ export async function syncNow() {
       batch.set(main, { parts: parts.length, updated: fs.serverTimestamp() });
       await batch.commit();
     }
+    if (!isNative) savePushState({ app, db, fs, uid }, getStore()).catch((e) => console.error("Could not save reminder times", e));
     set({ status: "synced", last: Date.now() });
   } catch (e) {
     console.error("Sync failed", e);

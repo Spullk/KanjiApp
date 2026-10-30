@@ -1,17 +1,21 @@
 import { addFaceToStudied, missingFace, setKanjiCards, type ExtraFace } from "../srs";
-import { DEFAULT_SETTINGS, endVacation, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
+import { DEFAULT_SETTINGS, endVacation, getStore, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
 import { href } from "../router";
 import { Section } from "../components/bits";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
+import { default_w } from "ts-fsrs";
+import { countTested, histories, MIN_REVIEWS, type Result } from "../optimizer";
+import type { Reply, Request } from "../optimizer.worker";
 import { loadFont, REVIEW_FONTS } from "../fonts";
 import { startTour } from "../components/Tour";
 import { openWelcome } from "../components/Welcome";
 import { barTools, PICKS, TOOLS } from "../tools";
 import { allowReminders, isNative, shareFile } from "../native";
-import { installed, prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
+import { account, installed, prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
 import { wordsBySpelling } from "../known";
 import { useData } from "../data";
+import { disablePush, enablePush, pushOnHere, pushSupport, savePushState } from "../push";
 import { buildLabel, checkForUpdate, type UpdateCheck } from "../update";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
@@ -187,19 +191,7 @@ export function SettingsPage() {
         )}
       </Section>
 
-      {isNative && (
-        <Section title="Reminders">
-          <label class="setting">
-            Daily reminder
-            <select value={store.settings.reminder ?? ""} onChange={(e) => setReminder(e.target as HTMLSelectElement)}>
-              <option value="">Off</option>
-              {REMINDER_HOURS.map((h) => (
-                <option key={h} value={h}>{new Date(2000, 0, 1, h).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}</option>
-              ))}
-            </select>
-          </label>
-        </Section>
-      )}
+      <Section title="Reminders">{isNative ? <NativeReminder /> : <WebReminder />}</Section>
 
       {!isDefault && (
         <button class="link-button" onClick={() => update((s) => {
@@ -307,6 +299,7 @@ function FontSample({ family }: { family: string }) {
 const EXTRA_CARDS: [ExtraFace, string, string][] = [
   ["recall", "English → Japanese", "See the meaning, recall the word. The hardest direction, and the one you need for speaking."],
   ["listen", "Listening", "Hear the word, say what it means. Uses the recording if there is one, otherwise your device's voice."],
+  ["context", "Words in sentences", "Read the word inside an example sentence made of words you know, then give its reading and meaning."],
 ];
 const SPREAD_PER_DAY = 10;
 
@@ -427,9 +420,10 @@ function FsrsParams() {
   return (
     <details class="fsrs-params">
       <summary>FSRS parameters: {params ? "your own" : "default"}</summary>
+      <Optimizer />
       <p class="hint">
-        FSRS can be tuned to how your memory works. If you use FSRS in Anki, open a deck's options, press Optimize
-        under FSRS, then copy the numbers in the parameters box and paste them here.
+        Or, if you use FSRS in Anki, open a deck's options, press Optimize under FSRS, then copy the numbers in the
+        parameters box and paste them here.
       </p>
       {params && (
         <p class="hint params-now">
@@ -445,6 +439,161 @@ function FsrsParams() {
       </button>
       {error && <p class="hint error">{error}</p>}
     </details>
+  );
+}
+
+type Run = { step: number; steps: number } | { result: Result } | null;
+
+/** Trains FSRS on this store's own review history, in a worker, and offers the result. */
+function Optimizer() {
+  const store = useStore();
+  const hs = useMemo(() => histories(store.log, store.cards), [store.log, store.cards]);
+  const tested = useMemo(() => countTested(hs), [hs]);
+  const [run, setRun] = useState<Run>(null);
+  const start = () => {
+    const worker = new Worker(new URL("../optimizer.worker.ts", import.meta.url), { type: "module" });
+    setRun({ step: 0, steps: 1 });
+    worker.onmessage = (e: MessageEvent<Reply>) => {
+      if ("progress" in e.data) setRun(e.data.progress);
+      else {
+        setRun({ result: e.data.result });
+        worker.terminate();
+      }
+    };
+    worker.postMessage({ hs, start: store.settings.fsrsParams ?? [...default_w] } satisfies Request);
+  };
+  const result = run && "result" in run ? run.result : undefined;
+  const better = result ? 1 - result.after / result.before : 0;
+  return (
+    <div class="optimizer">
+      <p class="hint">
+        FSRS can be tuned to how your memory works. Nekko can learn it from your own reviews: it uses answers given a
+        day or more after the one before, and you have {tested.toLocaleString()} so far.{" "}
+        {tested < MIN_REVIEWS
+          ? `It needs at least ${MIN_REVIEWS} to start, and works best after about 1,000.`
+          : tested < 1000
+            ? "It works best after about 1,000, so run it again later."
+            : ""}
+      </p>
+      {!run && (
+        <button class="secondary" disabled={tested < MIN_REVIEWS} onClick={start}>
+          Optimize from my reviews
+        </button>
+      )}
+      {run && "step" in run && (
+        <p class="hint">
+          <progress max={run.steps} value={run.step} /> Learning from your reviews…
+        </p>
+      )}
+      {result &&
+        (better > 0.005 ? (
+          <>
+            <p class="hint">
+              New parameters predict your answers {Math.round(better * 100)}% better (log loss {result.before.toFixed(3)} →{" "}
+              {result.after.toFixed(3)}).
+            </p>
+            <button
+              class="primary"
+              onClick={() => {
+                update((s) => (s.settings.fsrsParams = result.w));
+                setRun(null);
+              }}
+            >
+              Use them
+            </button>{" "}
+            <button class="link-button" onClick={() => setRun(null)}>
+              Keep mine
+            </button>
+          </>
+        ) : (
+          <p class="hint">Your current parameters already fit your reviews well. Nothing to change.</p>
+        ))}
+    </div>
+  );
+}
+
+function HourSelect({ onChange, disabled }: { onChange: (e: Event) => void; disabled?: boolean }) {
+  const store = useStore();
+  return (
+    <label class="setting">
+      Daily reminder
+      <select value={store.settings.reminder ?? ""} disabled={disabled} onChange={onChange}>
+        <option value="">Off</option>
+        {REMINDER_HOURS.map((h) => (
+          <option key={h} value={h}>
+            {new Date(2000, 0, 1, h).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function NativeReminder() {
+  return <HourSelect onChange={(e) => setReminder(e.target as HTMLSelectElement)} />;
+}
+
+/** Push reminders on the website: the hour is shared by your devices, and each device opts in. */
+function WebReminder() {
+  const store = useStore();
+  const sync = useSync();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string>();
+  const [here, setHere] = useState(pushOnHere);
+  const support = pushSupport();
+  if (support === "add-to-home-screen") {
+    return (
+      <p class="hint">
+        On iPhone, reminders only work in the home-screen app: in Safari, tap Share, then Add to Home Screen, and
+        open Nekko from there.
+      </p>
+    );
+  }
+  if (support === "no") return <p class="hint">This browser can't show reminders.</p>;
+  if (!syncAvailable || !sync.user) {
+    return <p class="hint">Sign in at the top of Settings first. Reminders are sent to the devices on your account.</p>;
+  }
+  const turnOn = async () => {
+    const acc = await account();
+    if (!acc) return;
+    setBusy(true);
+    setError(await enablePush(acc, getStore()));
+    setHere(pushOnHere());
+    setBusy(false);
+  };
+  const choose = async (e: Event) => {
+    const value = (e.target as HTMLSelectElement).value;
+    update((s) => (s.settings.reminder = value === "" ? undefined : Number(value)));
+    const acc = await account();
+    if (!acc) return;
+    if (value !== "" && !pushOnHere()) await turnOn();
+    else await savePushState(acc, getStore()).catch(() => setError("Couldn't save the reminder time. It'll save on the next sync."));
+  };
+  return (
+    <>
+      <HourSelect onChange={choose} disabled={busy} />
+      {store.settings.reminder !== undefined &&
+        (here ? (
+          <p class="hint">
+            This device gets a reminder when reviews are waiting, within about half an hour of that time.{" "}
+            <button
+              class="link-button"
+              onClick={async () => {
+                const acc = await account();
+                if (acc) await disablePush(acc);
+                setHere(false);
+              }}
+            >
+              Stop on this device
+            </button>
+          </p>
+        ) : (
+          <button class="secondary" disabled={busy} onClick={turnOn}>
+            Get reminders on this device too
+          </button>
+        ))}
+      {error && <p class="hint error">{error}</p>}
+    </>
   );
 }
 

@@ -51,6 +51,8 @@ export default defineConfig({
         // The dictionary chunks are a few MB each; cache them so the app works offline.
         maximumFileSizeToCacheInBytes: 16 * 1024 * 1024,
         globPatterns: ["**/*.{js,css,html,svg,png}"],
+        // Daily reminders: public/push-sw.js shows the push messages.
+        importScripts: ["push-sw.js"],
       },
     }),
   ],

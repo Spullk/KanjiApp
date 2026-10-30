@@ -11,7 +11,7 @@ export { Rating, State };
 export type { Grade };
 
 export type ItemKind = "radical" | "kanji" | "word" | "grammar";
-export type Face = "meaning" | "reading" | "word" | "recall" | "listen" | "both" | "cloze";
+export type Face = "meaning" | "reading" | "word" | "recall" | "listen" | "both" | "cloze" | "context";
 
 /** A study item ("kanji:語") and the cards it always makes ("kanji:語:meaning", "kanji:語:reading"). */
 export const FACES: Record<ItemKind, Face[]> = {
@@ -21,9 +21,9 @@ export const FACES: Record<ItemKind, Face[]> = {
   grammar: ["cloze"],
 };
 
-/** Optional cards you can switch on in Settings: recall (English → Japanese) and listening, for words. */
-export type ExtraFace = "recall" | "listen";
-export const EXTRA_FACES: Record<ItemKind, ExtraFace[]> = { radical: [], kanji: [], word: ["recall", "listen"], grammar: [] };
+/** Optional cards you can switch on in Settings, for words: recall (English → Japanese), listening, and the word in a sentence. */
+export type ExtraFace = "recall" | "listen" | "context";
+export const EXTRA_FACES: Record<ItemKind, ExtraFace[]> = { radical: [], kanji: [], word: ["recall", "listen", "context"], grammar: [] };
 
 /** With Settings.kanjiCards "one", a kanji has a single card asking meaning and reading together. */
 const ONE_CARD: Partial<Record<ItemKind, Face[]>> = { kanji: ["both"] };

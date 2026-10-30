@@ -2,7 +2,8 @@ import { useData } from "../data";
 import { href } from "../router";
 import { StudyButton } from "../components/ItemCards";
 import { StrokeOrder } from "../components/StrokeOrder";
-import { Badges, Chip, Chips, MoreList, ReadingText, Section, SentenceView, WordRow } from "../components/bits";
+import { KanjiExamples } from "../components/Examples";
+import { Badges, Chip, Chips, MoreList, ReadingText, Section, WordRow } from "../components/bits";
 
 export function KanjiPage({ c }: { c: string }) {
   const { kanji, words } = useData();
@@ -11,7 +12,6 @@ export function KanjiPage({ c }: { c: string }) {
 
   const used = k.readings.filter((r) => r.words.length);
   const rare = k.readings.filter((r) => !r.words.length);
-  const sentences = [...new Set(k.words.flatMap((w) => words[w]?.sentences.slice(0, 1) ?? []))].slice(0, 6);
 
   return (
     <article class="page kanji-page">
@@ -97,13 +97,7 @@ export function KanjiPage({ c }: { c: string }) {
         </Section>
       )}
 
-      {sentences.length > 0 && (
-        <Section title="Example sentences">
-          {sentences.map((s) => (
-            <SentenceView key={s} id={s} highlight={k.c} />
-          ))}
-        </Section>
-      )}
+      <KanjiExamples c={k.c} words={k.words} />
 
       <nav class="pager">
         <a href={href.lesson(k.lesson)}>Lesson {k.lesson} →</a>

@@ -31,6 +31,7 @@ WORDS_PER_READING = 3      # guaranteed words for each reading that has any
 STUDY_WORDS_PER_KANJI = 3  # words added to the review queue per kanji
 STUDY_MAX_RANK = 25        # only fairly common words go into reviews (see priority_rank)
 SENTENCES_PER_WORD = 3
+SENTENCES_PER_LESSON_WORD = 5  # words Nekko teaches get more, so the app can pick ones you can already read
 
 KVG = "{http://kanjivg.tagaini.net}"
 SVG = "{http://www.w3.org/2000/svg}"
@@ -366,8 +367,21 @@ B_TOKEN = re.compile(r"^(?P<head>[^(\[{~]+)(?:\((?P<read>[^)]*)\))?(?:\[(?P<sens
                      r"(?:\{(?P<surface>[^}]*)\})?(?P<checked>~)?$")
 
 
-def load_sentences(words):
-    """Attach Tatoeba example sentences to words via Tatoeba's Japanese word index."""
+def word_level(w, kanji_lesson):
+    """When a word becomes readable: its lesson, else its last kanji's lesson; 0 for kana words, None if never."""
+    if w.get("lesson"):
+        return w["lesson"]
+    lessons = [kanji_lesson.get(c) for c in w["w"] if is_kanji(c)]
+    if not lessons:
+        return 0
+    return None if None in lessons else max(lessons)
+
+
+def load_sentences(words, kanji_lesson=None):
+    """
+    Attach Tatoeba example sentences to words via Tatoeba's Japanese word index. Easy sentences come first: the
+    fewest other words that are taught later than the word itself (`kanji_lesson` maps each kanji to its lesson).
+    """
     folder = SOURCES / "tatoeba"
     if not (folder / "jpn_indices.tar.bz2").exists():
         print("Sentences: skipped (run fetch_sources.py --sentences)")
@@ -406,17 +420,27 @@ def load_sentences(words):
                 if sid.isdigit() and int(sid) in wanted:
                     text[int(sid)] = t
 
+    levels = {wid: word_level(w, kanji_lesson or {}) for wid, w in words.items()}
+
+    def harder(wid, jid):
+        """Words in the sentence that are taught after this one (or never)."""
+        own = levels[wid]
+        if own is None:
+            return 0
+        return sum(1 for other, _ in tokens[jid] if other != wid and (levels[other] is None or levels[other] > own))
+
     sentences = {}
     for wid, cs in candidates.items():
-        # Checked examples first, then sentences of a comfortable length.
+        # Easy sentences first, then checked examples, then a comfortable length.
         cs = sorted((c for c in cs if c[1] in text and c[2] in text),
-                    key=lambda c: (c[0], abs(len(text[c[1]]) - 15)))
+                    key=lambda c: (min(harder(wid, c[1]), 3), c[0], abs(len(text[c[1]]) - 15)))
+        limit = SENTENCES_PER_LESSON_WORD if words[wid].get("lesson") else SENTENCES_PER_WORD
         chosen = []
         for _, jid, eid in cs:
             if jid not in chosen:
                 chosen.append(jid)
                 sentences.setdefault(str(jid), {"ja": text[jid], "en": text[eid]})
-            if len(chosen) == SENTENCES_PER_WORD:
+            if len(chosen) == limit:
                 break
         words[wid]["sentences"] = [str(j) for j in chosen]
 
@@ -700,7 +724,7 @@ def main():
             key=lambda o: lesson_of[o])
     radicals = {el: r for el, r in radicals.items() if r["lesson"] or r["usedIn"]}
 
-    sentences = load_sentences(words)
+    sentences = load_sentences(words, {k: v["lesson"] for k, v in kanji.items() if v.get("lesson")})
     audio_words = load_word_audio(words)
     audio_sentences = load_sentence_audio(sentences)
     strokes = load_strokes(joyo)

@@ -5,15 +5,16 @@ import type { ComponentChildren } from "preact";
 import { useEffect } from "preact/hooks";
 import { playWord } from "./audio";
 import { PitchAccent } from "./components/Pitch";
-import { useData, type Data } from "./data";
+import { useData, type Data, type Sentence } from "./data";
 import { href } from "./router";
-import { getStore, parseCardId, useStore, type Face, type ItemKind } from "./srs";
+import { cardId, getStore, parseCardId, useStore, type Face, type ItemKind, type Store } from "./srs";
 import { cloze, exampleFor } from "./grammar";
 import { furiganaRule } from "./reading";
 import { fontFor, loadFont } from "./fonts";
-import { Furigana, WordSpeak } from "./components/bits";
+import { alignFurigana, Furigana, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
 import { readingForms } from "./answers";
+import { examplesFor, knowledgeOf, patternSentence } from "./examples";
 
 /** One thing to type in typed-answer mode, and every answer that counts. */
 export type Ask = { label: "Meaning" | "Reading" | "Gap"; kana: boolean; answers(data: Data, key: string): string[]; placeholder?: string };
@@ -77,6 +78,48 @@ function GrammarGap({ id, filled }: { id: string; filled?: boolean }) {
         <Furigana segments={c.after} link={false} hide={hide} reveal />
       </div>
       <div class="cloze-en">{c.en}</div>
+    </>
+  );
+}
+
+/** One of the word's example sentences you can read, a different one of the easiest few at each review. */
+export function contextSentence(store: Store, data: Data, key: string): Sentence {
+  const list = examplesFor(data, knowledgeOf(store, data), key, 3);
+  const easiest = list.filter((e) => e.unknown.length <= list[0].unknown.length + 1);
+  const reps = store.cards[cardId("word", key, "context")]?.reps ?? 0;
+  if (easiest.length && easiest[0].unknown.length <= 1) return data.sentences[easiest[reps % easiest.length].id];
+  const w = data.words[key];
+  return patternSentence(data, key) ?? (list.length ? data.sentences[list[0].id] : { ja: w.w, en: "", links: [[0, w.w.length, key]] });
+}
+
+/** The sentence with the word marked; its reading shows only once answered. Other words keep the furigana you need. */
+function Context({ id, filled }: { id: string; filled?: boolean }) {
+  const data = useData();
+  const store = useStore();
+  const s = contextSentence(store, data, id);
+  const parts: ComponentChildren[] = [];
+  let pos = 0;
+  for (const [start, len, wid] of s.links) {
+    if (start < pos) continue;
+    if (start > pos) parts.push(s.ja.slice(pos, start));
+    const text = s.ja.slice(start, start + len);
+    const segs = data.words[wid] && alignFurigana(text, data.words[wid].furigana);
+    if (wid === id) {
+      parts.push(
+        <b key={start} class="cloze-gap filled">
+          {filled && segs ? <Furigana segments={segs} link={false} /> : text}
+        </b>,
+      );
+    } else parts.push(segs ? <Furigana key={start} segments={segs} link={false} hide={furiganaRule(store, data, wid)} reveal /> : text);
+    pos = start + len;
+  }
+  parts.push(s.ja.slice(pos));
+  return (
+    <>
+      <div class="cloze" lang="ja">
+        {parts}
+      </div>
+      {filled && s.en && <div class="cloze-en">{s.en}</div>}
     </>
   );
 }
@@ -184,6 +227,19 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
         answers: (data, key) => cloze(exampleFor(getStore(), data.grammar[key])).answers,
       },
     ],
+  },
+  "word:context": {
+    prompt: "Word in a sentence · reading and meaning?",
+    frontStyle: "sentence",
+    front: (_, key) => <Context id={key} />,
+    back: (data, key) => (
+      <>
+        <Context id={key} filled />
+        {wordBack(data, key, false)}
+      </>
+    ),
+    link: href.word,
+    asks: [reading((data, key) => [data.words[key].r]), meaning((data, key) => data.words[key].senses.flatMap((s) => s.gloss))],
   },
   "word:listen": {
     prompt: "Listening · what does it mean?",
