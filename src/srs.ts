@@ -6,6 +6,7 @@ import { checkParameters, createEmptyCard, fsrs, generatorParameters, migratePar
 import type { Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
 import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order";
+import { canonical, compactStore, expandStore, isCompact } from "./compact";
 
 export { Rating, State };
 export type { Grade };
@@ -154,6 +155,7 @@ export function emptyStore(): Store {
 
 /** Brings saved progress or a backup from any earlier version up to the current shape. */
 export function migrate(raw: unknown): Store {
+  if (isCompact(raw)) raw = expandStore(raw);
   const old = raw as Omit<Partial<Store>, "version"> & { version?: number };
   if (!old || typeof old !== "object" || typeof old.cards !== "object" || ![1, 2].includes(old.version!)) {
     throw new Error("not a Nekko backup");
@@ -168,6 +170,10 @@ export function migrate(raw: unknown): Store {
   return s;
 }
 
+/** Which of two copies of a card or item to keep when both changed at the same moment: the same one on every
+ * device, so two devices never keep sending each other their own copy. */
+const later = (a: { updated: number }, b: { updated: number }) => a.updated > b.updated || (a.updated === b.updated && canonical(a) > canonical(b));
+
 /** Combines two copies of the progress, e.g. a backup from another device with this one. */
 export function merge(local: Store, other: Store): Store {
   const out = emptyStore();
@@ -177,20 +183,21 @@ export function merge(local: Store, other: Store): Store {
   for (const c of [local.cards, other.cards]) {
     for (const [id, card] of Object.entries(c)) {
       const have = out.cards[id];
-      if ((!have || card.updated > have.updated) && card.updated > (out.removed[id] ?? -Infinity)) out.cards[id] = card;
+      if ((!have || later(card, have)) && card.updated > (out.removed[id] ?? -Infinity)) out.cards[id] = card;
     }
   }
   for (const id of Object.keys(out.cards)) delete out.removed[id];
   for (const items of [local.items, other.items]) {
     for (const [id, info] of Object.entries(items)) {
-      if (!out.items[id] || info.updated > out.items[id].updated) out.items[id] = info;
+      if (!out.items[id] || later(info, out.items[id])) out.items[id] = info;
     }
   }
   const seen = new Set<string>();
   out.log = [...local.log, ...other.log]
     .filter(([id, , t]) => !seen.has(id + "@" + t) && !!seen.add(id + "@" + t) && !out.removed[undone(id, t)])
     .sort((a, b) => a[2] - b[2]);
-  const newer = other.settingsUpdated > local.settingsUpdated ? other : local;
+  const tie = other.settingsUpdated === local.settingsUpdated && local.settingsUpdated > 0 && canonical(other.settings) > canonical(local.settings);
+  const newer = other.settingsUpdated > local.settingsUpdated || tie ? other : local;
   out.settings = { ...newer.settings };
   out.settingsUpdated = newer.settingsUpdated;
   out.undo = local.undo;
@@ -603,7 +610,7 @@ export function flushSave() {
   if (saveTimer === undefined) return;
   clearTimeout(saveTimer);
   saveTimer = undefined;
-  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
+  storage.save(JSON.stringify(compactStore(store))).catch((e) => console.error("Could not save progress", e));
 }
 
 /** Runs after every saved change (the native app reschedules its reminders here). */

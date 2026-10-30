@@ -407,7 +407,9 @@ function Account() {
             ? sync.error
             : sync.last
               ? `Synced ${ago(sync.last)}.`
-              : "Syncs a few seconds after each change."}
+              : "Syncs a few seconds after each change."}{" "}
+        Changes go up a few seconds after you make them and when you leave the app; other devices with Nekko open get
+        them within seconds.
       </p>
       <div class="backup">
         <button disabled={sync.status === "syncing"} onClick={syncNow}>
