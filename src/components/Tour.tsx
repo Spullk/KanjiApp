@@ -90,9 +90,17 @@ const ALL_STEPS: Step[] = [
 
 const listeners = new Set<() => void>();
 
+const closers = new Set<() => void>();
+
 /** Opens the tour (from Settings). */
 export function startTour() {
   listeners.forEach((l) => l());
+}
+
+/** Closes the tour and doesn't show it again here (someone who signed in and already uses Nekko). */
+export function endTour() {
+  markSeen();
+  closers.forEach((l) => l());
 }
 
 function seen(): boolean {
@@ -120,8 +128,13 @@ export function Tour() {
   const STEPS = ALL_STEPS.filter((s) => !s.tab || bar.includes(s.tab));
   useEffect(() => {
     const open = () => setStep(0);
+    const close = () => setStep(null);
     listeners.add(open);
-    return () => void listeners.delete(open);
+    closers.add(close);
+    return () => {
+      listeners.delete(open);
+      closers.delete(close);
+    };
   }, []);
   const s = step === null ? undefined : STEPS[step];
   useEffect(() => {

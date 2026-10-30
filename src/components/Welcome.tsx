@@ -6,7 +6,8 @@ import { href } from "../router";
 import { getStore, update, useStore, type Settings } from "../srs";
 import { BEGINNER_TABS } from "../tools";
 import { KANA_ROWS } from "../kana";
-import { startTour } from "./Tour";
+import { endTour, startTour } from "./Tour";
+import { prepareSignIn, signIn, syncAvailable, useSync } from "../sync";
 import { KanaQuestion } from "./KanaQuestion";
 
 type Start = NonNullable<Settings["start"]>;
@@ -29,13 +30,30 @@ export function openWelcome() {
 
 export function Welcome() {
   const store = useStore();
+  const sync = useSync();
   const [open, setOpen] = useState(() => !getStore().settings.start && !Object.keys(getStore().cards).length);
+  // Opened by itself on a first visit, rather than from Settings.
+  const [first, setFirst] = useState(open);
   const [check, setCheck] = useState<{ kana: string[]; right: number; turn: number } | null>(null);
   useEffect(() => {
-    const l = () => setOpen(true);
+    const l = () => {
+      setOpen(true);
+      setFirst(false);
+    };
     listeners.add(l);
     return () => void listeners.delete(l);
   }, []);
+  useEffect(() => {
+    if (open && syncAvailable) prepareSignIn();
+  }, [open]);
+  // Signed in on a new device and your progress came in: you've started already, so there's nothing to ask.
+  const returning = !!sync.user && (!!store.settings.start || Object.keys(store.cards).length > 0);
+  useEffect(() => {
+    if (open && first && returning) {
+      setOpen(false);
+      endTour();
+    }
+  }, [open, first, returning]);
   if (!open) return null;
 
   const choose = (l: (typeof LEVELS)[number]) => {
@@ -96,6 +114,7 @@ export function Welcome() {
                 Not sure? Take a 1-minute kana check
               </button>
             )}
+            {syncAvailable && first && <WelcomeSignIn />}
             {store.settings.start && (
               <button class="link-button" onClick={() => setOpen(false)}>
                 Close
@@ -104,6 +123,29 @@ export function Welcome() {
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+/** For someone who already uses Nekko elsewhere: sign in and bring their progress. */
+function WelcomeSignIn() {
+  const sync = useSync();
+  if (sync.user) {
+    return (
+      <p class="hint welcome-signin">
+        {sync.status === "syncing"
+          ? `Signed in as ${sync.user.email || sync.user.name}. Bringing in your progress…`
+          : `Signed in as ${sync.user.email || sync.user.name}. No progress saved on this account yet, so pick where you're starting from.`}
+      </p>
+    );
+  }
+  return (
+    <div class="welcome-signin">
+      <p class="hint">Already use Nekko on another device?</p>
+      <button class="secondary" disabled={sync.status === "signing-in"} onClick={signIn}>
+        {sync.status === "signing-in" ? "Opening Google sign-in…" : "Sign in with Google"}
+      </button>
+      {sync.status === "error" && sync.error && <p class="hint error">{sync.error}</p>}
     </div>
   );
 }
