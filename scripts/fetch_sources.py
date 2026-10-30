@@ -51,6 +51,9 @@ TATOEBA = {
 }
 # Wiktionary's Japanese entries as JSON lines (kaikki.org), for their usage examples.
 KAIKKI_URL = "https://kaikki.org/dictionary/Japanese/kaikki.org-dictionary-Japanese.jsonl"
+# The Japanese-English Subtitle Corpus (JESC, Stanford, CC BY-SA 4.0): lines from film and TV subtitles, used only
+# for words the other sources have too few sentences for.
+JESC_URL = "https://nlp.stanford.edu/projects/jesc/data/raw.tar.gz"
 
 JOYO_GRADES = ("1", "2", "3", "4", "5", "6", "8")
 
@@ -173,6 +176,12 @@ def fetch_sentences():
         print("Wiktionary examples: ok")
     except OSError as e:
         print(f"Wiktionary examples: skipped ({e})")
+    try:
+        (SOURCES / "jesc").mkdir(exist_ok=True)
+        download(JESC_URL, SOURCES / "jesc" / "raw.tar.gz")
+        print("Subtitle sentences (JESC): ok")
+    except OSError as e:
+        print(f"Subtitle sentences (JESC): skipped ({e})")
 
 
 def main():

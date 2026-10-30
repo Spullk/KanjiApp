@@ -511,7 +511,8 @@ def load_commons_audio(words):
     """Words with no Kanji alive recording get one from Wikimedia Commons: w["rec"] = [id, file, author, licence].
 
     A recording is matched by how the word is written, and only when that spelling belongs to one Nekko word
-    (a kana-only title, only to a word normally written in that kana), so no word gets someone else's audio.
+    (a kana-only title, only to a word normally written in that kana; uncommon words don't count when a common
+    one is written the same), so no word gets someone else's audio.
     """
     path = SOURCES / "commons_audio.json"
     if not path.exists():
@@ -522,23 +523,33 @@ def load_commons_audio(words):
         if w["usuallyKana"] or not any(map(is_kanji, w["w"])):
             by_spelling[hira(w["r"])].append(wid)
     linked = 0
+    # Why the others weren't used, with a few examples each, printed for the build log.
+    missed = defaultdict(list)
     # Sorted, so the same list always gives the same choices.
     for file, (author, licence) in sorted(json.loads(path.read_text(encoding="utf-8")).items()):
         m = next((m for m in (t.match(file) for t in COMMONS_TITLE) if m), None)
         if not m or not re.search(r"[\u3040-\u30ff\u4e00-\u9fff]", m["word"]):
+            missed["title not in Japanese script" if m else "other title"].append(file)
             continue
         spelling = m["word"].strip()
         ids = set(by_spelling.get(spelling, ())) | set(by_spelling.get(hira(spelling), ()) if not any(map(is_kanji, spelling)) else ())
+        # 猫 is also an uncommon word read ねこま; someone recording 猫 says the common one, ねこ.
+        if len(ids) > 1 and sum(1 for i in ids if not words[i].get("rare")) == 1:
+            ids = {i for i in ids if not words[i].get("rare")}
         if len(ids) != 1:
+            missed["not a Nekko word" if not ids else "spelling of several words"].append(spelling)
             continue
         w = words[ids.pop()]
         if "audio" in w or "rec" in w:
+            missed["word already has a recording"].append(spelling)
             continue
         # Lingua Libre's author field reads "Speaker: X / Recorder: Y"; the speaker is the one to credit.
         speaker = re.search(r"Speaker:\s*([^\n]+)", author)
         author = (speaker[1] if speaker else author.splitlines()[0] if author else m.groupdict().get("speaker") or "").strip()
         w["rec"] = [hashlib.md5(file.encode()).hexdigest()[:12], file, author, licence]
         linked += 1
+    for why, items in sorted(missed.items(), key=lambda kv: -len(kv[1])):
+        print(f"Commons recordings not used, {why}: {len(items)}, e.g. {', '.join(items[:40])}")
     return linked
 
 
@@ -820,7 +831,8 @@ def main():
             "KanjiVG": "Ulrich Apel and contributors, CC BY-SA 3.0",
             "JLPT levels": "Jonathan Waller's lists via davidluzgouveia/kanji-data, MIT",
             "Example sentences": "Tatoeba Project, CC BY 2.0 FR; recordings by the named Tatoeba speakers; "
-                                 "Wiktionary usage examples via kaikki.org, CC BY-SA 4.0",
+                                 "Wiktionary usage examples via kaikki.org, CC BY-SA 4.0; "
+                                 "film and TV subtitles from JESC (Pryzant et al., Stanford), CC BY-SA 4.0",
             "Word audio": "Kanji alive, CC BY 4.0; volunteers on Wikimedia Commons and Lingua Libre (each "
                           "recording's author and licence are listed with it)",
             "Stories": "Aozora Bunko (public domain); Tadoku free readers by NPO多言語多読, CC BY-NC-ND 4.0",

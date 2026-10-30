@@ -278,6 +278,7 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                 <li>Kanji parts and stroke order: KanjiVG, Ulrich Apel, CC BY-SA 3.0</li>
                 <li>Example sentences and their recordings: Tatoeba Project, CC BY 2.0 FR</li>
                 <li>More example sentences: Wiktionary contributors (via kaikki.org), CC BY-SA 4.0</li>
+                <li>Film and TV subtitle sentences: JESC, Pryzant et al., Stanford, CC BY-SA 4.0</li>
                 <li>Word recordings: Kanji alive, CC BY 4.0; volunteers on Wikimedia Commons and Lingua Libre (named on each word's page)</li>
                 <li>Pitch accents: Kanjium, CC BY-SA 4.0</li>
                 <li>JLPT levels: Jonathan Waller's lists</li>
