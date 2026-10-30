@@ -6,7 +6,7 @@ import { useEffect, useState } from "preact/hooks";
 import { loadFont, REVIEW_FONTS } from "../fonts";
 import { startTour } from "../components/Tour";
 import { openWelcome } from "../components/Welcome";
-import { barTools, PICKS, TOOLS } from "../tools";
+import { pickedTools, PICKS, TOOLS } from "../tools";
 import { allowReminders, isNative, shareFile } from "../native";
 import { installed, prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
@@ -30,12 +30,12 @@ export function SettingsPage() {
 
       {syncAvailable && <Account />}
 
-      <Section title="Bottom bar" hint="Home is always first. Pick the other four; every tool is also on Home.">
+      <Section title="Bottom bar" hint="Home and Progress are always at the ends. Pick the three tools between them; every tool is also on Home.">
         {Array.from({ length: PICKS }, (_, i) => {
-          const tabs = barTools(store.settings).slice(1).map((t) => t.tab);
+          const tabs = pickedTools(store.settings).map((t) => t.tab);
           return (
             <label class="setting" key={i}>
-              Tab {i + 2}
+              Tool {i + 1}
               <select
                 value={tabs[i]}
                 onChange={(e) => {
@@ -98,7 +98,7 @@ export function SettingsPage() {
         )}
       </Section>
 
-      <Section title="Already know some?">
+      <Section title="Already known">
         <a class="more" href={href.known()}>
           Mark kanji you know, by JLPT level or from a list, or import from WaniKani or Anki →
         </a>

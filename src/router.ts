@@ -12,6 +12,7 @@ export type Route =
   | { page: "settings" }
   | { page: "known" }
   | { page: "practice"; set: PracticeSet }
+  | { page: "extra" }
   | { page: "write"; c?: string }
   | { page: "read" }
   | { page: "sentences" }
@@ -36,6 +37,7 @@ export const href = {
   settings: () => "#/settings",
   known: () => "#/known",
   practice: (set: PracticeSet) => `#/practice/${set}`,
+  extra: () => "#/practice",
   read: () => "#/read",
   sentences: () => "#/sentences",
   story: (id: string) => `#/story/${id}`,
@@ -88,7 +90,7 @@ export function parse(hash: string): Route {
     case "write":
       return { page: "write", c: seg[1] };
     case "practice":
-      return ["mistakes", "leeches", "recent"].includes(seg[1]) ? { page: "practice", set: seg[1] as PracticeSet } : { page: "progress" };
+      return ["mistakes", "leeches", "recent"].includes(seg[1]) ? { page: "practice", set: seg[1] as PracticeSet } : { page: "extra" };
     case "lesson":
       return { page: "lesson", id: Number(seg[1]) };
     case "k":

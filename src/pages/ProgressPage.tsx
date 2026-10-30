@@ -1,6 +1,6 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { isLeech, PRACTICE_LABEL, practiceCards, STAGE_LABEL, stageOf, useStore, type ItemKind, type PracticeSet, type Stage } from "../srs";
+import { isLeech, STAGE_LABEL, stageOf, useStore, type ItemKind, type Stage } from "../srs";
 import { Chip, Section, WordRow } from "../components/bits";
 import { GrammarRow } from "./GrammarPages";
 import { accuracyByType, DAY, dayKey, duration, hardestItems, heatmap, percent, reviewsPerDay, streak as streakOf, timeSpent, type Accuracy } from "../stats";
@@ -74,24 +74,6 @@ export function ProgressPage() {
         <Tile n={perDay.get(dayKey(now)) ?? 0} label="reviewed today" />
         <Tile n={streak} label={streak === 1 ? "day streak" : "days streak"} />
       </div>
-
-      <Section title="Extra practice" hint="Go over these as often as you like. It doesn't change when anything is due.">
-        <div class="practice-links">
-          {(["mistakes", "leeches", "recent"] as PracticeSet[]).map((set) => {
-            const n = practiceCards(store, set, now).length;
-            return (
-              <a key={set} class={n ? "" : "quiet"} href={href.practice(set)}>
-                <b>{n}</b>
-                {PRACTICE_LABEL[set]}
-              </a>
-            );
-          })}
-          <a href={href.write()}>
-            <b>筆</b>
-            Writing
-          </a>
-        </div>
-      </Section>
 
       {store.log.length > 0 && (
         <Section title="Last 30 days">

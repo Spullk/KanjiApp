@@ -1848,13 +1848,7 @@ button.next.wrong {
 body[data-tour] .tabbar a {
   opacity: 0.35;
 }
-body[data-tour="home"] .tabbar a[data-tab="home"],
-body[data-tour="review"] .tabbar a[data-tab="review"],
-body[data-tour="search"] .tabbar a[data-tab="search"],
-body[data-tour="read"] .tabbar a[data-tab="read"],
-body[data-tour="progress"] .tabbar a[data-tab="progress"],
-body[data-tour="grammar"] .tabbar a[data-tab="grammar"],
-body[data-tour="kana"] .tabbar a[data-tab="kana"] {
+.tabbar a.tour-on {
   opacity: 1;
   color: var(--kanji);
   transform: scale(1.12);
@@ -2219,4 +2213,63 @@ ruby.tap-reading {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* ---------- tool colour groups: Study pink, Read and look up purple, Foundations green */
+
+.tabbar a.study span {
+  color: var(--kanji);
+}
+.tabbar a.read span {
+  color: var(--vocab);
+}
+.tabbar a.basics span {
+  color: var(--grammar);
+}
+.tabbar a svg {
+  width: 22px;
+  height: 22px;
+  margin: 3px 0 2px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  fill: none;
+}
+.tabbar a:not(.on) span,
+.tabbar a:not(.on) svg {
+  opacity: 0.7;
+}
+.tabbar a.on {
+  font-weight: 600;
+}
+.tabbar a.on.read {
+  color: var(--vocab);
+}
+.tabbar a.on.basics {
+  color: var(--grammar);
+}
+.section:has(.tool-grid.study) h2 {
+  color: var(--kanji);
+}
+.section:has(.tool-grid.read) h2 {
+  color: var(--vocab);
+}
+.section:has(.tool-grid.basics) h2 {
+  color: var(--grammar);
+}
+.tool {
+  border-left: 6px solid var(--tool);
+}
+.tool-icon {
+  color: var(--tool);
+}
+.tool-grid.study {
+  --tool: var(--kanji);
+}
+.tool-grid.read {
+  --tool: var(--vocab);
+}
+.tool-grid.basics {
+  --tool: var(--grammar);
 }
