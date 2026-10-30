@@ -121,8 +121,11 @@ def jesc_pool():
             continue
         if not JESC_RATIO[0] <= len(en) / len(ja) <= JESC_RATIO[1]:
             continue
+        # Whole lines only: a subtitle cut off mid-sentence ("…ようになると") has no end mark.
+        if not re.search(r"[。！？!?]$", ja) or not re.search(r"[.!?]['\"]?$", en):
+            continue
         # Plain sentences: hiragana, no Latin letters, no sound or speaker notes, nothing crude.
-        if re.search(r"[A-Za-zＡ-Ｚａ-ｚ（）()♪≪≫【】→＜＞<>]", ja) or not re.search(r"[\u3041-\u309f]", ja):
+        if re.search(r"[A-Za-zＡ-Ｚａ-ｚ（）()♪≪≫《》【】→➡＜＞<>]|。、|、。", ja) or not re.search(r"[\u3041-\u309f]", ja):
             continue
         if not re.match(r"[\"'A-Za-z0-9]", en) or JESC_SKIP.search(en) or JESC_SKIP_JA.search(ja):
             continue
@@ -152,11 +155,22 @@ def add_sentences(words, sentences, con, level, wanted):
             ("Tatoeba and Wiktionary", lambda: (tatoeba_pool(set(sentences)), wiktionary_pool()), None),
             # 2.8 million lines: stop reading for a word once it has 50 to choose from.
             ("subtitles", lambda: (jesc_pool(),), 50)):
-        added += fill(words, sentences, linker, level, wanted, name, pools(), keep)
+        # Subtitle translations are often loose or belong to another line, so a subtitle counts for a word only
+        # when its English has one of the word's meanings in it.
+        added += fill(words, sentences, linker, level, wanted, name, pools(), keep, check=name == "subtitles")
     return added
 
 
-def fill(words, sentences, linker, level, wanted, name, pools, keep):
+STOP = {"the", "and", "for", "with", "that", "this", "one", "something", "someone", "thing", "things", "etc", "esp",
+        "make", "get", "have", "become", "out", "from", "into", "about", "very", "not", "who", "what", "when"}
+
+
+def gloss_stems(text):
+    """Rough stems of the English words in a text (first five letters), for matching a meaning to a translation."""
+    return {t[:5] for t in re.findall(r"[a-z]{3,}", text.lower()) if t not in STOP}
+
+
+def fill(words, sentences, linker, level, wanted, name, pools, keep, check=False):
     short = {wid for wid, w in words.items() if len(w["sentences"]) < wanted(wid)}
     by_stem = defaultdict(set)
     for wid in short:
@@ -168,6 +182,13 @@ def fill(words, sentences, linker, level, wanted, name, pools, keep):
         """Short words whose stem appears in the text (every substring looked up, which is quick)."""
         return {wid for i in range(len(ja)) if ja[i] in starts
                 for n in lengths for wid in by_stem.get(ja[i:i + n], ())}
+
+    meaning_cache = {}
+
+    def meanings(wid):
+        if wid not in meaning_cache:
+            meaning_cache[wid] = gloss_stems(" ".join(g for s in words[wid]["senses"] for g in s["gloss"]))
+        return meaning_cache[wid]
 
     found = defaultdict(list)  # word id -> [(harder words, source, length, id)]
     pool = {}
@@ -181,7 +202,10 @@ def fill(words, sentences, linker, level, wanted, name, pools, keep):
                 continue
             links = sorted(l for l in linker.paragraph(ja)[0] if l[2] in words)
             ids = {l[2] for l in links}
+            en_stems = gloss_stems(en) if check else None
             for wid in hits & ids:
+                if check and en_stems.isdisjoint(meanings(wid)):
+                    continue
                 own = level(wid)
                 harder = 0 if own is None else sum(1 for o in ids - {wid} if not kana_only(words[o]["w"])
                                                    and (level(o) is None or level(o) > own))
