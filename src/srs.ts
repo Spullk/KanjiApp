@@ -10,19 +10,20 @@ import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order
 export { Rating, State };
 export type { Grade };
 
-export type ItemKind = "radical" | "kanji" | "word";
-export type Face = "meaning" | "reading" | "word" | "recall" | "listen" | "both";
+export type ItemKind = "radical" | "kanji" | "word" | "grammar";
+export type Face = "meaning" | "reading" | "word" | "recall" | "listen" | "both" | "cloze";
 
 /** A study item ("kanji:語") and the cards it always makes ("kanji:語:meaning", "kanji:語:reading"). */
 export const FACES: Record<ItemKind, Face[]> = {
   radical: ["meaning"],
   kanji: ["meaning", "reading"],
   word: ["word"],
+  grammar: ["cloze"],
 };
 
 /** Optional cards you can switch on in Settings: recall (English → Japanese) and listening, for words. */
 export type ExtraFace = "recall" | "listen";
-export const EXTRA_FACES: Record<ItemKind, ExtraFace[]> = { radical: [], kanji: [], word: ["recall", "listen"] };
+export const EXTRA_FACES: Record<ItemKind, ExtraFace[]> = { radical: [], kanji: [], word: ["recall", "listen"], grammar: [] };
 
 /** With Settings.kanjiCards "one", a kanji has a single card asking meaning and reading together. */
 const ONE_CARD: Partial<Record<ItemKind, Face[]>> = { kanji: ["both"] };
@@ -34,7 +35,7 @@ export function mainFaces(settings: Settings, kind: ItemKind): Face[] {
 
 /** Every card an item can have, switched on or not. */
 export function allFaces(kind: ItemKind): Face[] {
-  return [...FACES[kind], ...(ONE_CARD[kind] ?? []), ...EXTRA_FACES[kind]];
+  return [...(FACES[kind] ?? []), ...(ONE_CARD[kind] ?? []), ...(EXTRA_FACES[kind] ?? [])];
 }
 
 /** The cards a new item gets with the current settings. */
@@ -42,8 +43,10 @@ export function facesFor(settings: Settings, kind: ItemKind): Face[] {
   return [...mainFaces(settings, kind), ...EXTRA_FACES[kind].filter((f) => settings.extraCards?.includes(f))];
 }
 
-/** Whether this kind of card is asked with the current settings. */
+/** Whether this kind of card is asked with the current settings. Cards of a kind this version doesn't know
+ * (synced from a newer version on another device) are left alone. */
 function faceOn(settings: Settings, kind: ItemKind, face: Face): boolean {
+  if (!FACES[kind]) return false;
   if ((EXTRA_FACES[kind] as Face[]).includes(face)) return !!settings.extraCards?.includes(face as ExtraFace);
   return mainFaces(settings, kind).includes(face);
 }
@@ -87,6 +90,10 @@ export type Settings = {
   extraCards?: ExtraFace[];
   /** Native app only: hour of the daily review reminder, or undefined for none. */
   reminder?: number;
+  /** Where you said you're starting from on the welcome screen: brand new, can read kana, or studied before. */
+  start?: "new" | "kana" | "returning";
+  /** The tools on the bottom bar after Home, in order. Unset means the default four. */
+  tabs?: string[];
 };
 
 /** What you've told Nekko about an item, apart from its cards. */
@@ -97,8 +104,13 @@ export type ItemInfo = {
   note?: string;
   /** Extra meanings you want accepted as answers. */
   synonyms?: string[];
+  /** Kana drill only ("kana:か"): where the kana sits in the practice queue (see kanaDrill.ts). */
+  drill?: Drill;
   updated: number;
 };
+
+/** at: position in the queue, lowest comes next. streak: right answers in a row. misses: wrong answers ever. */
+export type Drill = { at: number; streak: number; misses: number };
 
 export type Review = [card: string, rating: Grade, time: number];
 

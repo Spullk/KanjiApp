@@ -7,14 +7,16 @@ import { playWord } from "./audio";
 import { PitchAccent } from "./components/Pitch";
 import { useData, type Data } from "./data";
 import { href } from "./router";
-import { parseCardId, useStore, type Face, type ItemKind } from "./srs";
+import { getStore, parseCardId, useStore, type Face, type ItemKind } from "./srs";
+import { cloze, exampleFor } from "./grammar";
+import { furiganaRule } from "./reading";
 import { fontFor, loadFont } from "./fonts";
 import { Furigana, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
 import { readingForms } from "./answers";
 
 /** One thing to type in typed-answer mode, and every answer that counts. */
-export type Ask = { label: "Meaning" | "Reading"; kana: boolean; answers(data: Data, key: string): string[] };
+export type Ask = { label: "Meaning" | "Reading" | "Gap"; kana: boolean; answers(data: Data, key: string): string[]; placeholder?: string };
 
 const meaning = (get: (data: Data, key: string) => string[]): Ask => ({ label: "Meaning", kana: false, answers: get });
 const reading = (get: (data: Data, key: string) => string[]): Ask => ({ label: "Reading", kana: true, answers: get });
@@ -22,8 +24,8 @@ const reading = (get: (data: Data, key: string) => string[]): Ask => ({ label: "
 export type CardType = {
   /** The question above the card, e.g. "Kanji · meaning?". */
   prompt: string;
-  /** How the front is set: a big character, a word, or English text. */
-  frontStyle?: "char" | "word" | "english";
+  /** How the front is set: a big character, a word, English text, or a sentence. */
+  frontStyle?: "char" | "word" | "english" | "sentence";
   /** What's shown before answering. */
   front(data: Data, key: string): ComponentChildren;
   /** The answer. */
@@ -50,6 +52,31 @@ function wordBack(data: Data, key: string, use = true) {
       </div>
       <div class="answer-main">{w.senses.slice(0, 2).map((s) => s.gloss.slice(0, 3).join(", ")).join("; ")}</div>
       {use && <ReadingUse id={key} />}
+    </>
+  );
+}
+
+/** A grammar example with its gap empty, or filled in and highlighted once answered. */
+function GrammarGap({ id, filled }: { id: string; filled?: boolean }) {
+  const data = useData();
+  const store = useStore();
+  const g = data.grammar[id];
+  const c = cloze(exampleFor(store, g));
+  const hide = furiganaRule(store, data);
+  return (
+    <>
+      <div class="cloze" lang="ja">
+        <Furigana segments={c.before} link={false} hide={hide} reveal />
+        {filled ? (
+          <b class="cloze-gap filled">
+            <Furigana segments={c.gap} link={false} />
+          </b>
+        ) : (
+          <span class="cloze-gap">?</span>
+        )}
+        <Furigana segments={c.after} link={false} hide={hide} reveal />
+      </div>
+      <div class="cloze-en">{c.en}</div>
     </>
   );
 }
@@ -138,6 +165,26 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
     link: href.word,
     asks: [reading((data, key) => [data.words[key].r])],
   },
+  "grammar:cloze": {
+    prompt: "Grammar · fill the gap",
+    frontStyle: "sentence",
+    front: (_, key) => <GrammarGap id={key} />,
+    back: (data, key) => (
+      <>
+        <GrammarGap id={key} filled />
+        <div class="answer-sub">{data.grammar[key].title}</div>
+      </>
+    ),
+    link: href.grammarPoint,
+    asks: [
+      {
+        label: "Gap",
+        kana: true,
+        placeholder: "What goes in the gap?",
+        answers: (data, key) => cloze(exampleFor(getStore(), data.grammar[key])).answers,
+      },
+    ],
+  },
   "word:listen": {
     prompt: "Listening · what does it mean?",
     front: (_, key) => <Listen id={key} />,
@@ -169,6 +216,8 @@ export function CardFront({ id }: { id: string }) {
       <div class="card-prompt">{t.prompt}</div>
       {t.frontStyle === "english" ? (
         <div class="card-english">{t.front(data, key)}</div>
+      ) : t.frontStyle === "sentence" ? (
+        <div class="card-sentence">{t.front(data, key)}</div>
       ) : (
         <div class={style === "word" ? "card-word" : "card-char"} lang="ja" style={font ? { fontFamily: `"${font}", var(--ja-font)` } : undefined}>
           {t.front(data, key)}

@@ -16,6 +16,11 @@ export type Route =
   | { page: "read" }
   | { page: "sentences" }
   | { page: "story"; id: string }
+  | { page: "grammar" }
+  | { page: "grammarPoint"; id: string }
+  | { page: "kana" }
+  | { page: "kanaRow"; id: string }
+  | { page: "kanaPractice"; script: "hira" | "kata" | "both"; missed: boolean; listen: boolean }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -34,6 +39,12 @@ export const href = {
   read: () => "#/read",
   sentences: () => "#/sentences",
   story: (id: string) => `#/story/${id}`,
+  grammar: () => "#/grammar",
+  grammarPoint: (id: string) => `#/grammar/${id}`,
+  kana: () => "#/kana",
+  kanaRow: (id: string) => `#/kana/row/${id}`,
+  kanaPractice: (script: "hira" | "kata" | "both", opts: { missed?: boolean; listen?: boolean } = {}) =>
+    `#/kana/practice/${script}${opts.missed ? "/missed" : ""}${opts.listen ? "/listen" : ""}`,
   write: (c?: string) => `#/write${c ? "/" + encodeURIComponent(c) : ""}`,
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
@@ -65,6 +76,15 @@ export function parse(hash: string): Route {
       return { page: "sentences" };
     case "story":
       return { page: "story", id: seg[1] };
+    case "grammar":
+      return seg[1] ? { page: "grammarPoint", id: seg[1] } : { page: "grammar" };
+    case "kana":
+      if (seg[1] === "row") return { page: "kanaRow", id: seg[2] };
+      if (seg[1] === "practice") {
+        const script = ["hira", "kata"].includes(seg[2]) ? (seg[2] as "hira" | "kata") : "both";
+        return { page: "kanaPractice", script, missed: seg.includes("missed"), listen: seg.includes("listen") };
+      }
+      return { page: "kana" };
     case "write":
       return { page: "write", c: seg[1] };
     case "practice":

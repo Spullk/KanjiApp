@@ -1,0 +1,432 @@
+[
+  {
+    "id": "scripts",
+    "level": "start",
+    "title": "Three scripts",
+    "note": "Japanese is written with three scripts at once. Hiragana (あいう) writes grammar and native words. Katakana (アイウ) writes foreign words, names and sound effects. Kanji (日本語) carry the meaning of most words.\nA word often mixes them: 食べる is the kanji 食 plus the hiragana べる, which change as the verb changes (食べます, 食べた). Those trailing kana are called okurigana.\nThe little kana printed above kanji are furigana. Nekko only shows them over kanji you haven't learned yet, so you read the kanji themselves.",
+    "ex": []
+  },
+  {
+    "id": "readings",
+    "level": "start",
+    "title": "One kanji, several readings",
+    "note": "Most kanji have two kinds of reading. The on'yomi came from Chinese and is used mostly in words of two or more kanji: 日本[にほん], 毎日[まいにち]. The kun'yomi is the native Japanese word and is used when the kanji stands alone or has okurigana: 日[ひ] (day, sun).\nYou don't learn readings in a vacuum: each word tells you which one it uses. Nekko teaches every kanji with its common readings and the words that use them.",
+    "ex": []
+  },
+  {
+    "id": "dakuten",
+    "level": "start",
+    "title": "Marks that change sounds: が, ぱ",
+    "note": "Two little marks change a kana's sound. ゛ (dakuten) makes it voiced: か ka → が ga, さ sa → ざ za, た ta → だ da, は ha → ば ba. ゜ (handakuten) only goes on the は row and makes a p: は → ぱ pa.",
+    "ex": [["て{が}み", "letter"], ["{ぶ}た", "pig"], ["{ぱ}ん", "bread"]]
+  },
+  {
+    "id": "small-ya",
+    "level": "start",
+    "title": "Small ゃ ゅ ょ",
+    "note": "A small ゃ, ゅ or ょ after an い-sound kana blends the two into one beat: き + ゃ = きゃ kya, し + ょ = しょ sho. Compare the full-size version: きや is two beats, ki-ya.",
+    "ex": [["と{しょ}かん", "library"], ["{きょ}う", "today"], ["お{ちゃ}", "tea"]]
+  },
+  {
+    "id": "small-tsu",
+    "level": "start",
+    "title": "Small っ: a pause",
+    "note": "A small っ doubles the next consonant: you hold a short silent beat before it. がっこう is ga-k-kou, not ga-tsu-kou. In katakana it's ッ: ベッド (bed).",
+    "ex": [["が{っ}こう", "school"], ["き{っ}て", "stamp"], ["ちょ{っ}と", "a little"]]
+  },
+  {
+    "id": "long-vowels",
+    "level": "start",
+    "title": "Long vowels",
+    "note": "A vowel can be held for two beats, and the meaning changes: おばさん (aunt) and おばあさん (grandmother). In hiragana you add a vowel kana. A long o is usually written おう and a long e usually えい: せんせい is said sensee. In katakana a dash ー does the job for every vowel.",
+    "ex": [["おか{あ}さん", "mother"], ["せんせ{い}", "teacher"], ["おと{う}さん", "father"], ["ケ{ー}キ", "cake"]]
+  },
+  {
+    "id": "n-beats",
+    "level": "start",
+    "title": "ん and beats",
+    "note": "Every kana is one beat of the same length, and ん is a full beat of its own. ほん (book) is two beats, ho-n. しんぶん (newspaper) is four. Counting beats is how you hear the difference between きねん (anniversary, three beats) and きんえん (no smoking, four).",
+    "ex": [["ほ{ん}", "book"], ["せ{ん}せい", "teacher"], ["き{ん}えん", "no smoking"]]
+  },
+  {
+    "id": "katakana-words",
+    "level": "start",
+    "title": "Foreign words in katakana",
+    "note": "English words are bent to fit Japanese sounds: every consonant gets a vowel after it, and long sounds get ー. Coffee becomes コーヒー, party becomes パーティー, McDonald's becomes マクドナルド. Combos like ティ, ファ and ウィ exist only for these words.",
+    "ex": [["パー{ティ}ー", "party"], ["{ファ}ン", "fan"], ["コー{ヒー}", "coffee"]]
+  },
+  {
+    "id": "desu",
+    "level": "start",
+    "title": "A は B です: \"A is B\"",
+    "note": "The simplest sentence: topic, は, the thing it is, です. です is the polite \"is / am / are\" and always comes last. Japanese puts the verb (or です) at the end of the sentence.\nYou leave out \"I\" and \"you\" whenever they're obvious, so がくせいです alone means \"I'm a student\".",
+    "ex": [["わたしはがくせい{です}。", "I'm a student."], ["これはほん{です}。", "This is a book."], ["たなかさんはせんせい{です}。", "Mr Tanaka is a teacher."]]
+  },
+  {
+    "id": "wa",
+    "level": "start",
+    "title": "は: the topic",
+    "note": "は marks what the sentence is about: \"as for me…\". As a particle it's said wa, even though it's written with は (ha). Type wa or ha.",
+    "ex": [["わたし{は}がくせいです。", "I'm a student."], ["きょう{は}あついです。", "It's hot today."], ["ねこ{は}かわいいです。", "Cats are cute."]]
+  },
+  {
+    "id": "ka",
+    "level": "start",
+    "title": "か: questions",
+    "note": "Put か at the end and a sentence becomes a question. No change in word order, and in writing there's often no question mark.",
+    "ex": [["がくせいです{か}。", "Are you a student?"], ["これはなんです{か}。", "What is this?"], ["おいしいです{か}。", "Is it tasty?"]]
+  },
+  {
+    "id": "no",
+    "level": "start",
+    "title": "の: of, 's",
+    "note": "の joins two nouns, like 's or \"of\": the first one describes the second. わたしのほん is \"my book\", にほんのくるま \"a Japanese car\".",
+    "ex": [["わたし{の}ほんです。", "It's my book."], ["にほん{の}くるまです。", "It's a Japanese car."], ["ともだち{の}いえ", "a friend's house"]]
+  },
+  {
+    "id": "mo",
+    "level": "start",
+    "title": "も: also",
+    "note": "も means \"also, too\". It replaces は, が or を: わたしもがくせいです, \"I'm a student too\".",
+    "ex": [["わたし{も}がくせいです。", "I'm a student too."], ["これ{も}おいしいです。", "This is tasty too."]]
+  },
+  {
+    "id": "wo",
+    "level": "start",
+    "title": "を: the object",
+    "note": "を marks what the action is done to: what you eat, read, buy. It's said o, so type o or wo.",
+    "ex": [["パン{を}たべます。", "I eat bread."], ["ほん{を}よみます。", "I read a book."], ["みず{を}のみます。", "I drink water."]]
+  },
+  {
+    "id": "ga",
+    "level": "start",
+    "title": "が: the subject",
+    "note": "が marks who or what does something, often something new to the conversation: \"there's a cat\". は sets the topic (\"as for…\"); が points at the one doing it. Questions with だれ (who) or なに (what) take が, never は.",
+    "ex": [["ねこ{が}います。", "There's a cat."], ["あめ{が}ふっています。", "It's raining."], ["だれ{が}きましたか。", "Who came?"]]
+  },
+  {
+    "id": "ni",
+    "level": "start",
+    "title": "に: at a time, to a place",
+    "note": "に points at a time (at 7 o'clock, on Monday) or a destination (to school). It also marks where something is: つくえのうえにあります, \"it's on the desk\".",
+    "ex": [["がっこう{に}いきます。", "I go to school."], ["しちじ{に}おきます。", "I get up at seven."], ["へや{に}ねこがいます。", "There's a cat in the room."]]
+  },
+  {
+    "id": "de",
+    "level": "start",
+    "title": "で: where, and with what",
+    "note": "で marks where an action happens (eat at home) and what you do it with (go by bus, write with a pen). に is where something is or goes; で is where something is done.",
+    "ex": [["うち{で}たべます。", "I eat at home."], ["バス{で}いきます。", "I go by bus."], ["ペン{で}かきます。", "I write with a pen."]]
+  },
+  {
+    "id": "e",
+    "level": "start",
+    "title": "へ: towards",
+    "note": "へ marks a direction, much like に with a destination. As a particle it's said e, so type e or he.",
+    "ex": [["にほん{へ}いきます。", "I'm going to Japan."], ["うち{へ}かえります。", "I go back home."]]
+  },
+  {
+    "id": "to",
+    "level": "start",
+    "title": "と: and, with",
+    "note": "と joins nouns into a complete list (bread and milk), and marks who you do something with (with a friend).",
+    "ex": [["パン{と}ミルクをかいます。", "I buy bread and milk."], ["ともだち{と}いきます。", "I'm going with a friend."]]
+  },
+  {
+    "id": "ne-yo",
+    "level": "start",
+    "title": "ね and よ",
+    "note": "These go at the very end and add a tone. ね asks for agreement, like \"isn't it?\". よ tells the listener something they don't know, like \"you know\".",
+    "ex": [["いいてんきです{ね}。", "Nice weather, isn't it?"], ["これはおいしいです{よ}。", "This is tasty, you know."]]
+  },
+  {
+    "id": "masu",
+    "level": "start",
+    "title": "Polite verbs: ます, ました, ません",
+    "note": "Polite verbs end in ます. The ending carries the tense: ます (do, will do), ました (did), ません (don't), ませんでした (didn't). Japanese has no separate future: たべます is \"I eat\" and \"I'll eat\".",
+    "ex": [["パンをたべ{ます}。", "I eat bread."], ["きのうパンをたべ{ました}。", "I ate bread yesterday."], ["にくはたべ{ません}。", "I don't eat meat."]]
+  },
+  {
+    "id": "verb-groups",
+    "level": "start",
+    "title": "The three verb groups",
+    "note": "Dictionary form is how verbs are listed: たべる, のむ. To make the ます form you change the ending, and there are three ways:\n• る verbs (ichidan): drop る. たべる → たべます, みる → みます.\n• う verbs (godan): the last kana moves to its い-sound. のむ → のみます, かく → かきます, はなす → はなします.\n• Two irregular ones: する → します, くる → きます.\nA verb ending in いる or える is usually a る verb; anything else is a う verb.",
+    "ex": [["みずをの{み}ます。", "I drink water (のむ)."], ["テレビをみ{ます}。", "I watch TV (みる)."], ["べんきょう{し}ます。", "I study (する)."], ["ともだちが{き}ます。", "A friend is coming (くる)."]]
+  },
+  {
+    "id": "adjectives",
+    "level": "start",
+    "title": "い and な adjectives",
+    "note": "Japanese has two kinds of adjective. い adjectives end in い and go straight before a noun: たかいやま, a tall mountain. な adjectives need な before a noun: しずかなまち, a quiet town. Before です both are plain: やまはたかいです, まちはしずかです.",
+    "ex": [["しずか{な}まちです。", "It's a quiet town."], ["きれい{な}はなですね。", "Pretty flowers, aren't they?"], ["たか{い}やまです。", "It's a tall mountain."]]
+  },
+  {
+    "id": "kosoado",
+    "level": "start",
+    "title": "これ, それ, あれ, どれ",
+    "note": "A small table worth learning as one. こ- is near me, そ- is near you, あ- is over there, ど- asks which.\n• これ それ あれ どれ: this one, that one, that one over there, which one\n• この その あの どの + noun: this book, that book…\n• ここ そこ あそこ どこ: here, there, over there, where",
+    "ex": [["{これ}はわたしのほんです。", "This (here, by me) is my book."], ["トイレは{どこ}ですか。", "Where's the toilet?"], ["{あの}ひとはだれですか。", "Who's that person over there?"]]
+  },
+  {
+    "id": "question-words",
+    "level": "start",
+    "title": "Question words",
+    "note": "なに / なん (what), だれ (who), どこ (where), いつ (when), どう (how), なぜ / どうして (why), いくら (how much). They sit where the answer would go, and the sentence ends in か.",
+    "ex": [["{なに|なん}をたべますか。", "What will you eat?"], ["{いつ}いきますか。", "When are you going?"], ["{だれ}ですか。", "Who is it?"]]
+  },
+  {
+    "id": "da",
+    "level": "start",
+    "title": "だ: plain \"is\"",
+    "note": "だ is the casual form of です, used with friends and in writing. The polite and casual forms of everything come in pairs; Nekko's examples are mostly polite, which is always safe.",
+    "ex": [["がくせい{だ}。", "I'm a student (casual)."], ["きょうはあめ{だ}。", "It's raining today (casual)."]]
+  },
+
+  {
+    "id": "numbers",
+    "level": "numbers",
+    "title": "1 to 10",
+    "note": "いち 1, に 2, さん 3, よん (or し) 4, ご 5, ろく 6, なな (or しち) 7, はち 8, きゅう (or く) 9, じゅう 10. Bigger numbers are built like 3 × 10 + 5: さんじゅうご is 35.",
+    "ex": [["じゅう{ご}", "15"], ["{さん}じゅう", "30"], ["{なな|しち}じゅうはち", "78"]]
+  },
+  {
+    "id": "big-numbers",
+    "level": "numbers",
+    "title": "100, 1,000, 10,000",
+    "note": "ひゃく 100, せん 1,000, まん 10,000. Japanese counts big numbers in ten-thousands, so 100,000 is じゅうまん (ten ten-thousands). A few combinations change sound: さんびゃく 300, ろっぴゃく 600, はっぴゃく 800, さんぜん 3,000, はっせん 8,000.",
+    "ex": [["{ひゃく}えん", "100 yen"], ["さん{びゃく}えん", "300 yen"], ["さん{ぜん}えん", "3,000 yen"], ["いち{まん}えん", "10,000 yen"]]
+  },
+  {
+    "id": "counter-things",
+    "level": "numbers",
+    "title": "Counting things: ひとつ, ふたつ",
+    "note": "Things are counted with counter words, not bare numbers. The general counter for things works up to ten: ひとつ, ふたつ, みっつ, よっつ, いつつ, むっつ, ななつ, やっつ, ここのつ, とお.",
+    "ex": [["りんごを{ふたつ}ください。", "Two apples, please."], ["{みっつ}あります。", "There are three."], ["たまごを{ひとつ}たべました。", "I ate one egg."]]
+  },
+  {
+    "id": "counter-people",
+    "level": "numbers",
+    "title": "Counting people: ひとり, ふたり, さんにん",
+    "note": "People take にん, except the first two: ひとり (1 person), ふたり (2 people), then さんにん, よにん, ごにん…",
+    "ex": [["{ふたり}です。", "Two of us (at a restaurant)."], ["きょうだいは{さんにん}です。", "I have three siblings."], ["{ひとり}でいきます。", "I'm going alone."]]
+  },
+  {
+    "id": "counter-sounds",
+    "level": "numbers",
+    "title": "Counters that change sound",
+    "note": "Many counters change sound after 1, 3, 6, 8 and 10. 本 (ほん, long things like pens and bottles): いっぽん, にほん, さんぼん, よんほん, ろっぽん. 匹 (ひき, small animals): いっぴき, にひき, さんびき. 枚 (まい, flat things like paper and tickets) never changes: いちまい, にまい.",
+    "ex": [["ペンが{いっぽん}あります。", "There's one pen."], ["ビールを{さんぼん}ください。", "Three beers, please."], ["ねこが{にひき}います。", "There are two cats."], ["きっぷを{にまい}ください。", "Two tickets, please."]]
+  },
+  {
+    "id": "time",
+    "level": "numbers",
+    "title": "Telling the time",
+    "note": "じ is o'clock and ふん / ぷん is minutes. Watch the odd ones: よじ (4:00), しちじ (7:00), くじ (9:00); いっぷん, さんぷん, ろっぷん, じゅっぷん. はん is half past.",
+    "ex": [["{よじ}です。", "It's four o'clock."], ["{くじ}はんです。", "It's half past nine."], ["ごじ{じゅっぷん}です。", "It's ten past five."]]
+  },
+  {
+    "id": "dates",
+    "level": "numbers",
+    "title": "Dates and months",
+    "note": "Months are number + がつ: いちがつ (January) … but しがつ (April), しちがつ (July), くがつ (September). Days 1 to 10 have their own words: ついたち, ふつか, みっか, よっか, いつか, むいか, なのか, ようか, ここのか, とおか. After that it's number + にち, with はつか for the 20th.",
+    "ex": [["{しがつ}ついたち", "April 1st"], ["くがつ{ふつか}", "September 2nd"], ["しちがつ{はつか}", "July 20th"]]
+  },
+
+  {
+    "id": "greetings",
+    "level": "phrases",
+    "title": "Greetings",
+    "note": "Set phrases you'll hear every day. They don't break down word by word, so learn them whole.\n• おはようございます: good morning (おはよう to friends)\n• こんにちは: hello, good afternoon (は said wa)\n• こんばんは: good evening\n• おやすみなさい: good night\n• さようなら: goodbye (for a while); じゃあね / またね to friends",
+    "ex": [["おはよう{ございます}。", "Good morning."], ["{こんばんは}。", "Good evening."], ["おやすみ{なさい}。", "Good night."]]
+  },
+  {
+    "id": "politeness",
+    "level": "phrases",
+    "title": "Thanks, sorry, please",
+    "note": "• ありがとうございます: thank you\n• すみません: excuse me, sorry, and also thanks for the trouble\n• いただきます: said before eating\n• ごちそうさまでした: said after eating\n• よろしくおねがいします: \"please treat me well\", said when meeting someone or asking a favour\n• おねがいします: please (when asking for something)",
+    "ex": [["ありがとう{ございます}。", "Thank you."], ["{いただきます}。", "(before eating)"], ["よろしく{おねがいします}。", "Nice to meet you / I'm counting on you."]]
+  },
+
+  {
+    "id": "aru-iru",
+    "level": "n5",
+    "title": "あります and います: there is",
+    "note": "Both mean \"there is / I have\". います is for living, moving things (people, animals). あります is for everything else, including events. The place takes に.",
+    "ex": [["つくえの上[うえ]に本[ほん]が{あります}。", "There's a book on the desk."], ["こうえんに犬[いぬ]が{います}。", "There's a dog in the park."], ["あした、テストが{あります}。", "There's a test tomorrow."]]
+  },
+  {
+    "id": "position",
+    "level": "n5",
+    "title": "Position words: 上, 下, 中…",
+    "note": "Positions are nouns joined with の: つくえの上 (on top of the desk), はこの中 (inside the box). 上[うえ] above, 下[した] below, 中[なか] inside, 前[まえ] in front, うしろ behind, となり next to.",
+    "ex": [["はこの{中[なか]}にねこがいます。", "There's a cat in the box."], ["えきの{前[まえ]}でまちます。", "I'll wait in front of the station."], ["いすの{下[した]}にあります。", "It's under the chair."]]
+  },
+  {
+    "id": "adj-past-neg",
+    "level": "n5",
+    "title": "Adjectives: past and not",
+    "note": "い adjectives change their い: たかい → たかくない (not tall), たかかった (was tall), たかくなかった (wasn't). The odd one: いい → よくない, よかった.\nな adjectives work like nouns: しずかじゃないです, しずかでした.",
+    "ex": [["きのうはさむ{かった}です。", "It was cold yesterday."], ["このカレーはから{くない}です。", "This curry isn't spicy."], ["まちはしずか{でした}。", "The town was quiet."], ["えいがはよ{かった}です。", "The film was good."]]
+  },
+  {
+    "id": "plain-past",
+    "level": "n5",
+    "title": "Plain past: た",
+    "note": "The casual past swaps the ます form's ました for た. For る verbs that's easy: たべた, みた. う verbs change sound: のむ → のんだ, かう → かった, かく → かいた, いく → いった. する → した, くる → きた.",
+    "ex": [["きのうえいがをみ{た}。", "I watched a film yesterday."], ["コーヒーをのん{だ}。", "I drank coffee."], ["ともだちが{きた}。", "A friend came."]]
+  },
+  {
+    "id": "plain-negative",
+    "level": "n5",
+    "title": "Plain negative: ない",
+    "note": "The casual \"don't\". る verbs: drop る, add ない (たべない). う verbs: move the last kana to its あ-sound, add ない (のむ → のまない, かう → かわない). する → しない, くる → こない, and ある → ない.",
+    "ex": [["にくはたべ{ない}。", "I don't eat meat."], ["おさけはのま{ない}。", "I don't drink alcohol."], ["おかねが{ない}。", "I have no money."]]
+  },
+  {
+    "id": "te-form",
+    "level": "n5",
+    "title": "The て form: and then",
+    "note": "The て form joins actions in order: \"I got up and ate\". It's made like the plain past with て instead of た: たべて, のんで, かって, かいて, いって, して, きて.",
+    "ex": [["あさおき{て}、ごはんをたべます。", "I get up and eat breakfast."], ["うちにかえっ{て}、ねました。", "I went home and slept."], ["シャワーをあび{て}、でかけます。", "I'll shower and go out."]]
+  },
+  {
+    "id": "te-kudasai",
+    "level": "n5",
+    "title": "てください: please do",
+    "note": "て form + ください makes a polite request. With a noun, it's を + ください: みずをください, \"water, please\".",
+    "ex": [["ちょっとまって{ください}。", "Please wait a moment."], ["ゆっくりはなして{ください}。", "Please speak slowly."], ["みずを{ください}。", "Water, please."]]
+  },
+  {
+    "id": "te-iru",
+    "level": "n5",
+    "title": "ている: doing now, or a state",
+    "note": "て form + いる (います) is an action going on (\"I'm eating\") or a state that lasts (\"I live in Tokyo\", \"I'm married\").",
+    "ex": [["いま、ごはんをたべて{います}。", "I'm eating now."], ["あめがふって{います}。", "It's raining."], ["とうきょうにすんで{います}。", "I live in Tokyo."]]
+  },
+  {
+    "id": "tai",
+    "level": "n5",
+    "title": "たい: want to",
+    "note": "ます stem + たい: \"want to do\". たべます → たべたい, いきます → いきたい. It works like an い adjective: いきたくない (don't want to go).",
+    "ex": [["にほんへいき{たい}です。", "I want to go to Japan."], ["すしがたべ{たい}。", "I want to eat sushi."], ["きょうはでかけ{たくない}です。", "I don't want to go out today."]]
+  },
+  {
+    "id": "mashou",
+    "level": "n5",
+    "title": "ましょう and ませんか: let's",
+    "note": "ます stem + ましょう is \"let's\". ませんか (\"won't you?\") is a softer invitation.",
+    "ex": [["いっしょにたべ{ましょう}。", "Let's eat together."], ["えいがをみにいき{ませんか}。", "Would you like to go see a film?"], ["ちょっとやすみ{ましょう}。", "Let's take a short break."]]
+  },
+  {
+    "id": "ni-iku",
+    "level": "n5",
+    "title": "に行く: go to do",
+    "note": "ます stem + に + a motion verb (いく, くる, かえる) says why you go: パンをかいにいきます, \"I'm going to buy bread\".",
+    "ex": [["パンをかい{に}いきます。", "I'm going to buy bread."], ["ともだちにあい{に}いきました。", "I went to see a friend."]]
+  },
+  {
+    "id": "kara-made",
+    "level": "n5",
+    "title": "から and まで: from, until",
+    "note": "から is \"from\" and まで is \"until / as far as\", for times and places.",
+    "ex": [["くじ{から}ごじまでです。", "It's from nine to five."], ["えき{まで}あるきます。", "I'll walk to the station."], ["とうきょう{から}きました。", "I came from Tokyo."]]
+  },
+  {
+    "id": "kara-because",
+    "level": "n5",
+    "title": "から: because",
+    "note": "After a sentence, から means \"because\": the reason comes first. さむいですから、うちにいます, \"It's cold, so I'm staying in\".",
+    "ex": [["さむい{から}、うちにいます。", "It's cold, so I'm staying home."], ["じかんがありません{から}、タクシーでいきます。", "I have no time, so I'll take a taxi."]]
+  },
+  {
+    "id": "ga-but",
+    "level": "n5",
+    "title": "が: but",
+    "note": "Between two sentences, が means \"but\". でも at the start of a sentence means the same.",
+    "ex": [["たかいです{が}、おいしいです。", "It's expensive, but tasty."], ["いきたいです{が}、じかんがありません。", "I want to go, but I don't have time."]]
+  },
+  {
+    "id": "suki",
+    "level": "n5",
+    "title": "好き and 上手 take が",
+    "note": "Likes, dislikes, skills and wants mark the thing with が, not を: ねこがすきです, \"I like cats\". The same goes for じょうず (good at), へた (bad at), わかる (understand) and ほしい (want).",
+    "ex": [["ねこ{が}すきです。", "I like cats."], ["にほんご{が}わかります。", "I understand Japanese."], ["あたらしいくるま{が}ほしいです。", "I want a new car."]]
+  },
+  {
+    "id": "yori",
+    "level": "n5",
+    "title": "より and いちばん: comparing",
+    "note": "A は B より + adjective: \"A is more … than B\". B より A のほうが says the same, putting A last. いちばん is \"the most\": いちばんすきです, \"I like it best\".",
+    "ex": [["いぬ{より}ねこがすきです。", "I like cats more than dogs."], ["ふゆが{いちばん}すきです。", "I like winter best."], ["バスよりでんしゃの{ほう}がはやいです。", "The train is faster than the bus."]]
+  },
+  {
+    "id": "te-mo-ii",
+    "level": "n5",
+    "title": "てもいい and てはいけない: may, must not",
+    "note": "て form + もいいです is \"you may\", and with か it asks permission. て form + はいけません is \"you must not\".",
+    "ex": [["はいって{も}いいですか。", "May I come in?"], ["ここでたべて{は}いけません。", "You can't eat here."], ["しゃしんをとって{も}いいです。", "You may take photos."]]
+  },
+  {
+    "id": "naide",
+    "level": "n5",
+    "title": "ないでください: please don't",
+    "note": "ない form + でください asks someone not to do something.",
+    "ex": [["ここでたばこをすわ{ないで}ください。", "Please don't smoke here."], ["わすれ{ないで}ください。", "Please don't forget."]]
+  },
+  {
+    "id": "mae-ato",
+    "level": "n5",
+    "title": "まえに and あとで: before, after",
+    "note": "Dictionary form + まえに is \"before doing\". た form + あとで is \"after doing\". With nouns: しょくじのまえに, しょくじのあとで.",
+    "ex": [["ねる{まえに}、はをみがきます。", "I brush my teeth before bed."], ["しゅくだいをした{あとで}、あそびます。", "I'll play after doing my homework."]]
+  },
+  {
+    "id": "toki",
+    "level": "n5",
+    "title": "とき: when",
+    "note": "とき (time) after a noun with の, an adjective, or a verb means \"when …\": こどものとき, \"when I was a child\".",
+    "ex": [["こどもの{とき}、よくあそびました。", "I played a lot when I was a kid."], ["ひまな{とき}、ほんをよみます。", "When I'm free, I read."]]
+  },
+  {
+    "id": "naru",
+    "level": "n5",
+    "title": "なる: become",
+    "note": "なる is \"become\". い adjectives turn い into く: さむくなります (it's getting cold). Nouns and な adjectives take に: せんせいになりたい, しずかになりました.",
+    "ex": [["さむく{なりました}。", "It's got cold."], ["せんせいに{なりたい}です。", "I want to become a teacher."], ["へやがきれいに{なりました}。", "The room got clean."]]
+  },
+  {
+    "id": "deshou",
+    "level": "n5",
+    "title": "でしょう: probably",
+    "note": "でしょう at the end means \"probably\", as in weather forecasts. With a rising tone it asks for agreement: \"right?\".",
+    "ex": [["あしたはあめ{でしょう}。", "It'll probably rain tomorrow."], ["たのしかった{でしょう}。", "That must have been fun."]]
+  },
+  {
+    "id": "ya",
+    "level": "n5",
+    "title": "や: and so on",
+    "note": "や lists a few examples out of more: パンやミルク, \"bread, milk and so on\". と lists everything; や hints there's more. など (etc.) often closes the list.",
+    "ex": [["パン{や}ミルクをかいました。", "I bought bread, milk and so on."], ["きょうとやなら{など}にいきました。", "I went to Kyoto, Nara and other places."]]
+  },
+  {
+    "id": "mou-mada",
+    "level": "n5",
+    "title": "もう and まだ: already, not yet",
+    "note": "もう + past is \"already\". まだ + negative is \"not yet\": まだです alone answers \"not yet\".",
+    "ex": [["{もう}たべました。", "I've already eaten."], ["{まだ}きていません。", "They haven't come yet."]]
+  },
+  {
+    "id": "dake",
+    "level": "n5",
+    "title": "だけ: only",
+    "note": "だけ goes after what it limits: ひとりだけ, \"just one person\".",
+    "ex": [["ひとり{だけ}きました。", "Only one person came."], ["みず{だけ}のみます。", "I'll only drink water."]]
+  },
+  {
+    "id": "koto-ga-dekiru",
+    "level": "n5",
+    "title": "ことができる: can do",
+    "note": "Dictionary form + ことができる is \"can do\". こと turns the verb into a thing, and できる is \"be possible\".",
+    "ex": [["にほんごをはなす{こと}ができます。", "I can speak Japanese."], ["ここでおよぐことが{できません}。", "You can't swim here."]]
+  }
+]

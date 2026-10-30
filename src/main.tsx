@@ -1,8 +1,7 @@
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { registerSW } from "virtual:pwa-register";
 import { loadData } from "./data";
-import { href, useRoute, type Route } from "./router";
+import { useRoute, type Route } from "./router";
 import { HomePage } from "./pages/HomePage";
 import { KanjiPage } from "./pages/KanjiPage";
 import { WordPage } from "./pages/WordPage";
@@ -19,14 +18,19 @@ import { WritePage } from "./pages/WritePage";
 import { SentencesPage } from "./pages/SentencesPage";
 import { StoriesPage } from "./pages/StoriesPage";
 import { StoryPage } from "./pages/StoryPage";
+import { GrammarPage, GrammarPointPage } from "./pages/GrammarPages";
+import { KanaPage, KanaPracticePage, KanaRowPage } from "./pages/KanaPages";
+import { Welcome } from "./components/Welcome";
+import { activeTab, barTools } from "./tools";
 import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
 import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
 import { Tour } from "./components/Tour";
+import { initUpdates } from "./update";
 import "./style.css";
 
 // The app store build ships every file inside the app, so only the website needs the offline cache.
-if (!isNative) registerSW({ immediate: true });
+if (!isNative) initUpdates();
 requestPersistence();
 
 function Page({ route }: { route: Route }) {
@@ -61,6 +65,16 @@ function Page({ route }: { route: Route }) {
       return <SentencesPage />;
     case "story":
       return <StoryPage id={route.id} />;
+    case "grammar":
+      return <GrammarPage />;
+    case "grammarPoint":
+      return <GrammarPointPage id={route.id} />;
+    case "kana":
+      return <KanaPage />;
+    case "kanaRow":
+      return <KanaRowPage id={route.id} />;
+    case "kanaPractice":
+      return <KanaPracticePage key={location.hash} script={route.script} missed={route.missed} listen={route.listen} />;
     case "practice":
       return <PracticePage key={route.set} set={route.set} />;
     default:
@@ -68,20 +82,14 @@ function Page({ route }: { route: Route }) {
   }
 }
 
-/** The tab bar, and which pages light up each tab. */
-const TABS: { tab: string; icon: string; label: string; href: string; pages: Route["page"][] }[] = [
-  { tab: "home", icon: "根", label: "Home", href: href.home(), pages: ["home", "lessons", "lesson"] },
-  { tab: "review", icon: "復", label: "Review", href: href.review(), pages: ["review", "learn"] },
-  { tab: "read", icon: "読", label: "Read", href: href.read(), pages: ["read", "sentences", "story"] },
-  { tab: "search", icon: "探", label: "Search", href: href.search(), pages: ["search"] },
-  { tab: "progress", icon: "進", label: "Progress", href: href.progress(), pages: ["progress", "settings", "known", "practice", "write"] },
-];
-
 function App() {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const route = useRoute();
-  const due = dueCards(useStore()).length;
+  const store = useStore();
+  const due = dueCards(store).length;
+  const bar = barTools(store.settings);
+  const on = activeTab(bar, route.page);
   useEffect(() => {
     Promise.all([loadData(), initStore()]).then(
       () => {
@@ -99,14 +107,15 @@ function App() {
         {error ? <p class="empty">Couldn't load the dictionary: {error}</p> : ready ? <Page route={route} /> : <Loading />}
       </main>
       <nav class="tabbar">
-        {TABS.map((t) => (
-          <a key={t.tab} data-tab={t.tab} class={t.pages.includes(route.page) ? "on" : ""} href={t.href}>
+        {bar.map((t) => (
+          <a key={t.tab} data-tab={t.tab} class={t.tab === on ? "on" : ""} href={t.href}>
             <span aria-hidden="true">{t.icon}</span>
             {t.label}
             {t.tab === "review" && due > 0 && <b class="tab-badge">{due}</b>}
           </a>
         ))}
       </nav>
+      {ready && <Welcome />}
       {ready && <Tour />}
     </>
   );

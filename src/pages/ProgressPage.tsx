@@ -2,6 +2,7 @@ import { useData } from "../data";
 import { href } from "../router";
 import { isLeech, PRACTICE_LABEL, practiceCards, STAGE_LABEL, stageOf, useStore, type ItemKind, type PracticeSet, type Stage } from "../srs";
 import { Chip, Section, WordRow } from "../components/bits";
+import { GrammarRow } from "./GrammarPages";
 import { accuracyByType, DAY, dayKey, duration, hardestItems, heatmap, percent, reviewsPerDay, streak as streakOf, timeSpent, type Accuracy } from "../stats";
 
 const STAGES: Stage[] = ["mature", "young", "learning", "none"];
@@ -14,7 +15,10 @@ const TYPE_LABEL: [string, string][] = [
   ["word:word", "Words"],
   ["word:recall", "English → Japanese"],
   ["word:listen", "Listening"],
+  ["grammar:cloze", "Grammar"],
 ];
+
+const isChip = (kind: ItemKind): kind is "radical" | "kanji" => kind === "radical" || kind === "kanji";
 
 export function ProgressPage() {
   const data = useData();
@@ -31,6 +35,7 @@ export function ProgressPage() {
     ["Radicals", "radical", data.lessons.flatMap((l) => l.radicals)],
     ["Kanji", "kanji", kanjiKeys],
     ["Review words", "word", data.lessons.flatMap((l) => l.words)],
+    ["Grammar", "grammar", Object.values(data.grammar).filter((g) => g.ex.length).map((g) => g.id)],
   ];
   const levels = [5, 4, 3, 2, 1, null].map((n) => ({
     label: n ? `N${n}` : "Other Jōyō",
@@ -117,22 +122,23 @@ export function ProgressPage() {
       {leeches.length > 0 && (
         <Section title="Leeches" hint="Items you've forgotten 8 or more times. A note on the item's page often helps.">
           <div class="chips" lang="ja">
-            {leeches.map(([kind, key]) => kind !== "word" && <Chip key={`${kind}:${key}`} c={key} kind={kind} />)}
+            {leeches.map(([kind, key]) => isChip(kind) && <Chip key={`${kind}:${key}`} c={key} kind={kind} />)}
           </div>
           {leeches.map(([kind, key]) => kind === "word" && <WordRow key={key} id={key} />)}
+          {leeches.map(([kind, key]) => kind === "grammar" && data.grammar[key] && <GrammarRow key={key} g={data.grammar[key]} />)}
         </Section>
       )}
 
       {hardest.length > 0 && (
         <Section title="Hardest items" hint="What you miss most often, from all your answers.">
           <div class="chips" lang="ja">
-            {hardest.map(({ kind, key, acc }) => kind !== "word" && <Chip key={key} c={key} kind={kind} note={`${percent(acc)} right`} />)}
+            {hardest.map(({ kind, key, acc }) => isChip(kind) && <Chip key={key} c={key} kind={kind} note={`${percent(acc)} right`} />)}
           </div>
           {hardest.map(
             ({ kind, key, acc }) =>
-              kind === "word" && (
+              (kind === "word" || (kind === "grammar" && data.grammar[key])) && (
                 <div class="hard-row" key={key}>
-                  <WordRow id={key} />
+                  {kind === "word" ? <WordRow id={key} /> : <GrammarRow g={data.grammar[key]} />}
                   <span class="acc-pct">{percent(acc)}</span>
                 </div>
               ),

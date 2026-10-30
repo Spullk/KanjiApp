@@ -5,11 +5,14 @@ import { Section } from "../components/bits";
 import { useEffect, useState } from "preact/hooks";
 import { loadFont, REVIEW_FONTS } from "../fonts";
 import { startTour } from "../components/Tour";
+import { openWelcome } from "../components/Welcome";
+import { barTools, PICKS, TOOLS } from "../tools";
 import { allowReminders, isNative, shareFile } from "../native";
-import { prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
+import { installed, prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
 import { wordsBySpelling } from "../known";
 import { useData } from "../data";
+import { buildLabel, checkForUpdate, type UpdateCheck } from "../update";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
 // A new option gets a field there, a default, and a row here.
@@ -26,6 +29,34 @@ export function SettingsPage() {
       <h1>Settings</h1>
 
       {syncAvailable && <Account />}
+
+      <Section title="Bottom bar" hint="Home is always first. Pick the other four; every tool is also on Home.">
+        {Array.from({ length: PICKS }, (_, i) => {
+          const tabs = barTools(store.settings).slice(1).map((t) => t.tab);
+          return (
+            <label class="setting" key={i}>
+              Tab {i + 2}
+              <select
+                value={tabs[i]}
+                onChange={(e) => {
+                  const next = [...tabs];
+                  const pick = (e.target as HTMLSelectElement).value;
+                  const was = next.indexOf(pick);
+                  if (was >= 0) next[was] = next[i]; // swap, so a tool is never on the bar twice
+                  next[i] = pick;
+                  set("tabs", next);
+                }}
+              >
+                {TOOLS.map((t) => (
+                  <option key={t.tab} value={t.tab}>
+                    {t.icon} {t.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          );
+        })}
+      </Section>
 
       <Section title="Lessons">
         <label class="setting">
@@ -193,9 +224,18 @@ export function SettingsPage() {
       </Section>
 
       <Section title="Help">
-        <button class="secondary" onClick={startTour}>
-          Show the tour again
-        </button>
+        <div class="button-row">
+          <button class="secondary" onClick={startTour}>
+            Show the tour again
+          </button>
+          <button class="secondary" onClick={openWelcome}>
+            Change where I'm starting from
+          </button>
+        </div>
+      </Section>
+
+      <Section title="Version and debug">
+        <Version />
       </Section>
 
       <Section title="Credits">
@@ -209,6 +249,48 @@ export function SettingsPage() {
         </ul>
       </Section>
     </article>
+  );
+}
+
+const UPDATE_TEXT: Record<UpdateCheck | "checking", string> = {
+  checking: "Checking…",
+  latest: "You have the latest version.",
+  updating: "Downloading the new version. Nekko will reload in a moment…",
+  offline: "Couldn't check. Are you online?",
+};
+
+function Version() {
+  const [state, setState] = useState<UpdateCheck | "checking">();
+  const sync = useSync();
+  const app = isNative ? "phone app" : installed ? "home-screen app" : "browser";
+  const signInWay = isNative ? "phone's Google account" : installed ? "full-page Google sign-in" : "pop-up window";
+  return (
+    <>
+      <p>Built {buildLabel()}</p>
+      <ul class="debug">
+        <li>Running as: {app}</li>
+        <li>Sign-in uses: {signInWay}</li>
+        <li>Offline copy: {isNative ? "built into the app" : navigator.serviceWorker?.controller ? "on" : "off"}</li>
+        <li>
+          Sync: {sync.status}
+          {sync.user ? `, signed in as ${sync.user.email || sync.user.name}` : ", not signed in"}
+        </li>
+        {sync.error && <li>Last error: {sync.error}</li>}
+      </ul>
+      {!isNative && (
+        <button
+          class="secondary"
+          disabled={state === "checking" || state === "updating"}
+          onClick={async () => {
+            setState("checking");
+            setState(await checkForUpdate());
+          }}
+        >
+          Check for update
+        </button>
+      )}
+      {state && <p class="hint">{UPDATE_TEXT[state]}</p>}
+    </>
   );
 }
 

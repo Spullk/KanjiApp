@@ -28,3 +28,20 @@ describe("reading practice", () => {
     expect(readableSentences(data, new Set(["日", "本", "人", "行"]))).toEqual(["a", "b"]);
   });
 });
+
+describe("furigana rule", () => {
+  it("hides readings over taught kanji, but keeps whole-word readings until the word is studied", async () => {
+    const { furiganaRule } = await import("../src/reading");
+    const d = { kanji: { 日: {}, 本: {}, 今: {} } } as unknown as Data;
+    const s = emptyStore();
+    addItem(s, "kanji", "日");
+    addItem(s, "kanji", "今");
+    const hide = furiganaRule(s, d, "w1");
+    expect(hide(["日", "に"])).toBe(true);
+    expect(hide(["本", "ほん"])).toBe(false);
+    expect(hide(["です", null])).toBe(false);
+    expect(hide(["今日", "きょう", "*"])).toBe(false);
+    addItem(s, "word", "w1");
+    expect(furiganaRule(s, d, "w1")(["今日", "きょう", "*"])).toBe(true);
+  });
+});

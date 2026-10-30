@@ -150,9 +150,10 @@ function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
   const note = info?.note ?? "";
   const synonyms = info?.synonyms ?? [];
   return (
-    <details class="note-box" open={!!note || synonyms.length > 0}>
-      <summary>{note ? "Your note" : "Add a note"}</summary>
+    <div class="note-box">
+      <label for={`note-${kind}-${k}`}>Your note</label>
       <textarea
+        id={`note-${kind}-${k}`}
         key={`${kind}:${k}`}
         rows={3}
         placeholder="A mnemonic, a reminder, anything that helps."
@@ -177,7 +178,7 @@ function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
           ))}
         </div>
       )}
-    </details>
+    </div>
   );
 }
 
