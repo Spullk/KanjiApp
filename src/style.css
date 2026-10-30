@@ -420,6 +420,12 @@ ruby rt {
   font-size: 0.9rem;
 }
 
+.romaji {
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
 .sent-note {
   margin-top: 4px;
   color: var(--muted);

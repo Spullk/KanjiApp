@@ -1,6 +1,6 @@
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { loadData } from "./data";
+import { loadData, loadSentences } from "./data";
 import { useRoute, type Route } from "./router";
 import { HomePage } from "./pages/HomePage";
 import { KanjiPage } from "./pages/KanjiPage";
@@ -27,6 +27,8 @@ import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
 import { Tour } from "./components/Tour";
 import { initUpdates } from "./update";
+import { warmExamples } from "./examples";
+import { warmSearch } from "./search";
 import "./style.css";
 
 // The app store build ships every file inside the app, so only the website needs the offline cache.
@@ -84,8 +86,12 @@ function Page({ route }: { route: Route }) {
   }
 }
 
+/** Pages that open without the example sentences, so they can show before those have loaded. */
+const NO_SENTENCES = new Set<Route["page"]>(["home", "lessons", "lesson", "progress", "settings", "known", "search", "grammar", "grammarPoint", "kana", "kanaRow", "kanaPractice", "read", "story", "write", "radical"]);
+
 function App() {
   const [ready, setReady] = useState(false);
+  const [sentences, setSentences] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const route = useRoute();
   const store = useStore();
@@ -94,8 +100,16 @@ function App() {
   const on = activeTab(bar, route.page);
   useEffect(() => {
     Promise.all([loadData(), initStore()]).then(
-      () => {
+      ([data]) => {
         setReady(true);
+        loadSentences().then(
+          () => {
+            setSentences(true);
+            warmExamples(data);
+          },
+          (e) => setError(String(e)),
+        );
+        warmSearch(data);
         initNative(getStore);
         initSync();
       },
@@ -106,7 +120,7 @@ function App() {
   return (
     <>
       <main>
-        {error ? <p class="empty">Couldn't load the dictionary: {error}</p> : ready ? <Page route={route} /> : <Loading />}
+        {error ? <p class="empty">Couldn't load the dictionary: {error}</p> : ready && (sentences || NO_SENTENCES.has(route.page)) ? <Page route={route} /> : <Loading />}
       </main>
       <nav class="tabbar">
         {bar.map((t) => (

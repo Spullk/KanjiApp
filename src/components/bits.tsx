@@ -1,5 +1,6 @@
 import type { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
+import { toRomaji } from "wanakana";
 import { hira, useData, type Segment, type Sentence, type Word } from "../data";
 import { furiganaRule } from "../reading";
 import { useStore } from "../srs";
@@ -260,3 +261,13 @@ export function readingKana(r: string): string {
   return hira(r.replace(/[.-]/g, ""));
 }
 
+
+/** A reading in romaji, when it's switched on in Settings (off by default). */
+export function Romaji({ kana }: { kana: string }) {
+  const store = useStore();
+  if (!store.settings.romaji) return null;
+  return <div class="romaji">{toRomaji(kana)}</div>;
+}
+
+/** The kana reading of furigana segments. */
+export const readingOf = (segs: Segment[]) => segs.map(([text, kana]) => kana ?? text).join("");

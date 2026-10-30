@@ -20,6 +20,13 @@ describe("reminder sender", () => {
     expect(toRemind({ ...push, hour: null }, now)).toEqual([]);
   });
 
+  it("takes minutes into account", () => {
+    expect(toRemind({ ...push, hour: 9.25 }, now)).toEqual([]); // 9:15, and it's 9:10 in Los Angeles
+    expect(toRemind({ ...push, hour: 9 + 10 / 60 }, now)).toEqual([["la", "t1", "2026-10-30", 2]]);
+    expect(toRemind({ ...push, hour: 6.25 }, now)).toEqual([["la", "t1", "2026-10-30", 2]]); // 6:15, within 3 hours
+    expect(toRemind({ ...push, hour: 6 }, now)).toEqual([]); // 3 h 10 min ago
+  });
+
   it("reads Firestore's typed values", () => {
     expect(
       plain({

@@ -6,6 +6,7 @@ import { checkParameters, createEmptyCard, fsrs, generatorParameters, migratePar
 import type { Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
 import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order";
+import { canonical, compactStore, expandStore, isCompact } from "./compact";
 
 export { Rating, State };
 export type { Grade };
@@ -90,11 +91,13 @@ export type Settings = {
   vacation?: number;
   /** Show kanji and words on review cards in a different typeface each day (print, handwriting, brush). */
   fonts?: boolean;
+  /** Romaji under readings (words, review answers, grammar examples), for beginners still learning kana. */
+  romaji?: boolean;
   /** Kanji as two cards (meaning, reading) or one card asking both. Unset means two. */
   kanjiCards?: "split" | "one";
   /** Optional card types switched on. Switching one off keeps its cards but stops asking them. */
   extraCards?: ExtraFace[];
-  /** Native app only: hour of the daily review reminder, or undefined for none. */
+  /** When the daily review reminder comes, in hours (7.5 is 7:30), or undefined for none. */
   reminder?: number;
   /** Where you said you're starting from on the welcome screen: brand new, can read kana, or studied before. */
   start?: "new" | "kana" | "returning";
@@ -129,7 +132,8 @@ export type Undo = { card: string; before: StoredCard; time: number };
 export type Store = {
   version: 2;
   cards: Record<string, StoredCard>;
-  /** Cards taken out of study and when, so merging another device's copy doesn't bring them back. */
+  /** Cards taken out of study and when, so merging another device's copy doesn't bring them back. Answers you
+   * took back are kept here too, as "undone:<card>@<time>", so a sync doesn't bring them back into the log. */
   removed: Record<string, number>;
   /** By item id ("kanji:語"). */
   items: Record<string, ItemInfo>;
@@ -151,6 +155,7 @@ export function emptyStore(): Store {
 
 /** Brings saved progress or a backup from any earlier version up to the current shape. */
 export function migrate(raw: unknown): Store {
+  if (isCompact(raw)) raw = expandStore(raw);
   const old = raw as Omit<Partial<Store>, "version"> & { version?: number };
   if (!old || typeof old !== "object" || typeof old.cards !== "object" || ![1, 2].includes(old.version!)) {
     throw new Error("not a Nekko backup");
@@ -165,6 +170,10 @@ export function migrate(raw: unknown): Store {
   return s;
 }
 
+/** Which of two copies of a card or item to keep when both changed at the same moment: the same one on every
+ * device, so two devices never keep sending each other their own copy. */
+const later = (a: { updated: number }, b: { updated: number }) => a.updated > b.updated || (a.updated === b.updated && canonical(a) > canonical(b));
+
 /** Combines two copies of the progress, e.g. a backup from another device with this one. */
 export function merge(local: Store, other: Store): Store {
   const out = emptyStore();
@@ -174,20 +183,21 @@ export function merge(local: Store, other: Store): Store {
   for (const c of [local.cards, other.cards]) {
     for (const [id, card] of Object.entries(c)) {
       const have = out.cards[id];
-      if ((!have || card.updated > have.updated) && card.updated > (out.removed[id] ?? -Infinity)) out.cards[id] = card;
+      if ((!have || later(card, have)) && card.updated > (out.removed[id] ?? -Infinity)) out.cards[id] = card;
     }
   }
   for (const id of Object.keys(out.cards)) delete out.removed[id];
   for (const items of [local.items, other.items]) {
     for (const [id, info] of Object.entries(items)) {
-      if (!out.items[id] || info.updated > out.items[id].updated) out.items[id] = info;
+      if (!out.items[id] || later(info, out.items[id])) out.items[id] = info;
     }
   }
   const seen = new Set<string>();
   out.log = [...local.log, ...other.log]
-    .filter(([id, , t]) => !seen.has(id + "@" + t) && !!seen.add(id + "@" + t))
+    .filter(([id, , t]) => !seen.has(id + "@" + t) && !!seen.add(id + "@" + t) && !out.removed[undone(id, t)])
     .sort((a, b) => a[2] - b[2]);
-  const newer = other.settingsUpdated > local.settingsUpdated ? other : local;
+  const tie = other.settingsUpdated === local.settingsUpdated && local.settingsUpdated > 0 && canonical(other.settings) > canonical(local.settings);
+  const newer = other.settingsUpdated > local.settingsUpdated || tie ? other : local;
   out.settings = { ...newer.settings };
   out.settingsUpdated = newer.settingsUpdated;
   out.undo = local.undo;
@@ -373,12 +383,15 @@ export function grade(store: Store, id: string, rating: Grade, now = Date.now())
   store.undo = [...store.undo, { card: id, before: stored, time: now }].slice(-UNDO_LIMIT);
 }
 
-/** Takes back the last answer: the card goes back to how it was and the review is forgotten. */
+const undone = (card: string, time: number) => `undone:${card}@${time}`;
+
+/** Takes back the last answer: the card goes back to how it was and the review is forgotten, on every device. */
 export function undoLast(store: Store, now = Date.now()): string | undefined {
   const last = store.undo.pop();
   if (!last) return undefined;
   store.cards[last.card] = { ...last.before, updated: now };
   store.log = store.log.filter(([id, , t]) => id !== last.card || t !== last.time);
+  store.removed[undone(last.card, last.time)] = now;
   return last.card;
 }
 
@@ -396,12 +409,22 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
 /** Cards due by `until`, learning cards first, then the most overdue. None while on vacation. */
 export function dueCards(store: Store, until = Date.now()): string[] {
   if (store.settings.vacation) return [];
-  return Object.entries(store.cards)
-    .filter(([id, c]) => {
-      if (c.due > until) return false;
-      const { kind, face } = parseCardId(id);
-      return !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, kind, face);
-    })
+  // This runs on every render of the tab bar, Home and Review, so it makes one pass over the cards and asks
+  // faceOn once per kind of card ("kanji:reading") rather than once per card.
+  const asked = new Map<string, boolean>();
+  const due: [string, StoredCard][] = [];
+  for (const id in store.cards) {
+    const c = store.cards[id];
+    if (c.due > until) continue;
+    const cut = id.lastIndexOf(":");
+    if (store.items[id.slice(0, cut)]?.status) continue;
+    const kind = id.slice(0, id.indexOf(":"));
+    const type = kind + id.slice(cut);
+    let on = asked.get(type);
+    if (on === undefined) asked.set(type, (on = faceOn(store.settings, kind as ItemKind, id.slice(cut + 1) as Face)));
+    if (on) due.push([id, c]);
+  }
+  return due
     .sort(([, a], [, b]) => {
       const al = a.state === State.Review ? 1 : 0;
       const bl = b.state === State.Review ? 1 : 0;
@@ -587,7 +610,7 @@ export function flushSave() {
   if (saveTimer === undefined) return;
   clearTimeout(saveTimer);
   saveTimer = undefined;
-  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
+  storage.save(JSON.stringify(compactStore(store))).catch((e) => console.error("Could not save progress", e));
 }
 
 /** Runs after every saved change (the native app reschedules its reminders here). */

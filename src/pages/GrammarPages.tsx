@@ -8,7 +8,7 @@ import { furiganaRule } from "../reading";
 import { ALL_KANA, scriptOf, type Script } from "../kana";
 import { drillOf } from "../kanaDrill";
 import { speak } from "../audio";
-import { Furigana, Section, SpeakButton } from "../components/bits";
+import { Furigana, readingOf, Romaji, Section, SpeakButton } from "../components/bits";
 import { StudyButton } from "../components/ItemCards";
 
 /** Where the kana sit among the Start here points: hiragana before the sound rules, katakana before foreign words. */
@@ -139,6 +139,7 @@ export function GrammarPointPage({ id }: { id: string }) {
                   </b>
                   <Furigana segments={c.after} link={false} hide={hide} reveal />
                 </div>
+                <Romaji kana={readingOf([...c.before, ...c.gap, ...c.after])} />
                 <div class="sent-en">{c.en}</div>
               </div>
             );

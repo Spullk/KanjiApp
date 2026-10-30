@@ -12,7 +12,21 @@ export function dayKey(t: number): string {
 
 export function reviewsPerDay(log: Review[]): Map<string, number> {
   const out = new Map<string, number>();
-  for (const [, , t] of log) out.set(dayKey(t), (out.get(dayKey(t)) ?? 0) + 1);
+  // The log is in time order, so a day's name is only worked out when a new day starts (Date is slow on phones).
+  let start = Infinity;
+  let end = -Infinity;
+  let key = "";
+  for (const [, , t] of log) {
+    if (t < start || t >= end) {
+      const d = new Date(t);
+      d.setHours(0, 0, 0, 0);
+      start = d.getTime();
+      d.setDate(d.getDate() + 1);
+      end = d.getTime();
+      key = dayKey(t);
+    }
+    out.set(key, (out.get(key) ?? 0) + 1);
+  }
   return out;
 }
 

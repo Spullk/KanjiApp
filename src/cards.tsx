@@ -11,7 +11,7 @@ import { cardId, getStore, parseCardId, useStore, type Face, type ItemKind, type
 import { cloze, exampleFor } from "./grammar";
 import { furiganaRule } from "./reading";
 import { fontFor, loadFont } from "./fonts";
-import { alignFurigana, Furigana, WordSpeak } from "./components/bits";
+import { alignFurigana, Furigana, Romaji, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
 import { readingForms } from "./answers";
 import { examplesFor, knowledgeOf, patternSentence } from "./examples";
@@ -51,6 +51,7 @@ function wordBack(data: Data, key: string, use = true) {
       <div class="answer-pitch">
         <PitchAccent w={w} />
       </div>
+      <Romaji kana={w.r} />
       <div class="answer-main">{w.senses.slice(0, 2).map((s) => s.gloss.slice(0, 3).join(", ")).join("; ")}</div>
       {use && <ReadingUse id={key} />}
     </>

@@ -27,6 +27,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      # The recordings are served by the app itself (scripts/fetch_audio.mjs); the cache keeps them between runs.
+      - uses: actions/cache@v4
+        with:
+          path: public/audio
+          key: audio-${{ hashFiles('data/words.json', 'data/sentences.json') }}
+          restore-keys: audio-
+      - run: node scripts/fetch_audio.mjs
       - run: npm run build
       - if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3

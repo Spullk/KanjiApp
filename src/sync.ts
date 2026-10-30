@@ -1,6 +1,8 @@
-// Sign-in and sync. Each person's progress is one compressed copy of the store in Firestore
-// (users/{uid}, split into parts under 1 MB). Syncing is always pull → merge → push, so changes made on
-// any device survive (see merge() in srs.ts). Firebase loads only once someone has signed in on this device.
+// Sign-in and sync. Each person's progress lives in Firestore as small compressed pieces (users/{uid}/pieces/{id}:
+// settings, items and cards in buckets, reviews by month; see compact.ts), each stamped with when it last changed.
+// A sync downloads only the pieces changed since this device last looked and uploads only the ones it changed, and
+// while the app is open a live listener brings in other devices' changes within seconds. Every merge goes through
+// merge() in srs.ts, so changes made on any device survive. Firebase loads only once someone has signed in here.
 // In the iPhone/Android app, Google sign-in runs natively (@capacitor-firebase/authentication) and hands its
 // token to the same Firebase JS SDK, so syncing works the same everywhere.
 
@@ -9,6 +11,7 @@ import { gunzipSync, gzipSync, strFromU8, strToU8 } from "fflate";
 import type { Bytes } from "firebase/firestore";
 import { firebaseConfig, googleWebClientId } from "./firebase-config";
 import { getStore, merge, migrate, onSave, update, type Store } from "./srs";
+import { canonical, hash, piecesOf, storeOfPieces, type Piece } from "./compact";
 import { isNative } from "./native";
 import { savePushState } from "./push";
 
@@ -134,6 +137,7 @@ function firebase(): Promise<Fb> {
           syncNow();
         } else {
           localStorage.removeItem(FLAG);
+          stopListening();
           set({ user: null, status: "idle", last: undefined });
         }
       }),
@@ -159,14 +163,23 @@ export function initSync() {
       .then(({ auth, authMod }) => authMod.signInWithCredential(auth, authMod.GoogleAuthProvider.credential(null, returned.token)))
       .catch((e) => set({ status: "error", error: signInError(e) }));
   }
+  // Changes go up a few seconds after they're made (during reviews, every few seconds), and straight away when
+  // you leave the app, so the next device you open is up to date.
   let timer: ReturnType<typeof setTimeout> | undefined;
-  onSave(() => {
-    if (!state.user || busy) return;
+  const soon = () => {
     clearTimeout(timer);
-    timer = setTimeout(syncNow, 10_000);
+    timer = undefined;
+    syncNow();
+  };
+  onSave(() => {
+    if (state.user) timer ??= setTimeout(soon, PUSH_DELAY);
   });
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && state.user && Date.now() - (state.last ?? 0) > 60_000) syncNow();
+    if (!state.user) return;
+    if (document.visibilityState === "hidden") {
+      if (timer) soon();
+      stopListening();
+    } else syncNow();
   });
 }
 
@@ -217,7 +230,61 @@ export async function signOut() {
   }
 }
 
+/** How long after a change it's uploaded. */
+const PUSH_DELAY = 4000;
+
+/** What this device knows about the online copy of one account: when it last looked, and a hash of each piece. */
+type Meta = { uid: string; pulled: number; legacy: number; hashes: Record<string, number> };
+const META = "nekko.sync.v3";
+let meta: Meta | null = null;
+
+function metaFor(uid: string): Meta {
+  if (meta?.uid === uid) return meta;
+  try {
+    const saved = JSON.parse(localStorage.getItem(META) ?? "null") as Meta | null;
+    if (saved?.uid === uid) return (meta = saved);
+  } catch {
+    // private mode, or unreadable: start over, which only means downloading every piece once
+  }
+  return (meta = { uid, pulled: 0, legacy: 0, hashes: {} });
+}
+
+function saveMeta() {
+  try {
+    localStorage.setItem(META, JSON.stringify(meta));
+  } catch {
+    // private mode
+  }
+}
+
+const pieceHash = (p: Piece) => hash(canonical(p));
+const encode = (fs: Fb["fs"], p: Piece) => fs.Bytes.fromUint8Array(gzipSync(strToU8(canonical(p))));
+const decode = (b: Bytes): Piece => JSON.parse(strFromU8(gunzipSync(b.toUint8Array())));
+
+type PieceDoc = { id: string; data(): { data?: Bytes; updated?: { toMillis(): number } } | undefined };
+
+/** Folds downloaded pieces into this device's progress, skipping ones it already has (such as its own uploads). */
+function bringIn(docs: PieceDoc[], m: Meta) {
+  const fresh: Piece[] = [];
+  for (const d of docs) {
+    const doc = d.data();
+    if (!doc?.data) continue;
+    m.pulled = Math.max(m.pulled, doc.updated?.toMillis() ?? 0);
+    const p = decode(doc.data);
+    const h = pieceHash(p);
+    if (m.hashes[d.id] === h) continue;
+    m.hashes[d.id] = h;
+    fresh.push(p);
+  }
+  if (fresh.length) {
+    const remote = migrate(storeOfPieces(fresh));
+    update((s) => Object.assign(s, merge(s, remote)));
+  }
+  return fresh.length;
+}
+
 let busy = false;
+let again = false;
 
 /** What reminders need to reach your account, once you're signed in. */
 export async function account() {
@@ -226,40 +293,113 @@ export async function account() {
   return uid ? { app: f.app, db: f.db, fs: f.fs, uid } : undefined;
 }
 
-/** Pulls this account's progress, merges it with this device's, and pushes the result back. */
+/** Downloads what other devices changed, uploads what this one changed, and listens for more while the app is open. */
 export async function syncNow() {
-  if (busy) return;
-  const { app, auth, db, fs } = await firebase();
-  const uid = auth.currentUser?.uid;
+  if (busy) {
+    again = true;
+    return;
+  }
+  const f = await firebase();
+  const uid = f.auth.currentUser?.uid;
   if (!uid) return;
   busy = true;
   set({ status: "syncing", error: undefined });
   try {
-    const main = fs.doc(db, "users", uid);
-    const head = await fs.getDoc(main);
-    const count: number = head.exists() ? head.data().parts ?? 0 : 0;
-    let remote: Store | null = null;
-    if (count) {
-      const docs = await Promise.all(Array.from({ length: count }, (_, i) => fs.getDoc(fs.doc(db, "users", uid, "parts", String(i)))));
-      remote = unpack(docs.map((d) => (d.data()!.data as Bytes).toUint8Array()));
-    }
-    if (remote) update((s) => Object.assign(s, merge(s, remote!)));
-
-    const before = remote && JSON.stringify({ ...remote, undo: [] });
-    if (before !== JSON.stringify({ ...getStore(), undo: [] })) {
-      const parts = pack(getStore());
-      const batch = fs.writeBatch(db);
-      parts.forEach((p, i) => batch.set(fs.doc(db, "users", uid, "parts", String(i)), { data: fs.Bytes.fromUint8Array(p) }));
-      for (let i = parts.length; i < count; i++) batch.delete(fs.doc(db, "users", uid, "parts", String(i)));
-      batch.set(main, { parts: parts.length, updated: fs.serverTimestamp() });
-      await batch.commit();
-    }
-    if (!isNative) savePushState({ app, db, fs, uid }, getStore()).catch((e) => console.error("Could not save reminder times", e));
+    const m = metaFor(uid);
+    await pull(f, uid, m);
+    await push(f, uid, m);
+    saveMeta();
+    if (!isNative) savePushState({ app: f.app, db: f.db, fs: f.fs, uid }, getStore()).catch((e) => console.error("Could not save reminder times", e));
     set({ status: "synced", last: Date.now() });
+    listen(f, uid);
   } catch (e) {
     console.error("Sync failed", e);
     set({ status: "error", error: "Couldn't sync just now. Your progress is safe on this device and will sync next time." });
   } finally {
     busy = false;
+    if (again) {
+      again = false;
+      syncNow();
+    }
   }
+}
+
+const pieces = (f: Fb, uid: string) => f.fs.collection(f.db, "users", uid, "pieces");
+
+async function pull(f: Fb, uid: string, m: Meta) {
+  const { fs, db } = f;
+  const col = pieces(f, uid);
+  const changed = await fs.getDocs(m.pulled ? fs.query(col, fs.where("updated", ">=", fs.Timestamp.fromMillis(m.pulled))) : col);
+  bringIn(changed.docs, m);
+
+  // Nekko before pieces kept the whole progress in one copy (users/{uid} with parts). Bring it in once, and again
+  // whenever a device still on an old version writes to it.
+  const head = await fs.getDoc(fs.doc(db, "users", uid));
+  const old = head.data();
+  const written = old?.updated?.toMillis?.() ?? 0;
+  if (old?.parts && written > m.legacy) {
+    const docs = await Promise.all(Array.from({ length: old.parts }, (_, i) => fs.getDoc(fs.doc(db, "users", uid, "parts", String(i)))));
+    const legacy = unpack(docs.map((d) => (d.data()!.data as Bytes).toUint8Array()));
+    update((s) => Object.assign(s, merge(s, legacy)));
+    m.legacy = written;
+  }
+}
+
+async function push(f: Fb, uid: string, m: Meta) {
+  const { fs, db } = f;
+  const changed = [...piecesOf(getStore())].filter(([id, p]) => m.hashes[id] !== pieceHash(p)).map(([id]) => id);
+  if (!changed.length) return;
+  const refs = changed.map((id) => fs.doc(pieces(f, uid), id));
+  let written: Record<string, number> = {};
+  let merged: Store | null = null;
+  // Each piece is read again inside the transaction, so one another device wrote a moment ago is merged, not lost.
+  await fs.runTransaction(db, async (tx) => {
+    const remote = await Promise.all(refs.map((r) => tx.get(r)));
+    const newer = remote
+      .map((d) => d.data() as { data?: Bytes } | undefined)
+      .map((d) => (d?.data ? decode(d.data) : null))
+      .filter((p, i): p is Piece => !!p && pieceHash(p) !== m.hashes[changed[i]]);
+    merged = newer.length ? merge(getStore(), migrate(storeOfPieces(newer))) : null;
+    const now = piecesOf(merged ?? getStore());
+    written = {};
+    changed.forEach((id, i) => {
+      const p = now.get(id) ?? {};
+      tx.set(refs[i], { data: encode(fs, p), updated: fs.serverTimestamp() });
+      written[id] = pieceHash(p);
+    });
+  });
+  if (merged) {
+    const remote = merged;
+    update((s) => Object.assign(s, merge(s, remote)));
+  }
+  Object.assign(m.hashes, written);
+}
+
+let unlisten: (() => void) | null = null;
+
+/** While the app is on screen: other devices' changes arrive within seconds, without waiting for a sync. */
+function listen(f: Fb, uid: string) {
+  if (unlisten || document.visibilityState !== "visible") return;
+  const { fs } = f;
+  const m = metaFor(uid);
+  unlisten = fs.onSnapshot(
+    fs.query(pieces(f, uid), fs.where("updated", ">=", fs.Timestamp.fromMillis(m.pulled))),
+    (snap) => {
+      if (snap.metadata.hasPendingWrites) return;
+      const docs = snap.docChanges().filter((c) => c.type !== "removed").map((c) => c.doc);
+      if (docs.length && bringIn(docs, m)) {
+        saveMeta();
+        set({ status: "synced", last: Date.now() });
+      }
+    },
+    (e) => {
+      console.error("Live sync stopped", e);
+      unlisten = null;
+    },
+  );
+}
+
+function stopListening() {
+  unlisten?.();
+  unlisten = null;
 }

@@ -12,8 +12,8 @@ function sentenceIndex(data: Data): Map<string, string[]> {
   let ix = indexes.get(data);
   if (ix) return ix;
   ix = new Map();
-  for (const [id, s] of Object.entries(data.sentences)) {
-    for (const [, , wid] of s.links) {
+  for (const id in data.sentences) {
+    for (const [, , wid] of data.sentences[id].links) {
       const list = ix.get(wid);
       if (!list) ix.set(wid, [id]);
       else if (list[list.length - 1] !== id) list.push(id);
@@ -21,6 +21,15 @@ function sentenceIndex(data: Data): Map<string, string[]> {
   }
   indexes.set(data, ix);
   return ix;
+}
+
+/** Builds the sentence index while the phone is idle after start-up, so the first word or kanji page (or
+ * sentence card) doesn't wait for it. */
+export function warmExamples(data: Data) {
+  const later = (globalThis as { requestIdleCallback?: (fn: () => void, o?: { timeout: number }) => void }).requestIdleCallback;
+  const run = () => sentenceIndex(data);
+  if (later) later(run, { timeout: 5000 });
+  else setTimeout(run, 2000);
 }
 
 const knowCache = new WeakMap<Store, Knowledge>();

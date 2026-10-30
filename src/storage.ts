@@ -1,9 +1,9 @@
 // Where the progress JSON is kept. srs.ts only sees load/save of one string, so the data shape
 // can change without caring which backend holds it.
 //
-// Web: localStorage. Native app: a file in the app's private data folder, because iOS may clear
-// a web view's localStorage when the phone is low on space. The first native launch moves any
-// progress already in localStorage into the file.
+// Web: IndexedDB, which has room for years of reviews (localStorage stops at about 5 MB) and doesn't hold up the
+// page while it writes. Native app: a file in the app's private data folder, because iOS may clear a web view's
+// storage when the phone is low on space. Either way, progress already in localStorage moves over on first start.
 
 import { Capacitor } from "@capacitor/core";
 
@@ -62,4 +62,63 @@ function fileAdapter(): StorageAdapter {
   };
 }
 
-export const defaultAdapter: StorageAdapter = Capacitor.isNativePlatform() ? fileAdapter() : localStorageAdapter;
+const DB = "nekko";
+const STORE = "progress";
+const KEY = "store";
+
+/** IndexedDB, opened afresh for each read or write: iOS can drop a connection that sat open in the background. */
+function idb<T>(mode: IDBTransactionMode, run: (s: IDBObjectStore) => IDBRequest<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const open = indexedDB.open(DB, 1);
+    open.onupgradeneeded = () => open.result.createObjectStore(STORE);
+    open.onerror = () => reject(open.error);
+    open.onsuccess = () => {
+      const db = open.result;
+      const tx = db.transaction(STORE, mode);
+      const req = run(tx.objectStore(STORE));
+      tx.oncomplete = () => {
+        db.close();
+        resolve(req.result);
+      };
+      tx.onerror = tx.onabort = () => {
+        db.close();
+        reject(tx.error ?? req.error);
+      };
+    };
+  });
+}
+
+/** Tries twice: a first failure is often a connection iOS closed. */
+const retry = <T>(f: () => Promise<T>) => f().catch(() => f());
+
+export const indexedDbAdapter: StorageAdapter = {
+  async load() {
+    let saved: string | undefined;
+    try {
+      saved = await retry(() => idb<string | undefined>("readonly", (s) => s.get(KEY)));
+    } catch {
+      return localStorageAdapter.load(); // no IndexedDB here (some private modes)
+    }
+    return saved ?? localStorageAdapter.load();
+  },
+  async save(json) {
+    try {
+      await retry(() => idb("readwrite", (s) => s.put(json, KEY)));
+    } catch {
+      await localStorageAdapter.save(json);
+      return;
+    }
+    // Moved: free localStorage's space for the small settings kept there.
+    try {
+      localStorage.removeItem(LEGACY_KEY);
+    } catch {
+      // private mode
+    }
+  },
+};
+
+export const defaultAdapter: StorageAdapter = Capacitor.isNativePlatform()
+  ? fileAdapter()
+  : typeof indexedDB !== "undefined"
+    ? indexedDbAdapter
+    : localStorageAdapter;

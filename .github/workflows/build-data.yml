@@ -1,8 +1,12 @@
 name: Build data
 
 # Rebuilds data/ with example sentences (Tatoeba) and stories, and commits the result to the same branch.
+# Once a week it also downloads the current dictionary, so the app follows JMdict's updates; the app only
+# downloads data files that changed, the next time it's updated.
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * 1" # Mondays 04:17 UTC
   push:
     paths:
       - "scripts/**"
@@ -10,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  actions: write # to start the App workflow after a data update on main
 
 jobs:
   build:
@@ -24,11 +29,30 @@ jobs:
       - name: Cache downloaded sources
         uses: actions/cache@v4
         with:
-          path: sources
+          path: |
+            sources
+            !sources/jamdict.db
+            !sources/*.gz
           key: sources-${{ hashFiles('scripts/fetch_sources.py') }}
 
+      # The dictionary has its own cache, saved again whenever it's downloaded fresh, so pushes build with the latest.
+      - name: Restore dictionary
+        id: dictionary
+        uses: actions/cache/restore@v4
+        with:
+          path: sources/jamdict.db
+          key: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-${{ github.run_id }}
+          restore-keys: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-
+
       - name: Fetch sources
-        run: python scripts/fetch_sources.py --sentences
+        run: python scripts/fetch_sources.py --sentences ${{ github.event_name != 'push' && '--refresh-dictionary' || '' }}
+
+      - name: Save dictionary
+        if: github.event_name != 'push' || steps.dictionary.outputs.cache-matched-key == ''
+        uses: actions/cache/save@v4
+        with:
+          path: sources/jamdict.db
+          key: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-${{ github.run_id }}
 
       - name: Cache story downloads
         uses: actions/cache@v4
@@ -57,4 +81,10 @@ jobs:
           else
             git commit -m "Rebuild data"
             git push
+            # A push made with this workflow's token doesn't start other workflows, so publish the app here.
+            if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+              gh workflow run app.yml --ref main
+            fi
           fi
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -18,11 +18,11 @@ import { wordsBySpelling } from "../known";
 import { useData } from "../data";
 import { disablePush, enablePush, pushOnHere, pushSupport, savePushState } from "../push";
 import { buildLabel, checkForUpdate, type UpdateCheck } from "../update";
+import { allRecordings, savedRecordings, saveRecordings } from "../audio";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
 // A new option gets a field there, a default, and a row here.
 
-const REMINDER_HOURS = [7, 8, 9, 12, 17, 18, 19, 20, 21, 22];
 
 export function SettingsPage() {
   const store = useStore();
@@ -132,6 +132,16 @@ export function SettingsPage() {
         {EXTRA_CARDS.map(([face, label, about]) => (
           <ExtraCard key={face} face={face} label={label} about={about} />
         ))}
+      </Section>
+
+      <Section title="Romaji">
+        <label class="check-setting">
+          <input type="checkbox" checked={!!store.settings.romaji} onChange={() => set("romaji", !store.settings.romaji || undefined)} />
+          <span>
+            Show romaji under readings
+            <small>For beginners: words, review answers and grammar examples also show the reading in Latin letters. Best switched off once kana feel easy.</small>
+          </span>
+        </label>
       </Section>
 
       <Section title="Fonts">
@@ -259,6 +269,36 @@ function Version() {
         </button>
       )}
       {state && <p class="hint">{UPDATE_TEXT[state]}</p>}
+      {!isNative && <OfflineRecordings />}
+    </>
+  );
+}
+
+/** Recordings are kept as you play them; this saves the rest too, for listening offline. */
+function OfflineRecordings() {
+  const data = useData();
+  const urls = useMemo(() => allRecordings(Object.values(data.words), Object.values(data.sentences)), [data, data.sentences]);
+  const [kept, setKept] = useState<number>();
+  const [saving, setSaving] = useState(false);
+  const [failed, setFailed] = useState(0);
+  useEffect(() => void savedRecordings(urls).then(setKept, () => setKept(0)), [urls]);
+  if (kept === undefined || typeof caches === "undefined") return null;
+  const save = async () => {
+    setSaving(true);
+    setFailed(await saveRecordings(urls, setKept).catch(() => urls.length));
+    setSaving(false);
+  };
+  return (
+    <>
+      <p class="hint">
+        Recordings on this device: {kept.toLocaleString()} of {urls.length.toLocaleString()}. Each one is kept once you play it.
+        {failed > 0 && ` ${failed} couldn't be downloaded; try again later.`}
+      </p>
+      {kept < urls.length && (
+        <button class="secondary" disabled={saving} onClick={save}>
+          {saving ? "Saving recordings…" : `Save them all for offline (about ${Math.round(((urls.length - kept) * 11) / 1000)} MB)`}
+        </button>
+      )}
     </>
   );
 }
@@ -367,7 +407,9 @@ function Account() {
             ? sync.error
             : sync.last
               ? `Synced ${ago(sync.last)}.`
-              : "Syncs a few seconds after each change."}
+              : "Syncs a few seconds after each change."}{" "}
+        Changes go up a few seconds after you make them and when you leave the app; other devices with Nekko open get
+        them within seconds.
       </p>
       <div class="backup">
         <button disabled={sync.status === "syncing"} onClick={syncNow}>
@@ -489,28 +531,49 @@ function Optimizer() {
   );
 }
 
-function HourSelect({ onChange, disabled }: { onChange: (e: Event) => void; disabled?: boolean }) {
+/** A reminder time in hours (7.5) as a time field's "07:30", and back. */
+function toTimeField(hours: number | undefined): string {
+  if (hours === undefined) return "";
+  const m = Math.round(hours * 60);
+  return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+}
+
+function fromTimeField(value: string): number | undefined {
+  const [h, m] = value.split(":").map(Number);
+  return value && isFinite(h) && isFinite(m) ? h + m / 60 : undefined;
+}
+
+/** Any time of day, or off. */
+function ReminderTime({ onChange, disabled }: { onChange: (hours: number | undefined) => void; disabled?: boolean }) {
   const store = useStore();
+  const on = store.settings.reminder !== undefined;
   return (
-    <label class="setting">
-      Daily reminder
-      <select value={store.settings.reminder ?? ""} disabled={disabled} onChange={onChange}>
-        <option value="">Off</option>
-        {REMINDER_HOURS.map((h) => (
-          <option key={h} value={h}>
-            {new Date(2000, 0, 1, h).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
-          </option>
-        ))}
-      </select>
-    </label>
+    <>
+      <label class="setting">
+        Daily reminder
+        <input
+          type="time"
+          value={toTimeField(store.settings.reminder)}
+          disabled={disabled}
+          onChange={(e) => onChange(fromTimeField((e.target as HTMLInputElement).value))}
+        />
+      </label>
+      {on ? (
+        <button class="link-button" disabled={disabled} onClick={() => onChange(undefined)}>
+          Turn reminders off
+        </button>
+      ) : (
+        <p class="hint">Off. Pick a time to get a reminder when reviews are waiting.</p>
+      )}
+    </>
   );
 }
 
 function NativeReminder() {
-  return <HourSelect onChange={(e) => setReminder(e.target as HTMLSelectElement)} />;
+  return <ReminderTime onChange={setReminder} />;
 }
 
-/** Push reminders on the website: the hour is shared by your devices, and each device opts in. */
+/** Push reminders on the website: the time is shared by your devices, and each device opts in. */
 function WebReminder() {
   const store = useStore();
   const sync = useSync();
@@ -530,29 +593,31 @@ function WebReminder() {
   if (!syncAvailable || !sync.user) {
     return <p class="hint">Sign in at the top of Settings first. Reminders are sent to the devices on your account.</p>;
   }
-  const turnOn = async () => {
-    const acc = await account();
-    if (!acc) return;
+  const turnOn = () => {
+    // Asked before anything else: iPhones only show the permission question straight from a tap.
+    const permission = Notification.requestPermission();
     setBusy(true);
-    setError(await enablePush(acc, getStore()));
-    setHere(pushOnHere());
-    setBusy(false);
+    setError(undefined);
+    account()
+      .then((acc) => (acc ? enablePush(acc, getStore(), permission) : "Sign in again, then try once more."))
+      .then((e) => {
+        setError(e);
+        setHere(pushOnHere());
+      })
+      .finally(() => setBusy(false));
   };
-  const choose = async (e: Event) => {
-    const value = (e.target as HTMLSelectElement).value;
-    update((s) => (s.settings.reminder = value === "" ? undefined : Number(value)));
+  const choose = async (hours: number | undefined) => {
+    update((s) => (s.settings.reminder = hours));
     const acc = await account();
-    if (!acc) return;
-    if (value !== "" && !pushOnHere()) await turnOn();
-    else await savePushState(acc, getStore()).catch(() => setError("Couldn't save the reminder time. It'll save on the next sync."));
+    if (acc) await savePushState(acc, getStore()).catch(() => setError("Couldn't save the reminder time. It'll save on the next sync."));
   };
   return (
     <>
-      <HourSelect onChange={choose} disabled={busy} />
+      <ReminderTime onChange={choose} disabled={busy} />
       {store.settings.reminder !== undefined &&
         (here ? (
           <p class="hint">
-            This device gets a reminder when reviews are waiting, within about half an hour of that time.{" "}
+            This device gets a reminder around that time when reviews are waiting.{" "}
             <button
               class="link-button"
               onClick={async () => {
@@ -566,7 +631,7 @@ function WebReminder() {
           </p>
         ) : (
           <button class="secondary" disabled={busy} onClick={turnOn}>
-            Get reminders on this device too
+            {busy ? "Setting up…" : "Get reminders on this device"}
           </button>
         ))}
       {error && <p class="hint error">{error}</p>}
@@ -588,14 +653,12 @@ function BarSetting() {
   );
 }
 
-async function setReminder(select: HTMLSelectElement) {
-  const hour = select.value === "" ? undefined : Number(select.value);
-  if (hour !== undefined && !(await allowReminders())) {
-    select.value = "";
+async function setReminder(hours: number | undefined) {
+  if (hours !== undefined && !(await allowReminders())) {
     alert("Nekko isn't allowed to send notifications. You can turn them on in the phone's Settings.");
     return;
   }
-  update((s) => (s.settings.reminder = hour));
+  update((s) => (s.settings.reminder = hours));
 }
 
 function exportStore(store: Store) {
