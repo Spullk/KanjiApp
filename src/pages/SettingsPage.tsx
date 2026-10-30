@@ -9,7 +9,8 @@ import type { Reply, Request } from "../optimizer.worker";
 import { loadFont, REVIEW_FONTS } from "../fonts";
 import { startTour } from "../components/Tour";
 import { openWelcome } from "../components/Welcome";
-import { pickedTools, PICKS, TOOLS } from "../tools";
+import { pickedTools } from "../tools";
+import { ToolbarEditor } from "../components/ToolbarEditor";
 import { allowReminders, isNative, shareFile } from "../native";
 import { account, installed, prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
@@ -34,32 +35,8 @@ export function SettingsPage() {
 
       {syncAvailable && <Account />}
 
-      <Section title="Bottom bar" hint="Home and Progress are always at the ends. Pick the three tools between them; every tool is also on Home.">
-        {Array.from({ length: PICKS }, (_, i) => {
-          const tabs = pickedTools(store.settings).map((t) => t.tab);
-          return (
-            <label class="setting" key={i}>
-              Tool {i + 1}
-              <select
-                value={tabs[i]}
-                onChange={(e) => {
-                  const next = [...tabs];
-                  const pick = (e.target as HTMLSelectElement).value;
-                  const was = next.indexOf(pick);
-                  if (was >= 0) next[was] = next[i]; // swap, so a tool is never on the bar twice
-                  next[i] = pick;
-                  set("tabs", next);
-                }}
-              >
-                {TOOLS.map((t) => (
-                  <option key={t.tab} value={t.tab}>
-                    {t.icon} {t.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          );
-        })}
+      <Section title="Bottom bar" hint="Home and Progress are always at the ends, with three tools of your choice between them. Every tool is also on Home.">
+        <BarSetting />
       </Section>
 
       <Section title="Lessons">
@@ -593,6 +570,20 @@ function WebReminder() {
           </button>
         ))}
       {error && <p class="hint error">{error}</p>}
+    </>
+  );
+}
+
+function BarSetting() {
+  const store = useStore();
+  const [editing, setEditing] = useState(false);
+  if (editing) return <ToolbarEditor onDone={() => setEditing(false)} />;
+  return (
+    <>
+      <p class="hint">Now: {pickedTools(store.settings).map((t) => t.label).join(", ")}</p>
+      <button class="secondary" onClick={() => setEditing(true)}>
+        Edit toolbar
+      </button>
     </>
   );
 }

@@ -94,6 +94,9 @@ export type Settings = {
   start?: "new" | "kana" | "returning";
   /** The tools on the bottom bar after Home, in order. Unset means the default four. */
   tabs?: string[];
+  /** Your order for the tools on Home (tool tabs) and for their groups. Unset means the default order. */
+  homeTools?: string[];
+  homeGroups?: string[];
 };
 
 /** What you've told Nekko about an item, apart from its cards. */

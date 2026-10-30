@@ -73,3 +73,41 @@ export function barTools(settings: Settings): Tool[] {
 export function activeTab(bar: Tool[], page: Route["page"]): string {
   return bar.find((t) => t.pages.includes(page))?.tab ?? "home";
 }
+
+/** Puts `items` in the order of `order`, with anything it doesn't list after, in their own order. */
+function ordered<T>(items: T[], key: (t: T) => string, order: string[] = []): T[] {
+  const rank = (t: T) => {
+    const i = order.indexOf(key(t));
+    return i < 0 ? order.length + items.indexOf(t) : i;
+  };
+  return [...items].sort((a, b) => rank(a) - rank(b));
+}
+
+/** Home's tool groups and the tools in each, in your order. */
+export function homeGroups(settings: Settings): { group: Group; title: string; tools: Tool[] }[] {
+  const tools = ordered(TOOLS, (t) => t.tab, settings.homeTools);
+  return ordered(GROUPS, (g) => g.group, settings.homeGroups).map(({ group, title }) => ({
+    group,
+    title,
+    tools: tools.filter((t) => t.group === group),
+  }));
+}
+
+/** Moves one tool (or group) a step earlier or later in a saved order, returning the new order. */
+export function moveIn(all: string[], key: string, by: -1 | 1): string[] {
+  const out = [...all];
+  const i = out.indexOf(key);
+  const j = i + by;
+  if (i < 0 || j < 0 || j >= out.length) return out;
+  [out[i], out[j]] = [out[j], out[i]];
+  return out;
+}
+
+/** Puts `tool` in bar spot `slot`; if it was already on the bar, the two swap places. */
+export function placeTool(settings: Settings, slot: number, tool: string): string[] {
+  const tabs = pickedTools(settings).map((t) => t.tab);
+  const was = tabs.indexOf(tool);
+  if (was >= 0) tabs[was] = tabs[slot];
+  tabs[slot] = tool;
+  return tabs;
+}
