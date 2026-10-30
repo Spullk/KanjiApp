@@ -13,7 +13,7 @@ import { LearnPage } from "./pages/LearnPage";
 import { ProgressPage } from "./pages/ProgressPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { KnownPage } from "./pages/KnownPage";
-import { PracticePage } from "./pages/PracticePage";
+import { ExtraPracticePage, PracticePage } from "./pages/PracticePage";
 import { WritePage } from "./pages/WritePage";
 import { SentencesPage } from "./pages/SentencesPage";
 import { StoriesPage } from "./pages/StoriesPage";
@@ -75,6 +75,8 @@ function Page({ route }: { route: Route }) {
       return <KanaRowPage id={route.id} />;
     case "kanaPractice":
       return <KanaPracticePage key={location.hash} script={route.script} missed={route.missed} listen={route.listen} />;
+    case "extra":
+      return <ExtraPracticePage />;
     case "practice":
       return <PracticePage key={route.set} set={route.set} />;
     default:
@@ -108,9 +110,15 @@ function App() {
       </main>
       <nav class="tabbar">
         {bar.map((t) => (
-          <a key={t.tab} data-tab={t.tab} class={t.tab === on ? "on" : ""} href={t.href}>
-            <span aria-hidden="true">{t.icon}</span>
-            {t.label}
+          <a key={t.tab} data-tab={t.tab} class={[t.tab === on && "on", t.group].filter(Boolean).join(" ")} href={t.href}>
+            {t.path ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d={t.path} />
+              </svg>
+            ) : (
+              <span aria-hidden="true">{t.icon}</span>
+            )}
+            {t.short ?? t.label}
             {t.tab === "review" && due > 0 && <b class="tab-badge">{due}</b>}
           </a>
         ))}

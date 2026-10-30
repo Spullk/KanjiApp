@@ -39,13 +39,14 @@ describe("furigana in sentences", () => {
 });
 
 describe("bottom bar", () => {
-  it("is Home plus your four picks, lighting the most specific tab", () => {
+  it("is Home, your three picks, then Progress", () => {
     const bar = barTools(DEFAULT_SETTINGS);
-    expect(bar.map((t) => t.tab)).toEqual(["home", ...DEFAULT_TABS]);
+    expect(bar.map((t) => t.tab)).toEqual(["home", ...DEFAULT_TABS, "progress"]);
     expect(activeTab(bar, "settings")).toBe("progress");
     expect(activeTab(bar, "grammar")).toBe("home");
-    const mine = barTools({ ...DEFAULT_SETTINGS, tabs: ["settings", "progress", "nope", "grammar"] });
-    expect(mine.map((t) => t.tab)).toEqual(["home", "settings", "progress", "grammar"]);
-    expect(activeTab(mine, "settings")).toBe("settings");
+    // An older save picked four, Progress among them; anything that isn't a tool is filled from the defaults.
+    const mine = barTools({ ...DEFAULT_SETTINGS, tabs: ["grammar", "progress", "nope", "kana"] });
+    expect(mine.map((t) => t.tab)).toEqual(["home", "grammar", "kana", "review", "progress"]);
+    expect(activeTab(mine, "kanaRow")).toBe("kana");
   });
 });

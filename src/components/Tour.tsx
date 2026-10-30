@@ -74,7 +74,7 @@ const ALL_STEPS: Step[] = [
     title: "Progress",
     body: (
       <>
-        <p>Your stats, review calendar and the kanji you know. Extra practice lives here too: today's mistakes, leeches and writing.</p>
+        <p>Your stats, review calendar and the kanji you know.</p>
         <p>
           Settings is at the top of Progress. Sign in there to sync between devices, and change the study order, card types
           and more.
@@ -127,6 +127,7 @@ export function Tour() {
   useEffect(() => {
     if (s?.tab) document.body.dataset.tour = s.tab;
     else delete document.body.dataset.tour;
+    document.querySelectorAll<HTMLElement>(".tabbar a").forEach((a) => a.classList.toggle("tour-on", a.dataset.tab === s?.tab));
   }, [s]);
 
   if (!s || step === null) return null;

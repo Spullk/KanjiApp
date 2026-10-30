@@ -1,6 +1,7 @@
 import { useMemo, useState } from "preact/hooks";
 import { href } from "../router";
-import { getStore, PRACTICE_LABEL, practiceCards, type PracticeSet } from "../srs";
+import { getStore, PRACTICE_LABEL, practiceCards, useStore, type PracticeSet } from "../srs";
+import { Section } from "../components/bits";
 import { CardBack, CardFront } from "../cards";
 
 /** Extra study: go through a set of cards as often as you like. Nothing here changes when they're due. */
@@ -26,8 +27,8 @@ export function PracticePage({ set }: { set: PracticeSet }) {
             ? `${start.length} ${start.length === 1 ? "card" : "cards"}, ${missed} ${missed === 1 ? "slip" : "slips"} along the way. Your review schedule hasn't changed.`
             : `There's nothing in ${PRACTICE_LABEL[set].toLowerCase()} right now.`}
         </p>
-        <a class="primary wide" href={href.progress()}>
-          Back to Progress
+        <a class="primary wide" href={href.extra()}>
+          Back to extra practice
         </a>
       </article>
     );
@@ -57,6 +58,35 @@ export function PracticePage({ set }: { set: PracticeSet }) {
           Show answer
         </button>
       )}
+    </article>
+  );
+}
+
+/** The Extra practice tool: the sets to go over, and writing. */
+export function ExtraPracticePage() {
+  const store = useStore();
+  const now = Date.now();
+  return (
+    <article class="page">
+      <h1>Extra practice</h1>
+      <p class="hint">Go over these as often as you like. It doesn't change when anything is due.</p>
+      <Section title="Practise">
+        <div class="practice-links">
+          {(["mistakes", "leeches", "recent"] as PracticeSet[]).map((set) => {
+            const n = practiceCards(store, set, now).length;
+            return (
+              <a key={set} class={n ? "" : "quiet"} href={href.practice(set)}>
+                <b>{n}</b>
+                {PRACTICE_LABEL[set]}
+              </a>
+            );
+          })}
+          <a href={href.write()}>
+            <b>筆</b>
+            Writing
+          </a>
+        </div>
+      </Section>
     </article>
   );
 }

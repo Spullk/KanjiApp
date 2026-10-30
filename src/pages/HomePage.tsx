@@ -2,7 +2,7 @@ import { useData } from "../data";
 import { href } from "../router";
 import { dueCards, newLeftToday, nextToLearn, stageOf, useStore } from "../srs";
 import { Chips, Section } from "../components/bits";
-import { TOOLS } from "../tools";
+import { GROUPS, TOOLS } from "../tools";
 import { startNext } from "./GrammarPages";
 
 export function HomePage() {
@@ -68,19 +68,21 @@ export function HomePage() {
         <Chips items={[daily]} kind="kanji" />
       </Section>
 
-      <Section title="All tools">
-        <div class="tool-grid">
-          {TOOLS.map((t) => (
-            <a key={t.tab} class="tool" href={t.href}>
-              <span class="tool-icon" lang="ja">
-                {t.icon}
-              </span>
-              <b>{t.label}</b>
-              <span class="tool-about">{t.about}</span>
-            </a>
-          ))}
-        </div>
-      </Section>
+      {GROUPS.map(({ group, title }) => (
+        <Section key={group} title={title}>
+          <div class={`tool-grid ${group}`}>
+            {TOOLS.filter((t) => t.group === group).map((t) => (
+              <a key={t.tab} class="tool" href={t.href}>
+                <span class="tool-icon" lang="ja">
+                  {t.icon}
+                </span>
+                <b>{t.label}</b>
+                <span class="tool-about">{t.about}</span>
+              </a>
+            ))}
+          </div>
+        </Section>
+      ))}
     </article>
   );
 }
