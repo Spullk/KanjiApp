@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addItem, emptyStore, getStore, initStore, update } from "../src/srs";
+import { addItem, emptyStore, flushSave, getStore, initStore, update } from "../src/srs";
 import type { StorageAdapter } from "../src/storage";
 
 function memory(initial: string | null) {
@@ -20,8 +20,13 @@ describe("store persistence", () => {
     expect(Object.keys(getStore().cards)).toHaveLength(2);
 
     update((s) => addItem(s, "radical", "口", 2000));
+    update((s) => addItem(s, "radical", "木", 3000));
+    expect(saved).toHaveLength(0); // saved just after, once for both changes
+    flushSave();
     expect(saved).toHaveLength(1);
-    expect(Object.keys(JSON.parse(saved[0]).cards)).toHaveLength(3);
+    expect(Object.keys(JSON.parse(saved[0]).cards)).toHaveLength(4);
+    flushSave();
+    expect(saved).toHaveLength(1);
   });
 
   it("starts fresh when nothing is saved or the data is corrupt", async () => {

@@ -390,7 +390,11 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
 export function dueCards(store: Store, until = Date.now()): string[] {
   if (store.settings.vacation) return [];
   return Object.entries(store.cards)
-    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, parseCardId(id).kind, parseCardId(id).face))
+    .filter(([id, c]) => {
+      if (c.due > until) return false;
+      const { kind, face } = parseCardId(id);
+      return !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, kind, face);
+    })
     .sort(([, a], [, b]) => {
       const al = a.state === State.Review ? 1 : 0;
       const bl = b.state === State.Review ? 1 : 0;
@@ -558,6 +562,23 @@ export async function initStore(adapter: StorageAdapter = defaultAdapter) {
   storage = adapter;
   store = parseStore(await adapter.load());
   listeners.forEach((l) => l());
+  if (typeof document !== "undefined" && !flushing) {
+    flushing = true;
+    // Never leave a change unsaved when the app is closed, switched away from or reloaded.
+    document.addEventListener("visibilitychange", () => document.visibilityState === "hidden" && flushSave());
+    addEventListener("pagehide", flushSave);
+  }
+}
+
+let saveTimer: ReturnType<typeof setTimeout> | undefined;
+let flushing = false;
+
+/** Writes the progress out now if a change is waiting to be saved. */
+export function flushSave() {
+  if (saveTimer === undefined) return;
+  clearTimeout(saveTimer);
+  saveTimer = undefined;
+  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
 }
 
 /** Runs after every saved change (the native app reschedules its reminders here). */
@@ -576,7 +597,9 @@ export function update(fn: (s: Store) => void) {
   fn(store);
   if (JSON.stringify(store.settings) !== settings && store.settingsUpdated === stamped) store.settingsUpdated = Date.now();
   store = { ...store };
-  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
+  // Saving means writing out all your progress, which takes a moment once the review log is long, so it happens
+  // just after the screen updates rather than between a tap and the next card. Quick changes in a row save once.
+  saveTimer ??= setTimeout(flushSave, 300);
   listeners.forEach((l) => l());
   saveHooks.forEach((h) => h(store));
 }

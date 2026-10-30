@@ -1060,6 +1060,9 @@ a.primary {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(26px, 1fr));
   gap: 2px;
+  /* Thousands of kanji: the phone only lays them out once they're scrolled near. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 2400px;
 }
 
 .kg {
