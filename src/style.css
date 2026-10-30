@@ -1155,8 +1155,17 @@ button.secondary,
   fill: currentColor;
 }
 
-.speak.tts svg path:first-child {
+/* The computer voice: grey, with a robot instead of the speaker. */
+.speak.tts {
+  background: color-mix(in srgb, var(--muted) 15%, transparent);
+  color: var(--muted);
+}
+.speak svg.robot,
+.listen-button svg.robot {
   fill: none;
+}
+svg.robot .f {
+  fill: currentColor;
 }
 
 .hero .speak {
@@ -1684,6 +1693,7 @@ button.next.wrong {
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.2);
+  color: #fff;
   cursor: pointer;
 }
 .listen-button svg {
@@ -1987,6 +1997,10 @@ ruby.tap-reading {
   flex-direction: column;
   align-items: stretch;
   gap: 10px;
+}
+.kana-q .listen-button {
+  align-self: center;
+  background: var(--grammar);
 }
 .kana-big {
   border-radius: 22px;
