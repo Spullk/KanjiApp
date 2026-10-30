@@ -1,7 +1,8 @@
 // Sign-in and sync. Each person's progress lives in Firestore as small compressed pieces (users/{uid}/pieces/{id}:
 // settings, items and cards in buckets, reviews by month; see compact.ts), each stamped with when it last changed.
-// A sync downloads only the pieces changed since this device last looked and uploads only the ones it changed, and
-// while the app is open a live listener brings in other devices' changes within seconds. Every merge goes through
+// A sync downloads only the pieces changed since this device last looked and uploads only the ones it changed. It
+// runs on what you do, never on a timer: opening the app, leaving it, finishing reviews, or a change outside reviews
+// (a setting, a note). Nothing stays connected in the background. Every merge goes through
 // merge() in srs.ts, so changes made on any device survive. Firebase loads only once someone has signed in here.
 // In the iPhone/Android app, Google sign-in runs natively (@capacitor-firebase/authentication) and hands its
 // token to the same Firebase JS SDK, so syncing works the same everywhere.
@@ -137,7 +138,6 @@ function firebase(): Promise<Fb> {
           syncNow();
         } else {
           localStorage.removeItem(FLAG);
-          stopListening();
           set({ user: null, status: "idle", last: undefined });
         }
       }),
@@ -163,24 +163,33 @@ export function initSync() {
       .then(({ auth, authMod }) => authMod.signInWithCredential(auth, authMod.GoogleAuthProvider.credential(null, returned.token)))
       .catch((e) => set({ status: "error", error: signInError(e) }));
   }
-  // Changes go up a few seconds after they're made (during reviews, every few seconds), and straight away when
-  // you leave the app, so the next device you open is up to date.
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const soon = () => {
-    clearTimeout(timer);
-    timer = undefined;
-    syncNow();
-  };
+  // A change outside reviews goes up a few seconds after it's made (so a burst of changes goes up once). Answers
+  // wait until the reviews are done (useSyncHold). Opening the app brings in other devices' changes, and leaving
+  // it sends anything still waiting, so the next device you open is up to date.
   onSave(() => {
-    if (state.user) timer ??= setTimeout(soon, PUSH_DELAY);
+    dirty = true;
+    if (state.user && !holds) timer ??= setTimeout(syncNow, PUSH_DELAY);
   });
   document.addEventListener("visibilitychange", () => {
     if (!state.user) return;
-    if (document.visibilityState === "hidden") {
-      if (timer) soon();
-      stopListening();
-    } else syncNow();
+    if (document.visibilityState === "visible" || dirty) syncNow();
   });
+}
+
+let timer: ReturnType<typeof setTimeout> | undefined;
+let dirty = false;
+let holds = 0;
+
+/** While `active` (reviews under way), answers aren't uploaded one by one; they go up together when it ends. */
+export function useSyncHold(active: boolean) {
+  useEffect(() => {
+    if (!active) return;
+    holds++;
+    return () => {
+      holds--;
+      if (!holds && dirty && state.user) syncNow();
+    };
+  }, [active]);
 }
 
 /**
@@ -293,8 +302,10 @@ export async function account() {
   return uid ? { app: f.app, db: f.db, fs: f.fs, uid } : undefined;
 }
 
-/** Downloads what other devices changed, uploads what this one changed, and listens for more while the app is open. */
+/** Downloads what other devices changed and uploads what this one changed. */
 export async function syncNow() {
+  clearTimeout(timer);
+  timer = undefined;
   if (busy) {
     again = true;
     return;
@@ -306,14 +317,15 @@ export async function syncNow() {
   set({ status: "syncing", error: undefined });
   try {
     const m = metaFor(uid);
+    dirty = false; // a change made while this runs marks it again
     await pull(f, uid, m);
     await push(f, uid, m);
     saveMeta();
     if (!isNative) savePushState({ app: f.app, db: f.db, fs: f.fs, uid }, getStore()).catch((e) => console.error("Could not save reminder times", e));
     set({ status: "synced", last: Date.now() });
-    listen(f, uid);
   } catch (e) {
     console.error("Sync failed", e);
+    dirty = true;
     set({ status: "error", error: "Couldn't sync just now. Your progress is safe on this device and will sync next time." });
   } finally {
     busy = false;
@@ -373,33 +385,4 @@ async function push(f: Fb, uid: string, m: Meta) {
     update((s) => Object.assign(s, merge(s, remote)));
   }
   Object.assign(m.hashes, written);
-}
-
-let unlisten: (() => void) | null = null;
-
-/** While the app is on screen: other devices' changes arrive within seconds, without waiting for a sync. */
-function listen(f: Fb, uid: string) {
-  if (unlisten || document.visibilityState !== "visible") return;
-  const { fs } = f;
-  const m = metaFor(uid);
-  unlisten = fs.onSnapshot(
-    fs.query(pieces(f, uid), fs.where("updated", ">=", fs.Timestamp.fromMillis(m.pulled))),
-    (snap) => {
-      if (snap.metadata.hasPendingWrites) return;
-      const docs = snap.docChanges().filter((c) => c.type !== "removed").map((c) => c.doc);
-      if (docs.length && bringIn(docs, m)) {
-        saveMeta();
-        set({ status: "synced", last: Date.now() });
-      }
-    },
-    (e) => {
-      console.error("Live sync stopped", e);
-      unlisten = null;
-    },
-  );
-}
-
-function stopListening() {
-  unlisten?.();
-  unlisten = null;
 }
