@@ -2,19 +2,26 @@
 
 Tatoeba's index (jpn_indices) only covers part of Tatoeba. This also reads the rest of Tatoeba's Japanese
 sentences that have an English translation, then Wiktionary's usage examples (via kaikki.org), and finds the
-words in them with Sudachi, the same way the stories are linked (build_stories.Linker). Nothing here is
-machine-written. Without Sudachi installed (it comes with the stories step of the Build data workflow) this
-does nothing.
+words in them with Sudachi, the same way the stories are linked (build_stories.Linker). Words still short after
+that get lines from film and TV subtitles (JESC), which are real speech but more casual and less carefully
+translated. Nothing here is machine-written. Without Sudachi installed (it comes with the stories step of the
+Build data workflow) this does nothing.
 """
 
 import bz2
+import io
 import json
 import re
+import tarfile
 from collections import defaultdict
 
 from build_data import SOURCES, is_kanji
 
 KAIKKI = SOURCES / "kaikki-japanese.jsonl"
+JESC = SOURCES / "jesc" / "raw.tar.gz"
+# Subtitle lines with these in the English are left out: Nekko's example sentences shouldn't swear.
+JESC_SKIP = re.compile(r"\b(fuck\w*|shit\w*|bitch\w*|bastards?|cunt|dick|cock|pussy|whore|slut|sex\w*|rape\w*|"
+                       r"nigg\w*|fag\w*|retard\w*|asshole)\b", re.I)
 
 
 def stem(form):
@@ -70,6 +77,52 @@ def wiktionary_pool():
     return out
 
 
+def jesc_pairs():
+    """(English, Japanese) lines from the corpus, from Stanford's archive or the Parquet copy."""
+    if JESC.exists():
+        with tarfile.open(JESC) as tar:
+            for member in tar:
+                if member.isfile():
+                    for line in io.TextIOWrapper(tar.extractfile(member), encoding="utf-8", errors="replace"):
+                        cols = line.rstrip("\n").split("\t")
+                        if len(cols) == 2:
+                            yield cols
+        return
+    files = sorted(JESC.parent.glob("*.parquet"))
+    if files:
+        import pyarrow.parquet as pq  # only needed for the copy
+        for path in files:
+            table = pq.read_table(path)
+            # Pairs as {"translation": {"en", "ja"}}, or in "en" and "ja" columns.
+            rows = (table.column("translation").to_pylist() if "translation" in table.column_names
+                    else table.select(["en", "ja"]).to_pylist())
+            for row in rows:
+                yield row.get("en") or "", row.get("ja") or ""
+
+
+def jesc_pool():
+    """Subtitle lines with their English: [(id, ja, en)]. Short, whole lines only."""
+    out, seen = [], set()
+    for cols in jesc_pairs():
+        # English first; take whichever column has kana as the Japanese, in case that ever changes.
+        en, ja = cols if re.search(r"[\u3041-\u30ff]", cols[1]) else cols[::-1]
+        # The corpus may put spaces between words (and subtitles use them for pauses): drop them.
+        ja = re.sub(r"[ \u3000]+", "", ja)
+        en = en.strip()
+        if not 6 <= len(ja) <= 30 or not 2 <= len(en.split()) <= 20 or ja in seen:
+            continue
+        # Plain sentences: hiragana, no Latin letters, no sound or speaker notes, nothing crude.
+        if re.search(r"[A-Za-zＡ-Ｚａ-ｚ（）()♪≪≫【】→＜＞<>]", ja) or not re.search(r"[\u3041-\u309f]", ja):
+            continue
+        if not re.match(r"[\"'A-Za-z0-9]", en) or JESC_SKIP.search(en):
+            continue
+        seen.add(ja)
+        # The copy has the English in lower case.
+        en = re.sub(r"\bi\b", "I", en[0].upper() + en[1:])
+        out.append((f"js{len(out) + 1}", ja, en))
+    return out
+
+
 def add_sentences(words, sentences, con, level, wanted):
     """Gives each word up to `wanted(wid)` sentences. `level(wid)` is when it's taught (None: never)."""
     try:
@@ -78,21 +131,37 @@ def add_sentences(words, sentences, con, level, wanted):
     except ImportError:
         print("More sentences: skipped (needs sudachipy, see the Build data workflow)")
         return 0
+    added = 0
+    # Tatoeba and Wiktionary first, ranked together; subtitles only for the words they leave short.
+    for name, pools, keep in (
+            ("Tatoeba and Wiktionary", lambda: (tatoeba_pool(set(sentences)), wiktionary_pool()), None),
+            # 2.8 million lines: stop reading for a word once it has 50 to choose from.
+            ("subtitles", lambda: (jesc_pool(),), 50)):
+        added += fill(words, sentences, linker, level, wanted, name, pools(), keep)
+    return added
+
+
+def fill(words, sentences, linker, level, wanted, name, pools, keep):
     short = {wid for wid, w in words.items() if len(w["sentences"]) < wanted(wid)}
     by_stem = defaultdict(set)
     for wid in short:
         by_stem[stem(words[wid]["w"])].add(wid)
-    longest = max(map(len, by_stem), default=0)
+    lengths = sorted({len(s) for s in by_stem})
+    starts = {s[0] for s in by_stem}
 
     def candidates(ja):
         """Short words whose stem appears in the text (every substring looked up, which is quick)."""
-        return {wid for i in range(len(ja)) for n in range(1, longest + 1) for wid in by_stem.get(ja[i:i + n], ())}
+        return {wid for i in range(len(ja)) if ja[i] in starts
+                for n in lengths for wid in by_stem.get(ja[i:i + n], ())}
 
     found = defaultdict(list)  # word id -> [(harder words, source, length, id)]
     pool = {}
-    for source, items in enumerate((tatoeba_pool(set(sentences)), wiktionary_pool())):
+    for source, items in enumerate(pools):
         for sid, ja, en in items:
-            hits = candidates(ja)
+            if starts.isdisjoint(ja):
+                continue
+            # Words that already have plenty to choose from don't need Sudachi to read more.
+            hits = {wid for wid in candidates(ja) if keep is None or len(found.get(wid, ())) < keep}
             if not hits:
                 continue
             links = sorted(l for l in linker.paragraph(ja)[0] if l[2] in words)
@@ -109,5 +178,6 @@ def add_sentences(words, sentences, con, level, wanted):
             sentences.setdefault(sid, pool[sid])
             words[wid]["sentences"].append(sid)
             added += 1
-    print(f"More sentences: {added} added for {len(found)} of {len(short)} words that had too few")
+    print(f"More sentences from {name}: {added} added for {len(found)} "
+          f"of {len(short)} words that had too few")
     return added

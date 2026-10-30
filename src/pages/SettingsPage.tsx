@@ -278,6 +278,7 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                 <li>Kanji parts and stroke order: KanjiVG, Ulrich Apel, CC BY-SA 3.0</li>
                 <li>Example sentences and their recordings: Tatoeba Project, CC BY 2.0 FR</li>
                 <li>More example sentences: Wiktionary contributors (via kaikki.org), CC BY-SA 4.0</li>
+                <li>Film and TV subtitle sentences: JESC, Pryzant et al., Stanford, CC BY-SA 4.0</li>
                 <li>Word recordings: Kanji alive, CC BY 4.0; volunteers on Wikimedia Commons and Lingua Libre (named on each word's page)</li>
                 <li>Pitch accents: Kanjium, CC BY-SA 4.0</li>
                 <li>JLPT levels: Jonathan Waller's lists</li>
@@ -373,7 +374,7 @@ function FontSample({ family }: { family: string }) {
 
 const EXTRA_CARDS: [ExtraFace, string, string][] = [
   ["recall", "English → Japanese", "See the meaning, recall the word. The hardest direction, and the one you need for speaking."],
-  ["listen", "Listening", "Hear the word, say what it means. Only for words with a real recording."],
+  ["listen", "Listening", "Hear the word, say what it means. Uses the recording if there is one, otherwise a computer voice."],
   ["context", "Words in sentences", "Read the word inside an example sentence made of words you know, then give its reading and meaning."],
 ];
 const SPREAD_PER_DAY = 10;

@@ -1,5 +1,5 @@
-// Pronunciation: human recordings only (Kanji alive and Wikimedia Commons for words, Tatoeba for sentences). Words
-// and sentences without one get no play button: no computer voice. The app serves the recordings itself (audio/, see
+// Pronunciation: human recordings where they exist (Kanji alive and Wikimedia Commons for words, Tatoeba for
+// sentences), otherwise the device's Japanese voice, which the play button marks as a computer voice. The app serves the recordings itself (audio/, see
 // scripts/fetch_audio.mjs) and keeps each one once played (public/audio-sw.js); one missing there streams from
 // its source instead.
 
@@ -26,37 +26,39 @@ export function speak(text: string) {
   speechSynthesis.speak(u);
 }
 
-/** Plays the first of `urls` that works. */
-function play(urls: string[]) {
+/** Plays the first of `urls` that works, or says `fallback` with the computer voice. */
+function play(urls: string[], fallback: string) {
   current?.pause();
   const [url, ...rest] = urls;
-  if (!url) return;
+  if (!url) return speak(fallback);
   const a = new Audio(url);
   current = a;
   let next = false;
   const onFail = () => {
     if (next || current !== a) return;
     next = true;
-    play(rest);
+    play(rest, fallback);
   };
-  a.play().catch((e: Error) => e.name !== "NotAllowedError" && onFail());
+  a.play().catch((e: Error) => (e.name === "NotAllowedError" ? speak(fallback) : onFail()));
   a.onerror = onFail;
 }
 
 const wordFile = (w: Word) => (w.audio ? `audio/w/${encodeURIComponent(w.audio)}.mp3` : `audio/w/c${w.rec![0]}.mp3`);
 const sentenceFile = (s: Sentence) => `audio/s/${s.audio![0]}.mp3`;
 
-/** Whether the word has a real recording (only those are played). */
+/** Whether the word has a human recording (otherwise it's read by the computer voice). */
 export const hasRecording = (w: Word) => !!(w.audio || w.rec);
 
 export function playWord(w: Word) {
   // Commons recordings are only served by the app (they're converted to mp3 at build time).
-  if (w.audio) play([wordFile(w), KANJI_ALIVE + encodeURIComponent(w.audio) + ".mp3"]);
-  else if (w.rec) play([wordFile(w)]);
+  if (w.audio) play([wordFile(w), KANJI_ALIVE + encodeURIComponent(w.audio) + ".mp3"], w.r);
+  else if (w.rec) play([wordFile(w)], w.r);
+  else speak(w.r);
 }
 
 export function playSentence(s: Sentence) {
-  if (s.audio) play([sentenceFile(s), TATOEBA + s.audio[0]]);
+  if (s.audio) play([sentenceFile(s), TATOEBA + s.audio[0]], s.ja);
+  else speak(s.ja);
 }
 
 /** Every recording the app has, for saving them all on this device. */

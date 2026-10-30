@@ -88,7 +88,7 @@ export function SentencesPage() {
           {parts}
         </div>
         <div class="read-tools">
-          {s.audio && <SpeakButton onClick={() => playSentence(s)} />}
+          <SpeakButton onClick={() => playSentence(s)} human={!!s.audio} />
           {newKanji.length > 0 && (
             <span class="hint" lang="ja">
               New: {newKanji.map((c) => (data.kanji[c] ? <a key={c} href={href.kanji(c)}>{c}</a> : c))}

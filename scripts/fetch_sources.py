@@ -51,6 +51,14 @@ TATOEBA = {
 }
 # Wiktionary's Japanese entries as JSON lines (kaikki.org), for their usage examples.
 KAIKKI_URL = "https://kaikki.org/dictionary/Japanese/kaikki.org-dictionary-Japanese.jsonl"
+# The Japanese-English Subtitle Corpus (JESC, Stanford, CC BY-SA 4.0): lines from film and TV subtitles, used only
+# for words the other sources have too few sentences for.
+JESC_URL = "https://nlp.stanford.edu/projects/jesc/data/raw.tar.gz"
+# A copy on Hugging Face, as Parquet files, for when Stanford's server doesn't answer. (It moved there from
+# Hoshikuzu/JESC.)
+JESC_MIRROR = "https://huggingface.co/datasets/nntsuzu/JESC/resolve/main/"
+JESC_MIRROR_FILES = "https://huggingface.co/api/datasets/nntsuzu/JESC"
+JESC_MIRROR_LIST = "https://datasets-server.huggingface.co/parquet?dataset=nntsuzu/JESC"
 
 JOYO_GRADES = ("1", "2", "3", "4", "5", "6", "8")
 
@@ -173,6 +181,39 @@ def fetch_sentences():
         print("Wiktionary examples: ok")
     except OSError as e:
         print(f"Wiktionary examples: skipped ({e})")
+    try:
+        fetch_jesc()
+        print("Subtitle sentences (JESC): ok")
+    except (OSError, ValueError, KeyError) as e:
+        print(f"Subtitle sentences (JESC): skipped ({e})")
+
+
+def fetch_jesc():
+    folder = SOURCES / "jesc"
+    folder.mkdir(exist_ok=True)
+    if any(folder.glob("*.parquet")):
+        return
+    try:
+        download(JESC_URL, folder / "raw.tar.gz")
+        return
+    except OSError as e:
+        print(f"  {JESC_URL}: {e}; trying the Hugging Face copy")
+    urls = []
+    try:
+        with urllib.request.urlopen(JESC_MIRROR_FILES, timeout=120) as r:
+            urls = sorted(JESC_MIRROR + f["rfilename"] for f in json.load(r)["siblings"]
+                          if f["rfilename"].endswith(".parquet") and "train" in f["rfilename"])
+    except (OSError, ValueError, KeyError) as e:
+        print(f"  {JESC_MIRROR_FILES}: {e}")
+    if not urls:
+        # The data may not be stored as Parquet; the datasets server lists its own Parquet copy then.
+        with urllib.request.urlopen(JESC_MIRROR_LIST, timeout=120) as r:
+            urls = sorted(f["url"] for f in json.load(r)["parquet_files"] if f.get("split") == "train")
+    if not urls:
+        raise ValueError("the Hugging Face copy lists no files")
+    print(f"  Hugging Face copy: {len(urls)} files")
+    for i, url in enumerate(urls):
+        download(url, folder / f"{i:03d}.parquet")
 
 
 def main():

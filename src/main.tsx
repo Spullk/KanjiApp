@@ -22,13 +22,12 @@ import { GrammarPage, GrammarPointPage } from "./pages/GrammarPages";
 import { KanaPage, KanaPracticePage, KanaRowPage } from "./pages/KanaPages";
 import { Welcome } from "./components/Welcome";
 import { activeTab, barTools } from "./tools";
-import { dueCards, getStore, initStore, requestPersistence, setUnaskable, useStore } from "./srs";
+import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
 import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
 import { Tour } from "./components/Tour";
 import { initUpdates } from "./update";
 import { warmExamples } from "./examples";
-import { hasRecording } from "./audio";
 import { warmSearch } from "./search";
 import "./style.css";
 
@@ -102,8 +101,6 @@ function App() {
   useEffect(() => {
     Promise.all([loadData(), initStore()]).then(
       ([data]) => {
-        // Listening cards need a real recording; words without one skip them (no computer voice).
-        setUnaskable((id) => id.endsWith(":listen") && !(data.words[id.slice(5, -7)] && hasRecording(data.words[id.slice(5, -7)])));
         setReady(true);
         loadSentences().then(
           () => {
