@@ -12,6 +12,11 @@ on:
       - "scripts/**"
       - ".github/workflows/build-data.yml"
 
+# Two quick pushes would otherwise run two builds that both commit data; the newer one wins.
+concurrency:
+  group: build-data-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   actions: write # to start the App workflow after a data update on main
