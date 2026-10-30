@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { addItem, emptyStore, getStore, initStore, update } from "../src/srs";
+import { describe, expect, it, vi } from "vitest";
+import { addItem, emptyStore, flushSave, getStore, initStore, update } from "../src/srs";
 import type { StorageAdapter } from "../src/storage";
 
 function memory(initial: string | null) {
@@ -20,8 +20,27 @@ describe("store persistence", () => {
     expect(Object.keys(getStore().cards)).toHaveLength(2);
 
     update((s) => addItem(s, "radical", "口", 2000));
+    flushSave();
     expect(saved).toHaveLength(1);
     expect(Object.keys(JSON.parse(saved[0]).cards)).toHaveLength(3);
+  });
+
+  it("writes quick changes once, a moment later", async () => {
+    vi.useFakeTimers();
+    try {
+      const { adapter, saved } = memory(null);
+      await initStore(adapter);
+      update((s) => addItem(s, "radical", "口", 1000));
+      update((s) => addItem(s, "kanji", "語", 1000));
+      expect(saved).toHaveLength(0);
+      vi.advanceTimersByTime(1000);
+      expect(saved).toHaveLength(1);
+      expect(Object.keys(JSON.parse(saved[0]).cards)).toHaveLength(3);
+      flushSave(); // nothing left to write
+      expect(saved).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("starts fresh when nothing is saved or the data is corrupt", async () => {

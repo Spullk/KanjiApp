@@ -37,6 +37,14 @@ function buildIndex(d: Data): Index {
   return { words, kanjiByReading };
 }
 
+/** Builds the word index while the phone is idle, so the first letter typed into Search doesn't wait for it. */
+export function warmSearch(d: Data) {
+  const later = (globalThis as { requestIdleCallback?: (fn: () => void, o?: { timeout: number }) => void }).requestIdleCallback;
+  const run = () => void (index ??= buildIndex(d));
+  if (later) later(run, { timeout: 8000 });
+  else setTimeout(run, 4000);
+}
+
 export function search(d: Data, raw: string): Results {
   const q = raw.trim();
   if (!q) return { kanji: [], radicals: [], words: [] };
@@ -60,13 +68,20 @@ export function search(d: Data, raw: string): Results {
       results.words.push(id);
     }
   };
+  // Each pass stops once the list is full, so a short query doesn't scan all 18,000 words on every keystroke.
+  const scan = (test: (w: Index["words"][number]) => boolean) => {
+    for (const w of index!.words) {
+      if (results.words.length >= LIMIT) return;
+      if (test(w)) add(w.id);
+    }
+  };
 
   // Kana, or romaji that converts cleanly to kana ("taberu" → たべる).
   const kana = isKana(q) ? hira(q) : isRomaji(q) ? toHiragana(q.toLowerCase()) : "";
   if (kana && isKana(kana)) {
     results.kanji = [...(index.kanjiByReading.get(kana) ?? [])].sort(byLesson);
-    for (const w of index.words) if (w.r === kana) add(w.id);
-    for (const w of index.words) if (w.r.startsWith(kana)) add(w.id);
+    scan((w) => w.r === kana);
+    scan((w) => w.r.startsWith(kana));
   }
 
   // English meaning, whole-word matches first.
@@ -80,8 +95,11 @@ export function search(d: Data, raw: string): Results {
         .sort(byLesson)
         .slice(0, 20),
     );
-    for (const w of index.words) if (w.gloss.split(" | ").includes(needle)) add(w.id);
-    for (const w of index.words) if (word.test(w.gloss)) add(w.id);
+    // A whole meaning: the gloss list is "a | b | c", so look for the needle between separators.
+    const [first, last, middle] = [needle + " | ", " | " + needle, " | " + needle + " | "];
+    const whole = (g: string) => g === needle || g.startsWith(first) || g.endsWith(last) || g.includes(middle);
+    scan((w) => whole(w.gloss));
+    scan((w) => word.test(w.gloss));
   }
   return results;
 }

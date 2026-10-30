@@ -386,8 +386,22 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
 /** Cards due by `until`, learning cards first, then the most overdue. None while on vacation. */
 export function dueCards(store: Store, until = Date.now()): string[] {
   if (store.settings.vacation) return [];
-  return Object.entries(store.cards)
-    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, parseCardId(id).kind, parseCardId(id).face))
+  // This runs on every render of the tab bar, Home and Review, so it makes one pass over the cards and asks
+  // faceOn once per kind of card ("kanji:reading") rather than once per card.
+  const asked = new Map<string, boolean>();
+  const due: [string, StoredCard][] = [];
+  for (const id in store.cards) {
+    const c = store.cards[id];
+    if (c.due > until) continue;
+    const cut = id.lastIndexOf(":");
+    if (store.items[id.slice(0, cut)]?.status) continue;
+    const kind = id.slice(0, id.indexOf(":"));
+    const type = kind + id.slice(cut);
+    let on = asked.get(type);
+    if (on === undefined) asked.set(type, (on = faceOn(store.settings, kind as ItemKind, id.slice(cut + 1) as Face)));
+    if (on) due.push([id, c]);
+  }
+  return due
     .sort(([, a], [, b]) => {
       const al = a.state === State.Review ? 1 : 0;
       const bl = b.state === State.Review ? 1 : 0;
@@ -541,6 +555,21 @@ let storage: StorageAdapter = localStorageAdapter;
 const listeners = new Set<() => void>();
 const saveHooks = new Set<(s: Store) => void>();
 
+// Writing out months of progress takes a phone a good fraction of a second, so it isn't done while you tap:
+// a change is written a moment later (several quick answers in one write), and straight away when you leave
+// the app or reload.
+const SAVE_DELAY = 1000;
+let saveTimer: ReturnType<typeof setTimeout> | undefined;
+let flushOnLeave = false;
+
+/** Writes any change that's still waiting to be saved. */
+export function flushSave() {
+  if (saveTimer === undefined) return;
+  clearTimeout(saveTimer);
+  saveTimer = undefined;
+  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
+}
+
 function parseStore(raw: string | null): Store {
   try {
     if (raw) return migrate(JSON.parse(raw));
@@ -552,8 +581,15 @@ function parseStore(raw: string | null): Store {
 
 /** Loads saved progress. Call once before showing anything that uses the store. */
 export async function initStore(adapter: StorageAdapter = defaultAdapter) {
+  clearTimeout(saveTimer);
+  saveTimer = undefined;
   storage = adapter;
   store = parseStore(await adapter.load());
+  if (!flushOnLeave && typeof document !== "undefined") {
+    flushOnLeave = true;
+    document.addEventListener("visibilitychange", () => document.visibilityState === "hidden" && flushSave());
+    addEventListener("pagehide", flushSave);
+  }
   listeners.forEach((l) => l());
 }
 
@@ -573,7 +609,7 @@ export function update(fn: (s: Store) => void) {
   fn(store);
   if (JSON.stringify(store.settings) !== settings && store.settingsUpdated === stamped) store.settingsUpdated = Date.now();
   store = { ...store };
-  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
+  saveTimer ??= setTimeout(flushSave, SAVE_DELAY);
   listeners.forEach((l) => l());
   saveHooks.forEach((h) => h(store));
 }

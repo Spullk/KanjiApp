@@ -27,6 +27,8 @@ import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
 import { Tour } from "./components/Tour";
 import { initUpdates } from "./update";
+import { warmExamples } from "./examples";
+import { warmSearch } from "./search";
 import "./style.css";
 
 // The app store build ships every file inside the app, so only the website needs the offline cache.
@@ -94,8 +96,10 @@ function App() {
   const on = activeTab(bar, route.page);
   useEffect(() => {
     Promise.all([loadData(), initStore()]).then(
-      () => {
+      ([data]) => {
         setReady(true);
+        warmExamples(data);
+        warmSearch(data);
         initNative(getStore);
         initSync();
       },

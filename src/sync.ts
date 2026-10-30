@@ -134,6 +134,7 @@ function firebase(): Promise<Fb> {
           syncNow();
         } else {
           localStorage.removeItem(FLAG);
+          lastRev = undefined;
           set({ user: null, status: "idle", last: undefined });
         }
       }),
@@ -161,6 +162,7 @@ export function initSync() {
   }
   let timer: ReturnType<typeof setTimeout> | undefined;
   onSave(() => {
+    saves++;
     if (!state.user || busy) return;
     clearTimeout(timer);
     timer = setTimeout(syncNow, 10_000);
@@ -219,6 +221,16 @@ export async function signOut() {
 
 let busy = false;
 
+// Most syncs (coming back to the app, a pause in reviews) find that no other device has written since this one
+// last synced. Each write tags the online copy with a random rev; while it's still the one this device wrote or
+// read, the parts aren't downloaded again, and nothing is uploaded unless something changed here.
+let lastRev: string | undefined;
+/** Changes saved on this device, and how many of them the online copy has. */
+let saves = 0;
+let synced = -1;
+
+const newRev = () => Array.from(crypto.getRandomValues(new Uint8Array(8)), (b) => b.toString(16).padStart(2, "0")).join("");
+
 /** What reminders need to reach your account, once you're signed in. */
 export async function account() {
   const f = await firebase();
@@ -238,22 +250,31 @@ export async function syncNow() {
     const main = fs.doc(db, "users", uid);
     const head = await fs.getDoc(main);
     const count: number = head.exists() ? head.data().parts ?? 0 : 0;
+    const rev: string | undefined = head.exists() ? head.data().rev : undefined;
+    const unchanged = !!rev && rev === lastRev;
     let remote: Store | null = null;
-    if (count) {
+    if (count && !unchanged) {
       const docs = await Promise.all(Array.from({ length: count }, (_, i) => fs.getDoc(fs.doc(db, "users", uid, "parts", String(i)))));
       remote = unpack(docs.map((d) => (d.data()!.data as Bytes).toUint8Array()));
     }
     if (remote) update((s) => Object.assign(s, merge(s, remote!)));
+    const mark = saves;
 
-    const before = remote && JSON.stringify({ ...remote, undo: [] });
-    if (before !== JSON.stringify({ ...getStore(), undo: [] })) {
+    // Unchanged online: this device already has all of it, so only upload if something changed here.
+    const push = unchanged ? synced !== mark : (remote && JSON.stringify({ ...remote, undo: [] })) !== JSON.stringify({ ...getStore(), undo: [] });
+    if (push) {
       const parts = pack(getStore());
+      const next = newRev();
       const batch = fs.writeBatch(db);
       parts.forEach((p, i) => batch.set(fs.doc(db, "users", uid, "parts", String(i)), { data: fs.Bytes.fromUint8Array(p) }));
       for (let i = parts.length; i < count; i++) batch.delete(fs.doc(db, "users", uid, "parts", String(i)));
-      batch.set(main, { parts: parts.length, updated: fs.serverTimestamp() });
+      batch.set(main, { parts: parts.length, updated: fs.serverTimestamp(), rev: next });
       await batch.commit();
+      lastRev = next;
+    } else {
+      lastRev = rev;
     }
+    synced = mark;
     if (!isNative) savePushState({ app, db, fs, uid }, getStore()).catch((e) => console.error("Could not save reminder times", e));
     set({ status: "synced", last: Date.now() });
   } catch (e) {
