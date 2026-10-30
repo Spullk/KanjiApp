@@ -936,7 +936,8 @@ def main():
         "sources": {
             "JMdict / KANJIDIC2": "Electronic Dictionary Research and Development Group, CC BY-SA 4.0",
             "KanjiVG": "Ulrich Apel and contributors, CC BY-SA 3.0",
-            "JLPT levels": "Jonathan Waller's lists via davidluzgouveia/kanji-data, MIT",
+            "JLPT levels": "Jonathan Waller's lists (CC BY) via davidluzgouveia/kanji-data (MIT) for kanji and "
+                           "OpenJLPT (CC BY-SA 4.0) for words",
             "Example sentences": "Tatoeba Project, CC BY 2.0 FR; recordings by the named Tatoeba speakers; "
                                  "Wiktionary usage examples via kaikki.org, CC BY-SA 4.0; "
                                  "film and TV subtitles from JESC (Pryzant et al., Stanford), CC BY-SA 4.0",
