@@ -146,7 +146,7 @@ export function SentenceView({
   return (
     <div class="sentence">
       <div class="sent-ja" lang="ja">
-        {s.audio && <SpeakButton onClick={() => playSentence(s)} />}
+        <SpeakButton onClick={() => playSentence(s)} human={!!s.audio} />
         {parts}
       </div>
       <div class="sent-en">{s.en}</div>
@@ -192,7 +192,7 @@ export function SpeakButton({ onClick, human = true }: { onClick: () => void; hu
 }
 
 export function WordSpeak({ w }: { w: Word }) {
-  return hasRecording(w) ? <SpeakButton onClick={() => playWord(w)} /> : null;
+  return <SpeakButton onClick={() => playWord(w)} human={hasRecording(w)} />;
 }
 
 /** A KANJIDIC reading: on in katakana, kun with its okurigana dimmed (い.きる → い・きる). */

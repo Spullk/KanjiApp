@@ -373,7 +373,7 @@ function FontSample({ family }: { family: string }) {
 
 const EXTRA_CARDS: [ExtraFace, string, string][] = [
   ["recall", "English → Japanese", "See the meaning, recall the word. The hardest direction, and the one you need for speaking."],
-  ["listen", "Listening", "Hear the word, say what it means. Only for words with a real recording."],
+  ["listen", "Listening", "Hear the word, say what it means. Uses the recording if there is one, otherwise a computer voice."],
   ["context", "Words in sentences", "Read the word inside an example sentence made of words you know, then give its reading and meaning."],
 ];
 const SPREAD_PER_DAY = 10;

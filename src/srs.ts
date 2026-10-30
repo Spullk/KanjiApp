@@ -406,12 +406,6 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
   } as Record<Grade, number>;
 }
 
-/** Cards that can't be asked on this build (a listening card for a word with no recording); set at start-up. */
-let unaskable: (id: string) => boolean = () => false;
-export function setUnaskable(f: (id: string) => boolean) {
-  unaskable = f;
-}
-
 /** Cards due by `until`, learning cards first, then the most overdue. None while on vacation. */
 export function dueCards(store: Store, until = Date.now()): string[] {
   if (store.settings.vacation) return [];
@@ -428,7 +422,7 @@ export function dueCards(store: Store, until = Date.now()): string[] {
     const type = kind + id.slice(cut);
     let on = asked.get(type);
     if (on === undefined) asked.set(type, (on = faceOn(store.settings, kind as ItemKind, id.slice(cut + 1) as Face)));
-    if (on && !unaskable(id)) due.push([id, c]);
+    if (on) due.push([id, c]);
   }
   return due
     .sort(([, a], [, b]) => {
