@@ -282,7 +282,20 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                 <li>Word recordings: Kanji alive, CC BY 4.0; volunteers on Wikimedia Commons and Lingua Libre (named on each word's page)</li>
                 <li>Pitch accents: Kanjium, CC BY-SA 4.0</li>
                 <li>JLPT levels: Jonathan Waller's lists</li>
+                <li>Stories: Aozora Bunko (public domain); Tadoku readers, NPO多言語多読, CC BY-NC-ND 4.0</li>
+                <li>Review fonts: Google Fonts, SIL Open Font License</li>
               </ul>
+              <p class="credits-license">
+                Nekko is free software under the{" "}
+                <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener">
+                  GNU AGPL 3.0
+                </a>
+                . The source code is on{" "}
+                <a href="https://github.com/Spullk/KanjiApp" target="_blank" rel="noopener">
+                  GitHub
+                </a>
+                .
+              </p>
             </Section>
           </>
         );
