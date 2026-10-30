@@ -79,6 +79,7 @@ jobs:
 
       - name: Build data
         run: |
+          pip install -q pyarrow==22.0.0 # reads the Hugging Face copy of the subtitle corpus
           python scripts/build_data.py
           python scripts/build_pitch.py
 

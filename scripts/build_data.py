@@ -511,17 +511,19 @@ def load_commons_audio(words):
     """Words with no Kanji alive recording get one from Wikimedia Commons: w["rec"] = [id, file, author, licence].
 
     A recording is matched by how the word is written, and only when that spelling belongs to one Nekko word
-    (a kana-only title, only to a word normally written in that kana; uncommon words don't count when a common
-    one is written the same), so no word gets someone else's audio.
+    (a kana-only title, to a word normally written in that kana, or else to the one common word read that way;
+    uncommon words don't count when a common one is written the same), so no word gets someone else's audio.
     """
     path = SOURCES / "commons_audio.json"
     if not path.exists():
         return 0
-    by_spelling = defaultdict(list)
+    by_spelling, by_reading = defaultdict(list), defaultdict(set)
     for wid, w in words.items():
         by_spelling[w["w"]].append(wid)
         if w["usuallyKana"] or not any(map(is_kanji, w["w"])):
             by_spelling[hira(w["r"])].append(wid)
+        if not w.get("rare"):
+            by_reading[hira(w["r"])].add(wid)
     linked = 0
     # Why the others weren't used, with a few examples each, printed for the build log.
     missed = defaultdict(list)
@@ -536,6 +538,10 @@ def load_commons_audio(words):
         # 猫 is also an uncommon word read ねこま; someone recording 猫 says the common one, ねこ.
         if len(ids) > 1 and sum(1 for i in ids if not words[i].get("rare")) == 1:
             ids = {i for i in ids if not words[i].get("rare")}
+        # A title in kana (あさって) is the word's sound, so it fits the one common word read that way (明後日);
+        # not when several are (あさ: 朝 and 麻), as they may be said differently.
+        if not ids and not any(map(is_kanji, spelling)) and len(by_reading.get(hira(spelling), ())) == 1:
+            ids = set(by_reading[hira(spelling)])
         if len(ids) != 1:
             missed["not a Nekko word" if not ids else "spelling of several words"].append(spelling)
             continue

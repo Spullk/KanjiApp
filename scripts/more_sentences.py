@@ -77,33 +77,43 @@ def wiktionary_pool():
     return out
 
 
+def jesc_pairs():
+    """(English, Japanese) lines from the corpus, from Stanford's archive or the Parquet copy."""
+    if JESC.exists():
+        with tarfile.open(JESC) as tar:
+            for member in tar:
+                if member.isfile():
+                    for line in io.TextIOWrapper(tar.extractfile(member), encoding="utf-8", errors="replace"):
+                        cols = line.rstrip("\n").split("\t")
+                        if len(cols) == 2:
+                            yield cols
+        return
+    files = sorted(JESC.parent.glob("*.parquet"))
+    if files:
+        import pyarrow.parquet as pq  # only needed for the copy
+        for path in files:
+            for row in pq.read_table(path, columns=["translation"]).column("translation").to_pylist():
+                yield row.get("en") or "", row.get("ja") or ""
+
+
 def jesc_pool():
     """Subtitle lines with their English: [(id, ja, en)]. Short, whole lines only."""
-    if not JESC.exists():
-        return []
     out, seen = [], set()
-    with tarfile.open(JESC) as tar:
-        for member in tar:
-            if not member.isfile():
-                continue
-            for line in io.TextIOWrapper(tar.extractfile(member), encoding="utf-8", errors="replace"):
-                cols = line.rstrip("\n").split("\t")
-                if len(cols) != 2:
-                    continue
-                # English first; take whichever column has kana as the Japanese, in case that ever changes.
-                en, ja = cols if re.search(r"[\u3041-\u30ff]", cols[1]) else cols[::-1]
-                # The corpus may put spaces between words (and subtitles use them for pauses): drop them.
-                ja = re.sub(r"[ \u3000]+", "", ja)
-                en = en.strip()
-                if not 6 <= len(ja) <= 30 or not 2 <= len(en.split()) <= 20 or ja in seen:
-                    continue
-                # Plain sentences: hiragana, no Latin letters, no sound or speaker notes, nothing crude.
-                if re.search(r"[A-Za-zＡ-Ｚａ-ｚ（）()♪≪≫【】→＜＞<>]", ja) or not re.search(r"[\u3041-\u309f]", ja):
-                    continue
-                if not re.match(r"[\"'A-Za-z0-9]", en) or JESC_SKIP.search(en):
-                    continue
-                seen.add(ja)
-                out.append((f"js{len(out) + 1}", ja, en[0].upper() + en[1:]))
+    for cols in jesc_pairs():
+        # English first; take whichever column has kana as the Japanese, in case that ever changes.
+        en, ja = cols if re.search(r"[\u3041-\u30ff]", cols[1]) else cols[::-1]
+        # The corpus may put spaces between words (and subtitles use them for pauses): drop them.
+        ja = re.sub(r"[ \u3000]+", "", ja)
+        en = en.strip()
+        if not 6 <= len(ja) <= 30 or not 2 <= len(en.split()) <= 20 or ja in seen:
+            continue
+        # Plain sentences: hiragana, no Latin letters, no sound or speaker notes, nothing crude.
+        if re.search(r"[A-Za-zＡ-Ｚａ-ｚ（）()♪≪≫【】→＜＞<>]", ja) or not re.search(r"[\u3041-\u309f]", ja):
+            continue
+        if not re.match(r"[\"'A-Za-z0-9]", en) or JESC_SKIP.search(en):
+            continue
+        seen.add(ja)
+        out.append((f"js{len(out) + 1}", ja, en[0].upper() + en[1:]))
     return out
 
 

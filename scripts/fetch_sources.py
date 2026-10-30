@@ -54,6 +54,8 @@ KAIKKI_URL = "https://kaikki.org/dictionary/Japanese/kaikki.org-dictionary-Japan
 # The Japanese-English Subtitle Corpus (JESC, Stanford, CC BY-SA 4.0): lines from film and TV subtitles, used only
 # for words the other sources have too few sentences for.
 JESC_URL = "https://nlp.stanford.edu/projects/jesc/data/raw.tar.gz"
+# A copy on Hugging Face, as Parquet files, for when Stanford's server doesn't answer.
+JESC_MIRROR_API = "https://huggingface.co/api/datasets/Hoshikuzu/JESC/parquet"
 
 JOYO_GRADES = ("1", "2", "3", "4", "5", "6", "8")
 
@@ -177,11 +179,29 @@ def fetch_sentences():
     except OSError as e:
         print(f"Wiktionary examples: skipped ({e})")
     try:
-        (SOURCES / "jesc").mkdir(exist_ok=True)
-        download(JESC_URL, SOURCES / "jesc" / "raw.tar.gz")
+        fetch_jesc()
         print("Subtitle sentences (JESC): ok")
-    except OSError as e:
+    except (OSError, ValueError, KeyError) as e:
         print(f"Subtitle sentences (JESC): skipped ({e})")
+
+
+def fetch_jesc():
+    folder = SOURCES / "jesc"
+    folder.mkdir(exist_ok=True)
+    if any(folder.glob("*.parquet")):
+        return
+    try:
+        download(JESC_URL, folder / "raw.tar.gz")
+        return
+    except OSError as e:
+        print(f"  {JESC_URL}: {e}; trying the Hugging Face copy")
+    with urllib.request.urlopen(JESC_MIRROR_API, timeout=120) as r:
+        # {config: {split: [file urls]}}
+        urls = [u for config in json.load(r).values() for split in config.values() for u in split]
+    if not urls:
+        raise ValueError("the Hugging Face copy lists no files")
+    for i, url in enumerate(sorted(urls)):
+        download(url, folder / f"{i:03d}.parquet")
 
 
 def main():
