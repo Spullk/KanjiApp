@@ -33,6 +33,12 @@ export function mainFaces(settings: Settings, kind: ItemKind): Face[] {
   return settings.kanjiCards === "one" && ONE_CARD[kind] ? ONE_CARD[kind]! : FACES[kind];
 }
 
+/** Whether this card is one of an item's main cards (not an optional extra one). */
+function isMainFace(id: string): boolean {
+  const { kind, face } = parseCardId(id);
+  return !!FACES[kind] && ![...EXTRA_FACES[kind]].includes(face as ExtraFace);
+}
+
 /** Every card an item can have, switched on or not. */
 export function allFaces(kind: ItemKind): Face[] {
   return [...(FACES[kind] ?? []), ...(ONE_CARD[kind] ?? []), ...(EXTRA_FACES[kind] ?? [])];
@@ -360,6 +366,7 @@ export function setKanjiCards(store: Store, mode: "split" | "one", now = Date.no
 
 export function grade(store: Store, id: string, rating: Grade, now = Date.now()) {
   const stored = store.cards[id];
+  if (!stored) return; // removed meanwhile, e.g. by a sync from another device
   const { card } = scheduler(store.settings).next(toCard(stored), new Date(now), rating);
   store.cards[id] = fromCard(card, stored.added, now);
   store.log.push([id, rating, now]);
@@ -428,9 +435,11 @@ export function startOfDay(t: number): number {
 export function newLeftToday(store: Store, now = Date.now()): number {
   if (!store.settings.dailyNew) return Infinity;
   const start = startOfDay(now);
+  // Only an item's main cards say when it was started: an optional card type switched on today for words you
+  // already know isn't a new item.
   const today = new Set(
     Object.entries(store.cards)
-      .filter(([, c]) => c.added >= start)
+      .filter(([id, c]) => c.added >= start && c.added <= now && isMainFace(id))
       .map(([id]) => id.slice(0, id.lastIndexOf(":"))),
   );
   return Math.max(0, store.settings.dailyNew - today.size);
@@ -471,7 +480,7 @@ export function practiceCards(store: Store, set: PracticeSet, now = Date.now()):
     set === "mistakes"
       ? store.log.filter(([, r, t]) => r === Rating.Again && t >= startOfDay(now)).map(([id]) => id)
       : Object.entries(store.cards)
-          .filter(([, c]) => (set === "leeches" ? c.lapses >= LEECH_LAPSES : c.added >= now - 7 * 86_400_000))
+          .filter(([, c]) => (set === "leeches" ? c.lapses >= LEECH_LAPSES : c.added >= now - 7 * 86_400_000 && c.added <= now))
           .map(([id]) => id);
   return [...new Set(ids)].filter((id) => store.cards[id]);
 }

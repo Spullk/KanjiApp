@@ -39,7 +39,8 @@ export function ReviewPage() {
 
   if (!current) {
     const soon = dueCards(store, now + EARLY_WINDOW).length;
-    const next = Math.min(...Object.values(store.cards).map((c) => c.due));
+    // The soonest card that will actually be asked (not paused, not a card type you switched off).
+    const next = dueCards(store, Infinity).reduce((t, id) => Math.min(t, store.cards[id].due), Infinity);
     return (
       <article class="page review-done">
         <h1>{store.settings.vacation ? "On vacation" : done ? `Nice, ${done} done` : "All caught up"}</h1>

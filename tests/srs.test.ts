@@ -177,6 +177,17 @@ describe("daily limit and vacation", () => {
     expect(newLeftToday(s, now)).toBe(1);
   });
 
+  it("doesn't count an optional card type switched on for words you already study", async () => {
+    const { addFaceToStudied } = await import("../src/srs");
+    const s = emptyStore();
+    const now = new Date(2026, 9, 23, 12).getTime();
+    s.settings.dailyNew = 3;
+    for (const w of ["1", "2", "3", "4", "5"]) addItem(s, "word", w, now - 10 * DAY);
+    s.settings.extraCards = ["listen"];
+    addFaceToStudied(s, "listen", 2, now);
+    expect(newLeftToday(s, now)).toBe(3);
+  });
+
   it("stops reviews on vacation and moves the schedule on afterwards", () => {
     const s = emptyStore();
     addItem(s, "radical", "氵", 0);

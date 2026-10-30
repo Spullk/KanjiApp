@@ -1,6 +1,7 @@
+import { useEffect, useRef } from "preact/hooks";
 import { useData } from "../data";
 import { href } from "../router";
-import { allFaces, cardId, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type ItemKind } from "../srs";
+import { allFaces, cardId, flushSave, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type ItemKind } from "../srs";
 import { Chip, Furigana, ReadingText } from "./bits";
 import { itemHistory, percent } from "../stats";
 
@@ -149,6 +150,31 @@ function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
   const info = itemInfo(useStore(), kind, k);
   const note = info?.note ?? "";
   const synonyms = info?.synonyms ?? [];
+  // Saved a moment after you stop typing, when you leave the box, and when the page changes: on a phone,
+  // swiping back with the keyboard up can take the box away without it ever losing focus.
+  const typed = useRef<string | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const save = () => {
+    clearTimeout(timer.current);
+    const text = typed.current;
+    typed.current = null;
+    if (text !== null && text !== (itemInfo(getStore(), kind, k)?.note ?? "")) update((s) => setItemInfo(s, kind, k, { note: text }));
+  };
+  useEffect(() => {
+    // Closing the app or switching away mid-note keeps it too.
+    const away = (e: Event) => {
+      if (e.type === "visibilitychange" && document.visibilityState !== "hidden") return;
+      save();
+      flushSave();
+    };
+    document.addEventListener("visibilitychange", away);
+    addEventListener("pagehide", away);
+    return () => {
+      document.removeEventListener("visibilitychange", away);
+      removeEventListener("pagehide", away);
+      save();
+    };
+  }, [kind, k]);
   return (
     <div class="note-box">
       <label for={`note-${kind}-${k}`}>Your note</label>
@@ -158,10 +184,12 @@ function NoteBox({ kind, k }: { kind: ItemKind; k: string }) {
         rows={3}
         placeholder="A mnemonic, a reminder, anything that helps."
         defaultValue={note}
-        onBlur={(e) => {
-          const text = (e.target as HTMLTextAreaElement).value;
-          if (text !== note) update((s) => setItemInfo(s, kind, k, { note: text }));
+        onInput={(e) => {
+          typed.current = (e.target as HTMLTextAreaElement).value;
+          clearTimeout(timer.current);
+          timer.current = setTimeout(save, 800);
         }}
+        onBlur={save}
       />
       {synonyms.length > 0 && (
         <div class="synonyms">
