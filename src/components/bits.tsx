@@ -195,16 +195,22 @@ export function SpeakButton({ onClick, human = true }: { onClick: () => void; hu
   );
 }
 
-/** Marks the computer voice, so it's never mistaken for a real recording. */
+/** The computer voice: an outline speaker with a small robot badge, so it's never mistaken for a real recording. */
 export function RobotIcon() {
   return (
-    <svg class="robot" viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="5" y="8" width="14" height="11" rx="3" />
-      <path d="M12 8V4.5M9.5 16.3h5M3 12.5v2.5M21 12.5v2.5" />
-      <circle class="f" cx="12" cy="4" r=".6" />
-      <circle class="f" cx="9.3" cy="12.8" r="1.1" />
-      <circle class="f" cx="14.7" cy="12.8" r="1.1" />
-    </svg>
+    <>
+      <svg class="robot" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" />
+        <path d="M16 8.5a5 5 0 0 1 0 7" />
+      </svg>
+      <span class="robot-badge" aria-hidden="true">
+        <svg viewBox="0 0 12 12">
+          <rect x="2" y="3.5" width="8" height="6" rx="1.5" />
+          <path d="M6 3.5V1.8" />
+          <path class="eyes" d="M4.6 6.3h0M7.4 6.3h0" />
+        </svg>
+      </span>
+    </>
   );
 }
 
