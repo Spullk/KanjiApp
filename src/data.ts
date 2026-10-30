@@ -60,7 +60,7 @@ export type Lesson = { id: number; radicals: string[]; kanji: string[]; words: s
 
 /** A grammar point (hand-written in data/grammar.json). Examples mark the gap as {は}, alternatives as {なに|なん},
  * and readings as 学生[がくせい] (or [*きょう] for a reading that belongs to the whole word). */
-export type GrammarPoint = { id: string; level: "start" | "numbers" | "phrases" | "n5" | "n4" | "n3"; title: string; note: string; ex: [string, string][] };
+export type GrammarPoint = { id: string; level: "start" | "loanwords" | "numbers" | "phrases" | "n5" | "n4" | "n3"; title: string; note: string; ex: [string, string][] };
 
 export type Data = {
   kanji: Record<string, Kanji>;

@@ -5,6 +5,7 @@ import { cardId, isAdded, itemInfo, type Store } from "./srs";
 
 export const LEVELS: { level: GrammarPoint["level"]; title: string; hint: string }[] = [
   { level: "start", title: "Start here", hint: "Sounds, how the scripts fit together, and the grammar you need before your first words." },
+  { level: "loanwords", title: "Loanwords", hint: "Katakana words from other languages: the sounds native Japanese doesn't have, and how English turns into katakana." },
   { level: "numbers", title: "Numbers and counters", hint: "Counting, prices, dates and time, with the sound changes that trip everyone up." },
   { level: "phrases", title: "Set phrases", hint: "Everyday phrases that don't make sense word by word." },
   { level: "n5", title: "N5 grammar", hint: "The rest of the beginner grammar, roughly JLPT N5." },
@@ -16,7 +17,7 @@ export type Tier = "beginner" | "n5" | "n4" | "n3";
 
 /** The tabs on the Grammar page, easiest first; Beginner holds the levels a newcomer needs before N5. */
 export const TIERS: { tier: Tier; label: string; levels: GrammarPoint["level"][] }[] = [
-  { tier: "beginner", label: "Beginner", levels: ["start", "numbers", "phrases"] },
+  { tier: "beginner", label: "Beginner", levels: ["start", "loanwords", "numbers", "phrases"] },
   { tier: "n5", label: "N5", levels: ["n5"] },
   { tier: "n4", label: "N4", levels: ["n4"] },
   { tier: "n3", label: "N3", levels: ["n3"] },
