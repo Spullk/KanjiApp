@@ -15,7 +15,7 @@ import re
 import tarfile
 from collections import defaultdict
 
-from build_data import SOURCES, is_kanji
+from build_data import SOURCES, is_kanji, kana_only
 
 KAIKKI = SOURCES / "kaikki-japanese.jsonl"
 JESC = SOURCES / "jesc" / "raw.tar.gz"
@@ -168,7 +168,8 @@ def fill(words, sentences, linker, level, wanted, name, pools, keep):
             ids = {l[2] for l in links}
             for wid in hits & ids:
                 own = level(wid)
-                harder = 0 if own is None else sum(1 for o in ids - {wid} if level(o) is None or level(o) > own)
+                harder = 0 if own is None else sum(1 for o in ids - {wid} if not kana_only(words[o]["w"])
+                                                   and (level(o) is None or level(o) > own))
                 found[wid].append((min(harder, 3), source, abs(len(ja) - 15), sid))
                 pool[sid] = {"ja": ja, "en": en, "links": links}
     added = 0

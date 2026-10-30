@@ -1,7 +1,7 @@
 // The order new items are taught in: Nekko's lessons, or kanji by JLPT level, school grade or frequency,
 // or your own list (a textbook's, for example).
 
-import { isKanji, type Data } from "./data";
+import { isKanaWord, isKanji, type Data } from "./data";
 import type { ItemKind } from "./srs";
 
 export type StudyOrder = "lessons" | "jlpt" | "grade" | "frequency" | "custom";
@@ -24,6 +24,8 @@ type Index = {
   /** The study words that use each kanji, and the kanji each one needs. */
   wordsWith: Map<string, string[]>;
   wordKanji: Map<string, string[]>;
+  /** Words written in kana, in lesson order. */
+  kanaWords: string[];
 };
 
 const indexes = new WeakMap<Data, Index>();
@@ -31,13 +33,17 @@ const indexes = new WeakMap<Data, Index>();
 function indexFor(data: Data): Index {
   let ix = indexes.get(data);
   if (ix) return ix;
-  ix = { lessonPos: new Map(), radicalsOf: new Map(), wordsWith: new Map(), wordKanji: new Map() };
+  ix = { lessonPos: new Map(), radicalsOf: new Map(), wordsWith: new Map(), wordKanji: new Map(), kanaWords: [] };
   data.lessons.forEach((l) => l.kanji.forEach((k) => ix!.lessonPos.set(k, ix!.lessonPos.size)));
   for (const l of data.lessons) {
     for (const r of l.radicals) {
       for (const k of data.radicals[r]?.usedIn ?? []) ix.radicalsOf.set(k, [...(ix.radicalsOf.get(k) ?? []), r]);
     }
     for (const w of l.words) {
+      if (isKanaWord(data.words[w])) {
+        ix.kanaWords.push(w);
+        continue;
+      }
       const ks = [...new Set([...data.words[w].w].filter((c) => isKanji(c) && data.kanji[c]))];
       ix.wordKanji.set(w, ks);
       for (const k of ks) ix.wordsWith.set(k, [...(ix.wordsWith.get(k) ?? []), w]);
@@ -61,11 +67,15 @@ export function kanjiOrder(data: Data, order: Exclude<StudyOrder, "lessons" | "c
 
 /**
  * Turns a list of kanji into a teaching order: each kanji after the radicals it needs, and each word as soon as
- * you'd know all its kanji. `known` holds kanji you study already, so their words can come straight away.
+ * you'd know all its kanji. `known` holds kanji you study already, so their words can come straight away. Words
+ * written in kana (unless `kana` is false) are spread in between, in their lessons' order.
  */
-export function teachingOrder(data: Data, kanji: string[], known: Set<string>): ItemRef[] {
-  const { radicalsOf, wordsWith, wordKanji } = indexFor(data);
+export function teachingOrder(data: Data, kanji: string[], known: Set<string>, kana = true): ItemRef[] {
+  const { radicalsOf, wordsWith, wordKanji, kanaWords } = indexFor(data);
   const out: ItemRef[] = [];
+  const kanaList = kana ? kanaWords : [];
+  const total = Math.max(1, data.lessons.reduce((n, l) => n + l.kanji.length, 0));
+  let kanaSent = 0;
   const have = new Set(known);
   const sent = new Set<string>();
   const ready = (w: string) => wordKanji.get(w)!.every((k) => have.has(k));
@@ -87,6 +97,9 @@ export function teachingOrder(data: Data, kanji: string[], known: Set<string>): 
         out.push({ kind: "word", key: w });
       }
     }
+    // As many as the lessons have by this many kanji.
+    const due = Math.round((have.size * kanaList.length) / total);
+    while (kanaSent < Math.min(due, kanaList.length)) out.push({ kind: "word", key: kanaList[kanaSent++] });
   }
   return out;
 }

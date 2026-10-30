@@ -124,6 +124,15 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                 </select>
               </label>
             </Section>
+            <Section title="Kana words">
+              <label class="check-setting">
+                <input type="checkbox" checked={store.settings.kanaWords !== false} onChange={() => set("kanaWords", store.settings.kanaWords === false ? undefined : false)} />
+                <span>
+                  Learn words written in kana
+                  <small>Everyday words with no kanji (ようこそ, もっと, アイス) come a few per lesson, easiest first. Switch off to learn only words with kanji.</small>
+                </span>
+              </label>
+            </Section>
             <Section title="What to learn next">
               <label class="setting">
                 Order

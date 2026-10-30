@@ -35,6 +35,9 @@ MIN_WORDS_PER_KANJI = 3    # rare kanji get uncommon words up to this many, so t
 RARE_RANK = 99             # rank of words with no frequency tag at all (marked "rare")
 SENTENCES_PER_WORD = 3
 SENTENCES_PER_LESSON_WORD = 5  # words Nekko teaches get more, so the app can pick ones you can already read
+KANA_WORDS_PER_LESSON = 6  # words written only in kana (ようこそ, アイス) taught in each lesson, easiest first
+# Parts of speech the grammar section teaches instead (が, ている, お〜, 〜さん).
+GRAMMAR_POS = ("particle", "auxiliary", "prefix", "suffix", "copula", "counter")
 
 KVG = "{http://kanjivg.tagaini.net}"
 SVG = "{http://www.w3.org/2000/svg}"
@@ -44,6 +47,11 @@ SVG = "{http://www.w3.org/2000/svg}"
 
 def hira(s):
     return "".join(chr(ord(c) - 0x60) if "ァ" <= c <= "ヶ" else c for c in s)
+
+
+def kana_only(text):
+    """Other words written in kana don't make a sentence harder to read, even the ones taught in later lessons."""
+    return not any(map(is_kanji, text))
 
 
 def is_kanji(c):
@@ -385,7 +393,8 @@ B_TOKEN = re.compile(r"^(?P<head>[^(\[{~]+)(?:\((?P<read>[^)]*)\))?(?:\[(?P<sens
 
 
 def word_level(w, kanji_lesson):
-    """When a word becomes readable: its lesson, else its last kanji's lesson; 0 for kana words, None if never."""
+    """When a word is taught: its lesson, else when it becomes readable (its last kanji's lesson; 0 for kana words);
+    None if never."""
     if w.get("lesson"):
         return w["lesson"]
     lessons = [kanji_lesson.get(c) for c in w["w"] if is_kanji(c)]
@@ -444,7 +453,8 @@ def load_sentences(words, kanji_lesson=None):
         own = levels[wid]
         if own is None:
             return 0
-        return sum(1 for other, _ in tokens[jid] if other != wid and (levels[other] is None or levels[other] > own))
+        return sum(1 for other, _ in tokens[jid] if other != wid and not kana_only(words[other]["w"])
+                   and (levels[other] is None or levels[other] > own))
 
     sentences = {}
     for wid, cs in candidates.items():
@@ -472,6 +482,96 @@ def load_sentences(words, kanji_lesson=None):
         s["links"] = links
     print(f"Sentences: {len(sentences)}")
     return sentences
+
+
+def add_kana_words(con, words, kanji, lessons, lesson_out):
+    """Puts the JLPT list's kana-only words into lessons, a few per lesson from the one that starts their level,
+    easiest first, as words written in kana."""
+    kana_words = load_kana_words(con, words)
+    # A lesson's level is its typical kanji's (N5 = 5); kanji on no list count as past N1.
+    level = [sorted(kanji[k]["jlpt"] or 0 for k in ks)[len(ks) // 2] for ks in lessons]
+    room = [KANA_WORDS_PER_LESSON] * len(lessons)
+    moved = set()
+    for idseq, (jlpt, e, known) in kana_words.items():
+        start = next((i for i, l in enumerate(level) if l <= jlpt), len(lessons) - 1)
+        i = next((i for i in range(start, len(lessons)) if room[i]), None)
+        if i is None:
+            break
+        room[i] -= 1
+        wid = str(idseq)
+        if known:
+            # A usually-kana word listed under its kanji (有る): taught as ある, and no longer under 有.
+            w = words[wid]
+            words[wid] = {**w, "w": e["form"], "r": e["form"], "furigana": [[e["form"], None]], "uses": [],
+                          "special": [], "kanjiForm": w["w"]}
+            moved.add(wid)
+        else:
+            words[wid] = {"id": wid, "w": e["form"], "r": e["form"], "furigana": [[e["form"], None]], "uses": [],
+                          "special": [], "senses": e["senses"], "rank": e["rank"], "usuallyKana": False}
+        words[wid]["lesson"] = i + 1
+        lesson_out[i]["words"].append(wid)
+    for k in kanji.values():
+        k["words"] = [w for w in k["words"] if w not in moved]
+        k["specialWords"] = [w for w in k["specialWords"] if w not in moved]
+        for r in k["readings"]:
+            r["words"] = [w for w in r["words"] if w not in moved]
+    print(f"Kana words: {len(kana_words)} from the JLPT lists, {len(moved)} of them usually written in kana")
+
+
+def load_kana_words(con, words):
+    """Words on the JLPT lists that are written in kana only: {JMdict id: (JLPT level, entry, already a word)},
+    easiest first.
+
+    Each is matched to the JMdict entry written that way whose meaning fits the list's, if that entry has no
+    kanji spelling or is usually written in kana. Usually-kana words with a kanji spelling may be in `words`
+    already.
+    """
+    folder = SOURCES / "jlpt-vocab"
+    if not folder.exists():
+        return {}
+    listed = []  # (level, spellings to try)
+    for level in (5, 4, 3, 2, 1):
+        with open(folder / f"vocab-n{level}.csv", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                if any(map(is_kanji, row["word"])):
+                    continue
+                # "いい/よい", "あげる (=やる)", "あいさつする", "～ごろ"
+                spellings = [v for v in (re.sub(r"\s*[(（].*?[)）]", "", v).strip(" ～〜~")
+                                         for v in row["word"].split("/")) if v]
+                gloss = set(re.findall(r"[a-z]+", row["meanings"].lower())) - {"to", "a", "the", "of", "be", "an"}
+                listed.append((level, gloss, spellings + [v[:-2] for v in spellings if v.endswith("する")]))
+    wanted = {v for *_, vs in listed for v in vs}
+    kanji_form = {idseq for (idseq,) in con.execute("SELECT DISTINCT idseq FROM Kanji")}
+    tags = defaultdict(set)
+    for kid, t in con.execute("SELECT kid, text FROM KNP"):
+        tags[kid].add(t)
+    by_kana, entries = defaultdict(list), {}
+    for kid, idseq, text in con.execute("SELECT ID, idseq, text FROM Kana ORDER BY ID"):
+        if text in wanted:
+            by_kana[text].append(idseq)
+            e = entries.setdefault(idseq, {"form": text, "reading": text, "rank": RARE_RANK, "senses": [],
+                                           "usuallyKana": False})
+            e["rank"] = min(e["rank"], priority_rank(tags[kid]) or RARE_RANK)
+    add_senses(con, entries)
+    out = {}
+    for level, gloss, spellings in listed:
+        for v in spellings:
+            # The entry whose meaning fits the list's best (はし on the list is chopsticks, not a beak), and only
+            # if that one is a kana word: chopsticks are written 箸.
+            fits = [(-len(gloss & set(re.findall(r"[a-z]+", " ".join(entries[i]["senses"][0]["gloss"]).lower()))),
+                     entries[i]["rank"], i)
+                    for i in by_kana.get(v, ()) if i not in out and entries[i]["senses"]
+                    and not any(p in GRAMMAR_POS for p in entries[i]["senses"][0]["pos"])]
+            if not fits:
+                continue
+            idseq = min(fits)[2]
+            if idseq in kanji_form and not entries[idseq]["usuallyKana"]:
+                break
+            e = entries[idseq]
+            e["form"] = e["reading"] = v
+            out[idseq] = (level, e, str(idseq) in words)
+            break
+    return dict(sorted(out.items(), key=lambda kv: (-kv[1][0], kv[1][1]["rank"], len(kv[1][1]["form"]))))
 
 
 # ---------------------------------------------------------------- audio and strokes
@@ -801,6 +901,7 @@ def main():
         lesson = max(lesson_of[c] for c in w["w"] if c in lesson_of)
         w["lesson"] = lesson + 1
         lesson_out[lesson]["words"].append(wid)
+    add_kana_words(con, words, kanji, lessons, lesson_out)
     for el, r in radicals.items():
         r["usedIn"] = sorted((o for o in used_in[el] if o in joyo_set), key=lambda o: lesson_of[o])
         r["lesson"] = next((l["id"] for l in lesson_out if el in l["radicals"]), None)

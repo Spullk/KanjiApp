@@ -41,10 +41,11 @@ export function knowledgeOf(store: Store, data: Data): Knowledge {
   return k;
 }
 
-/** Kana-only words Nekko doesn't teach (これ, ある, ます…) count as known: they're grammar and everyday words. */
+/** Kana-only words (これ, ある, ます…) don't make a sentence harder: you can read them, and they're grammar and
+ * everyday words, even the ones a later lesson teaches. */
 function free(data: Data, wid: string): boolean {
   const w = data.words[wid];
-  return !!w && !w.lesson && ![...w.w].some(isKanji);
+  return !!w && ![...w.w].some(isKanji);
 }
 
 /** The words in a sentence you haven't started, apart from `except` (the word the sentence is for). */

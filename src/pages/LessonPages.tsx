@@ -1,4 +1,4 @@
-import { useData } from "../data";
+import { isKanaWord, useData } from "../data";
 import { href } from "../router";
 import { lessonItems, setStatusMany, update, useStore } from "../srs";
 import { Chips, MoreList, Section, WordRow } from "../components/bits";
@@ -32,7 +32,9 @@ export function LessonPage({ id }: { id: number }) {
   const store = useStore();
   const l = data.lessons[id - 1];
   if (!l) return <p class="empty">No lesson {id}.</p>;
-  const items = lessonItems(data, id - 1);
+  const items = lessonItems(data, id - 1, store.settings);
+  const vocab = l.words.filter((w) => !isKanaWord(data.words[w]));
+  const kana = l.words.filter((w) => isKanaWord(data.words[w]));
   const allKnown = items.every((it) => store.items[`${it.kind}:${it.key}`]?.status === "known");
   return (
     <article class="page">
@@ -59,9 +61,17 @@ export function LessonPage({ id }: { id: number }) {
       <Section title="Kanji">
         <Chips items={l.kanji} kind="kanji" />
       </Section>
-      {l.words.length > 0 && (
+      {vocab.length > 0 && (
         <Section title="Vocabulary">
-          <MoreList items={l.words} n={12} render={(w) => <WordRow key={w} id={w} />} />
+          <MoreList items={vocab} n={12} render={(w) => <WordRow key={w} id={w} />} />
+        </Section>
+      )}
+      {kana.length > 0 && (
+        <Section
+          title="Kana words"
+          hint={store.settings.kanaWords === false ? "Left out of your lessons (Settings → Learning)." : "Everyday words written in kana only."}
+        >
+          <MoreList items={kana} n={12} render={(w) => <WordRow key={w} id={w} />} />
         </Section>
       )}
       <nav class="pager">
