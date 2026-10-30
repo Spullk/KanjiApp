@@ -181,7 +181,6 @@
     "note": "だ is the casual form of です, used with friends and in writing. The polite and casual forms of everything come in pairs; Nekko's examples are mostly polite, which is always safe.",
     "ex": [["がくせい{だ}。", "I'm a student (casual)."], ["きょうはあめ{だ}。", "It's raining today (casual)."]]
   },
-
   {
     "id": "numbers",
     "level": "numbers",
@@ -231,7 +230,6 @@
     "note": "Months are number + がつ: いちがつ (January) … but しがつ (April), しちがつ (July), くがつ (September). Days 1 to 10 have their own words: ついたち, ふつか, みっか, よっか, いつか, むいか, なのか, ようか, ここのか, とおか. After that it's number + にち, with はつか for the 20th.",
     "ex": [["{しがつ}ついたち", "April 1st"], ["くがつ{ふつか}", "September 2nd"], ["しちがつ{はつか}", "July 20th"]]
   },
-
   {
     "id": "greetings",
     "level": "phrases",
@@ -246,7 +244,6 @@
     "note": "• ありがとうございます: thank you\n• すみません: excuse me, sorry, and also thanks for the trouble\n• いただきます: said before eating\n• ごちそうさまでした: said after eating\n• よろしくおねがいします: \"please treat me well\", said when meeting someone or asking a favour\n• おねがいします: please (when asking for something)",
     "ex": [["ありがとう{ございます}。", "Thank you."], ["{いただきます}。", "(before eating)"], ["よろしく{おねがいします}。", "Nice to meet you / I'm counting on you."]]
   },
-
   {
     "id": "aru-iru",
     "level": "n5",
@@ -428,5 +425,460 @@
     "title": "ことができる: can do",
     "note": "Dictionary form + ことができる is \"can do\". こと turns the verb into a thing, and できる is \"be possible\".",
     "ex": [["にほんごをはなす{こと}ができます。", "I can speak Japanese."], ["ここでおよぐことが{できません}。", "You can't swim here."]]
+  },
+  {
+    "id": "ta-koto-ga-aru",
+    "level": "n4",
+    "title": "たことがある: have ever",
+    "note": "た form + ことがある is experience: \"I've (ever) done\". ことがない is \"I've never\".\nDictionary form + ことがある is different: \"sometimes\".",
+    "ex": [["富士山[ふじさん]に登[のぼ]った{ことがあります}。", "I've climbed Mt Fuji."], ["すしを食[た]べたことが{ありません}。", "I've never eaten sushi."], ["たまに朝[あさ]ご飯[はん]を食[た]べない{ことがある}。", "Sometimes I skip breakfast."]]
+  },
+  {
+    "id": "potential",
+    "level": "n4",
+    "title": "Potential form: can do",
+    "note": "The potential form says you can do something.\n• る verbs: る → られる (食[た]べる → 食[た]べられる).\n• う verbs: the last kana moves to its え-sound, plus る (読[よ]む → 読[よ]める, 話[はな]す → 話[はな]せる).\n• する → できる, 来[く]る → 来[こ]られる.\nWhat you can do usually takes が instead of を: 日本語[にほんご]が話[はな]せます. In casual speech, る verbs often drop the ら: 食[た]べれる.",
+    "ex": [["この漢字[かんじ]が{読[よ]めます}か。", "Can you read this kanji?"], ["さしみは{食[た]べられます}。", "I can eat sashimi."], ["明日[あした]は{来[こ]られません|来[こ]れません}。", "I can't come tomorrow."], ["ピアノが{ひけます}。", "I can play the piano."]]
+  },
+  {
+    "id": "volitional",
+    "level": "n4",
+    "title": "Volitional: let's, I think I'll",
+    "note": "The volitional is the plain form of ましょう.\n• る verbs: る → よう (食[た]べよう).\n• う verbs: the last kana moves to its お-sound, plus う (行[い]く → 行[い]こう, 飲[の]む → 飲[の]もう).\n• する → しよう, 来[く]る → 来[こ]よう.\nAlone it's a casual \"let's\". With と思[おも]う it's \"I think I'll…\", a plan you've made: 行[い]こうと思[おも]っています.",
+    "ex": [["いっしょに{行[い]こう}。", "Let's go together."], ["もう{寝[ね]よう}。", "Let's call it a night."], ["夏[なつ]休[やす]みに富士山[ふじさん]に{のぼろう}と思[おも]っています。", "I'm thinking of climbing Mt Fuji in the summer holidays."]]
+  },
+  {
+    "id": "tsumori",
+    "level": "n4",
+    "title": "つもり: plan to",
+    "note": "Dictionary form + つもりです is \"I intend to\": a firm plan. ない form + つもり is \"I don't intend to\".",
+    "ex": [["週末[しゅうまつ]は家[いえ]で休[やす]む{つもり}です。", "I plan to rest at home this weekend."], ["今年[*ことし]は車[くるま]を買[か]わない{つもり}です。", "I'm not planning to buy a car this year."]]
+  },
+  {
+    "id": "ba",
+    "level": "n4",
+    "title": "ば: if",
+    "note": "The ば form is \"if\", stressing the condition: if this happens, that follows.\n• Verbs: the last kana moves to its え-sound, plus ば (行[い]く → 行[い]けば, 食[た]べる → 食[た]べれば).\n• い adjectives: い → ければ (安[やす]い → 安[やす]ければ).\n• Nouns and な adjectives: なら.\nばよかった is \"I should have\": 聞[き]けばよかった, \"I should have asked\".",
+    "ex": [["急[いそ]げ{ば}、間[ま]に合[あ]います。", "If you hurry, you'll make it."], ["安[やす]{ければ}、買[か]います。", "If it's cheap, I'll buy it."], ["もっと早[はや]く{来[く]れば}よかった。", "I should have come earlier."], ["どうすれ{ば}いいですか。", "What should I do?"]]
+  },
+  {
+    "id": "tara",
+    "level": "n4",
+    "title": "たら: if, when",
+    "note": "The past form + ら is the most common \"if\" or \"when\": 雨[あめ]が降[ふ]ったら, \"if it rains\". It also means \"once this has happened\": 着[つ]いたら電話[でんわ]して, \"call me when you arrive\".\nたらどう? suggests something: 休[やす]んだらどう?, \"why don't you rest?\"",
+    "ex": [["雨[あめ]が降[ふ]っ{たら}、行[い]きません。", "If it rains, I won't go."], ["駅[えき]に着[つ]い{たら}、電話[でんわ]してください。", "Call me when you get to the station."], ["ひまだっ{たら}、遊[あそ]びに来[き]てください。", "If you're free, come over."]]
+  },
+  {
+    "id": "to-if",
+    "level": "n4",
+    "title": "と: whenever",
+    "note": "Dictionary form + と is \"when this happens, that always follows\": nature, directions, machines. It can't be used for requests or plans; use たら for those.",
+    "ex": [["春[はる]になる{と}、さくらが咲[さ]きます。", "When spring comes, the cherry blossoms bloom."], ["このボタンを押[お]す{と}、水[みず]が出[で]ます。", "Press this button and water comes out."], ["まっすぐ行[い]く{と}、右[みぎ]に駅[えき]があります。", "Go straight and the station is on the right."]]
+  },
+  {
+    "id": "nara",
+    "level": "n4",
+    "title": "なら: if it's about…",
+    "note": "なら picks up a topic or plan someone mentioned and gives advice about it: 日本[にほん]に行[い]くなら、京都[きょうと]がいいですよ, \"if you're going to Japan, Kyoto is good\".\nAfter nouns and な adjectives it's also the plain \"if\": ひまなら, \"if you're free\".",
+    "ex": [["すしを食[た]べる{なら}、この店[みせ]がいいですよ。", "If you want sushi, this place is good."], ["日本語[にほんご]{なら}、少[すこ]し話[はな]せます。", "Japanese? I can speak a little."], ["ひま{なら}、手伝[てつだ]ってください。", "If you're free, please help."]]
+  },
+  {
+    "id": "passive",
+    "level": "n4",
+    "title": "Passive: られる",
+    "note": "The passive says something was done to someone.\n• る verbs: る → られる (the same as the potential).\n• う verbs: the last kana moves to its あ-sound, plus れる (読[よ]む → 読[よ]まれる, 言[い]う → 言[い]われる).\n• する → される, 来[く]る → 来[こ]られる.\nWhoever did it takes に: 先生[せんせい]にほめられた, \"I was praised by the teacher\". Japanese also uses it for things that happened to you and bothered you: 雨[あめ]に降[ふ]られた, \"I got rained on\".",
+    "ex": [["先生[せんせい]に{ほめられました}。", "I was praised by the teacher."], ["電車[でんしゃ]で足[あし]を{ふまれた}。", "Someone stepped on my foot on the train."], ["この本[ほん]はたくさんの人[ひと]に{読[よ]まれて}います。", "This book is read by lots of people."], ["雨[あめ]に{降[ふ]られました}。", "I got caught in the rain."]]
+  },
+  {
+    "id": "causative",
+    "level": "n4",
+    "title": "Causative: make or let",
+    "note": "The causative is \"make someone do\" or \"let someone do\".\n• る verbs: る → させる.\n• う verbs: the last kana moves to its あ-sound, plus せる (行[い]く → 行[い]かせる).\n• する → させる, 来[く]る → 来[こ]させる.\nThe person made to act takes に. With て + ください it's a polite \"let me\": やらせてください, \"let me do it\".",
+    "ex": [["母[はは]は弟[おとうと]に野菜[やさい]を{食[た]べさせました}。", "My mum made my little brother eat vegetables."], ["子[こ]どもを公園[こうえん]で{遊[あそ]ばせます}。", "I let the kids play in the park."], ["私[わたし]に{やらせて}ください。", "Please let me do it."]]
+  },
+  {
+    "id": "te-shimau",
+    "level": "n4",
+    "title": "てしまう: all done, or oops",
+    "note": "て form + しまう means the action is done completely, often with regret: \"I ended up…\" or \"oops\". In casual speech てしまう shrinks to ちゃう (でしまう to じゃう): 食[た]べちゃった.",
+    "ex": [["ケーキを全部[ぜんぶ]食[た]べて{しまいました}。", "I ate the whole cake."], ["さいふを忘[わす]れて{しまった|きた}。", "I forgot my wallet."], ["宿題[しゅくだい]はもうやって{しまいました}。", "I've already finished my homework."]]
+  },
+  {
+    "id": "te-oku",
+    "level": "n4",
+    "title": "ておく: do in advance",
+    "note": "て form + おく is doing something ahead of time, to be ready, or leaving it as it is. Casually ておく becomes とく: 買[か]っとく.",
+    "ex": [["旅行[りょこう]の前[まえ]に、ホテルを予約[よやく]して{おきます}。", "I'll book the hotel before the trip."], ["ビールを冷[ひ]やして{おいて}ください。", "Please chill the beer for later."], ["窓[まど]を開[あ]けて{おいて}もいいですか。", "Can I leave the window open?"]]
+  },
+  {
+    "id": "te-miru",
+    "level": "n4",
+    "title": "てみる: try and see",
+    "note": "て form + みる is \"do it and see how it goes\": try a food, try on clothes. It's not \"try hard to\", which is ようとする (N3).",
+    "ex": [["この服[ふく]を着[き]て{みても}いいですか。", "May I try this on?"], ["日本[にほん]の料理[りょうり]を作[つく]って{みました}。", "I tried making Japanese food."], ["一度[いちど]食[た]べて{みて}ください。", "Try it once."]]
+  },
+  {
+    "id": "te-aru",
+    "level": "n4",
+    "title": "てある: has been done",
+    "note": "て form + ある describes a state someone left on purpose: 窓[まど]が開[あ]けてある, \"the window has been opened (and left open)\". The thing takes が.\nCompare ている with verbs that just happen: 窓[まど]が開[あ]いている, \"the window is open\", with no hint that anyone opened it.",
+    "ex": [["黒板[こくばん]に名前[なまえ]が書[か]いて{あります}。", "A name is written on the blackboard."], ["ビールは冷[ひ]やして{あります}。", "The beer's been chilled."], ["部屋[へや]にはもう花[はな]がかざって{あります}。", "Flowers have already been put up in the room."]]
+  },
+  {
+    "id": "giving",
+    "level": "n4",
+    "title": "あげる, くれる, もらう: giving",
+    "note": "Japanese has three giving verbs, picked by direction.\n• あげる: I (or anyone) give to someone else, away from me.\n• くれる: someone gives to me or my family.\n• もらう: I receive, and the giver takes に or から.\nFor people above you, use さしあげる, くださる and いただく.",
+    "ex": [["友[とも]だちに本[ほん]を{あげました}。", "I gave my friend a book."], ["姉[あね]が時計[とけい]を{くれました}。", "My big sister gave me a watch."], ["先生[せんせい]に辞書[じしょ]を{もらいました}。", "I got a dictionary from my teacher."]]
+  },
+  {
+    "id": "te-ageru",
+    "level": "n4",
+    "title": "てあげる, てくれる, てもらう: favours",
+    "note": "The giving verbs after a て form give favours instead of things.\n• てあげる: I do it for someone.\n• てくれる: someone does it for me.\n• てもらう: I have someone do it for me.\nてくれませんか and てもらえませんか are polite requests: \"could you…?\"",
+    "ex": [["妹[いもうと]に宿題[しゅくだい]を教[おし]えて{あげました}。", "I helped my little sister with her homework."], ["友[とも]だちが駅[えき]まで送[おく]って{くれました}。", "A friend took me to the station."], ["父[ちち]に車[くるま]を直[なお]して{もらいました}。", "I had my dad fix the car."], ["ちょっと手伝[てつだ]って{くれませんか}。", "Could you help me a moment?"]]
+  },
+  {
+    "id": "te-hoshii",
+    "level": "n4",
+    "title": "てほしい: want someone to",
+    "note": "ほしい is \"want (a thing)\". て form + ほしい is \"want someone to do\", and that person takes に. ないでほしい is \"I'd rather you didn't\".",
+    "ex": [["もっとゆっくり話[はな]して{ほしい}です。", "I'd like you to speak more slowly."], ["母[はは]にはずっと元気[げんき]でいて{ほしい}。", "I want my mum to stay healthy."], ["だれにも言[い]わないで{ほしい}。", "I'd rather you didn't tell anyone."]]
+  },
+  {
+    "id": "sou-looks",
+    "level": "n4",
+    "title": "そう: looks like",
+    "note": "そう after a ます stem, or an adjective without its い or な, is \"looks like\", from what you can see: おいしそう (looks tasty), 雨[あめ]が降[ふ]りそう (looks like rain). The odd ones: いい → よさそう, ない → なさそう.\nIt works like a な adjective: おいしそうなケーキ.",
+    "ex": [["このケーキはおいし{そう}ですね。", "This cake looks tasty."], ["雨[あめ]が降[ふ]り{そう}です。", "It looks like it's going to rain."], ["元気[げんき]{そう}ですね。", "You look well."]]
+  },
+  {
+    "id": "sou-heard",
+    "level": "n4",
+    "title": "そうだ: I heard",
+    "note": "A plain sentence + そうです passes on something you heard or read: \"I hear that…\". Unlike the \"looks like\" そう, the whole plain form comes first. によると names the source: ニュースによると, \"according to the news\".",
+    "ex": [["明日[あした]は雨[あめ]が降[ふ]る{そう}です。", "I hear it's going to rain tomorrow."], ["田中[たなか]さんは結婚[けっこん]した{そう}です。", "I heard Tanaka got married."], ["あのレストランはおいしい{そう}です。", "They say that restaurant is good."]]
+  },
+  {
+    "id": "you-mitai",
+    "level": "n4",
+    "title": "ようだ and みたい: seems",
+    "note": "ようです and みたいです are \"it seems\", from what you've noticed; みたい is the casual one. After a noun, よう needs の (子[こ]どものよう) but みたい doesn't (子[こ]どもみたい).\nBoth also mean \"like\": 夢[ゆめ]のような話[はなし] or 夢[ゆめ]みたいな話[はなし], \"a story like a dream\".",
+    "ex": [["だれも来[こ]ない{よう}です。", "It seems nobody is coming."], ["かぜをひいた{みたい}。", "I think I've caught a cold."], ["まるで夢[ゆめ]の{よう}です。", "It's just like a dream."]]
+  },
+  {
+    "id": "rashii",
+    "level": "n4",
+    "title": "らしい: apparently, typical of",
+    "note": "らしい after a plain sentence is \"apparently\", from hearsay or clues, and sounds less sure than そうだ. After a noun it can also mean \"typical of\": 春[はる]らしい, \"spring-like\", あなたらしい, \"so like you\".",
+    "ex": [["あの店[みせ]は来月[らいげつ]閉[し]まる{らしい}です。", "Apparently that shop is closing next month."], ["今日[*きょう]は春[はる]{らしい}天気[てんき]ですね。", "Real spring weather today, isn't it?"], ["彼[かれ]は病気[びょうき]{らしい}。", "Apparently he's ill."]]
+  },
+  {
+    "id": "kamoshirenai",
+    "level": "n4",
+    "title": "かもしれない: might",
+    "note": "A plain sentence + かもしれません is \"maybe, might\", about 50/50. Nouns and な adjectives drop the だ: 雨[あめ]かもしれない. Casually it shortens to かも.",
+    "ex": [["明日[あした]は雪[ゆき]が降[ふ]る{かもしれません}。", "It might snow tomorrow."], ["その話[はなし]は本当[ほんとう]{かもしれない}。", "That story might be true."], ["ちょっと遅[おく]れる{かも}。", "I might be a bit late."]]
+  },
+  {
+    "id": "hazu",
+    "level": "n4",
+    "title": "はずだ: should be",
+    "note": "はずです is \"it should be so\", from what you know: a confident guess, not advice. はずがない is \"there's no way\": そんなはずがない, \"that can't be\".",
+    "ex": [["荷物[にもつ]は今日[*きょう]着[つ]く{はず}です。", "The package should arrive today."], ["彼[かれ]は来[く]る{はず}だった。", "He was supposed to come."], ["あの子[こ]が知[し]っている{はず}がない。", "There's no way that kid knows."]]
+  },
+  {
+    "id": "nakereba",
+    "level": "n4",
+    "title": "なければならない: must",
+    "note": "The ない form with ない → なければなりません is \"must\": 行[い]かなければなりません. It's long, so people shorten it: なきゃ, なくちゃ, or ないと.\nThe opposite, なくてもいい, is \"don't have to\".",
+    "ex": [["明日[あした]は早[はや]く起[お]き{なければ}なりません。", "I have to get up early tomorrow."], ["薬[くすり]を飲[の]ま{ないと|なきゃ|なくちゃ}。", "I have to take my medicine."], ["今日[*きょう]は会社[かいしゃ]に行[い]か{なくても}いいです。", "I don't have to go to work today."]]
+  },
+  {
+    "id": "hou-ga-ii",
+    "level": "n4",
+    "title": "ほうがいい: you'd better",
+    "note": "た form + ほうがいい is advice: \"you'd better\". ない form + ほうがいい is \"you'd better not\".",
+    "ex": [["早[はや]く寝[ね]た{ほうが}いいですよ。", "You'd better go to bed early."], ["あまり無理[むり]しない{ほうが}いいです。", "You'd better not overdo it."], ["医者[いしゃ]に行[い]った{ほうがいい}。", "You should see a doctor."]]
+  },
+  {
+    "id": "nagara",
+    "level": "n4",
+    "title": "ながら: while",
+    "note": "ます stem + ながら is doing two things at once, with the main action last: 音楽[おんがく]を聞[き]きながら勉強[べんきょう]する, \"study while listening to music\".",
+    "ex": [["音楽[おんがく]を聞[き]き{ながら}勉強[べんきょう]します。", "I study while listening to music."], ["歩[ある]き{ながら}電話[でんわ]しないでください。", "Please don't use your phone while walking."]]
+  },
+  {
+    "id": "shi",
+    "level": "n4",
+    "title": "し: and what's more",
+    "note": "し after a plain sentence lists reasons, \"…and also…\", hinting there are more: 安[やす]いし、おいしいし, \"it's cheap, and it's tasty too\".",
+    "ex": [["この店[みせ]は安[やす]い{し}、おいしいです。", "This place is cheap, and tasty too."], ["雨[あめ]だ{し}、今日[*きょう]は家[いえ]にいます。", "It's raining and all, so I'm staying home today."]]
+  },
+  {
+    "id": "node",
+    "level": "n4",
+    "title": "ので: because (softer)",
+    "note": "ので gives a reason like から, but sounds softer and more polite, good for excuses and requests. After nouns and な adjectives it's なので.",
+    "ex": [["頭[あたま]が痛[いた]い{ので}、早[はや]く帰[かえ]ります。", "I have a headache, so I'll go home early."], ["明日[あした]は休[やす]みな{ので}、ゆっくり寝[ね]ます。", "Tomorrow's a day off, so I'll sleep in."]]
+  },
+  {
+    "id": "noni",
+    "level": "n4",
+    "title": "のに: even though",
+    "note": "のに is \"even though\", with surprise or a complaint: things didn't go as expected. After nouns and な adjectives it's なのに.",
+    "ex": [["勉強[べんきょう]した{のに}、試験[しけん]に落[お]ちました。", "Even though I studied, I failed the exam."], ["日曜日[にちようび]な{のに}、仕事[しごと]があります。", "It's Sunday, but I have work."], ["約束[やくそく]した{のに}、来[こ]なかった。", "They promised, but didn't come."]]
+  },
+  {
+    "id": "tame",
+    "level": "n4",
+    "title": "ために: in order to, for",
+    "note": "Dictionary form + ために is \"in order to\", for a goal you control. Noun + のために is \"for (the sake of)\": 家族[かぞく]のために. In writing it can also give a cause: 台風[たいふう]のために, \"because of the typhoon\".",
+    "ex": [["日本[にほん]で働[はたら]く{ために}、日本語[にほんご]を勉強[べんきょう]しています。", "I'm studying Japanese so I can work in Japan."], ["家族[かぞく]の{ために}料理[りょうり]を作[つく]ります。", "I cook for my family."], ["台風[たいふう]の{ために}、電車[でんしゃ]が止[と]まった。", "The trains stopped because of the typhoon."]]
+  },
+  {
+    "id": "you-ni",
+    "level": "n4",
+    "title": "ように: so that",
+    "note": "ように gives a goal you can't control directly, often after a potential or ない form: 聞[き]こえるように, \"so that (everyone) can hear\".\nようにする is \"make a point of\", and ようになる is \"come to (be able to)\".",
+    "ex": [["みんなに聞[き]こえる{ように}、大[おお]きい声[こえ]で話[はな]してください。", "Please speak up so everyone can hear."], ["毎日[まいにち]野菜[やさい]を食[た]べる{ように}しています。", "I make a point of eating vegetables every day."], ["漢字[かんじ]が読[よ]める{ように}なりました。", "I've become able to read kanji."]]
+  },
+  {
+    "id": "koto-ni-suru",
+    "level": "n4",
+    "title": "ことにする and ことになる: decide",
+    "note": "Dictionary form (or ない form) + ことにする is \"decide to\": your own choice. ことになる is \"it's been decided\", by someone else or by circumstances.\nことにしている is a rule you keep, and ことになっている is a rule that applies to you.",
+    "ex": [["来年[らいねん]、留学[りゅうがく]する{ことに}しました。", "I've decided to study abroad next year."], ["来月[らいげつ]、大阪[おおさか]に引[ひ]っ越[こ]す{ことに}なりました。", "It turns out I'm moving to Osaka next month."], ["毎朝[まいあさ]走[はし]る{ことにしています}。", "I make it a rule to run every morning."]]
+  },
+  {
+    "id": "sugiru",
+    "level": "n4",
+    "title": "すぎる: too much",
+    "note": "すぎる after a ます stem is \"do too much\": 食[た]べすぎる (overeat). After an adjective without its い or な, it's \"too\": 高[たか]すぎる (too expensive). いい → よすぎる.",
+    "ex": [["昨日[きのう]は飲[の]み{すぎました}。", "I drank too much yesterday."], ["この問題[もんだい]は難[むずか]し{すぎます}。", "This problem is too hard."], ["この部屋[へや]は静[しず]か{すぎる}。", "This room is too quiet."]]
+  },
+  {
+    "id": "yasui-nikui",
+    "level": "n4",
+    "title": "やすい and にくい: easy to, hard to",
+    "note": "ます stem + やすい is \"easy to do\", and + にくい is \"hard to do\". Both work as い adjectives: 読[よ]みやすい本[ほん], \"an easy-to-read book\".",
+    "ex": [["このペンは書[か]き{やすい}です。", "This pen is easy to write with."], ["この薬[くすり]は飲[の]み{にくい}。", "This medicine is hard to swallow."], ["わかり{やすく}説明[せつめい]してください。", "Please explain it simply."]]
+  },
+  {
+    "id": "aida",
+    "level": "n4",
+    "title": "間 and 間に: while, during",
+    "note": "間[あいだ] is \"the whole time while\": both things run side by side. 間[あいだ]に is \"at some point during\": something happens within that time.",
+    "ex": [["子[こ]どもが寝[ね]ている{間[あいだ]}、本[ほん]を読[よ]んでいました。", "I read the whole time the kids were asleep."], ["留守[るす]の{間[あいだ]に}、友[とも]だちが来[き]ました。", "A friend came by while I was out."]]
+  },
+  {
+    "id": "ka-dou-ka",
+    "level": "n4",
+    "title": "かどうか: whether",
+    "note": "A question can sit inside a sentence. With a question word, end it with か: 何[なに]を買[か]うか決[き]めた, \"I decided what to buy\". Without one, use かどうか, \"whether or not\".",
+    "ex": [["明日[あした]行[い]く{かどうか}、まだわかりません。", "I don't know yet whether I'll go tomorrow."], ["何[なに]を買[か]う{か}、もう決[き]めましたか。", "Have you decided what to buy?"], ["おいしい{かどうか}、食[た]べてみてください。", "Try it and see if it's good."]]
+  },
+  {
+    "id": "bakari",
+    "level": "n4",
+    "title": "たばかり: just did",
+    "note": "た form + ばかり is \"just did\", when it feels recent to you: 日本[にほん]に来[き]たばかりです, \"I've just come to Japan\" (maybe weeks ago).\nNoun + ばかり is \"nothing but\": 肉[にく]ばかり食[た]べる.",
+    "ex": [["さっき起[お]きた{ばかり}です。", "I've only just got up."], ["この車[くるま]は買[か]った{ばかり}です。", "I just bought this car."], ["弟[おとうと]はゲーム{ばかり}しています。", "My little brother does nothing but play games."]]
+  },
+  {
+    "id": "tokoro",
+    "level": "n4",
+    "title": "ところ: about to, in the middle of",
+    "note": "ところ (place, point) after a verb says where you are in an action.\n• Dictionary form + ところ: about to.\n• ている + ところ: in the middle of it.\n• た form + ところ: just finished, a moment ago (more immediate than たばかり).",
+    "ex": [["今[いま]から出[で]かける{ところ}です。", "I'm just about to go out."], ["今[いま]、ご飯[はん]を食[た]べている{ところ}です。", "I'm in the middle of eating."], ["ちょうど今[いま]、家[いえ]に着[つ]いた{ところ}です。", "I've just this moment got home."]]
+  },
+  {
+    "id": "to-iu",
+    "level": "n4",
+    "title": "と言う and って: quoting",
+    "note": "と marks a quote: 「おはよう」と言[い]った, or reported speech without the brackets: 行[い]くと言[い]った, \"they said they'd go\". と思[おも]う is \"think that\".\nIn casual speech と becomes って, and という (called, the thing that) becomes っていう.",
+    "ex": [["田中[たなか]さんは明日[あした]来[く]る{と}言[い]っていました。", "Tanaka said they'd come tomorrow."], ["これは日本語[にほんご]で何[なん]{と}言[い]いますか。", "What do you call this in Japanese?"], ["「さくら」{という|っていう}名前[なまえ]の店[みせ]です。", "It's a shop called Sakura."], ["明日[あした]は晴[は]れる{と}思[おも]います。", "I think it'll be sunny tomorrow."]]
+  },
+  {
+    "id": "n-desu",
+    "level": "n4",
+    "title": "んです: explaining",
+    "note": "A plain sentence + んです (のです in writing) explains, or asks for an explanation, tying what you say to the situation: どうしたんですか, \"what's wrong?\"; 頭[あたま]が痛[いた]いんです, \"I have a headache, you see\". After nouns and な adjectives it's なんです.\nUse it for reasons, not plain facts, or it sounds like you're making a point.",
+    "ex": [["どうした{んですか|のですか}。", "What's wrong?"], ["頭[あたま]が痛[いた]い{んです|のです}。", "I have a headache, you see."], ["明日[あした]はテストな{んです|のです}。", "I have a test tomorrow, you see."]]
+  },
+  {
+    "id": "keigo",
+    "level": "n4",
+    "title": "Polite language: いらっしゃる, いただく",
+    "note": "Japanese has two sets of extra-polite verbs. Respectful ones lift up the other person: いらっしゃる (be, go, come), 召[め]し上[あ]がる (eat, drink), おっしゃる (say), ご覧[らん]になる (see). Humble ones lower yourself: まいる (go, come), いただく (eat, receive), 申[もう]す (say), 拝見[はいけん]する (see).\nOther verbs follow a pattern: お + ます stem + になる is respectful (お待[ま]ちになる), and お + ます stem + する is humble (お待[ま]ちする). You'll hear these in shops and at work long before you need to say them.",
+    "ex": [["先生[せんせい]は明日[あした]{いらっしゃいます}。", "The teacher will come tomorrow."], ["どうぞ{召[め]し上[あ]がって}ください。", "Please, help yourself."], ["少々[しょうしょう]お{待[ま]ち}ください。", "One moment, please."], ["田中[たなか]と{申[もう]します}。", "My name is Tanaka."]]
+  },
+  {
+    "id": "wake",
+    "level": "n3",
+    "title": "わけだ and わけではない: no wonder, it's not that",
+    "note": "わけだ draws a conclusion: \"so that means\", \"no wonder\". わけではない softens a denial: \"it's not that…\". わけがない is \"no way\": そんなわけがない.",
+    "ex": [["十年[じゅうねん]も住[す]んでいたんですか。上手[じょうず]な{わけ}ですね。", "You lived there ten years? No wonder you're good."], ["肉[にく]がきらいな{わけではない}けど、あまり食[た]べない。", "It's not that I dislike meat, I just don't eat much."], ["そんな{わけ}がない。", "No way."]]
+  },
+  {
+    "id": "you-to-suru",
+    "level": "n3",
+    "title": "ようとする: try to, about to",
+    "note": "Volitional + とする is \"try to\" (an effort, often a failed one) or \"be just about to\": 出[で]かけようとしたら、雨[あめ]が降[ふ]ってきた, \"just as I was about to go out, it started raining\". ようとしない is \"won't even try\".",
+    "ex": [["寝[ね]ようと{した}けど、寝[ね]られなかった。", "I tried to sleep but couldn't."], ["出[で]かけよう{と}したら、電話[でんわ]が鳴[な]った。", "Just as I was about to go out, the phone rang."], ["彼[かれ]は何[なに]も食[た]べようと{しない}。", "He won't even try to eat anything."]]
+  },
+  {
+    "id": "ni-yotte",
+    "level": "n3",
+    "title": "によって: by, depending on",
+    "note": "によって marks who did something in a passive, mostly in writing. It also means \"depending on\": 人[ひと]によって, \"it depends on the person\". によると is \"according to\".",
+    "ex": [["この寺[てら]は有名[ゆうめい]なお坊[ぼう]さん{によって}建[た]てられた。", "This temple was built by a famous monk."], ["人[ひと]{によって}考[かんが]え方[かた]が違[ちが]います。", "Ways of thinking differ from person to person."], ["天気[てんき]予報[よほう]{によると}、明日[あした]は雨[あめ]です。", "According to the forecast, it'll rain tomorrow."]]
+  },
+  {
+    "id": "ni-tsuite",
+    "level": "n3",
+    "title": "について: about",
+    "note": "について is \"about, concerning\": 日本[にほん]の歴史[れきし]について調[しら]べる. Before a noun it's についての: 環境[かんきょう]についての本[ほん].",
+    "ex": [["日本[にほん]の文化[ぶんか]{について}レポートを書[か]きました。", "I wrote a report on Japanese culture."], ["その件[けん]{について}、少[すこ]し話[はな]しましょう。", "Let's talk a little about that."]]
+  },
+  {
+    "id": "ni-totte",
+    "level": "n3",
+    "title": "にとって: to, for (someone)",
+    "note": "にとって is \"from the point of view of\": 私[わたし]にとって大切[たいせつ]な人[ひと], \"someone important to me\". It's for judgements (important, hard, easy), not for doing something for someone, which is のために.",
+    "ex": [["家族[かぞく]は私[わたし]{にとって}一番[いちばん]大切[たいせつ]です。", "My family matters most to me."], ["子[こ]ども{にとって}、この問題[もんだい]は難[むずか]しすぎる。", "This problem is too hard for a child."]]
+  },
+  {
+    "id": "to-shite",
+    "level": "n3",
+    "title": "として: as",
+    "note": "として is \"as, in the role of\": 先生[せんせい]として働[はたら]く, \"work as a teacher\".",
+    "ex": [["通訳[つうやく]{として}働[はたら]いています。", "I work as an interpreter."], ["プレゼント{として}花[はな]をもらいました。", "I got flowers as a present."]]
+  },
+  {
+    "id": "beki",
+    "level": "n3",
+    "title": "べきだ: should",
+    "note": "Dictionary form + べきだ is \"should, ought to\": a firm opinion about what's right. べきではない is \"shouldn't\". With する, both するべき and すべき are used. Softer advice uses ほうがいい.",
+    "ex": [["約束[やくそく]は守[まも]る{べき}です。", "You should keep your promises."], ["そんなことは言[い]う{べきではない}。", "You shouldn't say things like that."], ["もっと早[はや]く言[い]う{べき}だった。", "I should have said it sooner."]]
+  },
+  {
+    "id": "zuni",
+    "level": "n3",
+    "title": "ずに: without doing",
+    "note": "The ない form with ない → ずに is \"without doing\", a more written-sounding ないで. する becomes せずに.",
+    "ex": [["朝[あさ]ご飯[はん]を食[た]べ{ずに}、学校[がっこう]に行[い]った。", "I went to school without eating breakfast."], ["何[なに]も言[い]わ{ずに}、帰[かえ]ってしまった。", "They went home without a word."], ["辞書[じしょ]を使[つか]わ{ずに}読[よ]めますか。", "Can you read it without a dictionary?"]]
+  },
+  {
+    "id": "ppoi",
+    "level": "n3",
+    "title": "っぽい: -ish",
+    "note": "っぽい is a casual \"-ish\" or \"tends to\": 子[こ]どもっぽい (childish), 忘[わす]れっぽい (forgetful, after a ます stem), 白[しろ]っぽい (whitish). It works as an い adjective.",
+    "ex": [["最近[さいきん]、忘[わす]れ{っぽく}なった。", "I've got forgetful lately."], ["そんな子[こ]ども{っぽい}ことはやめて。", "Stop being so childish."], ["かぜ{っぽい}です。", "I think I'm coming down with a cold."]]
+  },
+  {
+    "id": "tabi-ni",
+    "level": "n3",
+    "title": "たびに: every time",
+    "note": "Dictionary form, or noun + の, + たびに is \"every time\": 会[あ]うたびに, \"every time we meet\".",
+    "ex": [["この歌[うた]を聞[き]く{たびに}、国[くに]を思[おも]い出[だ]す。", "Every time I hear this song, I think of home."], ["旅行[りょこう]の{たびに}、写真[しゃしん]をたくさん撮[と]る。", "I take lots of photos every trip."]]
+  },
+  {
+    "id": "uchi-ni",
+    "level": "n3",
+    "title": "うちに: while still",
+    "note": "うちに is \"while it's still so\": do it before the chance passes. 若[わか]いうちに, \"while you're young\". After a ない form it's \"before it changes\": 暗[くら]くならないうちに, \"before it gets dark\".",
+    "ex": [["温[あたた]かい{うちに}食[た]べてください。", "Eat it while it's hot."], ["若[わか]い{うちに}、いろいろな国[くに]に行[い]きたい。", "I want to see lots of countries while I'm young."], ["暗[くら]くならない{うちに}帰[かえ]りましょう。", "Let's head home before it gets dark."]]
+  },
+  {
+    "id": "okage-sei",
+    "level": "n3",
+    "title": "おかげで and せいで: thanks to, because of",
+    "note": "Both give a cause. おかげで is for good results (\"thanks to\"), and せいで blames something for a bad one. After a noun, add の: 先生[せんせい]のおかげで.",
+    "ex": [["先生[せんせい]の{おかげで}、試験[しけん]に合格[ごうかく]しました。", "Thanks to my teacher, I passed the exam."], ["雨[あめ]の{せいで}、試合[しあい]が中止[ちゅうし]になった。", "The match was called off because of the rain."]]
+  },
+  {
+    "id": "ba-hodo",
+    "level": "n3",
+    "title": "ば〜ほど: the more… the more",
+    "note": "Say the word twice, first in the ば form, then in the dictionary form + ほど: 練習[れんしゅう]すればするほど, \"the more you practise\".",
+    "ex": [["練習[れんしゅう]すればする{ほど}、上手[じょうず]になります。", "The more you practise, the better you get."], ["考[かんが]えれば考[かんが]える{ほど}、わからなくなる。", "The more I think about it, the less I understand."], ["早[はや]ければ早[はや]い{ほど}いいです。", "The sooner the better."]]
+  },
+  {
+    "id": "mama",
+    "level": "n3",
+    "title": "まま: as it is",
+    "note": "まま is \"unchanged, still\": something stays the way it was. た form + まま: くつをはいたまま, \"with your shoes still on\". Noun + のまま: そのまま, \"just as it is\".",
+    "ex": [["テレビをつけた{まま}寝[ね]てしまった。", "I fell asleep with the TV on."], ["くつをはいた{まま}入[はい]らないでください。", "Please don't come in with your shoes on."], ["その{まま}でいいです。", "It's fine as it is."]]
+  },
+  {
+    "id": "totan",
+    "level": "n3",
+    "title": "たとたん: the moment",
+    "note": "た form + とたん(に) is \"the instant that\", for something sudden or unexpected that follows right away.",
+    "ex": [["家[いえ]を出[で]た{とたん}、雨[あめ]が降[ふ]り出[だ]した。", "The moment I left the house, it started raining."], ["ベッドに入[はい]った{とたんに|とたん}寝[ね]てしまった。", "I fell asleep the moment I got into bed."]]
+  },
+  {
+    "id": "furi",
+    "level": "n3",
+    "title": "ふりをする: pretend",
+    "note": "Plain form + ふりをする is \"pretend to\": 寝[ね]ているふりをする, \"pretend to be asleep\". With a noun, add の.",
+    "ex": [["彼[かれ]は寝[ね]ている{ふり}をしている。", "He's pretending to be asleep."], ["知[し]っていたのに、知[し]らない{ふり}をした。", "I knew, but pretended I didn't."]]
+  },
+  {
+    "id": "tsuide-ni",
+    "level": "n3",
+    "title": "ついでに: while you're at it",
+    "note": "ついでに is doing one extra thing because you're doing another anyway: \"while you're at it, on the way\". Dictionary or た form + ついでに, or noun + のついでに.",
+    "ex": [["買[か]い物[もの]の{ついでに}、銀行[ぎんこう]に寄[よ]った。", "I stopped by the bank while I was out shopping."], ["コンビニに行[い]く{ついでに}、牛乳[ぎゅうにゅう]を買[か]ってきて。", "Since you're going to the shop, get some milk."]]
+  },
+  {
+    "id": "causative-passive",
+    "level": "n3",
+    "title": "させられる: be made to",
+    "note": "Causative + passive is \"be made to do\", against your will.\n• る verbs: させられる (食[た]べさせられる).\n• う verbs: the あ-sound + せられる, usually shortened to される: 飲[の]ませられる → 飲[の]まされる. Verbs ending in す keep the long form: 話[はな]させられる.\n• する → させられる.",
+    "ex": [["子[こ]どものころ、母[はは]に野菜[やさい]を{食[た]べさせられた}。", "As a kid, my mum made me eat vegetables."], ["部長[ぶちょう]にお酒[さけ]を{飲[の]まされました|飲[の]ませられました}。", "My boss made me drink."], ["一時間[いちじかん]も{待[ま]たされた|待[ま]たせられた}。", "I was kept waiting a whole hour."]]
+  },
+  {
+    "id": "nakanaka",
+    "level": "n3",
+    "title": "なかなか〜ない: just won't",
+    "note": "なかなか with a negative is \"just won't, not easily\": バスがなかなか来[こ]ない, \"the bus just won't come\". With a positive it means \"quite, pretty\": なかなかおいしい.",
+    "ex": [["バスが{なかなか}来[こ]ない。", "The bus just won't come."], ["漢字[かんじ]が{なかなか}覚[おぼ]えられません。", "I just can't get kanji to stick."], ["この映画[えいが]は{なかなか}面白[おもしろ]い。", "This film is pretty good."]]
+  },
+  {
+    "id": "kke",
+    "level": "n3",
+    "title": "っけ: what was it again?",
+    "note": "っけ at the end of a casual sentence asks to be reminded: 名前[なまえ]、何[なん]だっけ?, \"what was your name again?\". Politely: でしたっけ.",
+    "ex": [["あの人[ひと]の名前[なまえ]、何[なん]だ{っけ}。", "What was that person's name again?"], ["会議[かいぎ]は何時[なんじ]からでした{っけ}。", "What time does the meeting start again?"]]
+  },
+  {
+    "id": "sae",
+    "level": "n3",
+    "title": "さえ: even, if only",
+    "note": "さえ is \"even\": 名前[なまえ]さえ書[か]けない, \"can't even write their name\". With ば it's \"as long as, if only\": これさえあれば, \"as long as I have this\".",
+    "ex": [["忙[いそが]しくて、ご飯[はん]を食[た]べる時間[じかん]{さえ}ない。", "I'm so busy I don't even have time to eat."], ["時間[じかん]{さえ}あれば、もっと旅行[りょこう]したい。", "If only I had the time, I'd travel more."]]
+  },
+  {
+    "id": "koto-wa-nai",
+    "level": "n3",
+    "title": "ことはない: no need to",
+    "note": "Dictionary form + ことはない is \"there's no need to\": reassurance, or a gentle \"don't bother\".",
+    "ex": [["心配[しんぱい]する{ことはない}よ。", "There's no need to worry."], ["急[いそ]ぐ{ことはありません}。", "There's no need to rush."]]
+  },
+  {
+    "id": "dake-de-naku",
+    "level": "n3",
+    "title": "だけでなく: not only",
+    "note": "だけでなく (casually だけじゃなく) is \"not only… but also\", and the second part usually takes も. ばかりか is a stronger, written version.",
+    "ex": [["英語[えいご]{だけでなく}、中国語[ちゅうごくご]も話[はな]せます。", "She speaks not only English but Chinese too."], ["雨[あめ]だけでなく、風[かぜ]{も}強[つよ]い。", "Not only is it raining, the wind's strong too."]]
+  },
+  {
+    "id": "saichuu",
+    "level": "n3",
+    "title": "最中に: right in the middle of",
+    "note": "ている + 最中[さいちゅう]に, or noun + の最中[さいちゅう]に, is \"right in the middle of\", usually when something interrupts.",
+    "ex": [["会議[かいぎ]の{最中[さいちゅう]}に、電話[でんわ]が鳴[な]った。", "My phone rang right in the middle of the meeting."], ["食事[しょくじ]をしている{最中[さいちゅう]に}、地震[じしん]があった。", "There was an earthquake right while we were eating."]]
   }
 ]

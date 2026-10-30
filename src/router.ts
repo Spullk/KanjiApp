@@ -24,7 +24,7 @@ export type Route =
   | { page: "grammarPoint"; id: string }
   | { page: "kana" }
   | { page: "kanaRow"; id: string }
-  | { page: "kanaPractice"; script: "hira" | "kata" | "both"; missed: boolean; listen: boolean }
+  | { page: "kanaPractice"; script: "hira" | "kata" | "both"; missed: boolean }
   | { page: "lesson"; id: number }
   | { page: "kanji"; c: string }
   | { page: "radical"; c: string }
@@ -48,8 +48,8 @@ export const href = {
   grammarPoint: (id: string) => `#/grammar/${id}`,
   kana: () => "#/kana",
   kanaRow: (id: string) => `#/kana/row/${id}`,
-  kanaPractice: (script: "hira" | "kata" | "both", opts: { missed?: boolean; listen?: boolean } = {}) =>
-    `#/kana/practice/${script}${opts.missed ? "/missed" : ""}${opts.listen ? "/listen" : ""}`,
+  kanaPractice: (script: "hira" | "kata" | "both", opts: { missed?: boolean } = {}) =>
+    `#/kana/practice/${script}${opts.missed ? "/missed" : ""}`,
   write: (c?: string) => `#/write${c ? "/" + encodeURIComponent(c) : ""}`,
   lesson: (id: number) => `#/lesson/${id}`,
   kanji: (c: string) => `#/k/${encodeURIComponent(c)}`,
@@ -87,7 +87,7 @@ export function parse(hash: string): Route {
       if (seg[1] === "row") return { page: "kanaRow", id: seg[2] };
       if (seg[1] === "practice") {
         const script = ["hira", "kata"].includes(seg[2]) ? (seg[2] as "hira" | "kata") : "both";
-        return { page: "kanaPractice", script, missed: seg.includes("missed"), listen: seg.includes("listen") };
+        return { page: "kanaPractice", script, missed: seg.includes("missed") };
       }
       return { page: "kana" };
     case "write":

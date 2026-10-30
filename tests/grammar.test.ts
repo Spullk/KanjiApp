@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import points from "../data/grammar.json";
 import type { GrammarPoint } from "../src/data";
-import { cloze, segments } from "../src/grammar";
+import { cloze, segments, tierOf, TIERS } from "../src/grammar";
 import { alignFurigana } from "../src/components/bits";
 import { activeTab, barTools, DEFAULT_TABS } from "../src/tools";
 import { DEFAULT_SETTINGS } from "../src/srs";
@@ -19,13 +19,22 @@ describe("grammar", () => {
     expect(cloze(["はこの{中[なか]}に", ""]).answers).toEqual(["なか"]);
   });
 
+  it("puts every level in one tab", () => {
+    expect(tierOf("numbers")).toBe("beginner");
+    expect(tierOf("n4")).toBe("n4");
+  });
+
   it("every point is well formed", () => {
     const ids = new Set<string>();
     for (const g of points as GrammarPoint[]) {
       expect(ids.has(g.id)).toBe(false);
       ids.add(g.id);
-      expect(["start", "numbers", "phrases", "n5"]).toContain(g.level);
-      for (const ex of g.ex) expect(cloze(ex).answers.every((a) => /^[ぁ-ゖァ-ヺー]+$/.test(a))).toBe(true);
+      expect(TIERS.flatMap((t) => t.levels)).toContain(g.level);
+      for (const ex of g.ex) {
+        expect(cloze(ex).answers.every((a) => /^[ぁ-ゖァ-ヺー]+$/.test(a))).toBe(true);
+        // Every kanji has its reading, so furigana can show (or hide) it.
+        expect(segments(ex[0].replace(/[{}|]/g, "")).filter(([t, r]) => !r && /[一-鿿]/.test(t))).toEqual([]);
+      }
     }
   });
 });

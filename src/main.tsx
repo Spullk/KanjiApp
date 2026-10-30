@@ -77,7 +77,7 @@ function Page({ route }: { route: Route }) {
     case "kanaRow":
       return <KanaRowPage id={route.id} />;
     case "kanaPractice":
-      return <KanaPracticePage key={location.hash} script={route.script} missed={route.missed} listen={route.listen} />;
+      return <KanaPracticePage key={location.hash} script={route.script} missed={route.missed} />;
     case "extra":
       return <ExtraPracticePage />;
     case "practice":

@@ -3,7 +3,6 @@ import { href } from "../router";
 import { getStore, update, useStore } from "../srs";
 import { KANA_ROWS, romaji, type Script } from "../kana";
 import { addKana, answerKana, drillKana, drillOf, kanaStrength, nextKana, removeKana } from "../kanaDrill";
-import { speak } from "../audio";
 import { Section } from "../components/bits";
 import { KanaQuestion } from "../components/KanaQuestion";
 
@@ -14,7 +13,6 @@ const SESSION = 20;
 export function KanaPage() {
   const store = useStore();
   const [missed, setMissed] = useState(false);
-  const [listen, setListen] = useState(false);
   const counts = (["hira", "kata", "both"] as const).map((script) => [script, drillKana(store, { script, missed }).length] as const);
 
   return (
@@ -27,7 +25,7 @@ export function KanaPage() {
       <Section title="Practise">
         <div class="practice-links">
           {counts.map(([script, n]) => (
-            <a key={script} class={n ? "" : "quiet"} href={n ? href.kanaPractice(script, { missed, listen }) : undefined}>
+            <a key={script} class={n ? "" : "quiet"} href={n ? href.kanaPractice(script, { missed }) : undefined}>
               <b>{n}</b>
               {SCRIPT_LABEL[script]}
             </a>
@@ -35,9 +33,6 @@ export function KanaPage() {
         </div>
         <label class="check-row">
           <input type="checkbox" checked={missed} onChange={() => setMissed(!missed)} /> Only kana I've missed
-        </label>
-        <label class="check-row">
-          <input type="checkbox" checked={listen} onChange={() => setListen(!listen)} /> Listening: hear it, type it
         </label>
       </Section>
       {(["hira", "kata"] as const).map((script) => (
@@ -96,13 +91,13 @@ export function KanaRowPage({ id }: { id: string }) {
       <h1>
         {SCRIPT_LABEL[row.script]}: <span lang="ja">{row.kana[0]}</span> row
       </h1>
-      <p class="hint">Tap each one to hear it. Say it out loud, then practise.</p>
+      <p class="hint">Say each one out loud, then practise.</p>
       <div class="kana-learn-grid" lang="ja">
         {row.kana.map((k) => (
-          <button key={k} class="kana-tile" onClick={() => speak(k)}>
+          <div key={k} class="kana-tile">
             <span class="kana-tile-k">{k}</span>
             <span class="kana-tile-r">{romaji(k)}</span>
-          </button>
+          </div>
         ))}
       </div>
       <button class="primary wide" onClick={practise}>
@@ -125,7 +120,7 @@ export function KanaRowPage({ id }: { id: string }) {
 }
 
 /** A drill session: 20 kana from the front of the queue, then keep going or stop. */
-export function KanaPracticePage({ script, missed, listen }: { script: Script | "both"; missed: boolean; listen: boolean }) {
+export function KanaPracticePage({ script, missed }: { script: Script | "both"; missed: boolean }) {
   const filter = { script, missed };
   const [current, setCurrent] = useState(() => nextKana(getStore(), filter));
   const [turn, setTurn] = useState(0);
@@ -168,7 +163,7 @@ export function KanaPracticePage({ script, missed, listen }: { script: Script | 
         {SCRIPT_LABEL[script]}
         {missed && " · missed ones"} · {turn + 1} of {goal}
       </div>
-      <KanaQuestion kana={current} turn={turn} listen={listen} onAnswer={answer} />
+      <KanaQuestion kana={current} turn={turn} onAnswer={answer} />
     </article>
   );
 }

@@ -1,14 +1,13 @@
 import { Fragment } from "preact";
-import { useState } from "preact/hooks";
-import { useData, type GrammarPoint, type Segment } from "../data";
+import { useEffect, useState } from "preact/hooks";
+import { useData, type GrammarPoint } from "../data";
 import { href } from "../router";
 import { itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, type Store } from "../srs";
-import { cloze, grammarDone, LEVELS } from "../grammar";
+import { cloze, grammarDone, lastTier, LEVELS, rememberTier, segments, tierOf, TIERS, type Tier } from "../grammar";
 import { furiganaRule } from "../reading";
 import { ALL_KANA, scriptOf, type Script } from "../kana";
 import { drillOf } from "../kanaDrill";
-import { speak } from "../audio";
-import { Furigana, readingOf, Romaji, Section, SpeakButton } from "../components/bits";
+import { Furigana, readingOf, Romaji, Section } from "../components/bits";
 import { StudyButton } from "../components/ItemCards";
 
 /** Where the kana sit among the Start here points: hiragana before the sound rules, katakana before foreign words. */
@@ -26,18 +25,37 @@ export function startNext(store: Store, points: GrammarPoint[]): { title: string
   return undefined;
 }
 
+/** Where Grammar opens the first time: Beginner until Start here is done, then the first level with something left. */
+function firstTier(store: Store, points: GrammarPoint[]): Tier {
+  if (startNext(store, points)) return "beginner";
+  return TIERS.find((t) => t.tier !== "beginner" && points.some((g) => t.levels.includes(g.level) && !grammarDone(store, g.id)))?.tier ?? "n5";
+}
+
 export function GrammarPage() {
   const data = useData();
   const store = useStore();
   const points = Object.values(data.grammar);
   const done = !startNext(store, points);
   const [openStart, setOpenStart] = useState(!done);
+  const [tier, setTier] = useState(() => lastTier() ?? firstTier(store, points));
+  const pick = (t: Tier) => {
+    setTier(t);
+    rememberTier(t);
+  };
+  const levels = TIERS.find((t) => t.tier === tier)!.levels;
 
   return (
     <article class="page">
       <h1>Grammar</h1>
       <p class="hint">Everything that isn't a kanji or a word. Each point has a short explanation; add it to your reviews to practise it on real sentences.</p>
-      {LEVELS.map(({ level, title, hint }) => {
+      <div class="seg-tabs grammar-tabs" role="tablist">
+        {TIERS.map((t) => (
+          <button key={t.tier} role="tab" aria-selected={tier === t.tier} class={tier === t.tier ? "on" : ""} onClick={() => pick(t.tier)}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+      {LEVELS.filter((l) => levels.includes(l.level)).map(({ level, title, hint }) => {
         const list = points.filter((g) => g.level === level);
         if (level === "start" && !openStart) {
           return (
@@ -46,8 +64,9 @@ export function GrammarPage() {
             </button>
           );
         }
+        const started = list.filter((g) => grammarDone(store, g.id)).length;
         return (
-          <Section key={level} title={title} hint={hint}>
+          <Section key={level} title={title} hint={level === "start" ? hint : `${hint} ${started} of ${list.length} started.`}>
             <div class="grammar-list">
               {list.map((g) => (
                 <Fragment key={g.id}>
@@ -93,23 +112,26 @@ export function GrammarRow({ g }: { g: GrammarPoint }) {
   );
 }
 
-const plain = (segs: Segment[]) => segs.map(([t]) => t).join("");
-
 export function GrammarPointPage({ id }: { id: string }) {
   const data = useData();
   const store = useStore();
   const g = data.grammar[id];
+  // Back to Grammar lands on this point's level.
+  useEffect(() => {
+    if (g) rememberTier(tierOf(g.level));
+  }, [g]);
   if (!g) return <p class="empty">No such grammar point.</p>;
   const hide = furiganaRule(store, data);
   const level = LEVELS.find((l) => l.level === g.level)!;
-  const same = Object.values(data.grammar).filter((x) => x.level === g.level);
+  const tier = TIERS.find((t) => t.levels.includes(g.level))!;
+  const same = Object.values(data.grammar).filter((x) => tier.levels.includes(x.level));
   const next = same[same.indexOf(g) + 1];
   const read = !!itemInfo(store, "grammar", id)?.status;
 
   return (
     <article class="page">
       <a class="more" href={href.grammar()}>
-        ← {level.title}
+        ← {tier.tier === "beginner" ? level.title : `${tier.label} grammar`}
       </a>
       <h1 class="grammar-h" lang="ja">
         {g.title}
@@ -118,10 +140,14 @@ export function GrammarPointPage({ id }: { id: string }) {
         {g.note.split("\n").map((p, i) =>
           p.startsWith("•") ? (
             <ul key={i}>
-              <li>{p.slice(1).trim()}</li>
+              <li>
+                <Furigana segments={segments(p.slice(1).trim())} link={false} />
+              </li>
             </ul>
           ) : (
-            <p key={i}>{p}</p>
+            <p key={i}>
+              <Furigana segments={segments(p)} link={false} />
+            </p>
           ),
         )}
       </div>
@@ -132,7 +158,6 @@ export function GrammarPointPage({ id }: { id: string }) {
             return (
               <div class="sentence" key={ex[0]}>
                 <div class="sent-ja" lang="ja">
-                  <SpeakButton onClick={() => speak(plain([...c.before, ...c.gap, ...c.after]))} human={false} />
                   <Furigana segments={c.before} link={false} hide={hide} reveal />
                   <b class="cloze-gap filled">
                     <Furigana segments={c.gap} link={false} hide={hide} reveal />

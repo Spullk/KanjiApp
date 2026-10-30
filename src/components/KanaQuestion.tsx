@@ -1,14 +1,13 @@
-// One kana question: see it (or hear it), type its romaji. Used by the kana drill and the welcome screen's check.
+// One kana question: see it, type its romaji. Used by the kana drill and the welcome screen's check.
 // The input stays mounted from one kana to the next so the phone keyboard doesn't close and reopen.
 
 import { useEffect, useRef, useState } from "preact/hooks";
-import { speak } from "../audio";
 import { isRomajiFor, kanaFor, romaji, scriptOf } from "../kana";
 
 const NEXT_AFTER_RIGHT = 600;
 
 /** `turn` counts questions, so the same kana twice in a row still starts fresh. */
-export function KanaQuestion({ kana, turn, listen, onAnswer }: { kana: string; turn: number; listen?: boolean; onAnswer: (right: boolean) => void }) {
+export function KanaQuestion({ kana, turn, onAnswer }: { kana: string; turn: number; onAnswer: (right: boolean) => void }) {
   const [typed, setTyped] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const right = typed !== null && isRomajiFor(typed, kana);
@@ -19,7 +18,6 @@ export function KanaQuestion({ kana, turn, listen, onAnswer }: { kana: string; t
     setTyped(null);
     if (input.current) input.current.value = "";
     input.current?.focus();
-    if (listen) speak(kana);
   }, [kana, turn]);
   useEffect(() => {
     if (!right) return;
@@ -39,18 +37,9 @@ export function KanaQuestion({ kana, turn, listen, onAnswer }: { kana: string; t
 
   return (
     <form class="kana-q" onSubmit={submit}>
-      {listen && typed === null ? (
-        <button type="button" class="listen-button" onClick={() => speak(kana)} aria-label="Play again">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 9v6h4l5 4V5L8 9H4z" />
-            <path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" />
-          </svg>
-        </button>
-      ) : (
-        <div class="kana-big" lang="ja">
-          {kana}
-        </div>
-      )}
+      <div class="kana-big" lang="ja">
+        {kana}
+      </div>
       <input
         ref={input}
         class={`typed-input ${typed === null ? "" : right ? "right" : "wrong"}`}

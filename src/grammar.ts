@@ -8,7 +8,41 @@ export const LEVELS: { level: GrammarPoint["level"]; title: string; hint: string
   { level: "numbers", title: "Numbers and counters", hint: "Counting, prices, dates and time, with the sound changes that trip everyone up." },
   { level: "phrases", title: "Set phrases", hint: "Everyday phrases that don't make sense word by word." },
   { level: "n5", title: "N5 grammar", hint: "The rest of the beginner grammar, roughly JLPT N5." },
+  { level: "n4", title: "N4 grammar", hint: "Verb forms (can, let's, if, was done, made to), giving and receiving, seems and probably." },
+  { level: "n3", title: "N3 grammar", hint: "Intermediate patterns: reasons, contrasts, \"the more… the more\", and the set phrases of written Japanese." },
 ];
+
+export type Tier = "beginner" | "n5" | "n4" | "n3";
+
+/** The tabs on the Grammar page, easiest first; Beginner holds the levels a newcomer needs before N5. */
+export const TIERS: { tier: Tier; label: string; levels: GrammarPoint["level"][] }[] = [
+  { tier: "beginner", label: "Beginner", levels: ["start", "numbers", "phrases"] },
+  { tier: "n5", label: "N5", levels: ["n5"] },
+  { tier: "n4", label: "N4", levels: ["n4"] },
+  { tier: "n3", label: "N3", levels: ["n3"] },
+];
+
+export const tierOf = (level: GrammarPoint["level"]): Tier => TIERS.find((t) => t.levels.includes(level))!.tier;
+
+// The tab you were last on, so Grammar opens straight to your level. Kept on this phone only: it's a place, not progress.
+const LAST_TIER = "nekko.grammarTier";
+
+export function lastTier(): Tier | undefined {
+  try {
+    const t = localStorage.getItem(LAST_TIER);
+    return TIERS.some((x) => x.tier === t) ? (t as Tier) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export function rememberTier(tier: Tier) {
+  try {
+    localStorage.setItem(LAST_TIER, tier);
+  } catch {
+    // Private mode: Grammar opens on the first unfinished level instead.
+  }
+}
 
 const RUBY = /([一-鿿々〆ヶ]+)\[(\*?)([^\]]+)\]/g;
 

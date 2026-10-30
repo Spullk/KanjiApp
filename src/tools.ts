@@ -46,7 +46,7 @@ export const TOOLS: Tool[] = [
   { tab: "practice", icon: "練", label: "Extra practice", short: "Practice", href: href.extra(), pages: ["extra", "practice"], about: "Mistakes, leeches, this week's items", group: "study" },
   { tab: "read", icon: "読", label: "Read", href: href.read(), pages: ["read", "sentences", "story"], about: "Stories and sentences", group: "read" },
   { tab: "search", icon: "探", label: "Search", href: href.search(), pages: ["search"], about: "Kanji, words, readings, meanings", group: "read" },
-  { tab: "grammar", icon: "文", label: "Grammar", href: href.grammar(), pages: ["grammar", "grammarPoint"], about: "Start here, N5, numbers, phrases", group: "basics" },
+  { tab: "grammar", icon: "文", label: "Grammar", href: href.grammar(), pages: ["grammar", "grammarPoint"], about: "From your first sentence up to N3", group: "basics" },
   { tab: "kana", icon: "あ", label: "Kana", href: href.kana(), pages: ["kana", "kanaRow", "kanaPractice"], about: "Learn kana and drill them", group: "basics" },
 ];
 
