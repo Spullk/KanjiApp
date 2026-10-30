@@ -1988,9 +1988,6 @@ ruby.tap-reading {
   align-items: stretch;
   gap: 10px;
 }
-.kana-q .listen-button {
-  align-self: center;
-}
 .kana-big {
   border-radius: 22px;
   background: var(--grammar);

@@ -1,14 +1,13 @@
 import { Fragment } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { useData, type GrammarPoint, type Segment } from "../data";
+import { useData, type GrammarPoint } from "../data";
 import { href } from "../router";
 import { itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, type Store } from "../srs";
 import { cloze, grammarDone, lastTier, LEVELS, rememberTier, segments, tierOf, TIERS, type Tier } from "../grammar";
 import { furiganaRule } from "../reading";
 import { ALL_KANA, scriptOf, type Script } from "../kana";
 import { drillOf } from "../kanaDrill";
-import { speak } from "../audio";
-import { Furigana, readingOf, Romaji, Section, SpeakButton } from "../components/bits";
+import { Furigana, readingOf, Romaji, Section } from "../components/bits";
 import { StudyButton } from "../components/ItemCards";
 
 /** Where the kana sit among the Start here points: hiragana before the sound rules, katakana before foreign words. */
@@ -113,8 +112,6 @@ export function GrammarRow({ g }: { g: GrammarPoint }) {
   );
 }
 
-const plain = (segs: Segment[]) => segs.map(([t]) => t).join("");
-
 export function GrammarPointPage({ id }: { id: string }) {
   const data = useData();
   const store = useStore();
@@ -161,7 +158,6 @@ export function GrammarPointPage({ id }: { id: string }) {
             return (
               <div class="sentence" key={ex[0]}>
                 <div class="sent-ja" lang="ja">
-                  <SpeakButton onClick={() => speak(plain([...c.before, ...c.gap, ...c.after]))} human={false} />
                   <Furigana segments={c.before} link={false} hide={hide} reveal />
                   <b class="cloze-gap filled">
                     <Furigana segments={c.gap} link={false} hide={hide} reveal />
