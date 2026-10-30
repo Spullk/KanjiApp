@@ -56,7 +56,7 @@ function Page({ route }: { route: Route }) {
     case "progress":
       return <ProgressPage />;
     case "settings":
-      return <SettingsPage />;
+      return <SettingsPage group={route.group} />;
     case "known":
       return <KnownPage />;
     case "write":

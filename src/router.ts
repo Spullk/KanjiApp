@@ -1,6 +1,9 @@
 import { useEffect, useState } from "preact/hooks";
 import type { PracticeSet } from "./srs";
 
+/** The pages Settings is split into (SettingsPage.tsx). */
+export type SettingsGroup = "account" | "learning" | "reviews" | "app" | "about";
+
 // Hash routes, so the app works from any static host (GitHub Pages) and offline.
 export type Route =
   | { page: "home" }
@@ -9,7 +12,7 @@ export type Route =
   | { page: "review" }
   | { page: "learn"; story?: string }
   | { page: "progress" }
-  | { page: "settings" }
+  | { page: "settings"; group?: SettingsGroup }
   | { page: "known" }
   | { page: "practice"; set: PracticeSet }
   | { page: "extra" }
@@ -34,7 +37,7 @@ export const href = {
   review: () => "#/review",
   learn: (story?: string) => `#/learn${story ? "/" + story : ""}`,
   progress: () => "#/progress",
-  settings: () => "#/settings",
+  settings: (group?: SettingsGroup) => `#/settings${group ? "/" + group : ""}`,
   known: () => "#/known",
   practice: (set: PracticeSet) => `#/practice/${set}`,
   extra: () => "#/practice",
@@ -69,7 +72,7 @@ export function parse(hash: string): Route {
     case "progress":
       return { page: "progress" };
     case "settings":
-      return { page: "settings" };
+      return { page: "settings", group: seg[1] as SettingsGroup | undefined };
     case "known":
       return { page: "known" };
     case "read":

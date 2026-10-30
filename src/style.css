@@ -2495,3 +2495,43 @@ button.bar-spot.selected {
     box-shadow: inset 0 -3px 0 currentColor;
   }
 }
+
+/* Settings: the list of groups, and the way back from one */
+.settings-groups {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  overflow: hidden;
+}
+.settings-groups a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  color: var(--text);
+  text-decoration: none;
+}
+.settings-groups a + a {
+  border-top: 1px solid var(--line);
+}
+.settings-groups small {
+  color: var(--muted);
+}
+.back-link {
+  display: inline-block;
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+details.advanced {
+  margin-top: 12px;
+}
+details.advanced > summary {
+  cursor: pointer;
+  color: var(--muted);
+  padding: 6px 0;
+}

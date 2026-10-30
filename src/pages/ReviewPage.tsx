@@ -49,7 +49,7 @@ export function ReviewPage() {
         <h1>{store.settings.vacation ? "On vacation" : done ? `Nice, ${done} done` : "All caught up"}</h1>
         {store.settings.vacation && (
           <p class="hint">
-            Reviews are paused. Switch vacation mode off in <a href={href.settings()}>Settings</a> when you're back.
+            Reviews are paused. Switch vacation mode off in <a href={href.settings("app")}>Settings</a> when you're back.
           </p>
         )}
         {undoButton}
