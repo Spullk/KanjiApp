@@ -2535,3 +2535,22 @@ details.advanced > summary {
   color: var(--muted);
   padding: 6px 0;
 }
+
+/* Uncommon words (no frequency mark in the dictionary), listed only where nothing common exists */
+.word-row.rare {
+  opacity: 0.65;
+}
+.rare-tag {
+  margin-right: 6px;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.rec-credit {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}

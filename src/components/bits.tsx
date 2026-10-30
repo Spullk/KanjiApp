@@ -5,7 +5,7 @@ import { hira, useData, type Segment, type Sentence, type Word } from "../data";
 import { furiganaRule } from "../reading";
 import { useStore } from "../srs";
 import { href } from "../router";
-import { playSentence, playWord } from "../audio";
+import { hasRecording, playSentence, playWord } from "../audio";
 
 /**
  * A word with furigana, where each kanji links to its own page. With `hide`, readings it hides (kanji you've been
@@ -91,11 +91,14 @@ export function WordRow({ id, highlight }: { id: string; highlight?: string }) {
   const w = data.words[id];
   if (!w) return null;
   return (
-    <a class="word-row" href={href.word(id)}>
+    <a class={w.rare ? "word-row rare" : "word-row"} href={href.word(id)} title={w.rare ? "Uncommon word" : undefined}>
       <span class="word-jp">
         <Furigana segments={w.furigana} highlight={highlight} link={false} hide={hide} />
       </span>
-      <span class="word-gloss">{glossLine(w)}</span>
+      <span class="word-gloss">
+        {w.rare && <small class="rare-tag">uncommon</small>}
+        {glossLine(w)}
+      </span>
     </a>
   );
 }
@@ -143,7 +146,7 @@ export function SentenceView({
   return (
     <div class="sentence">
       <div class="sent-ja" lang="ja">
-        <SpeakButton onClick={() => playSentence(s)} human={!!s.audio} />
+        {s.audio && <SpeakButton onClick={() => playSentence(s)} />}
         {parts}
       </div>
       <div class="sent-en">{s.en}</div>
@@ -167,8 +170,8 @@ export function alignFurigana(text: string, segs: Segment[]): Segment[] | null {
   return out;
 }
 
-/** A small speaker button. Human recordings get a filled icon, text-to-speech an outline. */
-export function SpeakButton({ onClick, human }: { onClick: () => void; human: boolean }) {
+/** A small speaker button. Human recordings get a filled icon; `human={false}` (computer voice) an outline. */
+export function SpeakButton({ onClick, human = true }: { onClick: () => void; human?: boolean }) {
   return (
     <button
       class={`speak ${human ? "human" : "tts"}`}
@@ -189,7 +192,7 @@ export function SpeakButton({ onClick, human }: { onClick: () => void; human: bo
 }
 
 export function WordSpeak({ w }: { w: Word }) {
-  return <SpeakButton onClick={() => playWord(w)} human={!!w.audio} />;
+  return hasRecording(w) ? <SpeakButton onClick={() => playWord(w)} /> : null;
 }
 
 /** A KANJIDIC reading: on in katakana, kun with its okurigana dimmed (い.きる → い・きる). */

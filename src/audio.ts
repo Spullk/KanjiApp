@@ -1,5 +1,5 @@
-// Pronunciation: human recordings where they exist (Kanji alive for words, Tatoeba for sentences),
-// otherwise the device's Japanese text-to-speech voice. The app serves the recordings itself (audio/, see
+// Pronunciation: human recordings only (Kanji alive and Wikimedia Commons for words, Tatoeba for sentences). Words
+// and sentences without one get no play button: no computer voice. The app serves the recordings itself (audio/, see
 // scripts/fetch_audio.mjs) and keeps each one once played (public/audio-sw.js); one missing there streams from
 // its source instead.
 
@@ -26,39 +26,42 @@ export function speak(text: string) {
   speechSynthesis.speak(u);
 }
 
-/** Plays the first of `urls` that works, or says `fallback` with the speech voice. */
-function play(urls: string[], fallback: string) {
+/** Plays the first of `urls` that works. */
+function play(urls: string[]) {
   current?.pause();
   const [url, ...rest] = urls;
-  if (!url) return speak(fallback);
+  if (!url) return;
   const a = new Audio(url);
   current = a;
   let next = false;
   const onFail = () => {
     if (next || current !== a) return;
     next = true;
-    play(rest, fallback);
+    play(rest);
   };
-  a.play().catch((e: Error) => (e.name === "NotAllowedError" ? speak(fallback) : onFail()));
+  a.play().catch((e: Error) => e.name !== "NotAllowedError" && onFail());
   a.onerror = onFail;
 }
 
-const wordFile = (w: Word) => `audio/w/${encodeURIComponent(w.audio!)}.mp3`;
+const wordFile = (w: Word) => (w.audio ? `audio/w/${encodeURIComponent(w.audio)}.mp3` : `audio/w/c${w.rec![0]}.mp3`);
 const sentenceFile = (s: Sentence) => `audio/s/${s.audio![0]}.mp3`;
 
+/** Whether the word has a real recording (only those are played). */
+export const hasRecording = (w: Word) => !!(w.audio || w.rec);
+
 export function playWord(w: Word) {
-  if (w.audio) play([wordFile(w), KANJI_ALIVE + encodeURIComponent(w.audio) + ".mp3"], w.r);
-  else speak(w.r);
+  // Commons recordings are only served by the app (they're converted to mp3 at build time).
+  if (w.audio) play([wordFile(w), KANJI_ALIVE + encodeURIComponent(w.audio) + ".mp3"]);
+  else if (w.rec) play([wordFile(w)]);
 }
 
 export function playSentence(s: Sentence) {
-  if (s.audio) play([sentenceFile(s), TATOEBA + s.audio[0]], s.ja);
-  else speak(s.ja);
+  if (s.audio) play([sentenceFile(s), TATOEBA + s.audio[0]]);
 }
 
 /** Every recording the app has, for saving them all on this device. */
 export function allRecordings(words: Word[], sentences: Sentence[]): string[] {
-  return [...new Set([...words.filter((w) => w.audio).map(wordFile), ...sentences.filter((s) => s.audio).map(sentenceFile)])];
+  return [...new Set([...words.filter(hasRecording).map(wordFile), ...sentences.filter((s) => s.audio).map(sentenceFile)])];
 }
 
 const AUDIO_CACHE = "nekko-audio"; // the same name as in public/audio-sw.js
@@ -92,6 +95,3 @@ export async function saveRecordings(urls: string[], onProgress: (done: number) 
   return failed;
 }
 
-export function hasSpeech(): boolean {
-  return isNative || (typeof window !== "undefined" && "speechSynthesis" in window);
-}

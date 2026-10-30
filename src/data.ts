@@ -44,10 +44,14 @@ export type Word = {
   senses: { pos: string[]; gloss: string[] }[];
   rank: number;
   usuallyKana: boolean;
+  /** No frequency mark in the dictionary: only listed for kanji and readings with no common word. */
+  rare?: boolean;
   sentences: string[];
   lesson?: number;
   /** Kanji alive recording, e.g. "jutsu-no(beru)_06_a" */
   audio?: string;
+  /** Otherwise a Wikimedia Commons recording: [id, file name on Commons, author, licence] */
+  rec?: [string, string, string, string];
 };
 
 /** audio: [Tatoeba audio id, speaker] when a freely licensed recording exists. */

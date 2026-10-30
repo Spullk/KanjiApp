@@ -3,12 +3,18 @@
 Run from the repo root:
     python scripts/fetch_sources.py                       # dictionary, JLPT list, KanjiVG
     python scripts/fetch_sources.py --sentences           # also Tatoeba example sentences
-    python scripts/fetch_sources.py --refresh-dictionary  # download the current JMdict and KANJIDIC2 again
+    python scripts/fetch_sources.py --refresh-dictionary  # download the current JMdict, KANJIDIC2 and the list of
+                                                          # Wikimedia Commons recordings again
 
 Files that already exist are kept, so re-running is cheap.
 """
 
 import argparse
+import html
+import json
+import re
+import time
+import urllib.parse
 import lzma
 import shutil
 import sqlite3
@@ -41,9 +47,17 @@ TATOEBA = {
     "jpn_sentences.tsv.bz2": "https://downloads.tatoeba.org/exports/per_language/jpn/jpn_sentences.tsv.bz2",
     "eng_sentences.tsv.bz2": "https://downloads.tatoeba.org/exports/per_language/eng/eng_sentences.tsv.bz2",
     "sentences_with_audio.tar.bz2": "https://downloads.tatoeba.org/exports/sentences_with_audio.tar.bz2",
+    "jpn-eng_links.tsv.bz2": "https://downloads.tatoeba.org/exports/per_language/jpn/jpn-eng_links.tsv.bz2",
 }
+# Wiktionary's Japanese entries as JSON lines (kaikki.org), for their usage examples.
+KAIKKI_URL = "https://kaikki.org/dictionary/Japanese/kaikki.org-dictionary-Japanese.jsonl"
 
 JOYO_GRADES = ("1", "2", "3", "4", "5", "6", "8")
+
+# Japanese word recordings by volunteers on Wikimedia Commons (Lingua Libre's, and older ones made for Wiktionary).
+COMMONS_API = "https://commons.wikimedia.org/w/api.php"
+COMMONS_CATEGORIES = ("Category:Lingua Libre pronunciation-jpn", "Category:Japanese pronunciation")
+USER_AGENT = "NekkoBuild/1.0 (https://github.com/Spullk/KanjiApp; open data build for a kanji study app)"
 
 
 def download(url, dest):
@@ -110,12 +124,55 @@ def fetch_kanjivg(db):
     print(f"KanjiVG: {len(names)} files")
 
 
+def commons(params):
+    url = COMMONS_API + "?" + urllib.parse.urlencode({"action": "query", "format": "json", **params})
+    for attempt in range(5):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                return json.load(r)
+        except OSError as e:
+            if attempt == 4:
+                raise
+            print(f"  Commons: {e}, trying again")
+            time.sleep(2 ** attempt * 5)
+
+
+def fetch_commons_audio(refresh=False):
+    """Lists the Japanese recordings on Wikimedia Commons with their author and licence, in sources/commons_audio.json."""
+    out = SOURCES / "commons_audio.json"
+    if out.exists() and not refresh:
+        return
+    files = {}
+    for category in COMMONS_CATEGORIES:
+        cont = {"continue": ""}
+        while cont is not None:
+            data = commons({"generator": "categorymembers", "gcmtitle": category, "gcmtype": "file", "gcmlimit": 50,
+                            "prop": "imageinfo", "iiprop": "extmetadata",
+                            "iiextmetadatafilter": "Artist|LicenseShortName", **cont})
+            for page in data.get("query", {}).get("pages", {}).values():
+                meta = (page.get("imageinfo") or [{}])[0].get("extmetadata", {})
+                artist = re.sub(r"<[^>]+>", "", html.unescape(meta.get("Artist", {}).get("value", ""))).strip()
+                licence = meta.get("LicenseShortName", {}).get("value", "")
+                if page["title"].startswith("File:") and licence:
+                    files[page["title"][5:]] = [artist, licence]
+            cont = data.get("continue")
+            time.sleep(0.2)
+        print(f"Commons: {category}: {len(files)} recordings so far")
+    out.write_text(json.dumps(files, ensure_ascii=False), encoding="utf-8")
+
+
 def fetch_sentences():
     out = SOURCES / "tatoeba"
     out.mkdir(exist_ok=True)
     for name, url in TATOEBA.items():
         download(url, out / name)
         print(f"Tatoeba: {name}")
+    try:
+        download(KAIKKI_URL, SOURCES / "kaikki-japanese.jsonl")
+        print("Wiktionary examples: ok")
+    except OSError as e:
+        print(f"Wiktionary examples: skipped ({e})")
 
 
 def main():
@@ -134,6 +191,10 @@ def main():
     download(ACCENTS_URL, SOURCES / "accents.txt")
     print("Pitch accents: ok")
     fetch_kanjivg(db)
+    try:
+        fetch_commons_audio(args.refresh_dictionary)
+    except OSError as e:
+        print(f"Commons recordings: skipped ({e})")
     if args.sentences:
         fetch_sentences()
 

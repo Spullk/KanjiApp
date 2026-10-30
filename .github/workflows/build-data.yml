@@ -32,15 +32,19 @@ jobs:
           path: |
             sources
             !sources/jamdict.db
+            !sources/commons_audio.json
             !sources/*.gz
           key: sources-${{ hashFiles('scripts/fetch_sources.py') }}
 
-      # The dictionary has its own cache, saved again whenever it's downloaded fresh, so pushes build with the latest.
+      # The dictionary and the list of Commons recordings have their own cache, saved again whenever they're
+      # downloaded fresh, so pushes build with the latest.
       - name: Restore dictionary
         id: dictionary
         uses: actions/cache/restore@v4
         with:
-          path: sources/jamdict.db
+          path: |
+            sources/jamdict.db
+            sources/commons_audio.json
           key: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-${{ github.run_id }}
           restore-keys: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-
 
@@ -51,7 +55,9 @@ jobs:
         if: github.event_name != 'push' || steps.dictionary.outputs.cache-matched-key == ''
         uses: actions/cache/save@v4
         with:
-          path: sources/jamdict.db
+          path: |
+            sources/jamdict.db
+            sources/commons_audio.json
           key: dictionary-${{ hashFiles('scripts/fetch_sources.py', 'scripts/jmdict_db.py') }}-${{ github.run_id }}
 
       - name: Cache story downloads
