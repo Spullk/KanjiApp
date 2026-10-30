@@ -22,10 +22,9 @@ const HIRA_ROWS: [string, string][] = [
   ["da", "だぢづでど"],
   ["ba", "ばびぶべぼ"],
   ["pa", "ぱぴぷぺぽ"],
-  ["kya", "きゃ きゅ きょ しゃ しゅ しょ ちゃ ちゅ ちょ"],
-  ["nya", "にゃ にゅ にょ ひゃ ひゅ ひょ みゃ みゅ みょ りゃ りゅ りょ"],
-  ["gya", "ぎゃ ぎゅ ぎょ じゃ じゅ じょ びゃ びゅ びょ ぴゃ ぴゅ ぴょ"],
 ];
+// No rows for きゃ, しゅ…: they're just き/し plus a small ゃゅょ, taught once in Grammar → "Small ゃ ゅ ょ"
+// rather than drilled one by one (Lucas, 2026-10-30).
 
 /** Katakana-only sounds for foreign words, with their spellings (wanakana doesn't know these). */
 const EXTRA: [string, string[]][] = [
@@ -50,12 +49,11 @@ const EXTRA: [string, string[]][] = [
 ];
 const EXTRA_ROMAJI = Object.fromEntries(EXTRA);
 
-const split = (s: string) => (s.includes(" ") ? s.split(" ") : [...s]);
 const kata = (s: string) => s.replace(/[ぁ-ゖ]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60));
 
 export const KANA_ROWS: KanaRow[] = [
-  ...HIRA_ROWS.map(([id, k]) => ({ id: `h-${id}`, script: "hira" as const, kana: split(k) })),
-  ...HIRA_ROWS.map(([id, k]) => ({ id: `k-${id}`, script: "kata" as const, kana: split(kata(k)) })),
+  ...HIRA_ROWS.map(([id, k]) => ({ id: `h-${id}`, script: "hira" as const, kana: [...k] })),
+  ...HIRA_ROWS.map(([id, k]) => ({ id: `k-${id}`, script: "kata" as const, kana: [...kata(k)] })),
   { id: "k-ti", script: "kata", kana: EXTRA.slice(0, 5).map(([k]) => k) },
   { id: "k-fa", script: "kata", kana: EXTRA.slice(5, 10).map(([k]) => k) },
   { id: "k-wi", script: "kata", kana: EXTRA.slice(10).map(([k]) => k) },
