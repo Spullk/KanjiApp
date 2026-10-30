@@ -1,13 +1,15 @@
-// One kana question: see it, type its romaji. Used by the kana drill and the welcome screen's check.
+// One kana question: see it (or hear it), type its romaji. Used by the kana drill and the welcome screen's check.
 // The input stays mounted from one kana to the next so the phone keyboard doesn't close and reopen.
 
 import { useEffect, useRef, useState } from "preact/hooks";
+import { speak } from "../audio";
+import { RobotIcon } from "./bits";
 import { isRomajiFor, kanaFor, romaji, scriptOf } from "../kana";
 
 const NEXT_AFTER_RIGHT = 600;
 
 /** `turn` counts questions, so the same kana twice in a row still starts fresh. */
-export function KanaQuestion({ kana, turn, onAnswer }: { kana: string; turn: number; onAnswer: (right: boolean) => void }) {
+export function KanaQuestion({ kana, turn, listen, onAnswer }: { kana: string; turn: number; listen?: boolean; onAnswer: (right: boolean) => void }) {
   const [typed, setTyped] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const right = typed !== null && isRomajiFor(typed, kana);
@@ -18,6 +20,7 @@ export function KanaQuestion({ kana, turn, onAnswer }: { kana: string; turn: num
     setTyped(null);
     if (input.current) input.current.value = "";
     input.current?.focus();
+    if (listen) speak(kana);
   }, [kana, turn]);
   useEffect(() => {
     if (!right) return;
@@ -37,9 +40,15 @@ export function KanaQuestion({ kana, turn, onAnswer }: { kana: string; turn: num
 
   return (
     <form class="kana-q" onSubmit={submit}>
-      <div class="kana-big" lang="ja">
-        {kana}
-      </div>
+      {listen && typed === null ? (
+        <button type="button" class="listen-button" onClick={() => speak(kana)} aria-label="Play again (computer voice)">
+          <RobotIcon />
+        </button>
+      ) : (
+        <div class="kana-big" lang="ja">
+          {kana}
+        </div>
+      )}
       <input
         ref={input}
         class={`typed-input ${typed === null ? "" : right ? "right" : "wrong"}`}

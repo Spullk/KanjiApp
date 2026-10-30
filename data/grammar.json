@@ -52,7 +52,7 @@
     "id": "katakana-words",
     "level": "start",
     "title": "Foreign words in katakana",
-    "note": "English words are bent to fit Japanese sounds: every consonant gets a vowel after it, and long sounds get ー. Coffee becomes コーヒー, party becomes パーティー, McDonald's becomes マクドナルド. Combos like ティ, ファ and ウィ exist only for these words.",
+    "note": "English words are bent to fit Japanese sounds: every consonant gets a vowel after it, and long sounds get ー. Coffee becomes コーヒー, party becomes パーティー, McDonald's becomes マクドナルド. Combos like ティ, ファ and ウィ exist only for these words.\nThe Loanwords section (in the Beginner tab) goes through these sounds one by one.",
     "ex": [["パー{ティ}ー", "party"], ["{ファ}ン", "fan"], ["コー{ヒー}", "coffee"]]
   },
   {
@@ -180,6 +180,48 @@
     "title": "だ: plain \"is\"",
     "note": "だ is the casual form of です, used with friends and in writing. The polite and casual forms of everything come in pairs; Nekko's examples are mostly polite, which is always safe.",
     "ex": [["がくせい{だ}。", "I'm a student (casual)."], ["きょうはあめ{だ}。", "It's raining today (casual)."]]
+  },
+  {
+    "id": "loan-f",
+    "level": "loanwords",
+    "title": "ファ, フィ, フェ, フォ: f sounds",
+    "note": "Native Japanese has just one f-like sound, ふ, said with the lips barely touching (between h and f). For foreign words, a small ァ ィ ェ ォ after フ makes the rest: ファ (fa), フィ (fi), フェ (fe), フォ (fo).\nThe small kana takes the place of フ's own vowel, so ファ is one beat, \"fa\", not \"fu-a\". Some older words use ハ行[ぎょう] instead: プラットホーム (platform).",
+    "ex": [["{フォ}ーク", "fork"], ["カ{フェ}", "café"], ["{ファ}ミリー", "family"], ["{フィ}ンランド", "Finland"]]
+  },
+  {
+    "id": "loan-t-d",
+    "level": "loanwords",
+    "title": "ティ, ディ, トゥ, デュ: t and d sounds",
+    "note": "In native words, \"ti\" turns into ち and \"tu\" into つ (and \"di\", \"du\" into ぢ, づ). To keep the English sound, katakana adds a small vowel: ティ (ti), ディ (di), トゥ (tu), ドゥ (du), デュ (dyu).\nOlder loanwords didn't bother: チケット (ticket), ラジオ (radio). Newer ones keep the sound: パーティー (party), ディズニー (Disney).",
+    "ex": [["パー{ティ}ー", "party"], ["{ディ}ナー", "dinner"], ["タ{トゥ}ー", "tattoo"], ["プロ{デュ}ーサー", "producer"]]
+  },
+  {
+    "id": "loan-w-v",
+    "level": "loanwords",
+    "title": "ウィ, ウェ, ウォ and ヴ: w and v sounds",
+    "note": "Native Japanese only has わ (and を, said お) for w. Loanwords add ウィ (wi), ウェ (we) and ウォ (wo).\nFor v there's ヴ, an ウ with ゛: ヴァ, ヴィ, ヴ, ヴェ, ヴォ. Most people still say it like b, and many words are simply written with バ行[ぎょう]: ビデオ (video), テレビ (TV). Some have both spellings: バイオリン or ヴァイオリン (violin).",
+    "ex": [["ハロ{ウィ}ーン", "Halloween"], ["{ウェ}ブサイト", "website"], ["{ウォ}ッカ", "vodka"], ["{ヴァ}イオリン", "violin"]]
+  },
+  {
+    "id": "loan-sh-ch",
+    "level": "loanwords",
+    "title": "シェ, ジェ, チェ, ツァ and friends",
+    "note": "Native Japanese has しゃ, しゅ, しょ but no \"she\", and ちゃ, ちゅ, ちょ but no \"che\". Loanwords add シェ (she), ジェ (je) and チェ (che), plus rarer ones like ツァ (tsa) and クォ (kwo).\nThey all follow the same rule as ファ and ティ: a normal kana, then a small vowel that replaces its own vowel. Once you know that, you can read any new combination.",
+    "ex": [["{シェ}フ", "chef"], ["{ジェ}ット機[き]", "jet plane"], ["{チェ}ック", "check"], ["モー{ツァ}ルト", "Mozart"]]
+  },
+  {
+    "id": "loan-english",
+    "level": "loanwords",
+    "title": "How English becomes katakana",
+    "note": "English words are fitted to Japanese sounds by a few steady rules. Knowing them, you can often guess a katakana word, and spell English words in katakana yourself.\n• Every consonant needs a vowel, usually ウ: desk → デスク. After t and d it's オ: test → テスト. After ch and j sounds it's イ: match → マッチ.\n• L and R both become ラ行[ぎょう]: light and right are both ライト.\n• \"th\" becomes サ行[ぎょう] or ザ行[ぎょう]: thank you → サンキュー, mother → マザー.\n• A short vowel before a hard final consonant brings a small ッ: cup → カップ, bed → ベッド.\n• An ending \"-er\", \"-or\" or \"-ar\" becomes ー: computer → コンピューター, car → カー.\n• V usually becomes バ行[ぎょう]: video → ビデオ.",
+    "ex": [["デス{ク}", "desk"], ["テス{ト}", "test"], ["コンピュー{ター}", "computer"], ["カッ{プ}", "cup"], ["{サ}ンキュー", "thank you"]]
+  },
+  {
+    "id": "loan-wasei",
+    "level": "loanwords",
+    "title": "Made-in-Japan English",
+    "note": "Some katakana words look English but were made in Japan, or mean something else: サラリーマン (office worker), マンション (a block of flats, not a mansion), コンセント (power socket), ノートパソコン (laptop).\nLong words get cut down to four beats or so: パソコン (personal computer), スマホ (smartphone), コンビニ (convenience store), エアコン (air conditioner). These are called 和製英語[わせいえいご], \"Japan-made English\".",
+    "ex": [["スマ{ホ}を忘[わす]れた。", "I forgot my phone."], ["コンビ{ニ}に行[い]きます。", "I'm going to the convenience store."], ["エア{コン}をつけて。", "Turn on the air conditioner."], ["父[ちち]はサラリー{マン}です。", "My dad is an office worker."]]
   },
   {
     "id": "numbers",

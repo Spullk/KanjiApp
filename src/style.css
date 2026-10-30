@@ -1155,8 +1155,50 @@ button.secondary,
   fill: currentColor;
 }
 
-.speak.tts svg path:first-child {
+/* The computer voice: grey outline speaker with a robot badge in the corner. */
+.speak.tts {
+  position: relative;
+  background: color-mix(in srgb, var(--muted) 15%, transparent);
+  color: var(--muted);
+}
+.speak svg.robot,
+.listen-button svg.robot {
   fill: none;
+}
+.robot-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 5px;
+  background: var(--muted);
+}
+.speak .robot-badge svg,
+.listen-button .robot-badge svg {
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: var(--card);
+  stroke-width: 1.6;
+}
+.robot-badge .eyes {
+  stroke-width: 2.4;
+}
+.listen-button .robot-badge {
+  right: 8px;
+  bottom: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: #fff;
+}
+.listen-button .robot-badge svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--grammar);
 }
 
 .hero .speak {
@@ -1683,7 +1725,9 @@ button.next.wrong {
   margin: 10px 0 0;
   border-radius: 50%;
   border: none;
+  position: relative;
   background: rgba(255, 255, 255, 0.2);
+  color: #fff;
   cursor: pointer;
 }
 .listen-button svg {
@@ -1987,6 +2031,10 @@ ruby.tap-reading {
   flex-direction: column;
   align-items: stretch;
   gap: 10px;
+}
+.kana-q .listen-button {
+  align-self: center;
+  background: var(--grammar);
 }
 .kana-big {
   border-radius: 22px;
