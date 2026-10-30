@@ -2,7 +2,8 @@ import { hira, useData } from "../data";
 import { href } from "../router";
 import { StudyButton } from "../components/ItemCards";
 import { PitchAccent } from "../components/Pitch";
-import { Badges, Furigana, ReadingText, Section, SentenceView, WordSpeak } from "../components/bits";
+import { WordExamples } from "../components/Examples";
+import { Badges, Furigana, ReadingText, Section, WordSpeak } from "../components/bits";
 
 export function WordPage({ id }: { id: string }) {
   const { words, kanji } = useData();
@@ -82,13 +83,7 @@ export function WordPage({ id }: { id: string }) {
         })}
       </Section>
 
-      {w.sentences.length > 0 && (
-        <Section title="Example sentences">
-          {w.sentences.map((s) => (
-            <SentenceView key={s} id={s} />
-          ))}
-        </Section>
-      )}
+      <WordExamples id={w.id} />
     </article>
   );
 }

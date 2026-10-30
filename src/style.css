@@ -420,6 +420,12 @@ ruby rt {
   font-size: 0.9rem;
 }
 
+.sent-note {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
 /* ---------- lessons */
 
 .lesson-list {

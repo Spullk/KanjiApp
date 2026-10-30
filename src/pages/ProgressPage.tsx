@@ -15,6 +15,7 @@ const TYPE_LABEL: [string, string][] = [
   ["word:word", "Words"],
   ["word:recall", "English → Japanese"],
   ["word:listen", "Listening"],
+  ["word:context", "Words in sentences"],
   ["grammar:cloze", "Grammar"],
 ];
 

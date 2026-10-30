@@ -1,6 +1,6 @@
 import type { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
-import { hira, useData, type Segment, type Word } from "../data";
+import { hira, useData, type Segment, type Sentence, type Word } from "../data";
 import { furiganaRule } from "../reading";
 import { useStore } from "../srs";
 import { href } from "../router";
@@ -103,11 +103,24 @@ export function glossLine(w: Word): string {
   return w.senses[0]?.gloss.slice(0, 3).join(", ") ?? "";
 }
 
-/** A Tatoeba sentence with every known word linked, English underneath. Kanji you haven't been taught get furigana. */
-export function SentenceView({ id, highlight }: { id: string; highlight?: string }) {
+/**
+ * A Tatoeba sentence (or a made-up one in `sentence`) with every known word linked, English underneath. Kanji you
+ * haven't been taught get furigana.
+ */
+export function SentenceView({
+  id,
+  sentence,
+  highlight,
+  note,
+}: {
+  id?: string;
+  sentence?: Sentence;
+  highlight?: string;
+  note?: ComponentChildren;
+}) {
   const data = useData();
   const store = useStore();
-  const s = data.sentences[id];
+  const s = sentence ?? (id ? data.sentences[id] : undefined);
   if (!s) return null;
   const parts: ComponentChildren[] = [];
   let pos = 0;
@@ -115,7 +128,7 @@ export function SentenceView({ id, highlight }: { id: string; highlight?: string
     if (start < pos) continue;
     if (start > pos) parts.push(s.ja.slice(pos, start));
     const text = s.ja.slice(start, start + len);
-    const hl = highlight && [...text].some((c) => c === highlight);
+    const hl = highlight && (wid === highlight || [...text].some((c) => c === highlight));
     const segs = data.words[wid] && alignFurigana(text, data.words[wid].furigana);
     const hide = furiganaRule(store, data, wid);
     parts.push(
@@ -133,6 +146,7 @@ export function SentenceView({ id, highlight }: { id: string; highlight?: string
         {parts}
       </div>
       <div class="sent-en">{s.en}</div>
+      {note && <div class="sent-note">{note}</div>}
     </div>
   );
 }
