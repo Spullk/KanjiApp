@@ -1,8 +1,10 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { dueCards, newLeftToday, nextToLearn, stageOf, useStore } from "../srs";
+import { dueCards, newLeftToday, nextToLearn, stageOf, update, useStore } from "../srs";
 import { Chips, Section } from "../components/bits";
-import { GROUPS, TOOLS } from "../tools";
+import { homeGroups, moveIn } from "../tools";
+import { useState } from "preact/hooks";
+import { ToolbarEditor } from "../components/ToolbarEditor";
 import { startNext } from "./GrammarPages";
 
 export function HomePage() {
@@ -68,21 +70,7 @@ export function HomePage() {
         <Chips items={[daily]} kind="kanji" />
       </Section>
 
-      {GROUPS.map(({ group, title }) => (
-        <Section key={group} title={title}>
-          <div class={`tool-grid ${group}`}>
-            {TOOLS.filter((t) => t.group === group).map((t) => (
-              <a key={t.tab} class="tool" href={t.href}>
-                <span class="tool-icon" lang="ja">
-                  {t.icon}
-                </span>
-                <b>{t.label}</b>
-                <span class="tool-about">{t.about}</span>
-              </a>
-            ))}
-          </div>
-        </Section>
-      ))}
+      <HomeTools />
     </article>
   );
 }
@@ -96,5 +84,84 @@ function StartHere() {
       <span class="start-here-label">Start here · next up</span>
       <b lang="ja">{next.title}</b>
     </a>
+  );
+}
+
+/** Every tool, in its colour group. "Reorganize" moves tools within a group and the groups themselves. */
+function HomeTools() {
+  const store = useStore();
+  const [mode, setMode] = useState<"use" | "reorganize" | "bar">("use");
+  const groups = homeGroups(store.settings);
+  const moveTool = (tab: string, by: -1 | 1) =>
+    update((s) => (s.settings.homeTools = groups.flatMap((g) => (g.tools.some((t) => t.tab === tab) ? moveIn(g.tools.map((t) => t.tab), tab, by) : g.tools.map((t) => t.tab)))));
+  const moveGroup = (group: string, by: -1 | 1) =>
+    update((s) => (s.settings.homeGroups = moveIn(groups.map((g) => g.group), group, by)));
+  const editing = mode === "reorganize";
+
+  return (
+    <>
+      <div class="home-tools-bar">
+        {mode === "use" ? (
+          <>
+            <button class="link-button" onClick={() => setMode("reorganize")}>
+              Reorganize
+            </button>
+            <button class="link-button" onClick={() => setMode("bar")}>
+              Edit toolbar
+            </button>
+          </>
+        ) : (
+          <button class="link-button" onClick={() => setMode("use")}>
+            Done
+          </button>
+        )}
+      </div>
+      {mode === "bar" && <ToolbarEditor onDone={() => setMode("use")} />}
+      {groups.map(({ group, title, tools }, gi) => (
+        <section key={group} class="section">
+          <h2>
+            {title}
+            {editing && (
+              <span class="reorder">
+                <button disabled={gi === 0} onClick={() => moveGroup(group, -1)} aria-label={`Move ${title} up`}>
+                  ↑
+                </button>
+                <button disabled={gi === groups.length - 1} onClick={() => moveGroup(group, 1)} aria-label={`Move ${title} down`}>
+                  ↓
+                </button>
+              </span>
+            )}
+          </h2>
+          <div class={`tool-grid ${group} ${editing ? "reorganizing" : ""}`}>
+            {tools.map((t, i) =>
+              editing ? (
+                <div key={t.tab} class="tool">
+                  <span class="tool-icon" lang="ja">
+                    {t.icon}
+                  </span>
+                  <b>{t.label}</b>
+                  <span class="reorder">
+                    <button disabled={i === 0} onClick={() => moveTool(t.tab, -1)} aria-label={`Move ${t.label} earlier`}>
+                      ←
+                    </button>
+                    <button disabled={i === tools.length - 1} onClick={() => moveTool(t.tab, 1)} aria-label={`Move ${t.label} later`}>
+                      →
+                    </button>
+                  </span>
+                </div>
+              ) : (
+                <a key={t.tab} class="tool" href={t.href}>
+                  <span class="tool-icon" lang="ja">
+                    {t.icon}
+                  </span>
+                  <b>{t.label}</b>
+                  <span class="tool-about">{t.about}</span>
+                </a>
+              ),
+            )}
+          </div>
+        </section>
+      ))}
+    </>
   );
 }

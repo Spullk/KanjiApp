@@ -33,6 +33,12 @@ export function mainFaces(settings: Settings, kind: ItemKind): Face[] {
   return settings.kanjiCards === "one" && ONE_CARD[kind] ? ONE_CARD[kind]! : FACES[kind];
 }
 
+/** Whether this card is one of an item's main cards (not an optional extra one). */
+function isMainFace(id: string): boolean {
+  const { kind, face } = parseCardId(id);
+  return !!FACES[kind] && ![...EXTRA_FACES[kind]].includes(face as ExtraFace);
+}
+
 /** Every card an item can have, switched on or not. */
 export function allFaces(kind: ItemKind): Face[] {
   return [...(FACES[kind] ?? []), ...(ONE_CARD[kind] ?? []), ...(EXTRA_FACES[kind] ?? [])];
@@ -94,6 +100,9 @@ export type Settings = {
   start?: "new" | "kana" | "returning";
   /** The tools on the bottom bar after Home, in order. Unset means the default four. */
   tabs?: string[];
+  /** Your order for the tools on Home (tool tabs) and for their groups. Unset means the default order. */
+  homeTools?: string[];
+  homeGroups?: string[];
 };
 
 /** What you've told Nekko about an item, apart from its cards. */
@@ -357,6 +366,7 @@ export function setKanjiCards(store: Store, mode: "split" | "one", now = Date.no
 
 export function grade(store: Store, id: string, rating: Grade, now = Date.now()) {
   const stored = store.cards[id];
+  if (!stored) return; // removed meanwhile, e.g. by a sync from another device
   const { card } = scheduler(store.settings).next(toCard(stored), new Date(now), rating);
   store.cards[id] = fromCard(card, stored.added, now);
   store.log.push([id, rating, now]);
@@ -387,7 +397,11 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
 export function dueCards(store: Store, until = Date.now()): string[] {
   if (store.settings.vacation) return [];
   return Object.entries(store.cards)
-    .filter(([id, c]) => c.due <= until && !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, parseCardId(id).kind, parseCardId(id).face))
+    .filter(([id, c]) => {
+      if (c.due > until) return false;
+      const { kind, face } = parseCardId(id);
+      return !store.items[id.slice(0, id.lastIndexOf(":"))]?.status && faceOn(store.settings, kind, face);
+    })
     .sort(([, a], [, b]) => {
       const al = a.state === State.Review ? 1 : 0;
       const bl = b.state === State.Review ? 1 : 0;
@@ -421,9 +435,11 @@ export function startOfDay(t: number): number {
 export function newLeftToday(store: Store, now = Date.now()): number {
   if (!store.settings.dailyNew) return Infinity;
   const start = startOfDay(now);
+  // Only an item's main cards say when it was started: an optional card type switched on today for words you
+  // already know isn't a new item.
   const today = new Set(
     Object.entries(store.cards)
-      .filter(([, c]) => c.added >= start)
+      .filter(([id, c]) => c.added >= start && c.added <= now && isMainFace(id))
       .map(([id]) => id.slice(0, id.lastIndexOf(":"))),
   );
   return Math.max(0, store.settings.dailyNew - today.size);
@@ -464,7 +480,7 @@ export function practiceCards(store: Store, set: PracticeSet, now = Date.now()):
     set === "mistakes"
       ? store.log.filter(([, r, t]) => r === Rating.Again && t >= startOfDay(now)).map(([id]) => id)
       : Object.entries(store.cards)
-          .filter(([, c]) => (set === "leeches" ? c.lapses >= LEECH_LAPSES : c.added >= now - 7 * 86_400_000))
+          .filter(([, c]) => (set === "leeches" ? c.lapses >= LEECH_LAPSES : c.added >= now - 7 * 86_400_000 && c.added <= now))
           .map(([id]) => id);
   return [...new Set(ids)].filter((id) => store.cards[id]);
 }
@@ -555,6 +571,23 @@ export async function initStore(adapter: StorageAdapter = defaultAdapter) {
   storage = adapter;
   store = parseStore(await adapter.load());
   listeners.forEach((l) => l());
+  if (typeof document !== "undefined" && !flushing) {
+    flushing = true;
+    // Never leave a change unsaved when the app is closed, switched away from or reloaded.
+    document.addEventListener("visibilitychange", () => document.visibilityState === "hidden" && flushSave());
+    addEventListener("pagehide", flushSave);
+  }
+}
+
+let saveTimer: ReturnType<typeof setTimeout> | undefined;
+let flushing = false;
+
+/** Writes the progress out now if a change is waiting to be saved. */
+export function flushSave() {
+  if (saveTimer === undefined) return;
+  clearTimeout(saveTimer);
+  saveTimer = undefined;
+  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
 }
 
 /** Runs after every saved change (the native app reschedules its reminders here). */
@@ -573,7 +606,9 @@ export function update(fn: (s: Store) => void) {
   fn(store);
   if (JSON.stringify(store.settings) !== settings && store.settingsUpdated === stamped) store.settingsUpdated = Date.now();
   store = { ...store };
-  storage.save(JSON.stringify(store)).catch((e) => console.error("Could not save progress", e));
+  // Saving means writing out all your progress, which takes a moment once the review log is long, so it happens
+  // just after the screen updates rather than between a tap and the next card. Quick changes in a row save once.
+  saveTimer ??= setTimeout(flushSave, 300);
   listeners.forEach((l) => l());
   saveHooks.forEach((h) => h(store));
 }
