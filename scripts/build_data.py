@@ -287,6 +287,12 @@ def load_story_words(con, ids):
     return {i: e for i, e in entries.items() if e["senses"] and "reading" in e}
 
 
+def shipped_words():
+    """The words in the data/words.json being replaced, by id."""
+    path = OUT / "words.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+
 def story_word_ids():
     """Every word the stories use (data/stories.json, written by build_stories.py), so each gets a page."""
     path = OUT / "stories.json"
@@ -666,7 +672,10 @@ def main():
         kanji[k]["words"] = sorted(chosen, key=order_key)
         keep |= chosen_set
     story_ids = story_word_ids()
-    words = {wid: w for wid, w in words.items() if wid in keep or wid in story_ids}
+    # Words already shipped stay, since someone may be studying them: from the dictionary if it still has them,
+    # otherwise as they were.
+    shipped = shipped_words()
+    words = {wid: w for wid, w in words.items() if wid in keep or wid in story_ids or wid in shipped}
     for idseq, e in load_story_words(con, sorted(int(i) for i in story_ids - words.keys())).items():
         segs = align(e["form"], e["reading"], forms) if any(map(is_kanji, e["form"])) else None
         words[str(idseq)] = {
@@ -675,6 +684,8 @@ def main():
             else [[e["form"], e["reading"] if any(map(is_kanji, e["form"])) else None]],
             "uses": [], "special": [], "senses": e["senses"], "rank": e["rank"], "usuallyKana": e["usuallyKana"],
         }
+    for wid in shipped.keys() - words.keys():
+        words[wid] = {**{k: v for k, v in shipped[wid].items() if k not in ("sentences", "lesson")}, "uses": []}
     for k in joyo:
         for r in kanji[k]["readings"]:
             del r["count"]
@@ -739,7 +750,7 @@ def main():
                    "studyWords": len(study_words), "sentences": len(sentences), "lessons": len(lesson_out),
                    "wordAudio": audio_words, "sentenceAudio": audio_sentences},
         "sources": {
-            "JMdict / KANJIDIC2": "Electronic Dictionary Research and Development Group, CC BY-SA 4.0, via jamdict-data",
+            "JMdict / KANJIDIC2": "Electronic Dictionary Research and Development Group, CC BY-SA 4.0",
             "KanjiVG": "Ulrich Apel and contributors, CC BY-SA 3.0",
             "JLPT levels": "Jonathan Waller's lists via davidluzgouveia/kanji-data, MIT",
             "Example sentences": "Tatoeba Project, CC BY 2.0 FR; recordings by the named Tatoeba speakers",

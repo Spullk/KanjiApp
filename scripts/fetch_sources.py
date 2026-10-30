@@ -1,8 +1,9 @@
 """Download the open data sources the build uses into sources/.
 
 Run from the repo root:
-    python scripts/fetch_sources.py              # dictionary, JLPT list, KanjiVG
-    python scripts/fetch_sources.py --sentences  # also Tatoeba example sentences
+    python scripts/fetch_sources.py                       # dictionary, JLPT list, KanjiVG
+    python scripts/fetch_sources.py --sentences           # also Tatoeba example sentences
+    python scripts/fetch_sources.py --refresh-dictionary  # download the current JMdict and KANJIDIC2 again
 
 Files that already exist are kept, so re-running is cheap.
 """
@@ -17,12 +18,20 @@ import tarfile
 import tempfile
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
+import xml.etree.ElementTree as ET
 from pathlib import Path
+
+import jmdict_db
 
 SOURCES = Path(__file__).resolve().parent.parent / "sources"
 
-# JMdict + KANJIDIC2 packed into one SQLite file, published on PyPI by the jamdict project.
+# The current JMdict and KANJIDIC2 from EDRDG (updated about daily), each with a mirror to try second.
+JMDICT_URLS = ("http://ftp.edrdg.org/pub/Nihongo/JMdict_e.gz", "https://www.edrdg.org/pub/Nihongo/JMdict_e.gz")
+KANJIDIC_URLS = ("http://www.edrdg.org/kanjidic/kanjidic2.xml.gz", "http://ftp.edrdg.org/pub/Nihongo/kanjidic2.xml.gz")
+# If those can't be reached: a 2021 snapshot of both, packed into one SQLite file by the jamdict project on PyPI.
 JAMDICT_DATA = "jamdict-data==1.5"
+# A sound dictionary has well over this many written forms; fewer means a broken download.
+MIN_FORMS = 100_000
 JLPT_URL = "https://raw.githubusercontent.com/davidluzgouveia/kanji-data/master/kanji.json"
 KANJIALIVE_URL = "https://raw.githubusercontent.com/kanjialive/kanji-data-media/master/language-data/ka_data.csv"
 ACCENTS_URL = "https://raw.githubusercontent.com/mifunetoshiro/kanjium/master/data/source_files/raw/accents.txt"
@@ -46,10 +55,35 @@ def download(url, dest):
     tmp.rename(dest)
 
 
-def fetch_dictionary():
+def download_any(urls, dest):
+    for url in urls:
+        try:
+            download(url, dest)
+            return
+        except OSError as e:
+            print(f"  {url}: {e}")
+    raise OSError(f"no copy of {dest.name} could be downloaded")
+
+
+def fetch_dictionary(refresh=False):
     db = SOURCES / "jamdict.db"
+    jmdict, kanjidic = SOURCES / "JMdict_e.gz", SOURCES / "kanjidic2.xml.gz"
+    if refresh:
+        for f in (db, jmdict, kanjidic):
+            f.unlink(missing_ok=True)
     if db.exists():
         return db
+    try:
+        download_any(JMDICT_URLS, jmdict)
+        download_any(KANJIDIC_URLS, kanjidic)
+        forms = jmdict_db.build(jmdict, kanjidic, db)
+        if forms < MIN_FORMS:
+            raise ValueError(f"only {forms} written forms")
+        return db
+    except (OSError, ValueError, ET.ParseError) as e:
+        print(f"Live dictionary failed ({e}); using the jamdict-data snapshot")
+        for f in (db, jmdict, kanjidic):
+            f.unlink(missing_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
         subprocess.run(
             [sys.executable, "-m", "pip", "download", "--no-deps", "--no-binary", ":all:",
@@ -87,10 +121,11 @@ def fetch_sentences():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sentences", action="store_true", help="also download Tatoeba sentences (~100 MB)")
+    parser.add_argument("--refresh-dictionary", action="store_true", help="download the current dictionary again")
     args = parser.parse_args()
 
     SOURCES.mkdir(exist_ok=True)
-    db = fetch_dictionary()
+    db = fetch_dictionary(args.refresh_dictionary)
     print("Dictionary: ok")
     download(JLPT_URL, SOURCES / "kanji-data.json")
     print("JLPT levels: ok")
