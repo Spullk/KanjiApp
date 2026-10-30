@@ -54,7 +54,7 @@ const ALL_STEPS: Step[] = [
     title: "Grammar",
     body: (
       <p>
-        Split by level: Beginner (how Japanese sounds and is written, your first grammar, numbers and set phrases),
+        Split by level: Beginner (how Japanese sounds and is written, your first grammar, loanwords, numbers and set phrases),
         then N5, N4 and N3. It opens on the level you were last in. Add a point to your reviews to practise it on
         real sentences.
       </p>

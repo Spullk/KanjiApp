@@ -180,14 +180,37 @@ export function SpeakButton({ onClick, human = true }: { onClick: () => void; hu
         e.stopPropagation();
         onClick();
       }}
-      title={human ? "Play recording" : "Play (synthetic voice)"}
-      aria-label={human ? "Play recording" : "Play with synthetic voice"}
+      title={human ? "Play recording" : "Play (computer voice)"}
+      aria-label={human ? "Play recording" : "Play with computer voice"}
     >
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4 9v6h4l5 4V5L8 9H4z" />
-        <path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" />
-      </svg>
+      {human ? (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9v6h4l5 4V5L8 9H4z" />
+          <path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" />
+        </svg>
+      ) : (
+        <RobotIcon />
+      )}
     </button>
+  );
+}
+
+/** The computer voice: an outline speaker with a small robot badge, so it's never mistaken for a real recording. */
+export function RobotIcon() {
+  return (
+    <>
+      <svg class="robot" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" />
+        <path d="M16 8.5a5 5 0 0 1 0 7" />
+      </svg>
+      <span class="robot-badge" aria-hidden="true">
+        <svg viewBox="0 0 12 12">
+          <rect x="2" y="3.5" width="8" height="6" rx="1.5" />
+          <path d="M6 3.5V1.8" />
+          <path class="eyes" d="M4.6 6.3h0M7.4 6.3h0" />
+        </svg>
+      </span>
+    </>
   );
 }
 
