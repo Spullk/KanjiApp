@@ -124,6 +124,15 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                 </select>
               </label>
             </Section>
+            <Section title="Kana words">
+              <label class="check-setting">
+                <input type="checkbox" checked={store.settings.kanaWords !== false} onChange={() => set("kanaWords", store.settings.kanaWords === false ? undefined : false)} />
+                <span>
+                  Learn words written in kana
+                  <small>Everyday words with no kanji (ようこそ, もっと, アイス) come a few per lesson, easiest first. Switch off to learn only words with kanji.</small>
+                </span>
+              </label>
+            </Section>
             <Section title="What to learn next">
               <label class="setting">
                 Order
@@ -281,7 +290,7 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                 <li>Film and TV subtitle sentences: JESC, Pryzant et al., Stanford, CC BY-SA 4.0</li>
                 <li>Word recordings: Kanji alive, CC BY 4.0; volunteers on Wikimedia Commons and Lingua Libre (named on each word's page)</li>
                 <li>Pitch accents: Kanjium, CC BY-SA 4.0</li>
-                <li>JLPT levels: Jonathan Waller's lists</li>
+                <li>JLPT levels: Jonathan Waller's lists (words via OpenJLPT, CC BY-SA 4.0)</li>
                 <li>Stories: Aozora Bunko (public domain); Tadoku readers, NPO多言語多読, CC BY-NC-ND 4.0</li>
                 <li>Review fonts: Google Fonts, SIL Open Font License</li>
               </ul>

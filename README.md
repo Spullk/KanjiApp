@@ -71,7 +71,7 @@ The AGPL covers the code. The data the app is built from belongs to the projects
 
 - [JMdict and KANJIDIC2](https://www.edrdg.org/) by the Electronic Dictionary Research and Development Group, CC BY-SA 4.0 (via [jamdict-data](https://pypi.org/project/jamdict-data/))
 - [KanjiVG](https://kanjivg.tagaini.net/) by Ulrich Apel and contributors, CC BY-SA 3.0
-- JLPT levels from Jonathan Waller's lists, via [kanji-data](https://github.com/davidluzgouveia/kanji-data) (MIT)
+- JLPT levels from Jonathan Waller's lists, via [kanji-data](https://github.com/davidluzgouveia/kanji-data) (MIT) for kanji and [OpenJLPT](https://pypi.org/project/openjlpt/) (CC BY-SA 4.0) for words
 - Example sentences and their recordings from the [Tatoeba Project](https://tatoeba.org/), CC BY 2.0 FR (recordings under each speaker's own license)
 - More example sentences from Wiktionary contributors, via [kaikki.org](https://kaikki.org/), CC BY-SA 4.0
 - Film and TV subtitle sentences from [JESC](https://nlp.stanford.edu/projects/jesc/) (Pryzant et al., Stanford), CC BY-SA 4.0

@@ -52,6 +52,8 @@ export type Word = {
   audio?: string;
   /** Otherwise a Wikimedia Commons recording: [id, file name on Commons, author, licence] */
   rec?: [string, string, string, string];
+  /** A word taught in kana that also has a rarely used kanji spelling (ある: 有る). */
+  kanjiForm?: string;
 };
 
 /** audio: [Tatoeba audio id, speaker] when a freely licensed recording exists. */
@@ -120,4 +122,9 @@ export function hira(s: string): string {
 
 export function isKanji(c: string): boolean {
   return /[一-鿿㐀-䶿々]/.test(c);
+}
+
+/** Written in kana only (ようこそ, アイス): nothing to read, so its cards ask just the meaning. */
+export function isKanaWord(w: Word): boolean {
+  return ![...w.w].some(isKanji);
 }

@@ -23,6 +23,7 @@ import sys
 import tarfile
 import tempfile
 import urllib.request
+import zipfile
 from concurrent.futures import ThreadPoolExecutor
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -39,6 +40,8 @@ JAMDICT_DATA = "jamdict-data==1.5"
 # A sound dictionary has well over this many written forms; fewer means a broken download.
 MIN_FORMS = 100_000
 JLPT_URL = "https://raw.githubusercontent.com/davidluzgouveia/kanji-data/master/kanji.json"
+# JLPT levels for words (Jonathan Waller's lists, CC BY, as packaged by OpenJLPT, CC BY-SA 4.0), for kana words.
+OPENJLPT = "openjlpt==0.1.0"
 KANJIALIVE_URL = "https://raw.githubusercontent.com/kanjialive/kanji-data-media/master/language-data/ka_data.csv"
 ACCENTS_URL = "https://raw.githubusercontent.com/mifunetoshiro/kanjium/master/data/source_files/raw/accents.txt"
 KANJIVG_URL = "https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/{}.svg"
@@ -118,6 +121,20 @@ def fetch_dictionary(refresh=False):
             with tar.extractfile(member) as xz, lzma.open(xz) as src, open(db, "wb") as out:
                 shutil.copyfileobj(src, out)
     return db
+
+
+def fetch_word_levels():
+    """sources/jlpt-vocab/vocab-n5.csv … n1.csv: word, reading, meanings, level."""
+    out = SOURCES / "jlpt-vocab"
+    if (out / "vocab-n1.csv").exists():
+        return
+    out.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory() as tmp:
+        subprocess.run([sys.executable, "-m", "pip", "download", "--no-deps", "-d", tmp, "-q", OPENJLPT], check=True)
+        with zipfile.ZipFile(next(Path(tmp).glob("openjlpt-*.whl"))) as whl:
+            for name in whl.namelist():
+                if re.fullmatch(r"openjlpt/data/csv/vocab-n\d\.csv", name):
+                    (out / Path(name).name).write_bytes(whl.read(name))
 
 
 def fetch_kanjivg(db):
@@ -227,6 +244,8 @@ def main():
     print("Dictionary: ok")
     download(JLPT_URL, SOURCES / "kanji-data.json")
     print("JLPT levels: ok")
+    fetch_word_levels()
+    print("JLPT word levels: ok")
     download(KANJIALIVE_URL, SOURCES / "ka_data.csv")
     print("Kanji alive audio list: ok")
     download(ACCENTS_URL, SOURCES / "accents.txt")

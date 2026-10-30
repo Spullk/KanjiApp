@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "preact/hooks";
 import { checkParameters, createEmptyCard, fsrs, generatorParameters, migrateParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
-import type { Data } from "./data";
+import { isKanaWord, type Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
 import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order";
 import { canonical, compactStore, expandStore, isCompact } from "./compact";
@@ -93,6 +93,8 @@ export type Settings = {
   fonts?: boolean;
   /** Romaji under readings (words, review answers, grammar examples), for beginners still learning kana. */
   romaji?: boolean;
+  /** false: lessons skip the words written only in kana (ようこそ, アイス). Unset means they're included. */
+  kanaWords?: boolean;
   /** Kanji as two cards (meaning, reading) or one card asking both. Unset means two. */
   kanjiCards?: "split" | "one";
   /** Optional card types switched on. Switching one off keeps its cards but stops asking them. */
@@ -509,7 +511,7 @@ export function practiceCards(store: Store, set: PracticeSet, now = Date.now()):
 }
 
 /** The order to learn a lesson in: each kanji right after its new radicals, then the words. */
-export function lessonItems(data: Data, lessonIndex: number): { kind: ItemKind; key: string }[] {
+export function lessonItems(data: Data, lessonIndex: number, settings?: Settings): { kind: ItemKind; key: string }[] {
   const l = data.lessons[lessonIndex];
   const out: { kind: ItemKind; key: string }[] = [];
   // Radicals that no kanji here uses directly (parts of parts) go first.
@@ -523,7 +525,9 @@ export function lessonItems(data: Data, lessonIndex: number): { kind: ItemKind; 
     }
     out.push({ kind: "kanji", key: k });
   }
-  l.words.forEach((key) => out.push({ kind: "word", key }));
+  l.words.forEach((key) => {
+    if (settings?.kanaWords !== false || !isKanaWord(data.words[key])) out.push({ kind: "word", key });
+  });
   return out;
 }
 
@@ -544,11 +548,11 @@ export function nextToLearn(store: Store, data: Data, n: number): { kind: ItemKi
     for (const it of customOrder(data, store.settings.customList ?? [])) if (take(it)) return out;
   } else if (order !== "lessons") {
     const studied = new Set(Object.keys(data.kanji).filter((k) => isAdded(store, "kanji", k) || itemInfo(store, "kanji", k)?.status === "known"));
-    for (const it of teachingOrder(data, kanjiOrder(data, order), studied)) if (take(it)) return out;
+    for (const it of teachingOrder(data, kanjiOrder(data, order), studied, store.settings.kanaWords !== false)) if (take(it)) return out;
   }
   // Nekko's lessons, and what comes after your own list.
   for (let i = 0; i < data.lessons.length; i++) {
-    for (const it of lessonItems(data, i)) if (take(it)) return out;
+    for (const it of lessonItems(data, i, store.settings)) if (take(it)) return out;
   }
   return out;
 }
