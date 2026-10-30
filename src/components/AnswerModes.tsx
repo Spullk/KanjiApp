@@ -81,7 +81,7 @@ export function TypedAnswer({ id, onAnswer: answer }: AnswerProps) {
   const store = useStore();
   const { kind, key } = parseCardId(id);
   const info = itemInfo(store, kind, key);
-  const asks = cardType(id).asks;
+  const asks = cardType(id).asks.filter((a) => !a.skip?.(data, key));
   const [results, setResultsState] = useState<Result[]>(() => (typed?.id === id ? typed.results : []));
   const setResults = (fn: (rs: Result[]) => Result[]) =>
     setResultsState((rs) => {

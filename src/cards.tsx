@@ -5,7 +5,7 @@ import type { ComponentChildren } from "preact";
 import { useEffect } from "preact/hooks";
 import { playWord } from "./audio";
 import { PitchAccent } from "./components/Pitch";
-import { useData, type Data, type Sentence } from "./data";
+import { isKanaWord, useData, type Data, type Sentence } from "./data";
 import { href } from "./router";
 import { cardId, getStore, parseCardId, useStore, type Face, type ItemKind, type Store } from "./srs";
 import { cloze, exampleFor } from "./grammar";
@@ -17,14 +17,25 @@ import { readingForms } from "./answers";
 import { examplesFor, knowledgeOf, patternSentence } from "./examples";
 
 /** One thing to type in typed-answer mode, and every answer that counts. */
-export type Ask = { label: "Meaning" | "Reading" | "Gap"; kana: boolean; answers(data: Data, key: string): string[]; placeholder?: string };
+export type Ask = {
+  label: "Meaning" | "Reading" | "Gap";
+  kana: boolean;
+  answers(data: Data, key: string): string[];
+  placeholder?: string;
+  /** Not asked for this item (the reading of a word written in kana). */
+  skip?(data: Data, key: string): boolean;
+};
 
 const meaning = (get: (data: Data, key: string) => string[]): Ask => ({ label: "Meaning", kana: false, answers: get });
 const reading = (get: (data: Data, key: string) => string[]): Ask => ({ label: "Reading", kana: true, answers: get });
+/** A word's reading, which a word written in kana doesn't need asking. */
+const wordReading: Ask = { ...reading((data, key) => [data.words[key].r]), skip: (data, key) => isKanaWord(data.words[key]) };
 
 export type CardType = {
   /** The question above the card, e.g. "Kanji · meaning?". */
   prompt: string;
+  /** For words written in kana, when it differs ("Word · meaning?"). */
+  kanaPrompt?: string;
   /** How the front is set: a big character, a word, English text, or a sentence. */
   frontStyle?: "char" | "word" | "english" | "sentence";
   /** What's shown before answering. */
@@ -196,10 +207,11 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
   },
   "word:word": {
     prompt: "Word · reading and meaning?",
+    kanaPrompt: "Word · meaning?",
     front: word,
     back: (data, key) => wordBack(data, key),
     link: href.word,
-    asks: [reading((data, key) => [data.words[key].r]), meaning((data, key) => data.words[key].senses.flatMap((s) => s.gloss))],
+    asks: [wordReading, meaning((data, key) => data.words[key].senses.flatMap((s) => s.gloss))],
   },
   "word:recall": {
     prompt: "English → Japanese · which word?",
@@ -231,6 +243,7 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
   },
   "word:context": {
     prompt: "Word in a sentence · reading and meaning?",
+    kanaPrompt: "Word in a sentence · meaning?",
     frontStyle: "sentence",
     front: (_, key) => <Context id={key} />,
     back: (data, key) => (
@@ -240,7 +253,7 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
       </>
     ),
     link: href.word,
-    asks: [reading((data, key) => [data.words[key].r]), meaning((data, key) => data.words[key].senses.flatMap((s) => s.gloss))],
+    asks: [wordReading, meaning((data, key) => data.words[key].senses.flatMap((s) => s.gloss))],
   },
   "word:listen": {
     prompt: "Listening · what does it mean?",
@@ -270,7 +283,7 @@ export function CardFront({ id }: { id: string }) {
   }, [font, text]);
   return (
     <div class={`card-front ${kind}`}>
-      <div class="card-prompt">{t.prompt}</div>
+      <div class="card-prompt">{kind === "word" && t.kanaPrompt && isKanaWord(data.words[key]) ? t.kanaPrompt : t.prompt}</div>
       {t.frontStyle === "english" ? (
         <div class="card-english">{t.front(data, key)}</div>
       ) : t.frontStyle === "sentence" ? (
