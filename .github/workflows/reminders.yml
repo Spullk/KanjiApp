@@ -1,0 +1,27 @@
+name: Reminders
+
+# Sends the daily review reminders for the website and home-screen app (see .github/reminders/send.mjs).
+# Needs the FIREBASE_SERVICE_ACCOUNT secret: Firebase console → Project settings → Service accounts →
+# Generate new private key, then paste the file's contents into a repository secret with that name.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/reminders
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node .github/reminders/send.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
