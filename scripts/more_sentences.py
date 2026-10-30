@@ -113,7 +113,9 @@ def jesc_pool():
         if not re.match(r"[\"'A-Za-z0-9]", en) or JESC_SKIP.search(en):
             continue
         seen.add(ja)
-        out.append((f"js{len(out) + 1}", ja, en[0].upper() + en[1:]))
+        # The copy has the English in lower case.
+        en = re.sub(r"\bi\b", "I", en[0].upper() + en[1:])
+        out.append((f"js{len(out) + 1}", ja, en))
     return out
 
 
