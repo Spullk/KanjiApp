@@ -62,7 +62,8 @@ def wiktionary_pool():
                     # Short everyday examples only: no quotations from old books, no fragments.
                     if ex.get("type") == "quotation" or not ja or not en or not 4 <= len(ja) <= 60 or ja in seen:
                         continue
-                    if re.search(r"[A-Za-z]", ja) or not re.search(r"[぀-ヿ一-鿿]", ja):
+                    # Real phrases only: some hiragana (so not a bare compound like 栄養失調), no Latin letters.
+                    if re.search(r"[A-Za-z]", ja) or not re.search(r"[\u3041-\u309f]", ja):
                         continue
                     seen.add(ja)
                     out.append((f"wk{len(out) + 1}", ja, en))
