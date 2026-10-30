@@ -18,6 +18,7 @@ import { wordsBySpelling } from "../known";
 import { useData } from "../data";
 import { disablePush, enablePush, pushOnHere, pushSupport, savePushState } from "../push";
 import { buildLabel, checkForUpdate, type UpdateCheck } from "../update";
+import { allRecordings, savedRecordings, saveRecordings } from "../audio";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
 // A new option gets a field there, a default, and a row here.
@@ -268,6 +269,36 @@ function Version() {
         </button>
       )}
       {state && <p class="hint">{UPDATE_TEXT[state]}</p>}
+      {!isNative && <OfflineRecordings />}
+    </>
+  );
+}
+
+/** Recordings are kept as you play them; this saves the rest too, for listening offline. */
+function OfflineRecordings() {
+  const data = useData();
+  const urls = useMemo(() => allRecordings(Object.values(data.words), Object.values(data.sentences)), [data, data.sentences]);
+  const [kept, setKept] = useState<number>();
+  const [saving, setSaving] = useState(false);
+  const [failed, setFailed] = useState(0);
+  useEffect(() => void savedRecordings(urls).then(setKept, () => setKept(0)), [urls]);
+  if (kept === undefined || typeof caches === "undefined") return null;
+  const save = async () => {
+    setSaving(true);
+    setFailed(await saveRecordings(urls, setKept).catch(() => urls.length));
+    setSaving(false);
+  };
+  return (
+    <>
+      <p class="hint">
+        Recordings on this device: {kept.toLocaleString()} of {urls.length.toLocaleString()}. Each one is kept once you play it.
+        {failed > 0 && ` ${failed} couldn't be downloaded; try again later.`}
+      </p>
+      {kept < urls.length && (
+        <button class="secondary" disabled={saving} onClick={save}>
+          {saving ? "Saving recordings…" : `Save them all for offline (about ${Math.round(((urls.length - kept) * 11) / 1000)} MB)`}
+        </button>
+      )}
     </>
   );
 }

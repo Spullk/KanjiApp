@@ -68,26 +68,40 @@ export type Data = {
 };
 
 let data: Data | null = null;
+let sentences: Promise<void> | null = null;
+let sentencesReady = false;
 
+/** Everything but the example sentences, which load right after (see loadSentences) so the app opens sooner. */
 export async function loadData(): Promise<Data> {
   if (data) return data;
-  const [kanji, radicals, words, sentences, lessons, grammar] = await Promise.all([
+  const [kanji, radicals, words, lessons, grammar] = await Promise.all([
     import("../data/kanji.json"),
     import("../data/radicals.json"),
     import("../data/words.json"),
-    import("../data/sentences.json"),
     import("../data/lessons.json"),
     import("../data/grammar.json"),
   ]);
-  data = {
+  data ??= {
     kanji: kanji.default as unknown as Data["kanji"],
     radicals: radicals.default as unknown as Data["radicals"],
     words: words.default as unknown as Data["words"],
-    sentences: sentences.default as unknown as Data["sentences"],
+    sentences: {},
     lessons: lessons.default as unknown as Data["lessons"],
     grammar: Object.fromEntries((grammar.default as unknown as GrammarPoint[]).map((g) => [g.id, g])),
   };
   return data;
+}
+
+/** The 28,000 example sentences (5 MB), filled into the loaded data. Pages that show sentences wait for this. */
+export function loadSentences(): Promise<void> {
+  return (sentences ??= Promise.all([loadData(), import("../data/sentences.json")]).then(([d, s]) => {
+    d.sentences = s.default as unknown as Data["sentences"];
+    sentencesReady = true;
+  }));
+}
+
+export function hasSentences(): boolean {
+  return sentencesReady;
 }
 
 export function useData(): Data {

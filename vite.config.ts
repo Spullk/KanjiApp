@@ -51,8 +51,9 @@ export default defineConfig({
         // The dictionary chunks are a few MB each; cache them so the app works offline.
         maximumFileSizeToCacheInBytes: 16 * 1024 * 1024,
         globPatterns: ["**/*.{js,css,html,svg,png}"],
-        // Daily reminders: public/push-sw.js shows the push messages.
-        importScripts: ["push-sw.js"],
+        // Daily reminders: public/push-sw.js shows the push messages. public/audio-sw.js keeps recordings.
+        // The recordings themselves (public/audio/, ~50 MB) aren't in the install download: each is kept once played.
+        importScripts: ["push-sw.js", "audio-sw.js"],
       },
     }),
   ],
