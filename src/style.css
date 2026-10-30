@@ -1425,6 +1425,13 @@ button.next.wrong {
   cursor: pointer;
   padding: 6px 0;
 }
+.optimizer {
+  margin-bottom: 14px;
+}
+.optimizer progress {
+  vertical-align: middle;
+  width: 40%;
+}
 .params-now {
   word-break: break-word;
 }

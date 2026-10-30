@@ -2,7 +2,10 @@ import { addFaceToStudied, missingFace, setKanjiCards, type ExtraFace } from "..
 import { DEFAULT_SETTINGS, endVacation, parseFsrsParams, mergeIntoStore, migrate, relDate, startVacation, update, useStore, type Settings, type Store } from "../srs";
 import { href } from "../router";
 import { Section } from "../components/bits";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
+import { default_w } from "ts-fsrs";
+import { countTested, histories, MIN_REVIEWS, type Result } from "../optimizer";
+import type { Reply, Request } from "../optimizer.worker";
 import { loadFont, REVIEW_FONTS } from "../fonts";
 import { startTour } from "../components/Tour";
 import { openWelcome } from "../components/Welcome";
@@ -428,9 +431,10 @@ function FsrsParams() {
   return (
     <details class="fsrs-params">
       <summary>FSRS parameters: {params ? "your own" : "default"}</summary>
+      <Optimizer />
       <p class="hint">
-        FSRS can be tuned to how your memory works. If you use FSRS in Anki, open a deck's options, press Optimize
-        under FSRS, then copy the numbers in the parameters box and paste them here.
+        Or, if you use FSRS in Anki, open a deck's options, press Optimize under FSRS, then copy the numbers in the
+        parameters box and paste them here.
       </p>
       {params && (
         <p class="hint params-now">
@@ -446,6 +450,76 @@ function FsrsParams() {
       </button>
       {error && <p class="hint error">{error}</p>}
     </details>
+  );
+}
+
+type Run = { step: number; steps: number } | { result: Result } | null;
+
+/** Trains FSRS on this store's own review history, in a worker, and offers the result. */
+function Optimizer() {
+  const store = useStore();
+  const hs = useMemo(() => histories(store.log, store.cards), [store.log, store.cards]);
+  const tested = useMemo(() => countTested(hs), [hs]);
+  const [run, setRun] = useState<Run>(null);
+  const start = () => {
+    const worker = new Worker(new URL("../optimizer.worker.ts", import.meta.url), { type: "module" });
+    setRun({ step: 0, steps: 1 });
+    worker.onmessage = (e: MessageEvent<Reply>) => {
+      if ("progress" in e.data) setRun(e.data.progress);
+      else {
+        setRun({ result: e.data.result });
+        worker.terminate();
+      }
+    };
+    worker.postMessage({ hs, start: store.settings.fsrsParams ?? [...default_w] } satisfies Request);
+  };
+  const result = run && "result" in run ? run.result : undefined;
+  const better = result ? 1 - result.after / result.before : 0;
+  return (
+    <div class="optimizer">
+      <p class="hint">
+        FSRS can be tuned to how your memory works. Nekko can learn it from your own reviews: it uses answers given a
+        day or more after the one before, and you have {tested.toLocaleString()} so far.{" "}
+        {tested < MIN_REVIEWS
+          ? `It needs at least ${MIN_REVIEWS} to start, and works best after about 1,000.`
+          : tested < 1000
+            ? "It works best after about 1,000, so run it again later."
+            : ""}
+      </p>
+      {!run && (
+        <button class="secondary" disabled={tested < MIN_REVIEWS} onClick={start}>
+          Optimize from my reviews
+        </button>
+      )}
+      {run && "step" in run && (
+        <p class="hint">
+          <progress max={run.steps} value={run.step} /> Learning from your reviews…
+        </p>
+      )}
+      {result &&
+        (better > 0.005 ? (
+          <>
+            <p class="hint">
+              New parameters predict your answers {Math.round(better * 100)}% better (log loss {result.before.toFixed(3)} →{" "}
+              {result.after.toFixed(3)}).
+            </p>
+            <button
+              class="primary"
+              onClick={() => {
+                update((s) => (s.settings.fsrsParams = result.w));
+                setRun(null);
+              }}
+            >
+              Use them
+            </button>{" "}
+            <button class="link-button" onClick={() => setRun(null)}>
+              Keep mine
+            </button>
+          </>
+        ) : (
+          <p class="hint">Your current parameters already fit your reviews well. Nothing to change.</p>
+        ))}
+    </div>
   );
 }
 
