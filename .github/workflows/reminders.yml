@@ -6,7 +6,12 @@ name: Reminders
 on:
   schedule:
     - cron: "*/30 * * * *"
+  # cron-job.org can also start it on time, through GitHub's API, since GitHub delays or skips scheduled runs.
   workflow_dispatch:
+
+concurrency:
+  group: reminders
+  cancel-in-progress: false
 
 permissions:
   contents: read

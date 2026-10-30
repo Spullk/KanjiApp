@@ -3,7 +3,7 @@ import { href } from "../router";
 import { StudyButton } from "../components/ItemCards";
 import { PitchAccent } from "../components/Pitch";
 import { WordExamples } from "../components/Examples";
-import { Badges, Furigana, ReadingText, Section, WordSpeak } from "../components/bits";
+import { Badges, Furigana, ReadingText, Romaji, Section, WordSpeak } from "../components/bits";
 
 export function WordPage({ id }: { id: string }) {
   const { words, kanji } = useData();
@@ -29,6 +29,7 @@ export function WordPage({ id }: { id: string }) {
         <div class="hero-reading" lang="ja">
           <PitchAccent w={w} fallback={w.r} /> <WordSpeak w={w} />
         </div>
+        <Romaji kana={w.r} />
         <Badges items={[w.lesson && `Lesson ${w.lesson}`, w.usuallyKana && "Usually written in kana"]} />
       </header>
       <StudyButton kind="word" k={w.id} />

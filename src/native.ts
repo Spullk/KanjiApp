@@ -66,7 +66,7 @@ export async function scheduleReminders(store: Store) {
   if ((await LocalNotifications.checkPermissions()).display !== "granted") return;
   const now = Date.now();
   const first = new Date(now);
-  first.setHours(hour, 0, 0, 0);
+  first.setHours(0, Math.round(hour * 60), 0, 0);
   const notifications = REMINDER_IDS.map((id, i) => {
     const at = new Date(first);
     at.setDate(first.getDate() + i);

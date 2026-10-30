@@ -2,21 +2,22 @@
 // .github/workflows/reminders.yml with a Firebase service account; needs no packages.
 //
 // Each signed-in device that turned reminders on is listed in users/{uid}/meta/push (see src/push.ts) with its
-// push token and time zone, next to the reminder hour and the times cards come due. A device gets one reminder a
-// day, at the first run in the three hours from its reminder hour, and only when reviews are waiting.
+// push token and time zone, next to the reminder time and the times cards come due. A device gets one reminder a
+// day, at the first run in the three hours from its reminder time, and only when reviews are waiting.
+// The time is in hours: 7.5 is 7:30.
 
 import { createSign } from "node:crypto";
 
 const WINDOW_HOURS = 3;
 
-/** The local date and hour in a time zone. */
+/** The local date, and minutes since midnight, in a time zone. */
 export function localTime(now, tz) {
   const parts = Object.fromEntries(
-    new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" })
+    new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
       .formatToParts(now)
       .map((p) => [p.type, p.value]),
   );
-  return { date: `${parts.year}-${parts.month}-${parts.day}`, hour: Number(parts.hour) };
+  return { date: `${parts.year}-${parts.month}-${parts.day}`, minutes: Number(parts.hour) * 60 + Number(parts.minute) };
 }
 
 /** Which devices of one account to remind now: [device key, token, local date, waiting reviews]. */
@@ -24,6 +25,7 @@ export function toRemind(push, now) {
   if (push.hour === null || push.hour === undefined) return [];
   const waiting = (push.due ?? []).filter((t) => t <= now.getTime()).length;
   if (!waiting) return [];
+  const at = Math.round(push.hour * 60);
   const out = [];
   for (const [key, d] of Object.entries(push.devices ?? {})) {
     let local;
@@ -32,7 +34,7 @@ export function toRemind(push, now) {
     } catch {
       local = localTime(now, "UTC");
     }
-    if (local.hour < push.hour || local.hour >= push.hour + WINDOW_HOURS || d.sent === local.date) continue;
+    if (local.minutes < at || local.minutes >= at + WINDOW_HOURS * 60 || d.sent === local.date) continue;
     out.push([key, d.token, local.date, waiting]);
   }
   return out;

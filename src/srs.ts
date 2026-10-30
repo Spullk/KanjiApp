@@ -90,11 +90,13 @@ export type Settings = {
   vacation?: number;
   /** Show kanji and words on review cards in a different typeface each day (print, handwriting, brush). */
   fonts?: boolean;
+  /** Romaji under readings (words, review answers, grammar examples), for beginners still learning kana. */
+  romaji?: boolean;
   /** Kanji as two cards (meaning, reading) or one card asking both. Unset means two. */
   kanjiCards?: "split" | "one";
   /** Optional card types switched on. Switching one off keeps its cards but stops asking them. */
   extraCards?: ExtraFace[];
-  /** Native app only: hour of the daily review reminder, or undefined for none. */
+  /** When the daily review reminder comes, in hours (7.5 is 7:30), or undefined for none. */
   reminder?: number;
   /** Where you said you're starting from on the welcome screen: brand new, can read kana, or studied before. */
   start?: "new" | "kana" | "returning";
@@ -129,7 +131,8 @@ export type Undo = { card: string; before: StoredCard; time: number };
 export type Store = {
   version: 2;
   cards: Record<string, StoredCard>;
-  /** Cards taken out of study and when, so merging another device's copy doesn't bring them back. */
+  /** Cards taken out of study and when, so merging another device's copy doesn't bring them back. Answers you
+   * took back are kept here too, as "undone:<card>@<time>", so a sync doesn't bring them back into the log. */
   removed: Record<string, number>;
   /** By item id ("kanji:語"). */
   items: Record<string, ItemInfo>;
@@ -185,7 +188,7 @@ export function merge(local: Store, other: Store): Store {
   }
   const seen = new Set<string>();
   out.log = [...local.log, ...other.log]
-    .filter(([id, , t]) => !seen.has(id + "@" + t) && !!seen.add(id + "@" + t))
+    .filter(([id, , t]) => !seen.has(id + "@" + t) && !!seen.add(id + "@" + t) && !out.removed[undone(id, t)])
     .sort((a, b) => a[2] - b[2]);
   const newer = other.settingsUpdated > local.settingsUpdated ? other : local;
   out.settings = { ...newer.settings };
@@ -373,12 +376,15 @@ export function grade(store: Store, id: string, rating: Grade, now = Date.now())
   store.undo = [...store.undo, { card: id, before: stored, time: now }].slice(-UNDO_LIMIT);
 }
 
-/** Takes back the last answer: the card goes back to how it was and the review is forgotten. */
+const undone = (card: string, time: number) => `undone:${card}@${time}`;
+
+/** Takes back the last answer: the card goes back to how it was and the review is forgotten, on every device. */
 export function undoLast(store: Store, now = Date.now()): string | undefined {
   const last = store.undo.pop();
   if (!last) return undefined;
   store.cards[last.card] = { ...last.before, updated: now };
   store.log = store.log.filter(([id, , t]) => id !== last.card || t !== last.time);
+  store.removed[undone(last.card, last.time)] = now;
   return last.card;
 }
 

@@ -49,9 +49,12 @@ export function dueTimes(store: Store, now = Date.now()): number[] {
 
 type Fb = { app: FirebaseApp; db: Firestore; fs: typeof import("firebase/firestore"); uid: string };
 
-/** Asks for permission and registers this device. Returns an error message to show, or undefined. */
-export async function enablePush({ app, db, fs, uid }: Fb, store: Store): Promise<string | undefined> {
-  if ((await Notification.requestPermission()) !== "granted") {
+/**
+ * Registers this device, once `permission` (Notification.requestPermission(), which has to be called straight from
+ * the tap: iPhones ignore it after any wait) is granted. Returns an error message to show, or undefined.
+ */
+export async function enablePush({ app, db, fs, uid }: Fb, store: Store, permission: Promise<NotificationPermission>): Promise<string | undefined> {
+  if ((await permission) !== "granted") {
     return "Notifications are blocked for Nekko. Allow them in your browser's or phone's settings, then try again.";
   }
   try {

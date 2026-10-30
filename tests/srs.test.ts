@@ -101,6 +101,19 @@ describe("store v2", () => {
     expect(undoLast(s)).toBeUndefined();
   });
 
+  it("keeps an undone answer out of the log when another device still has it", () => {
+    const phone = emptyStore();
+    addItem(phone, "radical", "氵", 0);
+    grade(phone, "radical:氵:meaning", Rating.Easy, 10);
+    const synced = structuredClone(phone); // what the other device and the online copy have
+    undoLast(phone, 20);
+    grade(phone, "radical:氵:meaning", Rating.Good, 30);
+    for (const out of [merge(phone, synced), merge(synced, phone)]) {
+      expect(out.log.map(([, r, t]) => [r, t])).toEqual([[Rating.Good, 30]]);
+      expect(out.cards["radical:氵:meaning"].updated).toBe(30);
+    }
+  });
+
   it("merges two devices: newest card wins, reviews are combined once, removals stick", () => {
     const phone = emptyStore();
     addItem(phone, "radical", "氵", 0);

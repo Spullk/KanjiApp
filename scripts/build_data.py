@@ -625,8 +625,9 @@ def main():
             continue
         segs = align(e["form"], e["reading"], forms)
         if segs is None:
+            # Readings that can't be split per kanji (odd okurigana or spellings): the whole word gets one reading.
             unaligned += 1
-            continue
+            segs = ((e["form"], hira(e["reading"]), None, "*"),)
         words[str(idseq)] = {
             "id": str(idseq), "w": e["form"], "r": e["reading"],
             "furigana": [[t, r, key] if key else [t, r] for t, r, _, key in segs],  # key: KANJIDIC reading used, "*" = special
@@ -750,7 +751,7 @@ def main():
                       ("sentences", sentences), ("lessons", lesson_out), ("strokes", strokes), ("meta", meta)]:
         (OUT / f"{name}.json").write_text(json.dumps(obj, ensure_ascii=False, separators=(",", ":")),
                                           encoding="utf-8")
-    print(json.dumps(meta["counts"]), f"unaligned words: {unaligned}")
+    print(json.dumps(meta["counts"]), f"words with whole-word furigana: {unaligned}")
 
 
 if __name__ == "__main__":
