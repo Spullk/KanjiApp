@@ -1,12 +1,12 @@
 name: Build data
 
 # Rebuilds data/ with example sentences (Tatoeba) and stories, and commits the result to the same branch.
-# Once a week it also downloads the current dictionary, so the app follows JMdict's updates; the app only
+# Once a month it also downloads the current dictionary, so the app follows JMdict's updates; the app only
 # downloads data files that changed, the next time it's updated.
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 4 * * 1" # Mondays 04:17 UTC
+    - cron: "17 4 1 * *" # the 1st of each month, 04:17 UTC
   push:
     paths:
       - "scripts/**"
