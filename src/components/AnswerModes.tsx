@@ -123,7 +123,7 @@ export function TypedAnswer({ id, onAnswer: answer }: AnswerProps) {
     const answers = ask.answers(data, key);
     const verdict = ask.kana ? checkReading(typed, answers) : checkMeaning(typed, [...answers, ...(info?.synonyms ?? [])]);
     if (verdict === "retry") {
-      setHint(ask.kana ? "Type the reading, in kana." : "Type the meaning, in English.");
+      setHint(ask.kana ? `Type the ${ask.label === "Gap" ? "answer" : "reading"}, in kana.` : "Type the meaning, in English.");
       return;
     }
     setHint("");
@@ -151,7 +151,7 @@ export function TypedAnswer({ id, onAnswer: answer }: AnswerProps) {
             ref={input}
             class={`typed-input ${ask.kana ? "kana" : ""}`}
             lang={ask.kana ? "ja" : "en"}
-            placeholder={ask.kana ? "Reading (kana)" : "Meaning"}
+            placeholder={ask.placeholder ?? (ask.kana ? "Reading (kana)" : "Meaning")}
             autocomplete="off"
             autocapitalize="off"
             spellcheck={false}

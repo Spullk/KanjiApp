@@ -1,25 +1,45 @@
 import type { ComponentChildren } from "preact";
 import { useState } from "preact/hooks";
 import { hira, useData, type Segment, type Word } from "../data";
+import { furiganaRule } from "../reading";
+import { useStore } from "../srs";
 import { href } from "../router";
 import { playSentence, playWord } from "../audio";
 
-/** A word with furigana, where each kanji links to its own page. */
-export function Furigana({ segments, highlight, link = true }: { segments: Segment[]; highlight?: string; link?: boolean }) {
+/**
+ * A word with furigana, where each kanji links to its own page. With `hide`, readings it hides (kanji you've been
+ * taught, see furiganaRule) keep their space but stay invisible; with `reveal`, tapping one shows it.
+ */
+export function Furigana({
+  segments,
+  highlight,
+  link = true,
+  hide,
+  reveal,
+}: {
+  segments: Segment[];
+  highlight?: string;
+  link?: boolean;
+  hide?: (s: Segment) => boolean;
+  reveal?: boolean;
+}) {
+  const [shown, setShown] = useState<number[]>([]);
   return (
     <span class="furigana">
-      {segments.map(([text, kana], i) =>
-        kana === null ? (
-          <span key={i}>{text}</span>
-        ) : (
-          <ruby key={i}>
+      {segments.map((seg, i) => {
+        const [text, kana] = seg;
+        if (kana === null) return <span key={i}>{text}</span>;
+        const hidden = !!hide?.(seg) && !shown.includes(i);
+        const tap = hidden && reveal ? () => setShown([...shown, i]) : undefined;
+        return (
+          <ruby key={i} class={tap ? "tap-reading" : undefined} onClick={tap}>
             {[...text].map((c, j) => (
-              <KanjiChar key={j} c={c} highlight={highlight} link={link} />
+              <KanjiChar key={j} c={c} highlight={highlight} link={link && !tap} />
             ))}
-            <rt>{kana}</rt>
+            <rt class={hidden ? "hide" : undefined}>{kana}</rt>
           </ruby>
-        ),
-      )}
+        );
+      })}
     </span>
   );
 }
@@ -63,14 +83,16 @@ export function Chips({ items, kind }: { items: string[]; kind?: "kanji" | "radi
   );
 }
 
-/** One line per word: furigana, then the first meaning. Tapping opens the word. */
+/** One line per word: furigana over kanji you haven't been taught, then the first meaning. Tapping opens the word. */
 export function WordRow({ id, highlight }: { id: string; highlight?: string }) {
-  const w = useData().words[id];
+  const data = useData();
+  const hide = furiganaRule(useStore(), data, id);
+  const w = data.words[id];
   if (!w) return null;
   return (
     <a class="word-row" href={href.word(id)}>
       <span class="word-jp">
-        <Furigana segments={w.furigana} highlight={highlight} link={false} />
+        <Furigana segments={w.furigana} highlight={highlight} link={false} hide={hide} />
       </span>
       <span class="word-gloss">{glossLine(w)}</span>
     </a>
@@ -81,9 +103,11 @@ export function glossLine(w: Word): string {
   return w.senses[0]?.gloss.slice(0, 3).join(", ") ?? "";
 }
 
-/** A Tatoeba sentence with every known word linked, English underneath. */
+/** A Tatoeba sentence with every known word linked, English underneath. Kanji you haven't been taught get furigana. */
 export function SentenceView({ id, highlight }: { id: string; highlight?: string }) {
-  const s = useData().sentences[id];
+  const data = useData();
+  const store = useStore();
+  const s = data.sentences[id];
   if (!s) return null;
   const parts: ComponentChildren[] = [];
   let pos = 0;
@@ -92,9 +116,11 @@ export function SentenceView({ id, highlight }: { id: string; highlight?: string
     if (start > pos) parts.push(s.ja.slice(pos, start));
     const text = s.ja.slice(start, start + len);
     const hl = highlight && [...text].some((c) => c === highlight);
+    const segs = data.words[wid] && alignFurigana(text, data.words[wid].furigana);
+    const hide = furiganaRule(store, data, wid);
     parts.push(
       <a key={start} class={hl ? "sent-link hl" : "sent-link"} href={href.word(wid)}>
-        {text}
+        {segs?.some((g) => g[1] !== null && !hide(g)) ? <Furigana segments={segs} link={false} hide={hide} /> : text}
       </a>,
     );
     pos = start + len;
@@ -109,6 +135,21 @@ export function SentenceView({ id, highlight }: { id: string; highlight?: string
       <div class="sent-en">{s.en}</div>
     </div>
   );
+}
+
+/** A word's furigana fitted to how it's written in a sentence: 言う's segments over 言った. Null if they don't fit. */
+export function alignFurigana(text: string, segs: Segment[]): Segment[] | null {
+  const out: Segment[] = [];
+  let pos = 0;
+  for (const seg of segs) {
+    if (text.startsWith(seg[0], pos)) {
+      out.push(seg);
+      pos += seg[0].length;
+    } else if (seg[1] === null) break; // a conjugated ending
+    else return null;
+  }
+  if (pos < text.length) out.push([text.slice(pos), null]);
+  return out;
 }
 
 /** A small speaker button. Human recordings get a filled icon, text-to-speech an outline. */
@@ -137,6 +178,23 @@ export function WordSpeak({ w }: { w: Word }) {
 }
 
 /** A KANJIDIC reading: on in katakana, kun with its okurigana dimmed (い.きる → い・きる). */
+/** A tapped word's reading and meaning, with a link to its page (reading practice and stories). */
+export function WordGloss({ id }: { id: string }) {
+  const w = useData().words[id];
+  if (!w) return null;
+  return (
+    <div class="read-gloss">
+      <span lang="ja">
+        <Furigana segments={w.furigana} link={false} />
+      </span>{" "}
+      {glossLine(w)}{" "}
+      <a class="more" href={href.word(w.id)}>
+        Open
+      </a>
+    </div>
+  );
+}
+
 export function ReadingText({ r }: { r: string }) {
   const [stem, oku] = r.split(".");
   return (

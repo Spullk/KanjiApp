@@ -54,24 +54,30 @@ export type Word = {
 export type Sentence = { ja: string; en: string; links: [number, number, string][]; audio?: [string, string] };
 export type Lesson = { id: number; radicals: string[]; kanji: string[]; words: string[] };
 
+/** A grammar point (hand-written in data/grammar.json). Examples mark the gap as {は}, alternatives as {なに|なん},
+ * and readings as 学生[がくせい] (or [*きょう] for a reading that belongs to the whole word). */
+export type GrammarPoint = { id: string; level: "start" | "numbers" | "phrases" | "n5"; title: string; note: string; ex: [string, string][] };
+
 export type Data = {
   kanji: Record<string, Kanji>;
   radicals: Record<string, Radical>;
   words: Record<string, Word>;
   sentences: Record<string, Sentence>;
   lessons: Lesson[];
+  grammar: Record<string, GrammarPoint>;
 };
 
 let data: Data | null = null;
 
 export async function loadData(): Promise<Data> {
   if (data) return data;
-  const [kanji, radicals, words, sentences, lessons] = await Promise.all([
+  const [kanji, radicals, words, sentences, lessons, grammar] = await Promise.all([
     import("../data/kanji.json"),
     import("../data/radicals.json"),
     import("../data/words.json"),
     import("../data/sentences.json"),
     import("../data/lessons.json"),
+    import("../data/grammar.json"),
   ]);
   data = {
     kanji: kanji.default as unknown as Data["kanji"],
@@ -79,6 +85,7 @@ export async function loadData(): Promise<Data> {
     words: words.default as unknown as Data["words"],
     sentences: sentences.default as unknown as Data["sentences"],
     lessons: lessons.default as unknown as Data["lessons"],
+    grammar: Object.fromEntries((grammar.default as unknown as GrammarPoint[]).map((g) => [g.id, g])),
   };
   return data;
 }

@@ -228,6 +228,12 @@ def load_words(con, joyo_set):
             e["senses"] = []
             e["usuallyKana"] = False
 
+    add_senses(con, entries)
+    return entries
+
+
+def add_senses(con, entries):
+    """Fills each entry's senses (up to 5, English) and whether it's usually written in kana."""
     sense_of = {}
     for sid, idseq in con.execute("SELECT ID, idseq FROM Sense ORDER BY ID"):
         if idseq in entries:
@@ -258,7 +264,34 @@ def load_words(con, joyo_set):
             e["usuallyKana"] = True
         if len(e["senses"]) < 5 and s["gloss"]:
             e["senses"].append({"pos": pos, "gloss": s["gloss"][:6]})
-    return entries
+
+
+def load_story_words(con, ids):
+    """Plain entries for story words outside Nekko's word list: first spelling and reading, senses, rank."""
+    if not ids:
+        return {}
+    marks = ",".join("?" * len(ids))
+    entries = {}
+    for table, pri in (("Kanji", "KJP"), ("Kana", "KNP")):
+        for idseq, text in con.execute(f"SELECT idseq, text FROM {table} WHERE idseq IN ({marks}) ORDER BY ID", ids):
+            e = entries.setdefault(idseq, {"form": text, "senses": [], "usuallyKana": False, "tags": set()})
+            if table == "Kana":
+                e.setdefault("reading", text)
+        for idseq, t in con.execute(f"SELECT f.idseq, p.text FROM {pri} p JOIN {table} f ON f.ID = p.kid "
+                                    f"WHERE f.idseq IN ({marks})", ids):
+            entries[idseq]["tags"].add(t)
+    for e in entries.values():
+        e["rank"] = priority_rank(e.pop("tags")) or 99
+    add_senses(con, entries)
+    return {i: e for i, e in entries.items() if e["senses"] and "reading" in e}
+
+
+def story_word_ids():
+    """Every word the stories use (data/stories.json, written by build_stories.py), so each gets a page."""
+    path = OUT / "stories.json"
+    if not path.exists():
+        return set()
+    return {wid for story in json.loads(path.read_text(encoding="utf-8")) for wid, _ in story["w"]}
 
 
 # ---------------------------------------------------------------- furigana
@@ -607,7 +640,16 @@ def main():
         kanji[k]["specialWords"] = [w for w in groups.get("*", []) if w in chosen_set]
         kanji[k]["words"] = sorted(chosen, key=order_key)
         keep |= chosen_set
-    words = {wid: w for wid, w in words.items() if wid in keep}
+    story_ids = story_word_ids()
+    words = {wid: w for wid, w in words.items() if wid in keep or wid in story_ids}
+    for idseq, e in load_story_words(con, sorted(int(i) for i in story_ids - words.keys())).items():
+        segs = align(e["form"], e["reading"], forms) if any(map(is_kanji, e["form"])) else None
+        words[str(idseq)] = {
+            "id": str(idseq), "w": e["form"], "r": e["reading"],
+            "furigana": [[t, r, key] if key else [t, r] for t, r, _, key in segs] if segs
+            else [[e["form"], e["reading"] if any(map(is_kanji, e["form"])) else None]],
+            "uses": [], "special": [], "senses": e["senses"], "rank": e["rank"], "usuallyKana": e["usuallyKana"],
+        }
     for k in joyo:
         for r in kanji[k]["readings"]:
             del r["count"]
@@ -677,6 +719,7 @@ def main():
             "JLPT levels": "Jonathan Waller's lists via davidluzgouveia/kanji-data, MIT",
             "Example sentences": "Tatoeba Project, CC BY 2.0 FR; recordings by the named Tatoeba speakers",
             "Word audio": "Kanji alive, CC BY 4.0",
+            "Stories": "Aozora Bunko (public domain); Tadoku free readers by NPO多言語多読, CC BY-NC-ND 4.0",
         },
     }
     for name, obj in [("kanji", kanji), ("radicals", radicals), ("words", words),

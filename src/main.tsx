@@ -1,7 +1,7 @@
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { loadData } from "./data";
-import { href, useRoute, type Route } from "./router";
+import { useRoute, type Route } from "./router";
 import { HomePage } from "./pages/HomePage";
 import { KanjiPage } from "./pages/KanjiPage";
 import { WordPage } from "./pages/WordPage";
@@ -15,7 +15,13 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { KnownPage } from "./pages/KnownPage";
 import { PracticePage } from "./pages/PracticePage";
 import { WritePage } from "./pages/WritePage";
-import { ReadPage } from "./pages/ReadPage";
+import { SentencesPage } from "./pages/SentencesPage";
+import { StoriesPage } from "./pages/StoriesPage";
+import { StoryPage } from "./pages/StoryPage";
+import { GrammarPage, GrammarPointPage } from "./pages/GrammarPages";
+import { KanaPage, KanaPracticePage, KanaRowPage } from "./pages/KanaPages";
+import { Welcome } from "./components/Welcome";
+import { activeTab, barTools } from "./tools";
 import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
 import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
@@ -44,7 +50,7 @@ function Page({ route }: { route: Route }) {
     case "review":
       return <ReviewPage />;
     case "learn":
-      return <LearnPage />;
+      return <LearnPage story={route.story} />;
     case "progress":
       return <ProgressPage />;
     case "settings":
@@ -54,7 +60,21 @@ function Page({ route }: { route: Route }) {
     case "write":
       return <WritePage c={route.c} />;
     case "read":
-      return <ReadPage />;
+      return <StoriesPage />;
+    case "sentences":
+      return <SentencesPage />;
+    case "story":
+      return <StoryPage id={route.id} />;
+    case "grammar":
+      return <GrammarPage />;
+    case "grammarPoint":
+      return <GrammarPointPage id={route.id} />;
+    case "kana":
+      return <KanaPage />;
+    case "kanaRow":
+      return <KanaRowPage id={route.id} />;
+    case "kanaPractice":
+      return <KanaPracticePage key={location.hash} script={route.script} missed={route.missed} listen={route.listen} />;
     case "practice":
       return <PracticePage key={route.set} set={route.set} />;
     default:
@@ -66,7 +86,10 @@ function App() {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const route = useRoute();
-  const due = dueCards(useStore()).length;
+  const store = useStore();
+  const due = dueCards(store).length;
+  const bar = barTools(store.settings);
+  const on = activeTab(bar, route.page);
   useEffect(() => {
     Promise.all([loadData(), initStore()]).then(
       () => {
@@ -84,23 +107,15 @@ function App() {
         {error ? <p class="empty">Couldn't load the dictionary: {error}</p> : ready ? <Page route={route} /> : <Loading />}
       </main>
       <nav class="tabbar">
-        <a data-tab="home" class={route.page === "home" ? "on" : ""} href={href.home()}>
-          <span aria-hidden="true">根</span>Home
-        </a>
-        <a data-tab="review" class={route.page === "review" || route.page === "learn" ? "on" : ""} href={href.review()}>
-          <span aria-hidden="true">復</span>Review
-          {due > 0 && <b class="tab-badge">{due}</b>}
-        </a>
-        <a data-tab="search" class={route.page === "search" ? "on" : ""} href={href.search()}>
-          <span aria-hidden="true">探</span>Search
-        </a>
-        <a data-tab="lessons" class={route.page.startsWith("lesson") ? "on" : ""} href={href.lessons()}>
-          <span aria-hidden="true">課</span>Lessons
-        </a>
-        <a data-tab="progress" class={route.page === "progress" || route.page === "settings" || route.page === "known" || route.page === "practice" || route.page === "write" || route.page === "read" ? "on" : ""} href={href.progress()}>
-          <span aria-hidden="true">進</span>Progress
-        </a>
+        {bar.map((t) => (
+          <a key={t.tab} data-tab={t.tab} class={t.tab === on ? "on" : ""} href={t.href}>
+            <span aria-hidden="true">{t.icon}</span>
+            {t.label}
+            {t.tab === "review" && due > 0 && <b class="tab-badge">{due}</b>}
+          </a>
+        ))}
       </nav>
+      {ready && <Welcome />}
       {ready && <Tour />}
     </>
   );

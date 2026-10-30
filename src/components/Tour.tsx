@@ -1,16 +1,17 @@
-// A short first-run tour: one card per tab, with that tab lit up in the tab bar. It can be replayed from Settings.
+// A short first-run tour, after the welcome screen: one card per tab on your bottom bar, with that tab lit up.
+// It can be replayed from Settings.
 
 import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { href } from "../router";
-import { getStore } from "../srs";
+import { getStore, useStore } from "../srs";
+import { barTools } from "../tools";
 
 const SEEN = "nekko.tour";
 
-type Tab = "home" | "review" | "search" | "lessons" | "progress";
-type Step = { tab?: Tab; title: string; body: ComponentChildren };
+type Step = { tab?: string; title: string; body: ComponentChildren };
 
-const STEPS: Step[] = [
+const ALL_STEPS: Step[] = [
   {
     title: "Welcome to Nekko",
     body: (
@@ -19,14 +20,19 @@ const STEPS: Step[] = [
           <span lang="ja">根っこ</span> means roots. Nekko teaches kanji the way they grow: from the radicals they're built
           from, to the kanji, to the words that use them, to real sentences.
         </p>
-        <p>Here's a quick look at each tab. It takes a minute.</p>
+        <p>Here's a quick look at each tab on your bar. It takes a minute. Everything else is on Home, and you can choose which tools sit on the bar in Settings.</p>
       </>
     ),
   },
   {
     tab: "home",
     title: "Home",
-    body: <p>What's due now and what's next to learn, with a kanji of the day to wander from. Tap anything in Nekko to open it and follow its connections.</p>,
+    body: (
+      <>
+        <p>What's due now and what's next to learn, with a kanji of the day to wander from. Tap anything in Nekko to open it and follow its connections.</p>
+        <p>Your lessons are here too: all 2,136 Jōyō kanji in 206 lessons, related kanji side by side. Already know a lesson? Mark it known and it's skipped.</p>
+      </>
+    ),
   },
   {
     tab: "review",
@@ -39,21 +45,36 @@ const STEPS: Step[] = [
     ),
   },
   {
+    tab: "read",
+    title: "Read",
+    body: <p>Short stories and folk tales, sorted by how many of their words you know. Tap any word you don't know, and learn a story's new words in one go. Sentence practice is here too.</p>,
+  },
+  {
+    tab: "grammar",
+    title: "Grammar",
+    body: (
+      <p>
+        Start here: how Japanese sounds and is written, then the first grammar you need. Further down, numbers and
+        counters, set phrases and N5 grammar. Add a point to your reviews to practise it on real sentences.
+      </p>
+    ),
+  },
+  {
+    tab: "kana",
+    title: "Kana",
+    body: <p>Learn hiragana and katakana a row at a time, then drill them whenever you like. Ones you miss come back sooner; there's no schedule to keep up with.</p>,
+  },
+  {
     tab: "search",
     title: "Search",
     body: <p>Type kanji, kana, romaji or English. Don't know how to type a kanji? Find it by the parts you can see, or draw it.</p>,
-  },
-  {
-    tab: "lessons",
-    title: "Lessons",
-    body: <p>All 2,136 Jōyō kanji in 206 lessons, with related kanji side by side. Already know a lesson? Mark it known and it's skipped.</p>,
   },
   {
     tab: "progress",
     title: "Progress",
     body: (
       <>
-        <p>Your stats, review calendar and the kanji you know. Extra practice lives here too: today's mistakes, leeches, writing and reading.</p>
+        <p>Your stats, review calendar and the kanji you know. Extra practice lives here too: today's mistakes, leeches and writing.</p>
         <p>
           Settings is at the top of Progress. Sign in there to sync between devices, and change the study order, card types
           and more.
@@ -91,8 +112,12 @@ function markSeen() {
 }
 
 export function Tour() {
-  // Only on a first visit: nothing studied yet and the tour not seen on this device.
-  const [step, setStep] = useState<number | null>(() => (!seen() && !Object.keys(getStore().cards).length ? 0 : null));
+  // Only on a first visit, once you've picked a starting point: nothing studied yet and the tour not seen here.
+  const first = () => !seen() && !!getStore().settings.start && !Object.keys(getStore().cards).length;
+  const [step, setStep] = useState<number | null>(() => (first() ? 0 : null));
+  const settings = useStore().settings;
+  const bar = barTools(settings).map((t) => t.tab);
+  const STEPS = ALL_STEPS.filter((s) => !s.tab || bar.includes(s.tab));
   useEffect(() => {
     const open = () => setStep(0);
     listeners.add(open);
@@ -124,12 +149,20 @@ export function Tour() {
         {s.body}
         {last ? (
           <div class="tour-actions">
-            <button class="secondary" onClick={() => close(href.known())}>
-              I know some kanji
-            </button>
-            <button class="primary" onClick={() => close(href.learn())}>
-              Start learning
-            </button>
+            {settings.start === "new" ? (
+              <button class="primary" onClick={() => close(href.grammar())}>
+                Start here
+              </button>
+            ) : (
+              <>
+                <button class="secondary" onClick={() => close(href.known())}>
+                  I know some kanji
+                </button>
+                <button class="primary" onClick={() => close(href.learn())}>
+                  Start learning
+                </button>
+              </>
+            )}
           </div>
         ) : (
           <div class="tour-actions">

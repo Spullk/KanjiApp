@@ -5,11 +5,11 @@ import { href } from "../router";
 import { getStore } from "../srs";
 import { readableSentences, studiedKanji, unknownKanji } from "../reading";
 import { playSentence } from "../audio";
-import { Furigana, glossLine, SpeakButton } from "../components/bits";
+import { SpeakButton, WordGloss } from "../components/bits";
 import { shuffle } from "./PracticePage";
 
 /** Read sentences built from kanji you've studied. Tap a word to see its reading and meaning. */
-export function ReadPage() {
+export function SentencesPage() {
   const data = useData();
   const [stretch, setStretch] = useState(false);
   const known = useMemo(() => studiedKanji(getStore(), data), [data]);
@@ -46,7 +46,7 @@ export function ReadPage() {
   if (!s) {
     return (
       <article class="page">
-        <h1>Reading practice</h1>
+        <h1>Sentences</h1>
         {options}
         <p class="empty">
           {known.size
@@ -75,11 +75,10 @@ export function ReadPage() {
   }
   parts.push(s.ja.slice(pos));
   const newKanji = unknownKanji(s.ja, known);
-  const w = word ? data.words[word] : undefined;
 
   return (
     <article class="page reading">
-      <h1>Reading practice</h1>
+      <h1>Sentences</h1>
       {options}
       <p class="hint">
         {ids.length} {ids.length === 1 ? "sentence" : "sentences"} to read. Tap a word for its reading and meaning.
@@ -96,17 +95,7 @@ export function ReadPage() {
             </span>
           )}
         </div>
-        {w && (
-          <div class="read-gloss">
-            <span lang="ja">
-              <Furigana segments={w.furigana} link={false} />
-            </span>{" "}
-            {glossLine(w)}{" "}
-            <a class="more" href={href.word(w.id)}>
-              Open
-            </a>
-          </div>
-        )}
+        {word && <WordGloss id={word} />}
         {english ? (
           <div class="read-en">{s.en}</div>
         ) : (
