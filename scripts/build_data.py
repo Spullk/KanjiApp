@@ -534,7 +534,10 @@ def load_commons_audio(words):
         w = words[ids.pop()]
         if "audio" in w or "rec" in w:
             continue
-        w["rec"] = [hashlib.md5(file.encode()).hexdigest()[:12], file, author or m.groupdict().get("speaker") or "", licence]
+        # Lingua Libre's author field reads "Speaker: X / Recorder: Y"; the speaker is the one to credit.
+        speaker = re.search(r"Speaker:\s*([^\n]+)", author)
+        author = (speaker[1] if speaker else author.splitlines()[0] if author else m.groupdict().get("speaker") or "").strip()
+        w["rec"] = [hashlib.md5(file.encode()).hexdigest()[:12], file, author, licence]
         linked += 1
     return linked
 
