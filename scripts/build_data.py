@@ -524,12 +524,13 @@ def words_of(text):
 
 
 def mark_retired_kana_words(words, shipped, lesson_out):
-    """An uncommon kana word a lesson used to teach but no longer does was the wrong match for the JLPT list's
-    word (はず as purging croton): w["junk"], so the app takes it out of reviews and won't offer it again."""
+    """An uncommon word a lesson used to teach in kana but no longer does was the wrong match for the JLPT list's
+    word (はず as purging croton, now back to its spelling 巴豆): w["junk"], so the app takes it out of reviews and
+    won't offer it again."""
     taught = {wid for lesson in lesson_out for wid in lesson["words"]}
     retired = [wid for wid, old in shipped.items()
                if wid in words and wid not in taught and (old.get("junk") or old.get("lesson")
-               and not any(map(is_kanji, words[wid]["w"])) and words[wid]["rank"] >= RARE_RANK)]
+               and not any(map(is_kanji, old["w"])) and words[wid]["rank"] >= RARE_RANK)]
     for wid in retired:
         words[wid]["junk"] = True
     for wid in taught:
