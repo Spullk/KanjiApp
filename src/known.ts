@@ -1,6 +1,6 @@
 // Working out which items you already know: by JLPT level, from a pasted list, or from WaniKani.
 
-import type { Data } from "./data";
+import { isJunkWord, type Data } from "./data";
 import type { ItemKind } from "./srs";
 
 export type ItemRef = { kind: ItemKind; key: string };
@@ -13,10 +13,11 @@ export function jlptItems(data: Data, level: number): ItemRef[] {
   return [...radicals.map((key) => ({ kind: "radical" as const, key })), ...kanji.map((key) => ({ kind: "kanji" as const, key }))];
 }
 
-/** The most common word written each way, for matching words from elsewhere. */
+/** The most common word written each way, for matching words from elsewhere. Dictionary oddities never match. */
 export function wordsBySpelling(data: Data): Map<string, string> {
   const out = new Map<string, string>();
   for (const w of Object.values(data.words)) {
+    if (isJunkWord(w)) continue;
     const have = out.get(w.w);
     if (!have || w.rank < data.words[have].rank) out.set(w.w, w.id);
   }
@@ -44,10 +45,11 @@ const WK_INTERVAL_DAYS = [0, 4 / 24, 8 / 24, 1, 2, 7, 14, 30, 120];
 
 export type WaniKaniItem = ItemRef & { stage: number; availableAt: number | null };
 
-type WkPage<T> = { data: { id: number; data: T }[]; pages: { next_url: string | null } };
+type WkObject<T> = { id: number; object?: string; data: T };
+type WkPage<T> = { data: WkObject<T>[]; pages: { next_url: string | null } };
 
-async function wkGetAll<T>(url: string, token: string, fetcher: typeof fetch): Promise<{ id: number; data: T }[]> {
-  const out: { id: number; data: T }[] = [];
+async function wkGetAll<T>(url: string, token: string, fetcher: typeof fetch): Promise<WkObject<T>[]> {
+  const out: WkObject<T>[] = [];
   for (let next: string | null = url; next; ) {
     const res = await fetcher(next, { headers: { Authorization: `Bearer ${token}`, "Wanikani-Revision": "20170710" } });
     if (res.status === 401) throw new Error("WaniKani didn't accept that token. Check you copied all of it.");
@@ -69,18 +71,24 @@ export async function fetchWaniKani(data: Data, token: string, fetcher: typeof f
     ),
     wkGetAll<{ characters: string | null }>(`${WK_API}/subjects?types=radical,kanji,vocabulary,kana_vocabulary`, token, fetcher),
   ]);
-  const chars = new Map(subjects.map((s) => [s.id, s.data.characters]));
+  const subject = new Map(subjects.map((s) => [s.id, s]));
   const spelling = wordsBySpelling(data);
   const out = new Map<string, WaniKaniItem>();
   for (const { data: a } of assignments) {
-    const c = chars.get(a.subject_id);
+    const s = subject.get(a.subject_id);
+    const c = s?.data.characters;
     if (!c || !a.srs_stage) continue;
-    const ref: ItemRef | null = data.kanji[c]
-      ? { kind: "kanji", key: c }
-      : data.radicals[c]
-        ? { kind: "radical", key: c }
-        : spelling.has(c)
-          ? { kind: "word", key: spelling.get(c)! }
+    // Each kind of subject only matches its own kind: WaniKani's radicals include katakana shapes (ト "toe",
+    // ハ "fins"), which as words are dictionary oddities like ト "7th note of the scale".
+    const vocab = s.object === "vocabulary" || s.object === "kana_vocabulary";
+    const ref: ItemRef | null = vocab
+      ? spelling.has(c)
+        ? { kind: "word", key: spelling.get(c)! }
+        : null
+      : data.kanji[c]
+        ? { kind: "kanji", key: c }
+        : data.radicals[c]
+          ? { kind: "radical", key: c }
           : null;
     if (!ref) continue;
     const id = `${ref.kind}:${ref.key}`;

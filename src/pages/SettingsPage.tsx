@@ -205,6 +205,16 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                   Reviews are scheduled with FSRS, the same algorithm as Anki's newer scheduler. Higher recall means more
                   frequent reviews; 90% is the Anki default.
                 </p>
+                <label class="check-setting">
+                  <input type="checkbox" checked={!store.settings.longHard} onChange={() => set("longHard", !store.settings.longHard || undefined)} />
+                  <span>
+                    Keep Hard short
+                    <small>
+                      Hard brings a card back after at most 1.2× the last gap, like Anki's classic scheduler (14 days → 17).
+                      Off, Hard uses FSRS's own gap, which still grows a lot (14 days → about a month).
+                    </small>
+                  </span>
+                </label>
                 <FsrsParams />
               </details>
             </Section>

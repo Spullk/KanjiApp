@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "preact/hooks";
 import { checkParameters, createEmptyCard, fsrs, generatorParameters, migrateParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
-import { isKanaWord, type Data } from "./data";
+import { isJunkWord, isKanaWord, type Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
 import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order";
 import { canonical, compactStore, expandStore, isCompact } from "./compact";
@@ -77,6 +77,8 @@ export type StoredCard = {
 export type Settings = {
   batch: number;
   retention: number;
+  /** true: Hard uses FSRS's own (longer) gap rather than at most 1.2× the last one. */
+  longHard?: boolean;
   /** self: show the answer and grade yourself (Anki). typed: type meaning and reading (WaniKani). */
   answerMode: "self" | "typed";
   /** FSRS weights trained on your own history (e.g. copied from Anki); default ones when unset. */
@@ -235,6 +237,22 @@ function fromCard(c: Card, added: number, updated: number): StoredCard {
   };
 }
 
+/** Hard on a card you'd remembered for a while brings it back after at most this many times the last gap. */
+export const HARD_GROWTH = 1.2;
+
+/**
+ * Hard is still a pass, so FSRS grows the gap (a 14-day card can come back in a month). Unless you turn it off,
+ * Hard works like Anki's classic scheduler instead: the gap grows by at most a fifth, and never less than a day.
+ * The memory estimate stays FSRS's, so the next answer is scheduled from what it predicts.
+ */
+function shortHard(settings: Settings, before: StoredCard, after: Card, now: number): Card {
+  if (settings.longHard || before.state !== State.Review || after.state !== State.Review || !before.last_review) return after;
+  const gap = Math.max(0, (now - before.last_review) / 86_400_000);
+  const days = Math.max(1, Math.round(gap * HARD_GROWTH));
+  if (days >= after.scheduled_days) return after;
+  return { ...after, scheduled_days: days, due: new Date(now + days * 86_400_000) };
+}
+
 function scheduler(settings: Settings) {
   return fsrs(generatorParameters({ request_retention: settings.retention, enable_fuzz: true, w: settings.fsrsParams }));
 }
@@ -304,6 +322,26 @@ export function addReviewedItem(store: Store, kind: ItemKind, key: string, stabi
       updated: now,
     };
     delete store.removed[id];
+  }
+}
+
+/** Words that are dictionary oddities (see isJunkWord) and that you have cards for or marked known. */
+export function junkWordsStudied(store: Store, data: Data): string[] {
+  const keys = new Set<string>();
+  const marked = Object.keys(store.items).filter((id) => store.items[id].status);
+  for (const id of [...Object.keys(store.cards), ...marked]) {
+    if (!id.startsWith("word:")) continue;
+    const key = parseCardId(id).key;
+    if (isJunkWord(data.words[key])) keys.add(key);
+  }
+  return [...keys];
+}
+
+/** Takes the oddities an import brought in (ト as "7th note of the scale") out of your reviews and known words. */
+export function dropJunkWords(store: Store, keys: string[], now = Date.now()) {
+  for (const key of keys) {
+    removeItem(store, "word", key, now);
+    if (store.items[itemId("word", key)]?.status) setItemInfo(store, "word", key, { status: undefined }, now);
   }
 }
 
@@ -380,7 +418,7 @@ export function grade(store: Store, id: string, rating: Grade, now = Date.now())
   const stored = store.cards[id];
   if (!stored) return; // removed meanwhile, e.g. by a sync from another device
   const { card } = scheduler(store.settings).next(toCard(stored), new Date(now), rating);
-  store.cards[id] = fromCard(card, stored.added, now);
+  store.cards[id] = fromCard(rating === Rating.Hard ? shortHard(store.settings, stored, card, now) : card, stored.added, now);
   store.log.push([id, rating, now]);
   store.undo = [...store.undo, { card: id, before: stored, time: now }].slice(-UNDO_LIMIT);
 }
@@ -402,7 +440,7 @@ export function preview(store: Store, id: string, now = Date.now()): Record<Grad
   const p = scheduler(store.settings).repeat(toCard(store.cards[id]), new Date(now));
   return {
     [Rating.Again]: p[Rating.Again].card.due.getTime(),
-    [Rating.Hard]: p[Rating.Hard].card.due.getTime(),
+    [Rating.Hard]: shortHard(store.settings, store.cards[id], p[Rating.Hard].card, now).due.getTime(),
     [Rating.Good]: p[Rating.Good].card.due.getTime(),
     [Rating.Easy]: p[Rating.Easy].card.due.getTime(),
   } as Record<Grade, number>;

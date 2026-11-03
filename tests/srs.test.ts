@@ -3,8 +3,8 @@ import kanji from "../data/kanji.json";
 import radicals from "../data/radicals.json";
 import words from "../data/words.json";
 import lessons from "../data/lessons.json";
-import type { Data } from "../src/data";
-import { addItem, dueCards, emptyStore, endVacation, grade, isAdded, isLeech, merge, newLeftToday, parseFsrsParams, practiceCards, setItemInfo, startVacation, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
+import { isJunkWord, type Data } from "../src/data";
+import { addItem, addReviewedItem, dropJunkWords, dueCards, junkWordsStudied, emptyStore, endVacation, grade, isAdded, isLeech, merge, newLeftToday, parseFsrsParams, practiceCards, setItemInfo, startVacation, migrate, nextToLearn, preview, Rating, removeItem, stageOf, undoLast } from "../src/srs";
 
 const data = { kanji, radicals, words, sentences: {}, lessons } as unknown as Data;
 const DAY = 86_400_000;
@@ -296,5 +296,42 @@ describe("one card per kanji", () => {
     expect(s.cards["kanji:語:meaning"].stability).toBe(3);
     expect(s.cards["kanji:本:reading"]).toBeDefined();
     expect(dueCards(s, 20).some((id) => id.endsWith(":both"))).toBe(false);
+  });
+});
+
+describe("too-long gaps and junk words", () => {
+  it("keeps Hard short on a card you've held for a while, unless that's switched off", () => {
+    const s = emptyStore();
+    const now = new Date(2026, 10, 3, 12).getTime();
+    // A WaniKani Guru II item: it held 14 days and is due now.
+    addReviewedItem(s, "kanji", "語", 14, now, now - 14 * DAY);
+    const id = "kanji:語:meaning";
+    const days = (t: number) => Math.round((t - now) / DAY);
+    const p = preview(s, id, now);
+    expect(days(p[Rating.Hard])).toBe(17);
+    expect(days(p[Rating.Good])).toBeGreaterThan(17);
+    s.settings.longHard = true;
+    expect(days(preview(s, id, now)[Rating.Hard])).toBeGreaterThan(25);
+    s.settings.longHard = undefined;
+    grade(s, id, Rating.Hard, now);
+    expect(days(s.cards[id].due)).toBe(17);
+    expect(s.cards[id].scheduled_days).toBe(17);
+  });
+
+  it("takes dictionary oddities like ト out of your reviews and known words", () => {
+    const to = Object.values(data.words).find((w) => w.w === "ト")!;
+    expect(isJunkWord(to)).toBe(true);
+    expect(isJunkWord(data.words["1464530"])).toBe(false);
+    const s = emptyStore();
+    addReviewedItem(s, "word", to.id, 14, 0, 0);
+    addItem(s, "word", "1464530", 0);
+    setItemInfo(s, "word", to.id, { status: "known" }, 0);
+    const junk = junkWordsStudied(s, data);
+    expect(junk).toEqual([to.id]);
+    dropJunkWords(s, junk, 10);
+    expect(isAdded(s, "word", to.id)).toBe(false);
+    expect(s.items[`word:${to.id}`]?.status).toBeUndefined();
+    expect(isAdded(s, "word", "1464530")).toBe(true);
+    expect(junkWordsStudied(s, data)).toEqual([]);
   });
 });

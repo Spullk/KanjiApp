@@ -54,6 +54,8 @@ export type Word = {
   rec?: [string, string, string, string];
   /** A word taught in kana that also has a rarely used kanji spelling (ある: 有る). */
   kanjiForm?: string;
+  /** Once taught in a lesson under a meaning the JLPT list didn't mean (はず as "purging croton"). */
+  junk?: boolean;
 };
 
 /** audio: [Tatoeba audio id, speaker] when a freely licensed recording exists. */
@@ -127,4 +129,12 @@ export function isKanji(c: string): boolean {
 /** Written in kana only (ようこそ, アイス): nothing to read, so its cards ask just the meaning. */
 export function isKanaWord(w: Word): boolean {
   return ![...w.w].some(isKanji);
+}
+
+/**
+ * Dictionary oddities nobody means to study: a lone kana outside the lessons (ト as "7th note of the scale",
+ * which WaniKani's ト "toe" radical used to bring in), or a kana word a lesson once taught under the wrong meaning.
+ */
+export function isJunkWord(w: Word | undefined): boolean {
+  return !!w && (!!w.junk || (!w.lesson && [...w.w].length === 1 && isKanaWord(w)));
 }
