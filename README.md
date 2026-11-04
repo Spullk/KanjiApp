@@ -59,12 +59,25 @@ python scripts/build_data.py
 
 Leave out `--sentences` to skip the ~100 MB Tatoeba download; the build then writes no sentences. The **Build data** GitHub Action runs both steps with sentences whenever `scripts/` changes and commits the result.
 
-## Credits
+## License
+
+Nekko's code is free software under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0). Anyone can use, change and share it, but if they share a changed version, or run one as a website or app for other people, they have to publish their changed source under the same license. Nobody can take Nekko, tweak it and close it up.
+
+Copyright (C) 2026 Spullk
+
+### Data
+
+The AGPL covers the code. The data the app is built from belongs to the projects below and keeps their licenses, and the credits are also shown in the app under Settings → Credits.
 
 - [JMdict and KANJIDIC2](https://www.edrdg.org/) by the Electronic Dictionary Research and Development Group, CC BY-SA 4.0 (via [jamdict-data](https://pypi.org/project/jamdict-data/))
 - [KanjiVG](https://kanjivg.tagaini.net/) by Ulrich Apel and contributors, CC BY-SA 3.0
-- JLPT levels from Jonathan Waller's lists, via [kanji-data](https://github.com/davidluzgouveia/kanji-data) (MIT)
-- Example sentences and their recordings from the [Tatoeba Project](https://tatoeba.org/), CC BY 2.0 FR (recordings under each speaker's own licence)
-- Word recordings from [Kanji alive](https://kanjialive.com/), CC BY 4.0, streamed from their media server; words without a recording use the device's Japanese text-to-speech voice
+- JLPT levels from Jonathan Waller's lists, via [kanji-data](https://github.com/davidluzgouveia/kanji-data) (MIT) for kanji and [OpenJLPT](https://pypi.org/project/openjlpt/) (CC BY-SA 4.0) for words
+- Example sentences and their recordings from the [Tatoeba Project](https://tatoeba.org/), CC BY 2.0 FR (recordings under each speaker's own license)
+- More example sentences from Wiktionary contributors, via [kaikki.org](https://kaikki.org/), CC BY-SA 4.0
+- Film and TV subtitle sentences from [JESC](https://nlp.stanford.edu/projects/jesc/) (Pryzant et al., Stanford), CC BY-SA 4.0
+- Pitch accents from [Kanjium](https://github.com/mifunetoshiro/kanjium), CC BY-SA 4.0
+- Word recordings from [Kanji alive](https://kanjialive.com/), CC BY 4.0, and from volunteers on [Wikimedia Commons](https://commons.wikimedia.org/) and [Lingua Libre](https://lingualibre.org/) (each recording's author and license are listed with it); words without a recording use the device's Japanese text-to-speech voice, marked with a robot icon
+- Stories from [Aozora Bunko](https://www.aozora.gr.jp/) (public domain) and the free [Tadoku](https://tadoku.org/japanese/) readers by NPO多言語多読, CC BY-NC-ND 4.0 (shown unchanged, not for commercial use)
+- Review fonts from [Google Fonts](https://fonts.google.com/), SIL Open Font License
 
-Because of the share-alike licenses, the generated `data/` is CC BY-SA 4.0.
+Because of the share-alike licenses, the generated `data/` is CC BY-SA 4.0, except the stories in `data/stories/`: the Aozora ones (`a*.json`) are public domain and the Tadoku ones (`t*.json`) stay CC BY-NC-ND 4.0.

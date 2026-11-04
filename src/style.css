@@ -1264,6 +1264,11 @@ button.secondary,
   color: var(--muted);
   font-size: 0.85rem;
 }
+.credits-license {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
 
 /* ---------- already known */
 
