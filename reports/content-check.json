@@ -1,0 +1,7864 @@
+{
+ "counts": {
+  "words": 21507,
+  "kanji": 2136,
+  "radicals": 372,
+  "sentences": 46129,
+  "stories": 115,
+  "grammar points": 132
+ },
+ "checks": {
+  "lesson-word-missing": {
+   "area": "Words",
+   "title": "Lesson words with no dictionary entry",
+   "why": "A lesson lists a word id that words.json doesn't have, so the card can't show.",
+   "count": 0,
+   "items": []
+  },
+  "word-no-meaning": {
+   "area": "Words",
+   "title": "Words with no meaning",
+   "why": "No sense has an English gloss, so the card has nothing to ask for.",
+   "count": 0,
+   "items": []
+  },
+  "lesson-word-no-sentence": {
+   "area": "Words",
+   "title": "Lesson words with no example sentence",
+   "why": "Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.",
+   "count": 279,
+   "items": [
+    {
+     "lesson": 1,
+     "word": "本木 (もとき)",
+     "meaning": "original stock",
+     "id": "1523260"
+    },
+    {
+     "lesson": 1,
+     "word": "ください",
+     "meaning": "please (give me)",
+     "id": "1184270"
+    },
+    {
+     "lesson": 2,
+     "word": "三十日 (みそか)",
+     "meaning": "last day of the month",
+     "id": "1604510"
+    },
+    {
+     "lesson": 2,
+     "word": "かける",
+     "meaning": "to hang up (e.g. a coat, a picture on the wall)",
+     "id": "1207610"
+    },
+    {
+     "lesson": 5,
+     "word": "どう",
+     "meaning": "how",
+     "id": "1008910"
+    },
+    {
+     "lesson": 6,
+     "word": "二百十日 (にひゃくとおか)",
+     "meaning": "210th day (from the first day of spring according to the lunar calendar)",
+     "id": "1463030"
+    },
+    {
+     "lesson": 7,
+     "word": "上田 (じょうでん)",
+     "meaning": "high rice field",
+     "id": "1353990"
+    },
+    {
+     "lesson": 10,
+     "word": "すぐに",
+     "meaning": "immediately",
+     "id": "1430620"
+    },
+    {
+     "lesson": 10,
+     "word": "つける",
+     "meaning": "to turn on",
+     "id": "1610400"
+    },
+    {
+     "lesson": 12,
+     "word": "開き (ひらき)",
+     "meaning": "opening",
+     "id": "1989500"
+    },
+    {
+     "lesson": 12,
+     "word": "千代 (ちよ)",
+     "meaning": "thousand years",
+     "id": "1581030"
+    },
+    {
+     "lesson": 13,
+     "word": "貸出用 (かしだしよう)",
+     "meaning": "circulation or lending (e.g. library books)",
+     "id": "1949630"
+    },
+    {
+     "lesson": 13,
+     "word": "ボタン",
+     "meaning": "button (clothing)",
+     "id": "1123880"
+    },
+    {
+     "lesson": 16,
+     "word": "そうして",
+     "meaning": "and",
+     "id": "1612860"
+    },
+    {
+     "lesson": 17,
+     "word": "どうして",
+     "meaning": "how",
+     "id": "1466940"
+    },
+    {
+     "lesson": 18,
+     "word": "元首 (げんしゅ)",
+     "meaning": "sovereign",
+     "id": "1260870"
+    },
+    {
+     "lesson": 19,
+     "word": "つまらない",
+     "meaning": "dull",
+     "id": "1008190"
+    },
+    {
+     "lesson": 21,
+     "word": "急いで (いそいで)",
+     "meaning": "hurriedly",
+     "id": "1228570"
+    },
+    {
+     "lesson": 22,
+     "word": "大店 (おおだな)",
+     "meaning": "large store",
+     "id": "1862050"
+    },
+    {
+     "lesson": 23,
+     "word": "または",
+     "meaning": "or",
+     "id": "1524990"
+    },
+    {
+     "lesson": 23,
+     "word": "できるだけ",
+     "meaning": "as much as one can",
+     "id": "1340460"
+    },
+    {
+     "lesson": 24,
+     "word": "字 (あざ)",
+     "meaning": "section of village",
+     "id": "1315120"
+    },
+    {
+     "lesson": 24,
+     "word": "こう",
+     "meaning": "in this way",
+     "id": "1004310"
+    },
+    {
+     "lesson": 24,
+     "word": "すり",
+     "meaning": "pickpocket",
+     "id": "1567450"
+    },
+    {
+     "lesson": 25,
+     "word": "買い占め (かいしめ)",
+     "meaning": "buying up of goods",
+     "id": "1589670"
+    },
+    {
+     "lesson": 26,
+     "word": "上っ調子 (うわっちょうし)",
+     "meaning": "flippant",
+     "id": "1352450"
+    },
+    {
+     "lesson": 26,
+     "word": "室町 (むろまち)",
+     "meaning": "Muromachi period (1336-1573)",
+     "id": "1608060"
+    },
+    {
+     "lesson": 28,
+     "word": "今秋 (こんしゅう)",
+     "meaning": "this autumn",
+     "id": "1289210"
+    },
+    {
+     "lesson": 28,
+     "word": "それで",
+     "meaning": "so",
+     "id": "1007000"
+    },
+    {
+     "lesson": 28,
+     "word": "それに",
+     "meaning": "besides",
+     "id": "1007040"
+    },
+    {
+     "lesson": 30,
+     "word": "米飯 (べいはん)",
+     "meaning": "cooked rice",
+     "id": "1509010"
+    },
+    {
+     "lesson": 30,
+     "word": "アフリカ",
+     "meaning": "Africa",
+     "id": "1929050"
+    },
+    {
+     "lesson": 30,
+     "word": "アメリカ",
+     "meaning": "(United States of) America",
+     "id": "1149830"
+    },
+    {
+     "lesson": 31,
+     "word": "これから",
+     "meaning": "from now on",
+     "id": "1004790"
+    },
+    {
+     "lesson": 32,
+     "word": "それほど",
+     "meaning": "to that degree",
+     "id": "1007060"
+    },
+    {
+     "lesson": 33,
+     "word": "実兄 (じっけい)",
+     "meaning": "biological older brother",
+     "id": "1320960"
+    },
+    {
+     "lesson": 35,
+     "word": "要 (かなめ)",
+     "meaning": "pivot",
+     "id": "1609600"
+    },
+    {
+     "lesson": 35,
+     "word": "一期 (いちご)",
+     "meaning": "one's whole life",
+     "id": "1161690"
+    },
+    {
+     "lesson": 38,
+     "word": "多角 (たかく)",
+     "meaning": "many-sided",
+     "id": "1610200"
+    },
+    {
+     "lesson": 38,
+     "word": "アジア",
+     "meaning": "Asia",
+     "id": "1015840"
+    },
+    {
+     "lesson": 39,
+     "word": "告別 (こくべつ)",
+     "meaning": "farewell",
+     "id": "1286080"
+    },
+    {
+     "lesson": 39,
+     "word": "面白 (おもしろ)",
+     "meaning": "amusing",
+     "id": "1533570"
+    },
+    {
+     "lesson": 39,
+     "word": "面 (おもて)",
+     "meaning": "face",
+     "id": "1584680"
+    },
+    {
+     "lesson": 39,
+     "word": "しかる",
+     "meaning": "a particular",
+     "id": "1394730"
+    },
+    {
+     "lesson": 39,
+     "word": "おいでになる",
+     "meaning": "to be",
+     "id": "1001180"
+    },
+    {
+     "lesson": 39,
+     "word": "したがって",
+     "meaning": "therefore",
+     "id": "1335230"
+    },
+    {
+     "lesson": 40,
+     "word": "利払い (りばらい)",
+     "meaning": "interest payment",
+     "id": "1549650"
+    },
+    {
+     "lesson": 40,
+     "word": "認め (みとめ)",
+     "meaning": "approval",
+     "id": "1611790"
+    },
+    {
+     "lesson": 40,
+     "word": "ほぼ",
+     "meaning": "almost",
+     "id": "1551940"
+    },
+    {
+     "lesson": 41,
+     "word": "在りし日 (ありしひ)",
+     "meaning": "past days",
+     "id": "1741040"
+    },
+    {
+     "lesson": 41,
+     "word": "決め球 (きめだま)",
+     "meaning": "winning pitch",
+     "id": "1630640"
+    },
+    {
+     "lesson": 42,
+     "word": "減反 (げんたん)",
+     "meaning": "reduction (of crop size)",
+     "id": "1263310"
+    },
+    {
+     "lesson": 42,
+     "word": "冊子 (さっし)",
+     "meaning": "book",
+     "id": "1298530"
+    },
+    {
+     "lesson": 45,
+     "word": "大路 (おおじ)",
+     "meaning": "main street (esp. in a capital)",
+     "id": "1786960"
+    },
+    {
+     "lesson": 46,
+     "word": "構図 (こうず)",
+     "meaning": "composition (of painting)",
+     "id": "1279720"
+    },
+    {
+     "lesson": 46,
+     "word": "そこで",
+     "meaning": "so",
+     "id": "1406090"
+    },
+    {
+     "lesson": 47,
+     "word": "新鋭 (しんえい)",
+     "meaning": "young and energetic",
+     "id": "1361530"
+    },
+    {
+     "lesson": 48,
+     "word": "石神 (しゃくじん)",
+     "meaning": "stone which is worshipped",
+     "id": "1649690"
+    },
+    {
+     "lesson": 48,
+     "word": "急伸 (きゅうしん)",
+     "meaning": "sudden rise (esp. of stock prices)",
+     "id": "1614730"
+    },
+    {
+     "lesson": 48,
+     "word": "どこか",
+     "meaning": "somewhere",
+     "id": "1189000"
+    },
+    {
+     "lesson": 51,
+     "word": "前頭 (まえがしら)",
+     "meaning": "rank-and-file wrestlers in the highest division",
+     "id": "1393770"
+    },
+    {
+     "lesson": 52,
+     "word": "福助 (ふくすけ)",
+     "meaning": "large-headed dwarf statue, bringer of good luck",
+     "id": "1826440"
+    },
+    {
+     "lesson": 52,
+     "word": "もしも",
+     "meaning": "if",
+     "id": "1612050"
+    },
+    {
+     "lesson": 53,
+     "word": "望月 (もちづき)",
+     "meaning": "full moon",
+     "id": "1519680"
+    },
+    {
+     "lesson": 54,
+     "word": "いつでも",
+     "meaning": "always",
+     "id": "1577130"
+    },
+    {
+     "lesson": 55,
+     "word": "上積み (うわづみ)",
+     "meaning": "loading on top",
+     "id": "1353640"
+    },
+    {
+     "lesson": 55,
+     "word": "太り肉 (ふとりじし)",
+     "meaning": "corpulent",
+     "id": "1787370"
+    },
+    {
+     "lesson": 56,
+     "word": "しきりに",
+     "meaning": "frequently",
+     "id": "1005480"
+    },
+    {
+     "lesson": 57,
+     "word": "雨が降る (あめがふる)",
+     "meaning": "to rain",
+     "id": "2851949"
+    },
+    {
+     "lesson": 58,
+     "word": "齢 (よわい)",
+     "meaning": "(one's) age",
+     "id": "1557940"
+    },
+    {
+     "lesson": 59,
+     "word": "背 (せい)",
+     "meaning": "height",
+     "id": "1472650"
+    },
+    {
+     "lesson": 59,
+     "word": "座り込み (すわりこみ)",
+     "meaning": "sit-in (protest)",
+     "id": "1291780"
+    },
+    {
+     "lesson": 59,
+     "word": "それでも",
+     "meaning": "but (still)",
+     "id": "1406060"
+    },
+    {
+     "lesson": 59,
+     "word": "それとも",
+     "meaning": "or",
+     "id": "1007010"
+    },
+    {
+     "lesson": 60,
+     "word": "理髪 (りはつ)",
+     "meaning": "haircut",
+     "id": "1550070"
+    },
+    {
+     "lesson": 60,
+     "word": "ところが",
+     "meaning": "even so",
+     "id": "1008570"
+    },
+    {
+     "lesson": 60,
+     "word": "ところで",
+     "meaning": "by the way",
+     "id": "1343110"
+    },
+    {
+     "lesson": 61,
+     "word": "なぜなら",
+     "meaning": "because",
+     "id": "1009410"
+    },
+    {
+     "lesson": 63,
+     "word": "戻し (もどし)",
+     "meaning": "returning",
+     "id": "1641890"
+    },
+    {
+     "lesson": 63,
+     "word": "抱く (だく)",
+     "meaning": "to hold in one's arms (e.g. a baby)",
+     "id": "2844997"
+    },
+    {
+     "lesson": 64,
+     "word": "勝ち越し (かちこし)",
+     "meaning": "having more wins than losses",
+     "id": "1346090"
+    },
+    {
+     "lesson": 64,
+     "word": "君が代 (きみがよ)",
+     "meaning": "Imperial reign",
+     "id": "1630470"
+    },
+    {
+     "lesson": 64,
+     "word": "上越 (じょうえつ)",
+     "meaning": "area on Japan Sea side of Japan, including Niigata",
+     "id": "1352660"
+    },
+    {
+     "lesson": 64,
+     "word": "吉兆 (きっちょう)",
+     "meaning": "lucky omen",
+     "id": "1226310"
+    },
+    {
+     "lesson": 64,
+     "word": "いつまでも",
+     "meaning": "forever",
+     "id": "1188880"
+    },
+    {
+     "lesson": 65,
+     "word": "歳暮 (せいぼ)",
+     "meaning": "year-end gift",
+     "id": "1295000"
+    },
+    {
+     "lesson": 65,
+     "word": "たまらない",
+     "meaning": "intolerable",
+     "id": "1211340"
+    },
+    {
+     "lesson": 65,
+     "word": "どうしても",
+     "meaning": "by all means",
+     "id": "1466950"
+    },
+    {
+     "lesson": 67,
+     "word": "いただきます",
+     "meaning": "thank you (for the meal just served)",
+     "id": "1410800"
+    },
+    {
+     "lesson": 67,
+     "word": "かもしれない",
+     "meaning": "may",
+     "id": "1002970"
+    },
+    {
+     "lesson": 68,
+     "word": "鳴り (なり)",
+     "meaning": "ringing",
+     "id": "1899440"
+    },
+    {
+     "lesson": 68,
+     "word": "鳴門 (なると)",
+     "meaning": "strait with a roaring tidal ebb and flow",
+     "id": "1753350"
+    },
+    {
+     "lesson": 68,
+     "word": "バン",
+     "meaning": "bun (hairstyle)",
+     "id": "1100090"
+    },
+    {
+     "lesson": 69,
+     "word": "グランド",
+     "meaning": "grand",
+     "id": "1046840"
+    },
+    {
+     "lesson": 69,
+     "word": "ヨーロッパ",
+     "meaning": "Europe",
+     "id": "1137570"
+    },
+    {
+     "lesson": 70,
+     "word": "パス",
+     "meaning": "path (of a file, directory, etc.)",
+     "id": "2861508"
+    },
+    {
+     "lesson": 70,
+     "word": "いつか",
+     "meaning": "sometime",
+     "id": "1188790"
+    },
+    {
+     "lesson": 70,
+     "word": "ロケット",
+     "meaning": "locket",
+     "id": "2862534"
+    },
+    {
+     "lesson": 70,
+     "word": "ごめんなさい",
+     "meaning": "I'm sorry",
+     "id": "1270680"
+    },
+    {
+     "lesson": 71,
+     "word": "市町村 (しちょうそん)",
+     "meaning": "cities, towns and villages",
+     "id": "1308600"
+    },
+    {
+     "lesson": 72,
+     "word": "インキ",
+     "meaning": "ink",
+     "id": "2856157"
+    },
+    {
+     "lesson": 73,
+     "word": "カラー",
+     "meaning": "collar",
+     "id": "2853151"
+    },
+    {
+     "lesson": 73,
+     "word": "かるた",
+     "meaning": "karuta",
+     "id": "1590710"
+    },
+    {
+     "lesson": 74,
+     "word": "低める (ひくめる)",
+     "meaning": "to lower",
+     "id": "1434200"
+    },
+    {
+     "lesson": 74,
+     "word": "担い手 (にないて)",
+     "meaning": "bearer",
+     "id": "1638080"
+    },
+    {
+     "lesson": 74,
+     "word": "担ぎ (かつぎ)",
+     "meaning": "carrier",
+     "id": "1865980"
+    },
+    {
+     "lesson": 75,
+     "word": "蔵相 (ぞうしょう)",
+     "meaning": "Minister of Finance",
+     "id": "1403520"
+    },
+    {
+     "lesson": 75,
+     "word": "タイア",
+     "meaning": "tire",
+     "id": "1076120"
+    },
+    {
+     "lesson": 76,
+     "word": "雨量 (うりょう)",
+     "meaning": "(amount of) rainfall",
+     "id": "1172140"
+    },
+    {
+     "lesson": 76,
+     "word": "管 (くだ)",
+     "meaning": "pipe",
+     "id": "2868440"
+    },
+    {
+     "lesson": 77,
+     "word": "軍兵 (ぐんぴょう)",
+     "meaning": "armed forces",
+     "id": "1578190"
+    },
+    {
+     "lesson": 77,
+     "word": "海浜 (かいひん)",
+     "meaning": "seashore",
+     "id": "1201720"
+    },
+    {
+     "lesson": 78,
+     "word": "船橋 (ふなばし)",
+     "meaning": "pontoon bridge",
+     "id": "1649900"
+    },
+    {
+     "lesson": 79,
+     "word": "雑木林 (ぞうきばやし)",
+     "meaning": "grove of miscellaneous trees",
+     "id": "1299570"
+    },
+    {
+     "lesson": 80,
+     "word": "競る (せる)",
+     "meaning": "to compete",
+     "id": "1234050"
+    },
+    {
+     "lesson": 80,
+     "word": "眼 (まなこ)",
+     "meaning": "eye",
+     "id": "2662230"
+    },
+    {
+     "lesson": 85,
+     "word": "すまない",
+     "meaning": "inexcusable",
+     "id": "1610020"
+    },
+    {
+     "lesson": 86,
+     "word": "早乙女 (さおとめ)",
+     "meaning": "young female rice planter",
+     "id": "1844500"
+    },
+    {
+     "lesson": 87,
+     "word": "練り (ねり)",
+     "meaning": "kneading",
+     "id": "1642900"
+    },
+    {
+     "lesson": 87,
+     "word": "とっくに",
+     "meaning": "long ago",
+     "id": "1320570"
+    },
+    {
+     "lesson": 88,
+     "word": "酪農 (らくのう)",
+     "meaning": "dairy farming",
+     "id": "1548890"
+    },
+    {
+     "lesson": 89,
+     "word": "布施 (ふせ)",
+     "meaning": "alms-giving",
+     "id": "1496870"
+    },
+    {
+     "lesson": 91,
+     "word": "まごまご",
+     "meaning": "confused",
+     "id": "1012110"
+    },
+    {
+     "lesson": 92,
+     "word": "やっぱり",
+     "meaning": "as expected",
+     "id": "1012810"
+    },
+    {
+     "lesson": 94,
+     "word": "焼け跡 (やけあと)",
+     "meaning": "ruins of a fire",
+     "id": "1634560"
+    },
+    {
+     "lesson": 94,
+     "word": "くたびれる",
+     "meaning": "to get tired",
+     "id": "1003810"
+    },
+    {
+     "lesson": 94,
+     "word": "くだらない",
+     "meaning": "trivial",
+     "id": "1184360"
+    },
+    {
+     "lesson": 94,
+     "word": "くれぐれも",
+     "meaning": "sincerely",
+     "id": "1269140"
+    },
+    {
+     "lesson": 96,
+     "word": "鈍化 (どんか)",
+     "meaning": "becoming dull",
+     "id": "1457580"
+    },
+    {
+     "lesson": 96,
+     "word": "そういえば",
+     "meaning": "now that you mention it",
+     "id": "1982210"
+    },
+    {
+     "lesson": 96,
+     "word": "なんとなく",
+     "meaning": "somehow",
+     "id": "1599730"
+    },
+    {
+     "lesson": 97,
+     "word": "完封 (かんぷう)",
+     "meaning": "total blockage",
+     "id": "1211600"
+    },
+    {
+     "lesson": 97,
+     "word": "荒木 (あらき)",
+     "meaning": "logs in bark",
+     "id": "1281640"
+    },
+    {
+     "lesson": 97,
+     "word": "土砂 (どしゃ)",
+     "meaning": "sediment",
+     "id": "1624160"
+    },
+    {
+     "lesson": 97,
+     "word": "荒れ (あれ)",
+     "meaning": "stormy weather",
+     "id": "1857320"
+    },
+    {
+     "lesson": 97,
+     "word": "硬さ (かたさ)",
+     "meaning": "firmness",
+     "id": "1610650"
+    },
+    {
+     "lesson": 97,
+     "word": "宝刀 (ほうとう)",
+     "meaning": "treasured sword",
+     "id": "1748420"
+    },
+    {
+     "lesson": 98,
+     "word": "普賢 (ふげん)",
+     "meaning": "Samantabhadra (bodhisattva)",
+     "id": "1497140"
+    },
+    {
+     "lesson": 98,
+     "word": "おかげさまで",
+     "meaning": "thankfully",
+     "id": "1270220"
+    },
+    {
+     "lesson": 99,
+     "word": "殿 (どの)",
+     "meaning": "Mr.",
+     "id": "1442500"
+    },
+    {
+     "lesson": 100,
+     "word": "掃海 (そうかい)",
+     "meaning": "sweeping the sea for mines",
+     "id": "1399770"
+    },
+    {
+     "lesson": 100,
+     "word": "鬼神 (きしん)",
+     "meaning": "fierce god",
+     "id": "1577770"
+    },
+    {
+     "lesson": 100,
+     "word": "はじめまして",
+     "meaning": "nice to meet you",
+     "id": "1625780"
+    },
+    {
+     "lesson": 101,
+     "word": "もしかしたら",
+     "meaning": "perhaps",
+     "id": "1012510"
+    },
+    {
+     "lesson": 101,
+     "word": "もしかすると",
+     "meaning": "perhaps",
+     "id": "1012530"
+    },
+    {
+     "lesson": 101,
+     "word": "ごめんください",
+     "meaning": "may I come in?",
+     "id": "1270690"
+    },
+    {
+     "lesson": 102,
+     "word": "かしこまりました",
+     "meaning": "certainly!",
+     "id": "1002790"
+    },
+    {
+     "lesson": 102,
+     "word": "レクリェーション",
+     "meaning": "recreation",
+     "id": "1144860"
+    },
+    {
+     "lesson": 105,
+     "word": "筒井 (つつい)",
+     "meaning": "round well",
+     "id": "1687970"
+    },
+    {
+     "lesson": 106,
+     "word": "蒸す (むす)",
+     "meaning": "to steam (food, towel, etc.)",
+     "id": "1356900"
+    },
+    {
+     "lesson": 107,
+     "word": "あぶる",
+     "meaning": "to warm (e.g. one's hands over a fire)",
+     "id": "1568910"
+    },
+    {
+     "lesson": 108,
+     "word": "躍り (おどり)",
+     "meaning": "leaping",
+     "id": "1643460"
+    },
+    {
+     "lesson": 108,
+     "word": "清涼 (せいりょう)",
+     "meaning": "cool",
+     "id": "1378390"
+    },
+    {
+     "lesson": 108,
+     "word": "こうして",
+     "meaning": "thus",
+     "id": "2008040"
+    },
+    {
+     "lesson": 108,
+     "word": "こないだ",
+     "meaning": "the other day",
+     "id": "1004610"
+    },
+    {
+     "lesson": 109,
+     "word": "繰り延べ (くりのべ)",
+     "meaning": "postponement",
+     "id": "1246920"
+    },
+    {
+     "lesson": 109,
+     "word": "チョーク",
+     "meaning": "chock (wedge placed under a wheel)",
+     "id": "2854421"
+    },
+    {
+     "lesson": 110,
+     "word": "安保 (あんぽ)",
+     "meaning": "security (e.g. national security)",
+     "id": "1154260"
+    },
+    {
+     "lesson": 110,
+     "word": "超党派 (ちょうとうは)",
+     "meaning": "suprapartisan",
+     "id": "1742430"
+    },
+    {
+     "lesson": 110,
+     "word": "弔問 (ちょうもん)",
+     "meaning": "condolence call",
+     "id": "1427750"
+    },
+    {
+     "lesson": 111,
+     "word": "小選挙区 (しょうせんきょく)",
+     "meaning": "small electoral district",
+     "id": "1952580"
+    },
+    {
+     "lesson": 111,
+     "word": "旗揚げ (はたあげ)",
+     "meaning": "raising an army",
+     "id": "1220290"
+    },
+    {
+     "lesson": 111,
+     "word": "さっと",
+     "meaning": "quickly (esp. actions)",
+     "id": "1005200"
+    },
+    {
+     "lesson": 113,
+     "word": "整った (ととのった)",
+     "meaning": "well-ordered",
+     "id": "1897670"
+    },
+    {
+     "lesson": 114,
+     "word": "宮内庁 (くないちょう)",
+     "meaning": "Imperial Household Agency",
+     "id": "1228480"
+    },
+    {
+     "lesson": 115,
+     "word": "祝儀 (しゅうぎ)",
+     "meaning": "celebration",
+     "id": "1337420"
+    },
+    {
+     "lesson": 115,
+     "word": "封建主義 (ほうけんしゅぎ)",
+     "meaning": "feudalism",
+     "id": "1611500"
+    },
+    {
+     "lesson": 116,
+     "word": "朱 (あけ)",
+     "meaning": "red",
+     "id": "1328470"
+    },
+    {
+     "lesson": 118,
+     "word": "郷土 (きょうど)",
+     "meaning": "native place",
+     "id": "1238510"
+    },
+    {
+     "lesson": 119,
+     "word": "崎 (さき)",
+     "meaning": "small peninsula",
+     "id": "1297220"
+    },
+    {
+     "lesson": 119,
+     "word": "催涙 (さいるい)",
+     "meaning": "tear-inducing",
+     "id": "1657650"
+    },
+    {
+     "lesson": 119,
+     "word": "寂然 (せきぜん)",
+     "meaning": "lonely",
+     "id": "1579730"
+    },
+    {
+     "lesson": 119,
+     "word": "きちっと",
+     "meaning": "properly",
+     "id": "1003390"
+    },
+    {
+     "lesson": 120,
+     "word": "嫡出 (ちゃくしゅつ)",
+     "meaning": "legitimate birth",
+     "id": "1656930"
+    },
+    {
+     "lesson": 123,
+     "word": "本塁打 (ほんるいだ)",
+     "meaning": "home run",
+     "id": "1523310"
+    },
+    {
+     "lesson": 123,
+     "word": "味の素 (あじのもと)",
+     "meaning": "Ajinomoto",
+     "id": "1526990"
+    },
+    {
+     "lesson": 125,
+     "word": "中継ぎ (なかつぎ)",
+     "meaning": "joining",
+     "id": "1424050"
+    },
+    {
+     "lesson": 125,
+     "word": "米倉 (こめぐら)",
+     "meaning": "rice granary",
+     "id": "1723760"
+    },
+    {
+     "lesson": 127,
+     "word": "博 (はく)",
+     "meaning": "doctor",
+     "id": "1583000"
+    },
+    {
+     "lesson": 129,
+     "word": "染め (そめ)",
+     "meaning": "dyeing",
+     "id": "1854060"
+    },
+    {
+     "lesson": 130,
+     "word": "至上 (しじょう)",
+     "meaning": "supremacy",
+     "id": "1311950"
+    },
+    {
+     "lesson": 130,
+     "word": "なんだかんだ",
+     "meaning": "something or other",
+     "id": "1188360"
+    },
+    {
+     "lesson": 131,
+     "word": "喪主 (もしゅ)",
+     "meaning": "chief mourner",
+     "id": "1399300"
+    },
+    {
+     "lesson": 131,
+     "word": "ずれ",
+     "meaning": "gap",
+     "id": "1006450"
+    },
+    {
+     "lesson": 133,
+     "word": "削り節 (けずりぶし)",
+     "meaning": "flaked bonito",
+     "id": "1298070"
+    },
+    {
+     "lesson": 136,
+     "word": "醸成 (じょうせい)",
+     "meaning": "brewing",
+     "id": "1357080"
+    },
+    {
+     "lesson": 136,
+     "word": "出納 (すいとう)",
+     "meaning": "receipts and expenditure (disbursements)",
+     "id": "1339950"
+    },
+    {
+     "lesson": 137,
+     "word": "残った分 (のこったぶん)",
+     "meaning": "amount left over",
+     "id": "1900970"
+    },
+    {
+     "lesson": 137,
+     "word": "鎮魂 (ちんこん)",
+     "meaning": "repose of a soul",
+     "id": "1432060"
+    },
+    {
+     "lesson": 137,
+     "word": "宗主国 (そうしゅこく)",
+     "meaning": "suzerain state",
+     "id": "1331450"
+    },
+    {
+     "lesson": 138,
+     "word": "俊足 (しゅんそく)",
+     "meaning": "swiftness of foot",
+     "id": "1340940"
+    },
+    {
+     "lesson": 139,
+     "word": "嘱託 (しょくたく)",
+     "meaning": "commission",
+     "id": "1357140"
+    },
+    {
+     "lesson": 139,
+     "word": "水稲 (すいとう)",
+     "meaning": "wet-land rice",
+     "id": "1371310"
+    },
+    {
+     "lesson": 140,
+     "word": "門扉 (もんぴ)",
+     "meaning": "door(s) of a gate",
+     "id": "1536270"
+    },
+    {
+     "lesson": 141,
+     "word": "大綱 (たいこう)",
+     "meaning": "fundamental principles",
+     "id": "1661030"
+    },
+    {
+     "lesson": 143,
+     "word": "縄文 (じょうもん)",
+     "meaning": "straw-rope pattern pressed into earthenware",
+     "id": "1459850"
+    },
+    {
+     "lesson": 143,
+     "word": "感慨 (かんがい)",
+     "meaning": "deep emotion",
+     "id": "1212310"
+    },
+    {
+     "lesson": 143,
+     "word": "揺さぶり (ゆさぶり)",
+     "meaning": "shaking",
+     "id": "1855260"
+    },
+    {
+     "lesson": 144,
+     "word": "誓って (ちかって)",
+     "meaning": "surely",
+     "id": "1622640"
+    },
+    {
+     "lesson": 145,
+     "word": "沿って (そって)",
+     "meaning": "along",
+     "id": "1176710"
+    },
+    {
+     "lesson": 145,
+     "word": "隆盛 (りゅうせい)",
+     "meaning": "prosperity",
+     "id": "1552940"
+    },
+    {
+     "lesson": 146,
+     "word": "柄 (え)",
+     "meaning": "handle",
+     "id": "1508290"
+    },
+    {
+     "lesson": 147,
+     "word": "貫 (かん)",
+     "meaning": "kan (obs. unit of weight, approx. 3.75 kg, 8.3 lb)",
+     "id": "1956010"
+    },
+    {
+     "lesson": 147,
+     "word": "仙台 (せんだい)",
+     "meaning": "Sendai (city in Miyagi)",
+     "id": "2164680"
+    },
+    {
+     "lesson": 147,
+     "word": "ティッシュペーパー",
+     "meaning": "tissue paper",
+     "id": "1079110"
+    },
+    {
+     "lesson": 148,
+     "word": "棋聖 (きせい)",
+     "meaning": "great master of go",
+     "id": "1614470"
+    },
+    {
+     "lesson": 148,
+     "word": "兼ね合い (かねあい)",
+     "meaning": "equilibrium",
+     "id": "1256530"
+    },
+    {
+     "lesson": 148,
+     "word": "えい",
+     "meaning": "ray (any fish of superorder Batoidea)",
+     "id": "1001130"
+    },
+    {
+     "lesson": 148,
+     "word": "あられ",
+     "meaning": "hail (esp. hailballs under 5 mm)",
+     "id": "1574100"
+    },
+    {
+     "lesson": 148,
+     "word": "いやに",
+     "meaning": "awfully",
+     "id": "1000910"
+    },
+    {
+     "lesson": 149,
+     "word": "侍従 (じじゅう)",
+     "meaning": "chamberlain",
+     "id": "1314890"
+    },
+    {
+     "lesson": 149,
+     "word": "ソース",
+     "meaning": "source (of information)",
+     "id": "2843727"
+    },
+    {
+     "lesson": 149,
+     "word": "ポーズ",
+     "meaning": "pause",
+     "id": "2858735"
+    },
+    {
+     "lesson": 149,
+     "word": "ぼやく",
+     "meaning": "to grumble",
+     "id": "1011850"
+    },
+    {
+     "lesson": 149,
+     "word": "もろに",
+     "meaning": "completely",
+     "id": "1012710"
+    },
+    {
+     "lesson": 150,
+     "word": "擁立 (ようりつ)",
+     "meaning": "backing (for a position)",
+     "id": "1545760"
+    },
+    {
+     "lesson": 150,
+     "word": "罰 (ばち)",
+     "meaning": "(divine) punishment",
+     "id": "1478050"
+    },
+    {
+     "lesson": 150,
+     "word": "倉敷 (くらしき)",
+     "meaning": "Kurashiki (city)",
+     "id": "1399220"
+    },
+    {
+     "lesson": 150,
+     "word": "敷き布団 (しきぶとん)",
+     "meaning": "futon (laid on the floor)",
+     "id": "1594170"
+    },
+    {
+     "lesson": 150,
+     "word": "ずらっと",
+     "meaning": "in a line",
+     "id": "1006430"
+    },
+    {
+     "lesson": 151,
+     "word": "ハンガー",
+     "meaning": "hangar",
+     "id": "2861509"
+    },
+    {
+     "lesson": 151,
+     "word": "ビールス",
+     "meaning": "virus",
+     "id": "2843940"
+    },
+    {
+     "lesson": 151,
+     "word": "フォーム",
+     "meaning": "foam",
+     "id": "2855933"
+    },
+    {
+     "lesson": 151,
+     "word": "ふんだん",
+     "meaning": "plentiful",
+     "id": "1011100"
+    },
+    {
+     "lesson": 152,
+     "word": "飽食 (ほうしょく)",
+     "meaning": "eating until one is full",
+     "id": "1518340"
+    },
+    {
+     "lesson": 152,
+     "word": "ぼつぼつ",
+     "meaning": "gradually",
+     "id": "1011840"
+    },
+    {
+     "lesson": 152,
+     "word": "インターフォン",
+     "meaning": "intercom",
+     "id": "1022990"
+    },
+    {
+     "lesson": 153,
+     "word": "租税 (そぜい)",
+     "meaning": "taxes",
+     "id": "1396900"
+    },
+    {
+     "lesson": 153,
+     "word": "インターチェンジ",
+     "meaning": "interchange",
+     "id": "1022840"
+    },
+    {
+     "lesson": 154,
+     "word": "弁慶 (べんけい)",
+     "meaning": "strong person",
+     "id": "1512770"
+    },
+    {
+     "lesson": 155,
+     "word": "岳 (たけ)",
+     "meaning": "(high) mountain",
+     "id": "1207210"
+    },
+    {
+     "lesson": 157,
+     "word": "悔し泣き (くやしなき)",
+     "meaning": "crying from vexation",
+     "id": "1200430"
+    },
+    {
+     "lesson": 158,
+     "word": "戦没 (せんぼつ)",
+     "meaning": "death in battle",
+     "id": "1390550"
+    },
+    {
+     "lesson": 158,
+     "word": "陰り (かげり)",
+     "meaning": "shadow (e.g. on someone's happiness)",
+     "id": "1614790"
+    },
+    {
+     "lesson": 161,
+     "word": "艦艇 (かんてい)",
+     "meaning": "naval vessels",
+     "id": "1214760"
+    },
+    {
+     "lesson": 162,
+     "word": "据え置き (すえおき)",
+     "meaning": "deferment (e.g. of savings)",
+     "id": "1610690"
+    },
+    {
+     "lesson": 162,
+     "word": "肥 (こえ)",
+     "meaning": "manure",
+     "id": "1484250"
+    },
+    {
+     "lesson": 162,
+     "word": "詔 (みことのり)",
+     "meaning": "imperial decree",
+     "id": "1604470"
+    },
+    {
+     "lesson": 164,
+     "word": "懐疑 (かいぎ)",
+     "meaning": "doubt",
+     "id": "1200530"
+    },
+    {
+     "lesson": 165,
+     "word": "東亜 (とうあ)",
+     "meaning": "East Asia",
+     "id": "1598600"
+    },
+    {
+     "lesson": 165,
+     "word": "叙勲 (じょくん)",
+     "meaning": "conferring of decorations",
+     "id": "1344810"
+    },
+    {
+     "lesson": 167,
+     "word": "遮断機 (しゃだんき)",
+     "meaning": "(railway) crossing gate",
+     "id": "1594680"
+    },
+    {
+     "lesson": 169,
+     "word": "火砕流 (かさいりゅう)",
+     "meaning": "pyroclastic flow",
+     "id": "1590210"
+    },
+    {
+     "lesson": 170,
+     "word": "囲碁 (いご)",
+     "meaning": "go (board game)",
+     "id": "1155990"
+    },
+    {
+     "lesson": 170,
+     "word": "首班 (しゅはん)",
+     "meaning": "head",
+     "id": "1329380"
+    },
+    {
+     "lesson": 171,
+     "word": "穂 (ほ)",
+     "meaning": "ear (of a cereal plant)",
+     "id": "1514780"
+    },
+    {
+     "lesson": 171,
+     "word": "桑田 (そうでん)",
+     "meaning": "mulberry plantation",
+     "id": "1247120"
+    },
+    {
+     "lesson": 171,
+     "word": "桑原 (くわばら)",
+     "meaning": "mulberry field",
+     "id": "1762710"
+    },
+    {
+     "lesson": 172,
+     "word": "外郭団体 (がいかくだんたい)",
+     "meaning": "auxiliary organization (organisation)",
+     "id": "1203450"
+    },
+    {
+     "lesson": 173,
+     "word": "如実 (にょじつ)",
+     "meaning": "reality",
+     "id": "1467020"
+    },
+    {
+     "lesson": 174,
+     "word": "呉服 (ごふく)",
+     "meaning": "cloth (for Japanese clothes)",
+     "id": "1269190"
+    },
+    {
+     "lesson": 174,
+     "word": "匠 (たくみ)",
+     "meaning": "craftsman",
+     "id": "1346260"
+    },
+    {
+     "lesson": 175,
+     "word": "陵 (みささぎ)",
+     "meaning": "imperial mausoleum",
+     "id": "1554710"
+    },
+    {
+     "lesson": 177,
+     "word": "弦楽 (げんがく)",
+     "meaning": "music for strings",
+     "id": "1263050"
+    },
+    {
+     "lesson": 177,
+     "word": "弦 (つる)",
+     "meaning": "bowstring",
+     "id": "1578400"
+    },
+    {
+     "lesson": 177,
+     "word": "惨禍 (さんか)",
+     "meaning": "calamity",
+     "id": "1303290"
+    },
+    {
+     "lesson": 178,
+     "word": "団塊 (だんかい)",
+     "meaning": "mass",
+     "id": "1704050"
+    },
+    {
+     "lesson": 180,
+     "word": "本因坊 (ほんいんぼう)",
+     "meaning": "Hon'inbō",
+     "id": "1822740"
+    },
+    {
+     "lesson": 180,
+     "word": "紡績 (ぼうせき)",
+     "meaning": "spinning (textiles)",
+     "id": "1519930"
+    },
+    {
+     "lesson": 180,
+     "word": "脱硫 (だつりゅう)",
+     "meaning": "desulfurization",
+     "id": "1623790"
+    },
+    {
+     "lesson": 181,
+     "word": "地殻変動 (ちかくへんどう)",
+     "meaning": "diastrophism (movement and deformation of the earth's crust)",
+     "id": "1420950"
+    },
+    {
+     "lesson": 182,
+     "word": "逓信 (ていしん)",
+     "meaning": "communications (e.g. post, telegraph)",
+     "id": "1436780"
+    },
+    {
+     "lesson": 184,
+     "word": "寡占 (かせん)",
+     "meaning": "oligopoly",
+     "id": "1192620"
+    },
+    {
+     "lesson": 184,
+     "word": "長唄 (ながうた)",
+     "meaning": "long epic song with shamisen accompaniment (developed in Edo in the early 17th century)",
+     "id": "1607380"
+    },
+    {
+     "lesson": 185,
+     "word": "謹賀新年 (きんがしんねん)",
+     "meaning": "Happy New Year",
+     "id": "1242060"
+    },
+    {
+     "lesson": 187,
+     "word": "折衷 (せっちゅう)",
+     "meaning": "compromise",
+     "id": "1385960"
+    },
+    {
+     "lesson": 187,
+     "word": "賜杯 (しはい)",
+     "meaning": "Emperor's cup",
+     "id": "1658350"
+    },
+    {
+     "lesson": 188,
+     "word": "憧れの的 (あこがれのまと)",
+     "meaning": "object of adoration, longing",
+     "id": "2228920"
+    },
+    {
+     "lesson": 190,
+     "word": "京阪 (けいはん)",
+     "meaning": "Kyoto and Osaka",
+     "id": "1233370"
+    },
+    {
+     "lesson": 190,
+     "word": "無恥 (むち)",
+     "meaning": "shameless",
+     "id": "1611940"
+    },
+    {
+     "lesson": 190,
+     "word": "浄瑠璃 (じょうるり)",
+     "meaning": "jōruri",
+     "id": "1356680"
+    },
+    {
+     "lesson": 191,
+     "word": "葛 (くず)",
+     "meaning": "kudzu (Pueraria montana)",
+     "id": "1208770"
+    },
+    {
+     "lesson": 191,
+     "word": "埼玉 (さいたま)",
+     "meaning": "Saitama (city, prefecture)",
+     "id": "2164700"
+    },
+    {
+     "lesson": 192,
+     "word": "関脇 (せきわけ)",
+     "meaning": "wrestler of the third highest rank",
+     "id": "1216110"
+    },
+    {
+     "lesson": 193,
+     "word": "領袖 (りょうしゅう)",
+     "meaning": "leader",
+     "id": "1644980"
+    },
+    {
+     "lesson": 193,
+     "word": "汎 (はん)",
+     "meaning": "pan-",
+     "id": "1956830"
+    },
+    {
+     "lesson": 197,
+     "word": "貼付 (ちょうふ)",
+     "meaning": "pasting",
+     "id": "1440960"
+    },
+    {
+     "lesson": 201,
+     "word": "痩身 (そうしん)",
+     "meaning": "slim figure",
+     "id": "1835350"
+    },
+    {
+     "lesson": 205,
+     "word": "禁錮 (きんこ)",
+     "meaning": "imprisonment (without forced labour)",
+     "id": "1241540"
+    }
+   ]
+  },
+  "word-sentence-missing": {
+   "area": "Words",
+   "title": "Words pointing at sentences that don't exist",
+   "why": "The word lists a sentence id that sentences.json doesn't have.",
+   "count": 0,
+   "items": []
+  },
+  "lesson-word-weak-meaning": {
+   "area": "Words",
+   "title": "Lesson words whose first meaning is hard to use",
+   "why": "The first meaning is what the card asks for. These are a cross-reference, contain markup, or run over 60 characters.",
+   "count": 16,
+   "items": [
+    {
+     "lesson": 6,
+     "word": "二百十日 (にひゃくとおか)",
+     "meaning": "210th day (from the first day of spring according to the lunar calendar)",
+     "why": "very long"
+    },
+    {
+     "lesson": 9,
+     "word": "天下り (あまくだり)",
+     "meaning": "retiring high-ranking government officials taking a lucrative job in a private or semi-private corporation",
+     "why": "very long"
+    },
+    {
+     "lesson": 20,
+     "word": "下町 (したまち)",
+     "meaning": "low-lying part of a city (usu. containing shops, factories, etc.)",
+     "why": "very long"
+    },
+    {
+     "lesson": 33,
+     "word": "関西 (かんさい)",
+     "meaning": "Kansai (region comprising Kyoto, Osaka, Kobe and surrounding prefectures)",
+     "why": "very long"
+    },
+    {
+     "lesson": 36,
+     "word": "受験 (じゅけん)",
+     "meaning": "taking an examination (esp. for entrance to a school or university)",
+     "why": "very long"
+    },
+    {
+     "lesson": 40,
+     "word": "参院 (さんいん)",
+     "meaning": "House of Councillors (upper house of the National Diet of Japan)",
+     "why": "very long"
+    },
+    {
+     "lesson": 78,
+     "word": "偏差値 (へんさち)",
+     "meaning": "deviation value (usu. scaled to mean of 50, standard deviation of 10, and often used for academic grades)",
+     "why": "very long"
+    },
+    {
+     "lesson": 83,
+     "word": "豆 (まめ)",
+     "meaning": "legume (esp. edible legumes or their seeds, e.g. beans, peas, pulses)",
+     "why": "very long"
+    },
+    {
+     "lesson": 116,
+     "word": "衆院 (しゅういん)",
+     "meaning": "House of Representatives (lower house of the National Diet of Japan)",
+     "why": "very long"
+    },
+    {
+     "lesson": 149,
+     "word": "侍 (さむらい)",
+     "meaning": "warrior (esp. of military retainers of daimyos in the Edo period)",
+     "why": "very long"
+    },
+    {
+     "lesson": 157,
+     "word": "鶴 (つる)",
+     "meaning": "crane (any bird of the family Gruidae, esp. the red-crowned crane, Grus japonensis)",
+     "why": "very long"
+    },
+    {
+     "lesson": 168,
+     "word": "幼稚園 (ようちえん)",
+     "meaning": "kindergarten (in Japan, non-compulsory education from age 3 until primary school)",
+     "why": "very long"
+    },
+    {
+     "lesson": 177,
+     "word": "碑 (いしぶみ)",
+     "meaning": "stone monument bearing an inscription (esp. memorial for future generations)",
+     "why": "very long"
+    },
+    {
+     "lesson": 184,
+     "word": "長唄 (ながうた)",
+     "meaning": "long epic song with shamisen accompaniment (developed in Edo in the early 17th century)",
+     "why": "very long"
+    },
+    {
+     "lesson": 192,
+     "word": "慌てる (あわてる)",
+     "meaning": "to become confused (disconcerted, disorganized, disorganised)",
+     "why": "very long"
+    },
+    {
+     "lesson": 205,
+     "word": "覚醒剤 (かくせいざい)",
+     "meaning": "stimulant (e.g. psychoactive drugs like methamphetamine, ritalin, etc.)",
+     "why": "very long"
+    }
+   ]
+  },
+  "lesson-word-furigana": {
+   "area": "Words",
+   "title": "Lesson words whose furigana doesn't spell the word",
+   "why": "The furigana pieces put together should give back the word exactly.",
+   "count": 0,
+   "items": []
+  },
+  "lesson-word-duplicate": {
+   "area": "Words",
+   "title": "The same word taught twice",
+   "why": "Two lesson words share the spelling and the first meaning, so they'd be two cards for one thing.",
+   "count": 0,
+   "items": []
+  },
+  "lesson-word-junk": {
+   "area": "Words",
+   "title": "Junk words still in a lesson",
+   "why": "Words marked junk (a wrong dictionary match) shouldn't be taught.",
+   "count": 0,
+   "items": []
+  },
+  "word-lone-kana": {
+   "area": "Words",
+   "title": "Single-kana words outside the lessons",
+   "why": "A lone kana as a word is usually a wrong dictionary match (ト as \"note G\"). Check these aren't shown as cards.",
+   "count": 5,
+   "items": [
+    {
+     "word": "ザ",
+     "meaning": "the",
+     "id": "1058900"
+    },
+    {
+     "word": "べ",
+     "meaning": "word used at sentence-end (like a particle) to indicate speculation, volition or invitation",
+     "id": "2213460"
+    },
+    {
+     "word": "て",
+     "meaning": "and",
+     "id": "2654270"
+    },
+    {
+     "word": "ト",
+     "meaning": "7th in a sequence denoted by the iroha system",
+     "id": "2029780"
+    },
+    {
+     "word": "ん",
+     "meaning": "yes",
+     "id": "2139720"
+    }
+   ]
+  },
+  "kanji-no-meaning": {
+   "area": "Kanji",
+   "title": "Kanji with no meaning",
+   "why": "KANJIDIC gave no English meaning.",
+   "count": 0,
+   "items": []
+  },
+  "kanji-no-reading": {
+   "area": "Kanji",
+   "title": "Kanji with no reading",
+   "why": "No on or kun reading to teach.",
+   "count": 0,
+   "items": []
+  },
+  "kanji-no-words": {
+   "area": "Kanji",
+   "title": "Kanji with fewer than 2 example words",
+   "why": "Each kanji should show a few words that use it.",
+   "count": 3,
+   "items": [
+    {
+     "kanji": "朕",
+     "words": 1
+    },
+    {
+     "kanji": "憬",
+     "words": 1
+    },
+    {
+     "kanji": "塡",
+     "words": 1
+    }
+   ]
+  },
+  "kanji-word-missing": {
+   "area": "Kanji",
+   "title": "Kanji pointing at words that don't exist",
+   "why": "A kanji's word list has an id that words.json doesn't have.",
+   "count": 0,
+   "items": []
+  },
+  "kanji-no-strokes": {
+   "area": "Kanji",
+   "title": "Kanji with no stroke order",
+   "why": "KanjiVG has no strokes for these.",
+   "count": 0,
+   "items": []
+  },
+  "kanji-not-taught": {
+   "area": "Kanji",
+   "title": "Kanji in no lesson",
+   "why": "Every Joyo kanji should be in a lesson.",
+   "count": 0,
+   "items": []
+  },
+  "lesson-kanji-missing": {
+   "area": "Kanji",
+   "title": "Lessons listing kanji that don't exist",
+   "why": "The lesson can't show these.",
+   "count": 0,
+   "items": []
+  },
+  "kanji-reading-no-word": {
+   "area": "Kanji",
+   "title": "On readings with no example word",
+   "why": "Kun readings often have no word of their own, but an on reading with none can't be shown in use.",
+   "count": 298,
+   "items": [
+    {
+     "kanji": "圧",
+     "reading": "エン"
+    },
+    {
+     "kanji": "扱",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "扱",
+     "reading": "キュウ"
+    },
+    {
+     "kanji": "闇",
+     "reading": "オン"
+    },
+    {
+     "kanji": "壱",
+     "reading": "イツ"
+    },
+    {
+     "kanji": "稲",
+     "reading": "テ"
+    },
+    {
+     "kanji": "茨",
+     "reading": "シ"
+    },
+    {
+     "kanji": "茨",
+     "reading": "ジ"
+    },
+    {
+     "kanji": "咽",
+     "reading": "エン"
+    },
+    {
+     "kanji": "臼",
+     "reading": "グ"
+    },
+    {
+     "kanji": "唄",
+     "reading": "バイ"
+    },
+    {
+     "kanji": "餌",
+     "reading": "ニ"
+    },
+    {
+     "kanji": "栄",
+     "reading": "ヨウ"
+    },
+    {
+     "kanji": "怨",
+     "reading": "ウン"
+    },
+    {
+     "kanji": "縁",
+     "reading": "-ネン"
+    },
+    {
+     "kanji": "応",
+     "reading": "ヨウ"
+    },
+    {
+     "kanji": "応",
+     "reading": "-ノウ"
+    },
+    {
+     "kanji": "王",
+     "reading": "-ノウ"
+    },
+    {
+     "kanji": "臆",
+     "reading": "ヨク"
+    },
+    {
+     "kanji": "俺",
+     "reading": "エン"
+    },
+    {
+     "kanji": "音",
+     "reading": "-ノン"
+    },
+    {
+     "kanji": "価",
+     "reading": "ケ"
+    },
+    {
+     "kanji": "可",
+     "reading": "コク"
+    },
+    {
+     "kanji": "夏",
+     "reading": "ガ"
+    },
+    {
+     "kanji": "画",
+     "reading": "カイ"
+    },
+    {
+     "kanji": "塊",
+     "reading": "ケ"
+    },
+    {
+     "kanji": "懐",
+     "reading": "エ"
+    },
+    {
+     "kanji": "崖",
+     "reading": "ゲ"
+    },
+    {
+     "kanji": "崖",
+     "reading": "ギ"
+    },
+    {
+     "kanji": "蓋",
+     "reading": "カイ"
+    },
+    {
+     "kanji": "蓋",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "骸",
+     "reading": "カイ"
+    },
+    {
+     "kanji": "拡",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "殻",
+     "reading": "バイ"
+    },
+    {
+     "kanji": "確",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "楽",
+     "reading": "ゴウ"
+    },
+    {
+     "kanji": "掛",
+     "reading": "カイ"
+    },
+    {
+     "kanji": "葛",
+     "reading": "カチ"
+    },
+    {
+     "kanji": "且",
+     "reading": "ソ"
+    },
+    {
+     "kanji": "且",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "鎌",
+     "reading": "レン"
+    },
+    {
+     "kanji": "鎌",
+     "reading": "ケン"
+    },
+    {
+     "kanji": "刈",
+     "reading": "カイ"
+    },
+    {
+     "kanji": "勧",
+     "reading": "ケン"
+    },
+    {
+     "kanji": "簡",
+     "reading": "ケン"
+    },
+    {
+     "kanji": "亀",
+     "reading": "キュウ"
+    },
+    {
+     "kanji": "亀",
+     "reading": "キン"
+    },
+    {
+     "kanji": "偽",
+     "reading": "カ"
+    },
+    {
+     "kanji": "犠",
+     "reading": "キ"
+    },
+    {
+     "kanji": "詰",
+     "reading": "キチ"
+    },
+    {
+     "kanji": "究",
+     "reading": "ク"
+    },
+    {
+     "kanji": "窮",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "拒",
+     "reading": "ゴ"
+    },
+    {
+     "kanji": "享",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "峡",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "挟",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "狭",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "鏡",
+     "reading": "ケイ"
+    },
+    {
+     "kanji": "暁",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "僅",
+     "reading": "ゴン"
+    },
+    {
+     "kanji": "巾",
+     "reading": "フク"
+    },
+    {
+     "kanji": "区",
+     "reading": "オウ"
+    },
+    {
+     "kanji": "区",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "串",
+     "reading": "カン"
+    },
+    {
+     "kanji": "串",
+     "reading": "ケン"
+    },
+    {
+     "kanji": "串",
+     "reading": "セン"
+    },
+    {
+     "kanji": "窟",
+     "reading": "コツ"
+    },
+    {
+     "kanji": "茎",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "詣",
+     "reading": "ゲイ"
+    },
+    {
+     "kanji": "軽",
+     "reading": "キン"
+    },
+    {
+     "kanji": "隙",
+     "reading": "キャク"
+    },
+    {
+     "kanji": "隙",
+     "reading": "ケキ"
+    },
+    {
+     "kanji": "個",
+     "reading": "カ"
+    },
+    {
+     "kanji": "乞",
+     "reading": "キツ"
+    },
+    {
+     "kanji": "乞",
+     "reading": "キケ"
+    },
+    {
+     "kanji": "乞",
+     "reading": "コチ"
+    },
+    {
+     "kanji": "勾",
+     "reading": "ク"
+    },
+    {
+     "kanji": "后",
+     "reading": "ゴ"
+    },
+    {
+     "kanji": "孝",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "工",
+     "reading": "グ"
+    },
+    {
+     "kanji": "降",
+     "reading": "ゴ"
+    },
+    {
+     "kanji": "頃",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "左",
+     "reading": "シャ"
+    },
+    {
+     "kanji": "挫",
+     "reading": "サ"
+    },
+    {
+     "kanji": "最",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "剤",
+     "reading": "スイ"
+    },
+    {
+     "kanji": "剤",
+     "reading": "セイ"
+    },
+    {
+     "kanji": "財",
+     "reading": "ゾク"
+    },
+    {
+     "kanji": "咲",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "埼",
+     "reading": "キ"
+    },
+    {
+     "kanji": "柵",
+     "reading": "サン"
+    },
+    {
+     "kanji": "桜",
+     "reading": "ヨウ"
+    },
+    {
+     "kanji": "三",
+     "reading": "ゾウ"
+    },
+    {
+     "kanji": "桟",
+     "reading": "セン"
+    },
+    {
+     "kanji": "蚕",
+     "reading": "テン"
+    },
+    {
+     "kanji": "斬",
+     "reading": "サン"
+    },
+    {
+     "kanji": "斬",
+     "reading": "セン"
+    },
+    {
+     "kanji": "斬",
+     "reading": "ゼン"
+    },
+    {
+     "kanji": "残",
+     "reading": "サン"
+    },
+    {
+     "kanji": "児",
+     "reading": "ゲイ"
+    },
+    {
+     "kanji": "湿",
+     "reading": "シュウ"
+    },
+    {
+     "kanji": "実",
+     "reading": "シツ"
+    },
+    {
+     "kanji": "舎",
+     "reading": "セキ"
+    },
+    {
+     "kanji": "蛇",
+     "reading": "ヤ"
+    },
+    {
+     "kanji": "釈",
+     "reading": "セキ"
+    },
+    {
+     "kanji": "腫",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "呪",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "呪",
+     "reading": "シュウ"
+    },
+    {
+     "kanji": "呪",
+     "reading": "ズ"
+    },
+    {
+     "kanji": "寿",
+     "reading": "シュウ"
+    },
+    {
+     "kanji": "拾",
+     "reading": "ジュウ"
+    },
+    {
+     "kanji": "蹴",
+     "reading": "シュク"
+    },
+    {
+     "kanji": "酬",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "酬",
+     "reading": "トウ"
+    },
+    {
+     "kanji": "住",
+     "reading": "ヂュウ"
+    },
+    {
+     "kanji": "住",
+     "reading": "チュウ"
+    },
+    {
+     "kanji": "渋",
+     "reading": "シュウ"
+    },
+    {
+     "kanji": "粛",
+     "reading": "スク"
+    },
+    {
+     "kanji": "奨",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "将",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "乗",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "場",
+     "reading": "チョウ"
+    },
+    {
+     "kanji": "条",
+     "reading": "チョウ"
+    },
+    {
+     "kanji": "条",
+     "reading": "デキ"
+    },
+    {
+     "kanji": "浄",
+     "reading": "セイ"
+    },
+    {
+     "kanji": "畳",
+     "reading": "チョウ"
+    },
+    {
+     "kanji": "蒸",
+     "reading": "セイ"
+    },
+    {
+     "kanji": "尽",
+     "reading": "サン"
+    },
+    {
+     "kanji": "数",
+     "reading": "サク"
+    },
+    {
+     "kanji": "数",
+     "reading": "ソク"
+    },
+    {
+     "kanji": "数",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "枢",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "裾",
+     "reading": "コ"
+    },
+    {
+     "kanji": "世",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "瀬",
+     "reading": "ライ"
+    },
+    {
+     "kanji": "畝",
+     "reading": "ボウ"
+    },
+    {
+     "kanji": "畝",
+     "reading": "モ"
+    },
+    {
+     "kanji": "畝",
+     "reading": "ム"
+    },
+    {
+     "kanji": "是",
+     "reading": "シ"
+    },
+    {
+     "kanji": "凄",
+     "reading": "サイ"
+    },
+    {
+     "kanji": "戚",
+     "reading": "ソク"
+    },
+    {
+     "kanji": "接",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "仙",
+     "reading": "セント"
+    },
+    {
+     "kanji": "羨",
+     "reading": "エン"
+    },
+    {
+     "kanji": "禅",
+     "reading": "セン"
+    },
+    {
+     "kanji": "膳",
+     "reading": "セン"
+    },
+    {
+     "kanji": "曽",
+     "reading": "ゾウ"
+    },
+    {
+     "kanji": "狙",
+     "reading": "ショ"
+    },
+    {
+     "kanji": "疎",
+     "reading": "ショ"
+    },
+    {
+     "kanji": "創",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "捜",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "捜",
+     "reading": "シュウ"
+    },
+    {
+     "kanji": "掃",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "操",
+     "reading": "サン"
+    },
+    {
+     "kanji": "痩",
+     "reading": "チュウ"
+    },
+    {
+     "kanji": "痩",
+     "reading": "シュウ"
+    },
+    {
+     "kanji": "痩",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "窓",
+     "reading": "ス"
+    },
+    {
+     "kanji": "蔵",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "贈",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "捉",
+     "reading": "サク"
+    },
+    {
+     "kanji": "属",
+     "reading": "ショク"
+    },
+    {
+     "kanji": "続",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "続",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "汰",
+     "reading": "タイ"
+    },
+    {
+     "kanji": "唾",
+     "reading": "タ"
+    },
+    {
+     "kanji": "打",
+     "reading": "ダース"
+    },
+    {
+     "kanji": "滞",
+     "reading": "テイ"
+    },
+    {
+     "kanji": "袋",
+     "reading": "ダイ"
+    },
+    {
+     "kanji": "第",
+     "reading": "テイ"
+    },
+    {
+     "kanji": "滝",
+     "reading": "ロウ"
+    },
+    {
+     "kanji": "滝",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "弾",
+     "reading": "タン"
+    },
+    {
+     "kanji": "稚",
+     "reading": "ジ"
+    },
+    {
+     "kanji": "嫡",
+     "reading": "テキ"
+    },
+    {
+     "kanji": "酎",
+     "reading": "チュ"
+    },
+    {
+     "kanji": "鋳",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "鋳",
+     "reading": "シュウ"
+    },
+    {
+     "kanji": "著",
+     "reading": "チャク"
+    },
+    {
+     "kanji": "丁",
+     "reading": "チ"
+    },
+    {
+     "kanji": "庁",
+     "reading": "テイ"
+    },
+    {
+     "kanji": "聴",
+     "reading": "テイ"
+    },
+    {
+     "kanji": "捗",
+     "reading": "ホ"
+    },
+    {
+     "kanji": "椎",
+     "reading": "スイ"
+    },
+    {
+     "kanji": "潰",
+     "reading": "エ"
+    },
+    {
+     "kanji": "坪",
+     "reading": "ヘイ"
+    },
+    {
+     "kanji": "亭",
+     "reading": "チン"
+    },
+    {
+     "kanji": "泥",
+     "reading": "ナイ"
+    },
+    {
+     "kanji": "泥",
+     "reading": "デ"
+    },
+    {
+     "kanji": "泥",
+     "reading": "ニ"
+    },
+    {
+     "kanji": "溺",
+     "reading": "ジョウ"
+    },
+    {
+     "kanji": "溺",
+     "reading": "ニョウ"
+    },
+    {
+     "kanji": "妬",
+     "reading": "ツ"
+    },
+    {
+     "kanji": "斗",
+     "reading": "トウ"
+    },
+    {
+     "kanji": "登",
+     "reading": "ドウ"
+    },
+    {
+     "kanji": "登",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "登",
+     "reading": "チョウ"
+    },
+    {
+     "kanji": "憧",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "憧",
+     "reading": "トウ"
+    },
+    {
+     "kanji": "瞳",
+     "reading": "トウ"
+    },
+    {
+     "kanji": "独",
+     "reading": "トク"
+    },
+    {
+     "kanji": "突",
+     "reading": "カ"
+    },
+    {
+     "kanji": "届",
+     "reading": "カイ"
+    },
+    {
+     "kanji": "頓",
+     "reading": "トツ"
+    },
+    {
+     "kanji": "奈",
+     "reading": "ナイ"
+    },
+    {
+     "kanji": "奈",
+     "reading": "ダイ"
+    },
+    {
+     "kanji": "那",
+     "reading": "ダ"
+    },
+    {
+     "kanji": "謎",
+     "reading": "ベイ"
+    },
+    {
+     "kanji": "鍋",
+     "reading": "カ"
+    },
+    {
+     "kanji": "弐",
+     "reading": "ニ"
+    },
+    {
+     "kanji": "妊",
+     "reading": "ジン"
+    },
+    {
+     "kanji": "捻",
+     "reading": "ジョウ"
+    },
+    {
+     "kanji": "脳",
+     "reading": "ドウ"
+    },
+    {
+     "kanji": "覇",
+     "reading": "ハク"
+    },
+    {
+     "kanji": "馬",
+     "reading": "ボ"
+    },
+    {
+     "kanji": "馬",
+     "reading": "モ"
+    },
+    {
+     "kanji": "箸",
+     "reading": "チャク"
+    },
+    {
+     "kanji": "八",
+     "reading": "ハツ"
+    },
+    {
+     "kanji": "伐",
+     "reading": "ハツ"
+    },
+    {
+     "kanji": "伐",
+     "reading": "カ"
+    },
+    {
+     "kanji": "伐",
+     "reading": "ボチ"
+    },
+    {
+     "kanji": "罰",
+     "reading": "ハツ"
+    },
+    {
+     "kanji": "抜",
+     "reading": "ハツ"
+    },
+    {
+     "kanji": "抜",
+     "reading": "ハイ"
+    },
+    {
+     "kanji": "汎",
+     "reading": "ブ"
+    },
+    {
+     "kanji": "汎",
+     "reading": "フウ"
+    },
+    {
+     "kanji": "汎",
+     "reading": "ホウ"
+    },
+    {
+     "kanji": "汎",
+     "reading": "ホン"
+    },
+    {
+     "kanji": "怖",
+     "reading": "ホ"
+    },
+    {
+     "kanji": "阜",
+     "reading": "フウ"
+    },
+    {
+     "kanji": "払",
+     "reading": "ヒツ"
+    },
+    {
+     "kanji": "並",
+     "reading": "ホウ"
+    },
+    {
+     "kanji": "蔽",
+     "reading": "ヘツ"
+    },
+    {
+     "kanji": "蔽",
+     "reading": "フツ"
+    },
+    {
+     "kanji": "米",
+     "reading": "メエトル"
+    },
+    {
+     "kanji": "弁",
+     "reading": "ヘン"
+    },
+    {
+     "kanji": "法",
+     "reading": "フラン"
+    },
+    {
+     "kanji": "帽",
+     "reading": "モウ"
+    },
+    {
+     "kanji": "忙",
+     "reading": "モウ"
+    },
+    {
+     "kanji": "貌",
+     "reading": "バク"
+    },
+    {
+     "kanji": "睦",
+     "reading": "モク"
+    },
+    {
+     "kanji": "勃",
+     "reading": "ホツ"
+    },
+    {
+     "kanji": "堀",
+     "reading": "クツ"
+    },
+    {
+     "kanji": "麻",
+     "reading": "マア"
+    },
+    {
+     "kanji": "昧",
+     "reading": "バイ"
+    },
+    {
+     "kanji": "枕",
+     "reading": "シン"
+    },
+    {
+     "kanji": "又",
+     "reading": "ユウ"
+    },
+    {
+     "kanji": "満",
+     "reading": "バン"
+    },
+    {
+     "kanji": "蜜",
+     "reading": "ビツ"
+    },
+    {
+     "kanji": "妙",
+     "reading": "ビョウ"
+    },
+    {
+     "kanji": "夢",
+     "reading": "ボウ"
+    },
+    {
+     "kanji": "矛",
+     "reading": "ボウ"
+    },
+    {
+     "kanji": "霧",
+     "reading": "ボウ"
+    },
+    {
+     "kanji": "霧",
+     "reading": "ブ"
+    },
+    {
+     "kanji": "面",
+     "reading": "ベン"
+    },
+    {
+     "kanji": "麺",
+     "reading": "ベン"
+    },
+    {
+     "kanji": "黙",
+     "reading": "ボク"
+    },
+    {
+     "kanji": "餅",
+     "reading": "ヒョウ"
+    },
+    {
+     "kanji": "野",
+     "reading": "ショ"
+    },
+    {
+     "kanji": "輸",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "湧",
+     "reading": "ヨウ"
+    },
+    {
+     "kanji": "湧",
+     "reading": "ユ"
+    },
+    {
+     "kanji": "猶",
+     "reading": "ユ"
+    },
+    {
+     "kanji": "予",
+     "reading": "シャ"
+    },
+    {
+     "kanji": "様",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "養",
+     "reading": "リョウ"
+    },
+    {
+     "kanji": "沃",
+     "reading": "ヨウ"
+    },
+    {
+     "kanji": "沃",
+     "reading": "オク"
+    },
+    {
+     "kanji": "乱",
+     "reading": "ロン"
+    },
+    {
+     "kanji": "率",
+     "reading": "シュツ"
+    },
+    {
+     "kanji": "立",
+     "reading": "リットル"
+    },
+    {
+     "kanji": "竜",
+     "reading": "ロウ"
+    },
+    {
+     "kanji": "侶",
+     "reading": "ロ"
+    },
+    {
+     "kanji": "虜",
+     "reading": "ロ"
+    },
+    {
+     "kanji": "力",
+     "reading": "リイ"
+    },
+    {
+     "kanji": "瑠",
+     "reading": "リュウ"
+    },
+    {
+     "kanji": "塁",
+     "reading": "ライ"
+    },
+    {
+     "kanji": "塁",
+     "reading": "スイ"
+    },
+    {
+     "kanji": "涙",
+     "reading": "レイ"
+    },
+    {
+     "kanji": "弄",
+     "reading": "ル"
+    },
+    {
+     "kanji": "郎",
+     "reading": "リョウ"
+    },
+    {
+     "kanji": "丼",
+     "reading": "タン"
+    },
+    {
+     "kanji": "丼",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "丼",
+     "reading": "セイ"
+    },
+    {
+     "kanji": "嘲",
+     "reading": "トウ"
+    },
+    {
+     "kanji": "惧",
+     "reading": "ク"
+    },
+    {
+     "kanji": "拉",
+     "reading": "ラツ"
+    },
+    {
+     "kanji": "拉",
+     "reading": "ロウ"
+    },
+    {
+     "kanji": "籠",
+     "reading": "ル"
+    },
+    {
+     "kanji": "踪",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "塡",
+     "reading": "テン"
+    },
+    {
+     "kanji": "塡",
+     "reading": "チン"
+    },
+    {
+     "kanji": "頰",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "𠮟",
+     "reading": "シツ"
+    },
+    {
+     "kanji": "𠮟",
+     "reading": "シチ"
+    },
+    {
+     "kanji": "𠮟",
+     "reading": "カ"
+    },
+    {
+     "kanji": "剝",
+     "reading": "ハク"
+    },
+    {
+     "kanji": "剝",
+     "reading": "ホク"
+    }
+   ]
+  },
+  "radical-name": {
+   "area": "Radicals",
+   "title": "Radicals without exactly one name",
+   "why": "Each radical should have exactly one name (Lucas's rule).",
+   "count": 0,
+   "items": []
+  },
+  "radical-unused": {
+   "area": "Radicals",
+   "title": "Radicals no kanji uses",
+   "why": "A radical in a lesson that no taught kanji contains doesn't help learn anything.",
+   "count": 12,
+   "items": [
+    {
+     "radical": "𧘇",
+     "name": "hem",
+     "lesson": 115
+    },
+    {
+     "radical": "卅",
+     "name": "thirty",
+     "lesson": 85
+    },
+    {
+     "radical": "呑",
+     "name": "swallow",
+     "lesson": 78
+    },
+    {
+     "radical": "禸",
+     "name": "track",
+     "lesson": 69
+    },
+    {
+     "radical": "尢",
+     "name": "lame",
+     "lesson": 122
+    },
+    {
+     "radical": "㐄",
+     "name": "stride",
+     "lesson": 57
+    },
+    {
+     "radical": "丞",
+     "name": "aid",
+     "lesson": 106
+    },
+    {
+     "radical": "㐭",
+     "name": "granary",
+     "lesson": 165
+    },
+    {
+     "radical": "龹",
+     "name": "bundle",
+     "lesson": 160
+    },
+    {
+     "radical": "𡰪",
+     "name": "crooked",
+     "lesson": 126
+    },
+    {
+     "radical": "柬",
+     "name": "choose",
+     "lesson": 166
+    },
+    {
+     "radical": "巜",
+     "name": "stream",
+     "lesson": 202
+    }
+   ]
+  },
+  "radical-used-in-missing": {
+   "area": "Radicals",
+   "title": "Radicals pointing at kanji that don't exist",
+   "why": "",
+   "count": 0,
+   "items": []
+  },
+  "radical-not-taught": {
+   "area": "Radicals",
+   "title": "Radicals in no lesson",
+   "why": "",
+   "count": 0,
+   "items": []
+  },
+  "sentence-translation": {
+   "area": "Sentences",
+   "title": "Sentences with a missing or untranslated English line",
+   "why": "The English is empty or still has Japanese in it.",
+   "count": 0,
+   "items": []
+  },
+  "sentence-odd-text": {
+   "area": "Sentences",
+   "title": "Sentences with damaged text",
+   "why": "Broken characters or leftover HTML.",
+   "count": 3,
+   "items": [
+    {
+     "id": "js307560",
+     "ja": "そんな悠長に、待ってられるか。",
+     "en": "I can't wait leisurely."
+    },
+    {
+     "id": "js575023",
+     "ja": "頭部打撲の可能性もあります\"。",
+     "en": "There's also the possibility of a blow to her head."
+    },
+    {
+     "id": "js820336",
+     "ja": "\"大倉市民病院の婦人科に、紹介状を書きますから\"。",
+     "en": "I'll write you a referral to okura community hospital's gynecology department."
+    }
+   ]
+  },
+  "sentence-bad-link": {
+   "area": "Sentences",
+   "title": "Sentences linking to missing words",
+   "why": "A tappable word in the sentence points at nothing.",
+   "count": 0,
+   "items": []
+  },
+  "sentence-duplicate": {
+   "area": "Sentences",
+   "title": "The same Japanese sentence more than once",
+   "why": "Usually harmless (different sources), listed so they can be merged.",
+   "count": 12,
+   "items": [
+    {
+     "ja": "ウラウラとした日差しに誘われて、眠りに落ちた。",
+     "times": 2
+    },
+    {
+     "ja": "著者が本を書き直す度に新版となる。",
+     "times": 2
+    },
+    {
+     "ja": "伝説では、彼女は人魚だったと言われる。",
+     "times": 2
+    },
+    {
+     "ja": "カール・マルクス曰く「あらゆる社会の歴史は階級闘争の歴史である」だそうです。",
+     "times": 2
+    },
+    {
+     "ja": "その事典は約５０万語の単語を収めている。",
+     "times": 2
+    },
+    {
+     "ja": "彼は私に毒舌を浴びせた。",
+     "times": 2
+    },
+    {
+     "ja": "人間は万物の霊長である。",
+     "times": 2
+    },
+    {
+     "ja": "少年よ、大志を抱け。",
+     "times": 2
+    },
+    {
+     "ja": "そのチームは準決勝に勝って決勝に進出した。",
+     "times": 2
+    },
+    {
+     "ja": "アフリカの難民が救いを求めている。",
+     "times": 2
+    },
+    {
+     "ja": "彼女は他の人と一味違う。",
+     "times": 2
+    },
+    {
+     "ja": "あーんして。",
+     "times": 2
+    }
+   ]
+  },
+  "story-odd-characters": {
+   "area": "Stories",
+   "title": "Story text with damaged characters",
+   "why": "Look-alike radicals (⼈ for 人) or vertical-only punctuation (︒ for 。) from the PDF's fonts. They look right but don't link to any word.",
+   "count": 35,
+   "items": [
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 0,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "フウアンは若い男です︒お母さんと二人で暮らしています︒フウアンは怠け者です︒働きません︒毎日︑昼まで寝ています︒"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 1,
+     "characters": "︑ U+FE11 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "ある日︑お母さんはたくさん壺を作りました︒そして︑フウアンに言いました︒﹁フウアン︑この壺を市場で売て︑カニを買て来てお"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 2,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "││あ！これが簡単だ！フウアンは壺の底に穴を開けて︑棒を通しました︒"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 3,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "フウアンは市場に着きました︒しかし︑市場で壺を売ても誰も買いません︒底に穴があるからです︒フウアンは困りました︒"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 4,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "市場に皮膚病の人がたくさんいます︒フウアンはそれを見て思いました︒││あ！壺を砕いて粉にして︑薬だと言て︑売ろう︒"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 5,
+     "characters": "︒ U+FE12",
+     "text": "フウアンは壺を砕いて薬を作りました︒フウアンは薬を売たお金でカニを買うことができました︒"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 6,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "市場からフウアンの家までは近いです︒少し歩くと︑湖が見えました︒"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 7,
+     "characters": "︑ U+FE11 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "フウアンはカニに言いました︒﹁僕は湖で泳ぎたいから︑おまえたちは歩いて僕の家に行きなさい！﹂そして︑フウンは湖で遊びまし"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 8,
+     "characters": "︑ U+FE11 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "お母さんはフウアンに聞きました︒﹁カニはどこにあるの？﹂﹁え！？まだ来ない？僕は湖で泳ぎたかたから︑カニに歩いて僕の家に"
+    },
+    {
+     "story": "怠け者のフウアン",
+     "paragraph": 9,
+     "characters": "︒ U+FE12",
+     "text": "お母さんはフウアンが怠け者で馬鹿なことがよくわかりました︒お母さんは泣きました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 0,
+     "characters": "⻑ U+2ED1 ⼈ U+2F08 ⾝ U+2F9D ︑ U+FE11 ︒ U+FE12",
+     "text": "昔︑昔︑世界に巨⼈がいました︒この巨⼈は︑⾝⻑が３００メートルありました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 1,
+     "characters": "⼈ U+2F08 ︑ U+FE11 ︒ U+FE12",
+     "text": "巨⼈は︑だんだんいなくなりました︒最後の巨⼈はメキシコのきれいな町に住んでいました︒この町は︑アグアスカリエンテスと呼ば"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 2,
+     "characters": "⼈ U+2F08 ⽇ U+2F47 ︑ U+FE11 ︒ U+FE12",
+     "text": "ある⽇︑その巨⼈も病気になって死にました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 3,
+     "characters": "⼈ U+2F08 ⼊ U+2F0A ⼟ U+2F1F ⼤ U+2F24 ︑ U+FE11 ︒ U+FE12",
+     "text": "でも︑巨⼈を⼊れられる⼤きな墓はありませんでした︒⼟の上に倒れたままでした︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 4,
+     "characters": "⻑ U+2ED1 ⼈ U+2F08 ⼟ U+2F1F ︑ U+FE11 ︒ U+FE12",
+     "text": "⻑い時間が経ちました︒巨⼈の体は︑⼟で覆われてしまいました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 5,
+     "characters": "⼈ U+2F08 ⼤ U+2F24 ︑ U+FE11 ︒ U+FE12",
+     "text": "そして︑⼤きくて広い丘になりました︒この丘は⼈の形をしていました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 6,
+     "characters": "⼀ U+2F00 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "その丘は﹁死者の丘﹂と丘呼ばれました︒の7者アグアスカリエンテスで死⼀番有名な場所になりました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 7,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "それから３０００年後︑町の汚染が進んで︑丘まで来ました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 8,
+     "characters": "⼤ U+2F24 ⽇ U+2F47 ⾯ U+2FAF ︑ U+FE11 ︒ U+FE12",
+     "text": "！てけ助そんなある⽇︑急に地⾯が⼤きく揺れました︒みんなは地震があったと思いました︒みんなびっくりしました︒！え"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 9,
+     "characters": "⼈ U+2F08 ⼥ U+2F25 ⾒ U+2F92 ︒ U+FE12",
+     "text": "でも地震ではありませんでした︒巨⼈が起き上がったのです︒みんなは近くに集まりました︒そして巨⼈を⾒ました︒⼥の巨⼈でした"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 10,
+     "characters": "⼈ U+2F08 ⼤ U+2F24 ︒ U+FE12",
+     "text": "巨⼈は泣いていました︒⼤きな涙を流しました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 11,
+     "characters": "⼈ U+2F08 ︑ U+FE11 ︒ U+FE12",
+     "text": "⼈々は逃げようとしましたが︑逃げられませんでした︒そして︑涙は⼈を動物に変えました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 12,
+     "characters": "⼈ U+2F08 ⽇ U+2F47 ⾒ U+2F92 ︑ U+FE11 ︒ U+FE12",
+     "text": "世界中の⼈がこのニュースを⾒ました︒５⽇ぐらい経って︑汚染がなくなりました︒天気もよくなりました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 13,
+     "characters": "⼀ U+2F00 ⼈ U+2F08 ︑ U+FE11 ︒ U+FE12",
+     "text": "巨⼈はうれしくて︑もう⼀度眠りました︒"
+    },
+    {
+     "story": "涙の力",
+     "paragraph": 14,
+     "characters": "⼈ U+2F08 ⼤ U+2F24 ⽇ U+2F47 ︑ U+FE11 ︒ U+FE12",
+     "text": "その⽇から︑⼈々は︑この世界を⼤切にするようになりました︒"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 0,
+     "characters": "︑ U+FE11 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "これは︑私が中学生の時に本当にあた出来事です︒ある日︑両親がハムスタを買てきました︒当時︑私は病気のせいで家にいることが"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 1,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "マロンは︑回し車が大好きで︑私の部屋では︑夜になるとマロンが回すカラカラという音がしていました︒マロンがいるおかげで︑私"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 2,
+     "characters": "︑ U+FE11 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "マロンの元気がなくなてしまいました︒私は母といしにマロンを病院に連れていきました︒病院で︑マロンは重い病気だということが"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 3,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "マロンはご飯をあまり食べなくなり︑寝ていることが多くなりました︒何日か経たある日︑マロンは死んでしまいました︒私はとても"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 4,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "その時です︒カラカラ…カラカラ…という音が聞こえてきました︒マロンの回し車の音です︒ケジを見ると︑回し車が回ています︒し"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 5,
+     "characters": "︑ U+FE11 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "翌朝︑マロンのケジを見ると︑回し車は止まていました︒もしかしたら夢だたのかもしれないと思て︑その日の夜も確かめてみること"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 6,
+     "characters": "︑ U+FE11 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "その日の夜︑父︑母︑私の三人はケジの前で待ていました︒しばらく待ていると︑回し車が回り始めました︒それを見た父は言いまし"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 7,
+     "characters": "︑ U+FE11 ︒ U+FE12 ﹁ U+FE41 ﹂ U+FE42",
+     "text": "翌朝︑父は︑マロンのエサ入れと水飲み皿を持てきて︑私と母を起こしました︒そして︑庭のマロンのお墓の前にエサと水を置きまし"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 8,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "その日の夜︑回し車は回りませんでした︒そして︑その後も回し車が回ることはありませんでした︒"
+    },
+    {
+     "story": "私とハムスター",
+     "paragraph": 9,
+     "characters": "︑ U+FE11 ︒ U+FE12",
+     "text": "これが私が中学生の時に体験したすべてです︒しかし︑この話には続きがあります︒回し車が回ることはなくなりましたが︑マロンは"
+    }
+   ]
+  },
+  "story-word-missing": {
+   "area": "Stories",
+   "title": "Story words with no dictionary entry",
+   "why": "The story links the word, but words.json doesn't have it, so it can't be tapped or counted.",
+   "count": 686,
+   "items": [
+    {
+     "story": "私とハムスター",
+     "word": "マロン",
+     "id": "1129940",
+     "times": 27
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "かに",
+     "id": "1202410",
+     "times": 23
+    },
+    {
+     "story": "雪渡り",
+     "word": "キック",
+     "id": "1041080",
+     "times": 23
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "すずめ",
+     "id": "1373560",
+     "times": 22
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "どんぐり",
+     "id": "1419200",
+     "times": 22
+    },
+    {
+     "story": "日本のバレンタインデー",
+     "word": "チョコレート",
+     "id": "1078270",
+     "times": 20
+    },
+    {
+     "story": "トマトを育てました",
+     "word": "トマト",
+     "id": "1085420",
+     "times": 16
+    },
+    {
+     "story": "ごん狐",
+     "word": "うなぎ",
+     "id": "1172500",
+     "times": 15
+    },
+    {
+     "story": "雪渡り",
+     "word": "トントン",
+     "id": "1008800",
+     "times": 14
+    },
+    {
+     "story": "羊飼いの男の子 ～イソップ物語より",
+     "word": "オオカミ",
+     "id": "1560940",
+     "times": 11
+    },
+    {
+     "story": "金の斧銀の斧～イソップ物語より",
+     "word": "さま",
+     "id": "1545790",
+     "times": 11
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 11
+    },
+    {
+     "story": "一寸法師",
+     "word": "さま",
+     "id": "1545790",
+     "times": 11
+    },
+    {
+     "story": "浦島太郎",
+     "word": "さま",
+     "id": "1545790",
+     "times": 11
+    },
+    {
+     "story": "美知子の星空",
+     "word": "カフェ",
+     "id": "1038050",
+     "times": 10
+    },
+    {
+     "story": "美知子の星空",
+     "word": "カレー",
+     "id": "1039140",
+     "times": 10
+    },
+    {
+     "story": "ごん狐",
+     "word": "いわし",
+     "id": "1587860",
+     "times": 10
+    },
+    {
+     "story": "美知子の星空",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 9
+    },
+    {
+     "story": "キャラメルとあめ玉",
+     "word": "キャラメル",
+     "id": "2480290",
+     "times": 8
+    },
+    {
+     "story": "日本のバレンタインデー",
+     "word": "バレンタインデー",
+     "id": "1100020",
+     "times": 8
+    },
+    {
+     "story": "杜子春",
+     "word": "まま",
+     "id": "1585410",
+     "times": 8
+    },
+    {
+     "story": "カラスと水さし ～イソップ物語より～",
+     "word": "カラス",
+     "id": "1171450",
+     "times": 7
+    },
+    {
+     "story": "あんこちゃん 〜季節のお菓子〜",
+     "word": "あんこ",
+     "id": "1610570",
+     "times": 7
+    },
+    {
+     "story": "ちょっと…",
+     "word": "マリーナ",
+     "id": "1129330",
+     "times": 7
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "きのこ",
+     "id": "1416010",
+     "times": 7
+    },
+    {
+     "story": "野菜の花",
+     "word": "トマト",
+     "id": "1085420",
+     "times": 6
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ごめん",
+     "id": "1270670",
+     "times": 6
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "さま",
+     "id": "1545790",
+     "times": 6
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "がやがや",
+     "id": "1003280",
+     "times": 6
+    },
+    {
+     "story": "雪渡り",
+     "word": "わな",
+     "id": "1570620",
+     "times": 6
+    },
+    {
+     "story": "野菜の花",
+     "word": "ピーマン",
+     "id": "1106340",
+     "times": 5
+    },
+    {
+     "story": "ディアさんの冬休み",
+     "word": "かまくら",
+     "id": "2085400",
+     "times": 5
+    },
+    {
+     "story": "怠け者のフウアン",
+     "word": "カニ",
+     "id": "1202410",
+     "times": 5
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "がっ",
+     "id": "1631750",
+     "times": 5
+    },
+    {
+     "story": "瘤とり",
+     "word": "じいさん",
+     "id": "2231000",
+     "times": 5
+    },
+    {
+     "story": "浦島太郎",
+     "word": "まま",
+     "id": "1585410",
+     "times": 5
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 5
+    },
+    {
+     "story": "雪渡り",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 5
+    },
+    {
+     "story": "杜子春",
+     "word": "ぼんやり",
+     "id": "1011920",
+     "times": 5
+    },
+    {
+     "story": "杜子春",
+     "word": "じっと",
+     "id": "1005870",
+     "times": 5
+    },
+    {
+     "story": "杜子春",
+     "word": "いや",
+     "id": "2857380",
+     "times": 5
+    },
+    {
+     "story": "野菜の花",
+     "word": "なす",
+     "id": "1195240",
+     "times": 4
+    },
+    {
+     "story": "ベトナムの生春巻き",
+     "word": "きゅうり",
+     "id": "1591500",
+     "times": 4
+    },
+    {
+     "story": "お母さんヘンシン",
+     "word": "ヤッター",
+     "id": "2016840",
+     "times": 4
+    },
+    {
+     "story": "おばあのうちなーぐち 〜おきなわのことば〜",
+     "word": "みたい",
+     "id": "2016410",
+     "times": 4
+    },
+    {
+     "story": "美知子の星空",
+     "word": "キラキラ",
+     "id": "1003500",
+     "times": 4
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ううん",
+     "id": "2002400",
+     "times": 4
+    },
+    {
+     "story": "美知子の星空",
+     "word": "もしもし",
+     "id": "1012550",
+     "times": 4
+    },
+    {
+     "story": "美知子の星空",
+     "word": "みたい",
+     "id": "2016410",
+     "times": 4
+    },
+    {
+     "story": "美知子の星空",
+     "word": "じゃ",
+     "id": "1896380",
+     "times": 4
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "さらさら",
+     "id": "1005310",
+     "times": 4
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "もい",
+     "id": "1562790",
+     "times": 4
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "なめ",
+     "id": "1571320",
+     "times": 4
+    },
+    {
+     "story": "瘤とり",
+     "word": "たまら",
+     "id": "1552650",
+     "times": 4
+    },
+    {
+     "story": "桃太郎",
+     "word": "じいさん",
+     "id": "2231000",
+     "times": 4
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "ざわざわ",
+     "id": "1005430",
+     "times": 4
+    },
+    {
+     "story": "一寸法師",
+     "word": "ちび",
+     "id": "1077750",
+     "times": 4
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "さま",
+     "id": "1545790",
+     "times": 4
+    },
+    {
+     "story": "雪渡り",
+     "word": "キラキラ",
+     "id": "1003500",
+     "times": 4
+    },
+    {
+     "story": "寒い日は「おなべ」",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 3
+    },
+    {
+     "story": "チワワの花すけ〜お花見",
+     "word": "ちゃん",
+     "id": "1007660",
+     "times": 3
+    },
+    {
+     "story": "ベトナムの生春巻き",
+     "word": "レタス",
+     "id": "1145450",
+     "times": 3
+    },
+    {
+     "story": "ベトナムの生春巻き",
+     "word": "にんにく",
+     "id": "1599940",
+     "times": 3
+    },
+    {
+     "story": "ベトナムの生春巻き",
+     "word": "ゆで",
+     "id": "1571470",
+     "times": 3
+    },
+    {
+     "story": "おいしいおかゆ",
+     "word": "おしまい",
+     "id": "1001970",
+     "times": 3
+    },
+    {
+     "story": "ようこそ別府へ",
+     "word": "ブランド",
+     "id": "1114090",
+     "times": 3
+    },
+    {
+     "story": "鏡のない村",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 3
+    },
+    {
+     "story": "Nessy",
+     "word": "ケージ",
+     "id": "1047870",
+     "times": 3
+    },
+    {
+     "story": "吉四六さんの話 〜「ババクロウ」という魚〜",
+     "word": "イラスト",
+     "id": "1021940",
+     "times": 3
+    },
+    {
+     "story": "飯田くん",
+     "word": "ちゃーん",
+     "id": "1007660",
+     "times": 3
+    },
+    {
+     "story": "飯田くん",
+     "word": "ランドセル",
+     "id": "1140220",
+     "times": 3
+    },
+    {
+     "story": "黒コウモリと白コウモリ",
+     "word": "ねえ",
+     "id": "2029080",
+     "times": 3
+    },
+    {
+     "story": "黒コウモリと白コウモリ",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 3
+    },
+    {
+     "story": "日本のバレンタインデー",
+     "word": "チョコ",
+     "id": "1078260",
+     "times": 3
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ナス",
+     "id": "1195240",
+     "times": 3
+    },
+    {
+     "story": "金の輪",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 3
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "いや",
+     "id": "2857380",
+     "times": 3
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "やたら",
+     "id": "1537780",
+     "times": 3
+    },
+    {
+     "story": "金太郎",
+     "word": "ごろごろ",
+     "id": "1005020",
+     "times": 3
+    },
+    {
+     "story": "金太郎",
+     "word": "おしまい",
+     "id": "1001970",
+     "times": 3
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 3
+    },
+    {
+     "story": "瘤とり",
+     "word": "がやがや",
+     "id": "1003280",
+     "times": 3
+    },
+    {
+     "story": "ごん狐",
+     "word": "さま",
+     "id": "1545790",
+     "times": 3
+    },
+    {
+     "story": "ごん狐",
+     "word": "まま",
+     "id": "1585410",
+     "times": 3
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "かさかさ",
+     "id": "1037130",
+     "times": 3
+    },
+    {
+     "story": "一寸法師",
+     "word": "さんざん",
+     "id": "1593980",
+     "times": 3
+    },
+    {
+     "story": "一寸法師",
+     "word": "ごめん",
+     "id": "1270670",
+     "times": 3
+    },
+    {
+     "story": "雪渡り",
+     "word": "ばたばた",
+     "id": "1098660",
+     "times": 3
+    },
+    {
+     "story": "雪渡り",
+     "word": "パチパチ",
+     "id": "1101650",
+     "times": 3
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "ちらちら",
+     "id": "1007910",
+     "times": 3
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 3
+    },
+    {
+     "story": "白い？黒い？",
+     "word": "ペンギン",
+     "id": "1121410",
+     "times": 2
+    },
+    {
+     "story": "入れて",
+     "word": "ドッヂボール",
+     "id": "1088310",
+     "times": 2
+    },
+    {
+     "story": "あれは何？",
+     "word": "ちゃーん",
+     "id": "1007660",
+     "times": 2
+    },
+    {
+     "story": "いっぱい",
+     "word": "ちゃん",
+     "id": "1007660",
+     "times": 2
+    },
+    {
+     "story": "いっぱい",
+     "word": "クッキー",
+     "id": "1043760",
+     "times": 2
+    },
+    {
+     "story": "ざるそば",
+     "word": "ねぎ",
+     "id": "1467630",
+     "times": 2
+    },
+    {
+     "story": "ざるそば",
+     "word": "わさび",
+     "id": "1302710",
+     "times": 2
+    },
+    {
+     "story": "寒い日は「おなべ」",
+     "word": "ねぎ",
+     "id": "1467630",
+     "times": 2
+    },
+    {
+     "story": "わすれもの",
+     "word": "ランドセル",
+     "id": "1140220",
+     "times": 2
+    },
+    {
+     "story": "広島・宮島に行きましょう",
+     "word": "ロープウェイ",
+     "id": "1146760",
+     "times": 2
+    },
+    {
+     "story": "花と色",
+     "word": "ばら",
+     "id": "1571760",
+     "times": 2
+    },
+    {
+     "story": "チワワの花すけ～雪だるま",
+     "word": "あのー",
+     "id": "1000430",
+     "times": 2
+    },
+    {
+     "story": "日下川の猿猴",
+     "word": "う",
+     "id": "1576460",
+     "times": 2
+    },
+    {
+     "story": "ベトナムの生春巻き",
+     "word": "ティ",
+     "id": "1079010",
+     "times": 2
+    },
+    {
+     "story": "ベトナムの生春巻き",
+     "word": "ガン",
+     "id": "1217110",
+     "times": 2
+    },
+    {
+     "story": "ベンジャミンバニーのお話",
+     "word": "ねえ",
+     "id": "2029080",
+     "times": 2
+    },
+    {
+     "story": "ベンジャミンバニーのお話",
+     "word": "レタス",
+     "id": "1145450",
+     "times": 2
+    },
+    {
+     "story": "夜の図書館",
+     "word": "カウンター",
+     "id": "1036930",
+     "times": 2
+    },
+    {
+     "story": "ようこそ別府へ",
+     "word": "ロープウェイ",
+     "id": "1146760",
+     "times": 2
+    },
+    {
+     "story": "キャラメルとあめ玉",
+     "word": "ミント",
+     "id": "1132110",
+     "times": 2
+    },
+    {
+     "story": "キャラメルとあめ玉",
+     "word": "チョコレート",
+     "id": "1078270",
+     "times": 2
+    },
+    {
+     "story": "フェリパ",
+     "word": "かなっ",
+     "id": "1208870",
+     "times": 2
+    },
+    {
+     "story": "温泉の町 別府",
+     "word": "まま",
+     "id": "1585410",
+     "times": 2
+    },
+    {
+     "story": "湖山長者 ～ちょっとざんねんなお金持ちの話～",
+     "word": "イラスト",
+     "id": "1021940",
+     "times": 2
+    },
+    {
+     "story": "正直五兵衛",
+     "word": "キロ",
+     "id": "1042610",
+     "times": 2
+    },
+    {
+     "story": "飯田くん",
+     "word": "おんぶ",
+     "id": "1498040",
+     "times": 2
+    },
+    {
+     "story": "手ぶくろを買いに",
+     "word": "トントン",
+     "id": "1008800",
+     "times": 2
+    },
+    {
+     "story": "手ぶくろを買いに",
+     "word": "まま",
+     "id": "1585410",
+     "times": 2
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "ちゃん",
+     "id": "1007660",
+     "times": 2
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "ふーん",
+     "id": "1632520",
+     "times": 2
+    },
+    {
+     "story": "しいたけ",
+     "word": "ヨーグルト",
+     "id": "1137520",
+     "times": 2
+    },
+    {
+     "story": "美知子の星空",
+     "word": "じっと",
+     "id": "1005870",
+     "times": 2
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ミニスカート",
+     "id": "1131360",
+     "times": 2
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ファッション",
+     "id": "1108210",
+     "times": 2
+    },
+    {
+     "story": "美知子の星空",
+     "word": "トマト",
+     "id": "1085420",
+     "times": 2
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ピザ",
+     "id": "1106620",
+     "times": 2
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ねえ",
+     "id": "2029080",
+     "times": 2
+    },
+    {
+     "story": "去年の木",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 2
+    },
+    {
+     "story": "去年の木",
+     "word": "じっと",
+     "id": "1005870",
+     "times": 2
+    },
+    {
+     "story": "飴だま",
+     "word": "さしだし",
+     "id": "1291230",
+     "times": 2
+    },
+    {
+     "story": "赤い蝋燭",
+     "word": "くじ",
+     "id": "1570360",
+     "times": 2
+    },
+    {
+     "story": "金の輪",
+     "word": "しょんぼり",
+     "id": "1005740",
+     "times": 2
+    },
+    {
+     "story": "野ばら",
+     "word": "ばら",
+     "id": "1571760",
+     "times": 2
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 2
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "ぼんやり",
+     "id": "1011920",
+     "times": 2
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "ほれ",
+     "id": "1011710",
+     "times": 2
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "ばらばら",
+     "id": "1010320",
+     "times": 2
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "ごめん",
+     "id": "1270670",
+     "times": 2
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 2
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "トントン",
+     "id": "1008800",
+     "times": 2
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 2
+    },
+    {
+     "story": "金太郎",
+     "word": "へいき",
+     "id": "1507180",
+     "times": 2
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "へいき",
+     "id": "1507180",
+     "times": 2
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "おお",
+     "id": "2082140",
+     "times": 2
+    },
+    {
+     "story": "文福茶がま",
+     "word": "ぞろぞろ",
+     "id": "1007160",
+     "times": 2
+    },
+    {
+     "story": "かちかち山",
+     "word": "わな",
+     "id": "1570620",
+     "times": 2
+    },
+    {
+     "story": "かちかち山",
+     "word": "にこにこ",
+     "id": "1091130",
+     "times": 2
+    },
+    {
+     "story": "かちかち山",
+     "word": "がっ",
+     "id": "1631750",
+     "times": 2
+    },
+    {
+     "story": "かちかち山",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 2
+    },
+    {
+     "story": "かちかち山",
+     "word": "かちかち",
+     "id": "1002840",
+     "times": 2
+    },
+    {
+     "story": "かちかち山",
+     "word": "なおる",
+     "id": "2846390",
+     "times": 2
+    },
+    {
+     "story": "かちかち山",
+     "word": "こい",
+     "id": "1400530",
+     "times": 2
+    },
+    {
+     "story": "瘤とり",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 2
+    },
+    {
+     "story": "瘤とり",
+     "word": "きらきら",
+     "id": "1003500",
+     "times": 2
+    },
+    {
+     "story": "瘤とり",
+     "word": "わいわい",
+     "id": "1013300",
+     "times": 2
+    },
+    {
+     "story": "ごん狐",
+     "word": "いろんな",
+     "id": "1609270",
+     "times": 2
+    },
+    {
+     "story": "ごん狐",
+     "word": "じっと",
+     "id": "1005870",
+     "times": 2
+    },
+    {
+     "story": "ごん狐",
+     "word": "みたい",
+     "id": "2016410",
+     "times": 2
+    },
+    {
+     "story": "ごん狐",
+     "word": "ポンポン",
+     "id": "1126050",
+     "times": 2
+    },
+    {
+     "story": "桃太郎",
+     "word": "ほうぼう",
+     "id": "1584105",
+     "times": 2
+    },
+    {
+     "story": "桃太郎",
+     "word": "こい",
+     "id": "1400530",
+     "times": 2
+    },
+    {
+     "story": "桃太郎",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 2
+    },
+    {
+     "story": "桃太郎",
+     "word": "ほんの",
+     "id": "1011740",
+     "times": 2
+    },
+    {
+     "story": "桃太郎",
+     "word": "ぎゅうぎゅう",
+     "id": "1003600",
+     "times": 2
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "だいぶ",
+     "id": "1414920",
+     "times": 2
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "くるくる",
+     "id": "1003960",
+     "times": 2
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "どういう",
+     "id": "1008920",
+     "times": 2
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "いや",
+     "id": "2857380",
+     "times": 2
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "ぶるぶる",
+     "id": "1011260",
+     "times": 2
+    },
+    {
+     "story": "一寸法師",
+     "word": "おしまい",
+     "id": "1001970",
+     "times": 2
+    },
+    {
+     "story": "浦島太郎",
+     "word": "かっと",
+     "id": "1002910",
+     "times": 2
+    },
+    {
+     "story": "浦島太郎",
+     "word": "きらきら",
+     "id": "1003500",
+     "times": 2
+    },
+    {
+     "story": "浦島太郎",
+     "word": "ぼうっと",
+     "id": "1011760",
+     "times": 2
+    },
+    {
+     "story": "浦島太郎",
+     "word": "ぽかぽか",
+     "id": "1011930",
+     "times": 2
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 2
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "めんどう",
+     "id": "1533550",
+     "times": 2
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ばらばら",
+     "id": "1010320",
+     "times": 2
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "しずまり",
+     "id": "1594270",
+     "times": 2
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ふう",
+     "id": "1499730",
+     "times": 2
+    },
+    {
+     "story": "雪渡り",
+     "word": "いら",
+     "id": "1465580",
+     "times": 2
+    },
+    {
+     "story": "雪渡り",
+     "word": "まま",
+     "id": "1585410",
+     "times": 2
+    },
+    {
+     "story": "雪渡り",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 2
+    },
+    {
+     "story": "雪渡り",
+     "word": "どんぐり",
+     "id": "1419200",
+     "times": 2
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "せめて",
+     "id": "1006570",
+     "times": 2
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "つい",
+     "id": "1008030",
+     "times": 2
+    },
+    {
+     "story": "杜子春",
+     "word": "いら",
+     "id": "1465580",
+     "times": 2
+    },
+    {
+     "story": "杜子春",
+     "word": "おお",
+     "id": "2082140",
+     "times": 2
+    },
+    {
+     "story": "ありますか？",
+     "word": "カレー",
+     "id": "1039140",
+     "times": 1
+    },
+    {
+     "story": "ありますか？",
+     "word": "メロン",
+     "id": "1134190",
+     "times": 1
+    },
+    {
+     "story": "ありますか？",
+     "word": "たこ",
+     "id": "1581560",
+     "times": 1
+    },
+    {
+     "story": "白い？黒い？",
+     "word": "からす",
+     "id": "1171450",
+     "times": 1
+    },
+    {
+     "story": "あれは何？",
+     "word": "おやすみ",
+     "id": "1612680",
+     "times": 1
+    },
+    {
+     "story": "雨",
+     "word": "さま",
+     "id": "1545790",
+     "times": 1
+    },
+    {
+     "story": "雨",
+     "word": "びしょびしょ",
+     "id": "1010750",
+     "times": 1
+    },
+    {
+     "story": "ちょっと来て！",
+     "word": "ふーん",
+     "id": "1632520",
+     "times": 1
+    },
+    {
+     "story": "畳生活",
+     "word": "かたづけ",
+     "id": "1511790",
+     "times": 1
+    },
+    {
+     "story": "畳生活",
+     "word": "おやすみなさい",
+     "id": "1001780",
+     "times": 1
+    },
+    {
+     "story": "あんこちゃん 〜季節のお菓子〜",
+     "word": "ちゃん",
+     "id": "1007660",
+     "times": 1
+    },
+    {
+     "story": "あんこちゃん 〜季節のお菓子〜",
+     "word": "ファッション",
+     "id": "1108210",
+     "times": 1
+    },
+    {
+     "story": "あんこちゃん 〜季節のお菓子〜",
+     "word": "あん",
+     "id": "1154280",
+     "times": 1
+    },
+    {
+     "story": "あんこちゃん 〜季節のお菓子〜",
+     "word": "アイス",
+     "id": "1013970",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ～おねえさん ごめんなさい",
+     "word": "ごめん",
+     "id": "1270670",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ～おねえさん ごめんなさい",
+     "word": "じゃ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ～おねえさん ごめんなさい",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 1
+    },
+    {
+     "story": "ざるそば",
+     "word": "ゆで",
+     "id": "1571470",
+     "times": 1
+    },
+    {
+     "story": "寒い日は「おなべ」",
+     "word": "キムチ",
+     "id": "1041300",
+     "times": 1
+    },
+    {
+     "story": "わすれもの",
+     "word": "ごめん",
+     "id": "1270670",
+     "times": 1
+    },
+    {
+     "story": "夜の空で",
+     "word": "カサカサ",
+     "id": "1037130",
+     "times": 1
+    },
+    {
+     "story": "これ、なあに？",
+     "word": "ランドセル",
+     "id": "1140220",
+     "times": 1
+    },
+    {
+     "story": "これ、なあに？",
+     "word": "ほうき",
+     "id": "1566500",
+     "times": 1
+    },
+    {
+     "story": "これ、なあに？",
+     "word": "ちりとり",
+     "id": "1369920",
+     "times": 1
+    },
+    {
+     "story": "これ、なあに？",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "ちょっと…",
+     "word": "こしょう",
+     "id": "1267600",
+     "times": 1
+    },
+    {
+     "story": "ちょっと…",
+     "word": "オムレツ",
+     "id": "1035450",
+     "times": 1
+    },
+    {
+     "story": "ちょっと…",
+     "word": "ちゃん",
+     "id": "1007660",
+     "times": 1
+    },
+    {
+     "story": "ちょっと…",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "ぼくのお父さん",
+     "word": "ライオン",
+     "id": "1137760",
+     "times": 1
+    },
+    {
+     "story": "ぼくのお父さん",
+     "word": "オランウータン",
+     "id": "1035510",
+     "times": 1
+    },
+    {
+     "story": "ぼくのお父さん",
+     "word": "ゴリラ",
+     "id": "1054600",
+     "times": 1
+    },
+    {
+     "story": "いいです",
+     "word": "コンビニ",
+     "id": "1053280",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ〜お花見",
+     "word": "いら",
+     "id": "1465580",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ〜お花見",
+     "word": "あんこ",
+     "id": "1610570",
+     "times": 1
+    },
+    {
+     "story": "広島・宮島に行きましょう",
+     "word": "ドーム",
+     "id": "1087780",
+     "times": 1
+    },
+    {
+     "story": "広島・宮島に行きましょう",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "にほんごえほん あいちゃん１（２）",
+     "word": "ちゃん",
+     "id": "1007660",
+     "times": 1
+    },
+    {
+     "story": "にほんごえほん あいちゃん１（２）",
+     "word": "で",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "にほんごえほん あいちゃん１（２）",
+     "word": "ハンコ",
+     "id": "1478550",
+     "times": 1
+    },
+    {
+     "story": "にほんごえほん あいちゃん１（２）",
+     "word": "グローブ",
+     "id": "1047750",
+     "times": 1
+    },
+    {
+     "story": "花と色",
+     "word": "ひがん",
+     "id": "1509110",
+     "times": 1
+    },
+    {
+     "story": "花と色",
+     "word": "チューリップ",
+     "id": "1078160",
+     "times": 1
+    },
+    {
+     "story": "花と色",
+     "word": "パーク",
+     "id": "1100450",
+     "times": 1
+    },
+    {
+     "story": "花と色",
+     "word": "はす",
+     "id": "1559200",
+     "times": 1
+    },
+    {
+     "story": "落花生はおもしろい！",
+     "word": "ピーナッツ",
+     "id": "1106260",
+     "times": 1
+    },
+    {
+     "story": "日下川の猿猴",
+     "word": "コロナ",
+     "id": "1051700",
+     "times": 1
+    },
+    {
+     "story": "ディアさんの冬休み",
+     "word": "イラスト",
+     "id": "1021940",
+     "times": 1
+    },
+    {
+     "story": "おばあちゃんがいない",
+     "word": "イチゴ",
+     "id": "1571460",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ～帽子とマフラー",
+     "word": "ぴょんぴょん",
+     "id": "1010920",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ～帽子とマフラー",
+     "word": "くるくる",
+     "id": "1003960",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ～帽子とマフラー",
+     "word": "スヤスヤ",
+     "id": "1006230",
+     "times": 1
+    },
+    {
+     "story": "チワワの花すけ～帽子とマフラー",
+     "word": "おやすみなさい",
+     "id": "1001780",
+     "times": 1
+    },
+    {
+     "story": "ベトナムの生春巻き",
+     "word": "ソース",
+     "id": "1075270",
+     "times": 1
+    },
+    {
+     "story": "ベトナムの生春巻き",
+     "word": "んて",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "泣く女",
+     "word": "おお",
+     "id": "2082140",
+     "times": 1
+    },
+    {
+     "story": "ベンジャミンバニーのお話",
+     "word": "おかえりなさい",
+     "id": "1001740",
+     "times": 1
+    },
+    {
+     "story": "つみっこ",
+     "word": "ひっ",
+     "id": "2821500",
+     "times": 1
+    },
+    {
+     "story": "怠け者のフウアン",
+     "word": "かた",
+     "id": "1516925",
+     "times": 1
+    },
+    {
+     "story": "丸メガネ寮母さん",
+     "word": "しとしと",
+     "id": "1005570",
+     "times": 1
+    },
+    {
+     "story": "丸メガネ寮母さん",
+     "word": "よろよろ",
+     "id": "1013230",
+     "times": 1
+    },
+    {
+     "story": "丸メガネ寮母さん",
+     "word": "カール",
+     "id": "1036750",
+     "times": 1
+    },
+    {
+     "story": "丸メガネ寮母さん",
+     "word": "ゴールデンウイーク",
+     "id": "1054300",
+     "times": 1
+    },
+    {
+     "story": "丸メガネ寮母さん",
+     "word": "ホームシック",
+     "id": "1121850",
+     "times": 1
+    },
+    {
+     "story": "私の彼氏は油揚げが好き",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "おいしいおかゆ",
+     "word": "いり",
+     "id": "1465580",
+     "times": 1
+    },
+    {
+     "story": "ようこそ別府へ",
+     "word": "ようこそ",
+     "id": "1013100",
+     "times": 1
+    },
+    {
+     "story": "ようこそ別府へ",
+     "word": "プリン",
+     "id": "1116190",
+     "times": 1
+    },
+    {
+     "story": "ようこそ別府へ",
+     "word": "てんぷら",
+     "id": "1440590",
+     "times": 1
+    },
+    {
+     "story": "ようこそ別府へ",
+     "word": "アジ",
+     "id": "1586400",
+     "times": 1
+    },
+    {
+     "story": "ようこそ別府へ",
+     "word": "サバ",
+     "id": "1299610",
+     "times": 1
+    },
+    {
+     "story": "ようこそ別府へ",
+     "word": "ビーチ",
+     "id": "1104370",
+     "times": 1
+    },
+    {
+     "story": "キャラメルとあめ玉",
+     "word": "カステラ",
+     "id": "1037370",
+     "times": 1
+    },
+    {
+     "story": "キャラメルとあめ玉",
+     "word": "シュークリーム",
+     "id": "1061950",
+     "times": 1
+    },
+    {
+     "story": "キャラメルとあめ玉",
+     "word": "バラバラ",
+     "id": "1010320",
+     "times": 1
+    },
+    {
+     "story": "キャラメルとあめ玉",
+     "word": "わかりにくく",
+     "id": "1606540",
+     "times": 1
+    },
+    {
+     "story": "お母さんヘンシン",
+     "word": "バーゲンセール",
+     "id": "1097040",
+     "times": 1
+    },
+    {
+     "story": "お母さんヘンシン",
+     "word": "ニコニコ",
+     "id": "1091130",
+     "times": 1
+    },
+    {
+     "story": "北海道",
+     "word": "㎢",
+     "id": "1507860",
+     "times": 1
+    },
+    {
+     "story": "北海道",
+     "word": "まとめ",
+     "id": "1440930",
+     "times": 1
+    },
+    {
+     "story": "北海道",
+     "word": "オリンピック",
+     "id": "1035710",
+     "times": 1
+    },
+    {
+     "story": "北海道",
+     "word": "メロン",
+     "id": "1134190",
+     "times": 1
+    },
+    {
+     "story": "北海道",
+     "word": "カニ",
+     "id": "1202410",
+     "times": 1
+    },
+    {
+     "story": "北海道",
+     "word": "ジンギスカン",
+     "id": "1066590",
+     "times": 1
+    },
+    {
+     "story": "鏡のない村",
+     "word": "いいや",
+     "id": "2857380",
+     "times": 1
+    },
+    {
+     "story": "明日は遠足",
+     "word": "ぶどう",
+     "id": "1499230",
+     "times": 1
+    },
+    {
+     "story": "明日は遠足",
+     "word": "ハンバーグ",
+     "id": "1096870",
+     "times": 1
+    },
+    {
+     "story": "明日は遠足",
+     "word": "ごめん",
+     "id": "1270670",
+     "times": 1
+    },
+    {
+     "story": "明日は遠足",
+     "word": "ライオン",
+     "id": "1137760",
+     "times": 1
+    },
+    {
+     "story": "涙の力",
+     "word": "まま",
+     "id": "1585410",
+     "times": 1
+    },
+    {
+     "story": "フェリパ",
+     "word": "かなう",
+     "id": "1208870",
+     "times": 1
+    },
+    {
+     "story": "フェリパ",
+     "word": "さまよっ",
+     "id": "1566730",
+     "times": 1
+    },
+    {
+     "story": "Nessy",
+     "word": "イメージ",
+     "id": "1021750",
+     "times": 1
+    },
+    {
+     "story": "Nessy",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "Nessy",
+     "word": "トイレットペーパー",
+     "id": "1084870",
+     "times": 1
+    },
+    {
+     "story": "Nessy",
+     "word": "だらけ",
+     "id": "1007480",
+     "times": 1
+    },
+    {
+     "story": "Nessy",
+     "word": "シンク",
+     "id": "1063430",
+     "times": 1
+    },
+    {
+     "story": "Nessy",
+     "word": "びしょびしょ",
+     "id": "1010750",
+     "times": 1
+    },
+    {
+     "story": "Nessy",
+     "word": "サーモン",
+     "id": "1055330",
+     "times": 1
+    },
+    {
+     "story": "Nessy",
+     "word": "ぼろぼろ",
+     "id": "1011900",
+     "times": 1
+    },
+    {
+     "story": "吉四六さんの話 〜「ババクロウ」という魚〜",
+     "word": "さま",
+     "id": "1545790",
+     "times": 1
+    },
+    {
+     "story": "吉四六さんの話 〜「ババクロウ」という魚〜",
+     "word": "わくわく",
+     "id": "1013310",
+     "times": 1
+    },
+    {
+     "story": "温泉の科学",
+     "word": "ありそう",
+     "id": "1540990",
+     "times": 1
+    },
+    {
+     "story": "温泉の科学",
+     "word": "ページ",
+     "id": "1120410",
+     "times": 1
+    },
+    {
+     "story": "温泉の町 別府",
+     "word": "シンボル",
+     "id": "1063940",
+     "times": 1
+    },
+    {
+     "story": "温泉の町 別府",
+     "word": "ランド",
+     "id": "1140190",
+     "times": 1
+    },
+    {
+     "story": "温泉の町 別府",
+     "word": "そのよう",
+     "id": "2106890",
+     "times": 1
+    },
+    {
+     "story": "湖山長者 ～ちょっとざんねんなお金持ちの話～",
+     "word": "かくし",
+     "id": "1197060",
+     "times": 1
+    },
+    {
+     "story": "湖山長者 ～ちょっとざんねんなお金持ちの話～",
+     "word": "わくわく",
+     "id": "1013310",
+     "times": 1
+    },
+    {
+     "story": "トマトを育てました",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "おばあのうちなーぐち 〜おきなわのことば〜",
+     "word": "ち",
+     "id": "1077410",
+     "times": 1
+    },
+    {
+     "story": "おばあのうちなーぐち 〜おきなわのことば〜",
+     "word": "ドーナツ",
+     "id": "1087690",
+     "times": 1
+    },
+    {
+     "story": "おばあのうちなーぐち 〜おきなわのことば〜",
+     "word": "わくわく",
+     "id": "1013310",
+     "times": 1
+    },
+    {
+     "story": "おばあのうちなーぐち 〜おきなわのことば〜",
+     "word": "イラスト",
+     "id": "1021940",
+     "times": 1
+    },
+    {
+     "story": "稲むらの火",
+     "word": "じーっと",
+     "id": "1005870",
+     "times": 1
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "word": "ため",
+     "id": "1552630",
+     "times": 1
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "word": "がい",
+     "id": "1204330",
+     "times": 1
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "word": "たす",
+     "id": "1404700",
+     "times": 1
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "word": "ぜ",
+     "id": "2834812",
+     "times": 1
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "word": "さま",
+     "id": "1545790",
+     "times": 1
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "word": "ハイビスカス",
+     "id": "1095380",
+     "times": 1
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "word": "ラップ",
+     "id": "1139250",
+     "times": 1
+    },
+    {
+     "story": "手ぶくろを買いに",
+     "word": "キラキラ",
+     "id": "1003500",
+     "times": 1
+    },
+    {
+     "story": "手ぶくろを買いに",
+     "word": "ちんちん",
+     "id": "1007960",
+     "times": 1
+    },
+    {
+     "story": "黒コウモリと白コウモリ",
+     "word": "ふうん",
+     "id": "1632520",
+     "times": 1
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "どういう",
+     "id": "1008920",
+     "times": 1
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "デッキ",
+     "id": "1083270",
+     "times": 1
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "おやすみ",
+     "id": "1612680",
+     "times": 1
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "みたい",
+     "id": "2016410",
+     "times": 1
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "つなぎ",
+     "id": "1251900",
+     "times": 1
+    },
+    {
+     "story": "キツネ踊り ―姫島の子どもたちがキツネになる日―",
+     "word": "ピョンピョン",
+     "id": "1010920",
+     "times": 1
+    },
+    {
+     "story": "しいたけ",
+     "word": "クッキー",
+     "id": "1043760",
+     "times": 1
+    },
+    {
+     "story": "しいたけ",
+     "word": "トマト",
+     "id": "1085420",
+     "times": 1
+    },
+    {
+     "story": "しいたけ",
+     "word": "きゅうり",
+     "id": "1591500",
+     "times": 1
+    },
+    {
+     "story": "しいたけ",
+     "word": "ヘルシー",
+     "id": "1118830",
+     "times": 1
+    },
+    {
+     "story": "張り紙にびっくり！",
+     "word": "ニックネーム",
+     "id": "1091190",
+     "times": 1
+    },
+    {
+     "story": "日本のバレンタインデー",
+     "word": "キャンペーン",
+     "id": "1042250",
+     "times": 1
+    },
+    {
+     "story": "私とハムスター",
+     "word": "かた",
+     "id": "1516925",
+     "times": 1
+    },
+    {
+     "story": "私とハムスター",
+     "word": "ぽ",
+     "id": "2083720",
+     "times": 1
+    },
+    {
+     "story": "別府観光の父 油屋熊八",
+     "word": "バスツアー",
+     "id": "2207990",
+     "times": 1
+    },
+    {
+     "story": "別府観光の父 油屋熊八",
+     "word": "で",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "別府観光の父 油屋熊八",
+     "word": "ギャラリー",
+     "id": "1043100",
+     "times": 1
+    },
+    {
+     "story": "別府観光の父 油屋熊八",
+     "word": "リード",
+     "id": "1140710",
+     "times": 1
+    },
+    {
+     "story": "ロバの皮の女",
+     "word": "どういう",
+     "id": "1008920",
+     "times": 1
+    },
+    {
+     "story": "ロバの皮の女",
+     "word": "まとめ",
+     "id": "1440930",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "イルミネーション",
+     "id": "1022050",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ちょっぴり",
+     "id": "1007840",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "サッカー",
+     "id": "1056700",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ブリッジ",
+     "id": "1114250",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "バラ",
+     "id": "1571760",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ブランド",
+     "id": "1114090",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "キュウリ",
+     "id": "1591500",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ベランダ",
+     "id": "1119940",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "にぎわっ",
+     "id": "1463500",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ページ",
+     "id": "1120410",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "サラサラ",
+     "id": "1005310",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ぼんやり",
+     "id": "1011920",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "わくわく",
+     "id": "1013310",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "くたくた",
+     "id": "1003770",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "パイナップル",
+     "id": "1101100",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "で",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "スケッチブック",
+     "id": "1068890",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "つかみ",
+     "id": "1433650",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "スケッチ",
+     "id": "1068880",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "あのう",
+     "id": "1000430",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "まま",
+     "id": "1585410",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "リゾートホテル",
+     "id": "1141700",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "ち",
+     "id": "1077410",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "まじめ",
+     "id": "1364360",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "キノコ",
+     "id": "1416010",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "う",
+     "id": "1576460",
+     "times": 1
+    },
+    {
+     "story": "美知子の星空",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 1
+    },
+    {
+     "story": "去年の木",
+     "word": "ち",
+     "id": "1077410",
+     "times": 1
+    },
+    {
+     "story": "去年の木",
+     "word": "わかれ",
+     "id": "1606600",
+     "times": 1
+    },
+    {
+     "story": "去年の木",
+     "word": "もしもし",
+     "id": "1012550",
+     "times": 1
+    },
+    {
+     "story": "飴だま",
+     "word": "ぽかぽか",
+     "id": "1011930",
+     "times": 1
+    },
+    {
+     "story": "飴だま",
+     "word": "はやし",
+     "id": "1378760",
+     "times": 1
+    },
+    {
+     "story": "飴だま",
+     "word": "せがみ",
+     "id": "1006490",
+     "times": 1
+    },
+    {
+     "story": "飴だま",
+     "word": "せがむ",
+     "id": "1006490",
+     "times": 1
+    },
+    {
+     "story": "飴だま",
+     "word": "なだめ",
+     "id": "1540250",
+     "times": 1
+    },
+    {
+     "story": "飴だま",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "飴だま",
+     "word": "かばい",
+     "id": "1483060",
+     "times": 1
+    },
+    {
+     "story": "飴だま",
+     "word": "わり",
+     "id": "1208000",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭",
+     "word": "しあい",
+     "id": "1312420",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭",
+     "word": "まし",
+     "id": "1611600",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭",
+     "word": "きょろきょろ",
+     "id": "1003490",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭",
+     "word": "うろつい",
+     "id": "1566735",
+     "times": 1
+    },
+    {
+     "story": "金の輪",
+     "word": "それらしい",
+     "id": "2104990",
+     "times": 1
+    },
+    {
+     "story": "金の輪",
+     "word": "ふれあう",
+     "id": "1358010",
+     "times": 1
+    },
+    {
+     "story": "金の輪",
+     "word": "ふれあっ",
+     "id": "1358010",
+     "times": 1
+    },
+    {
+     "story": "金の輪",
+     "word": "つい",
+     "id": "1008030",
+     "times": 1
+    },
+    {
+     "story": "野ばら",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "野ばら",
+     "word": "かなわ",
+     "id": "1208870",
+     "times": 1
+    },
+    {
+     "story": "野ばら",
+     "word": "うつむい",
+     "id": "1563570",
+     "times": 1
+    },
+    {
+     "story": "野ばら",
+     "word": "うとうと",
+     "id": "1001030",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "はて",
+     "id": "1192910",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "もがい",
+     "id": "1012490",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "ひっそり",
+     "id": "1010550",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "つかみ",
+     "id": "1433650",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "まま",
+     "id": "1585410",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "せっせと",
+     "id": "2008620",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "たまり",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "くるくる",
+     "id": "1003960",
+     "times": 1
+    },
+    {
+     "story": "蜘蛛の糸",
+     "word": "きらきら",
+     "id": "1003500",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "いじ",
+     "id": "1156720",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "きらきら",
+     "id": "1003500",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "じいさん",
+     "id": "2231000",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "だらけ",
+     "id": "1007480",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "ちらし",
+     "id": "1303460",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "まま",
+     "id": "1585410",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "さなか",
+     "id": "1579210",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "ほうぼう",
+     "id": "1584105",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "つかん",
+     "id": "1433650",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "らしい",
+     "id": "1013240",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "いっこう",
+     "id": "1162410",
+     "times": 1
+    },
+    {
+     "story": "花咲かじじい",
+     "word": "ろう",
+     "id": "1560210",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "よだれ",
+     "id": "1013160",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "はね",
+     "id": "1611260",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "うなっ",
+     "id": "1565300",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "ころころ",
+     "id": "1004840",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "かた",
+     "id": "1516925",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "まとまる",
+     "id": "1611640",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "うなり",
+     "id": "1565300",
+     "times": 1
+    },
+    {
+     "story": "猿かに合戦",
+     "word": "ばたばた",
+     "id": "1098660",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "キラキラ",
+     "id": "1003500",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "ちんちん",
+     "id": "1007960",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "さしだし",
+     "id": "1291230",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "ぱちぱち",
+     "id": "1101650",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "さんざ",
+     "id": "1593980",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "シャッポ",
+     "id": "1061510",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "ふーん",
+     "id": "1632520",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "さしだす",
+     "id": "1291230",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "よちよち",
+     "id": "1013170",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "いろんな",
+     "id": "1609270",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "ペンキ",
+     "id": "1121390",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "はげ",
+     "id": "1455420",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "まちがっ",
+     "id": "1611610",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "さしこん",
+     "id": "1291170",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "チンチン",
+     "id": "1007960",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "コバルト",
+     "id": "1050560",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "たまり",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "手袋を買いに",
+     "word": "つぶやき",
+     "id": "1565120",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "かけまわり",
+     "id": "1244740",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "やたら",
+     "id": "1537780",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "ぞろぞろ",
+     "id": "1007160",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "むちゃくちゃ",
+     "id": "1530680",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "つかん",
+     "id": "1433650",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "ころころ",
+     "id": "1004840",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "もん",
+     "id": "1567610",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "ぐるり",
+     "id": "1331010",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "むぞうさ",
+     "id": "1530500",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "せっせと",
+     "id": "2008620",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "にこにこ",
+     "id": "1091130",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "なで",
+     "id": "1498290",
+     "times": 1
+    },
+    {
+     "story": "金太郎",
+     "word": "らしく",
+     "id": "1013240",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "いじ",
+     "id": "1156720",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "じいさん",
+     "id": "2231000",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "たまり",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "あて",
+     "id": "1448820",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "ようこそ",
+     "id": "1013100",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "にこにこ",
+     "id": "1091130",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "さんご",
+     "id": "1303710",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "らしい",
+     "id": "1013240",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "むちゃくちゃ",
+     "id": "1530680",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "きょときょと",
+     "id": "1003490",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "むろん",
+     "id": "1531080",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "なめる",
+     "id": "1571320",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "やれやれ",
+     "id": "1013000",
+     "times": 1
+    },
+    {
+     "story": "舌切りすずめ",
+     "word": "ひな",
+     "id": "2847628",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "まま",
+     "id": "1585410",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "うとうと",
+     "id": "1001030",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "こごと",
+     "id": "1348050",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "ほうき",
+     "id": "1566500",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "はたき",
+     "id": "1611210",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "なで",
+     "id": "1498290",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "にこにこ",
+     "id": "1091130",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "もしもし",
+     "id": "1012550",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "さらさ",
+     "id": "1593910",
+     "times": 1
+    },
+    {
+     "story": "文福茶がま",
+     "word": "さんざん",
+     "id": "1593980",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "とんとん",
+     "id": "1008800",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "もしもし",
+     "id": "1012550",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "やれやれ",
+     "id": "1013000",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "ぬかし",
+     "id": "1478120",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "じいさん",
+     "id": "2231000",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "たまら",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "ばりばり",
+     "id": "1010340",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "せっせと",
+     "id": "2008620",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "がらし",
+     "id": "1202390",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "うなり",
+     "id": "1565300",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "らし",
+     "id": "1000940",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "ぴりぴり",
+     "id": "1010950",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "なおっ",
+     "id": "2846390",
+     "times": 1
+    },
+    {
+     "story": "かちかち山",
+     "word": "じゃあまた",
+     "id": "2135480",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "ごろごろ",
+     "id": "1005020",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "やれやれ",
+     "id": "1013000",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "ぞろぞろ",
+     "id": "1007160",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "ぶるぶる",
+     "id": "1011260",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "ずらり",
+     "id": "2008600",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "らしい",
+     "id": "1013240",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "さんざん",
+     "id": "1593980",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "ぱちぱち",
+     "id": "1101650",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "はやし",
+     "id": "1378760",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "まま",
+     "id": "1585410",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "いいや",
+     "id": "2857380",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "いや",
+     "id": "2857380",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "とんでもない",
+     "id": "1008790",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "からす",
+     "id": "1171450",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "なで",
+     "id": "1498290",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "つるつる",
+     "id": "1008220",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "どういう",
+     "id": "1008920",
+     "times": 1
+    },
+    {
+     "story": "瘤とり",
+     "word": "おお",
+     "id": "2082140",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "つるし",
+     "id": "1433980",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "きんきん",
+     "id": "1578110",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "もま",
+     "id": "1567610",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "そうっと",
+     "id": "1006810",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ぼろぼろ",
+     "id": "1011900",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "きらきら",
+     "id": "1003500",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ぽんぽん",
+     "id": "1126050",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "つかみ",
+     "id": "1433650",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ぬるぬる",
+     "id": "1009870",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "つかめ",
+     "id": "1433650",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "う",
+     "id": "1576460",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "よそいき",
+     "id": "1584940",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ぐずぐず",
+     "id": "1004040",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ちらちら",
+     "id": "1007910",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "はりきり",
+     "id": "1427870",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "やすうり",
+     "id": "1154220",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "つかん",
+     "id": "1433650",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ぼんやり",
+     "id": "1011920",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ふうん",
+     "id": "1632520",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ようし",
+     "id": "2607690",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "ぐったり",
+     "id": "1004070",
+     "times": 1
+    },
+    {
+     "story": "ごん狐",
+     "word": "つぶっ",
+     "id": "1585820",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "せっせと",
+     "id": "2008620",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "どれどれ",
+     "id": "1188630",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "にこにこ",
+     "id": "1091130",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "かなう",
+     "id": "1208870",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "ごく",
+     "id": "1240180",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "さぞ",
+     "id": "1565620",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "つない",
+     "id": "1251900",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "かじ",
+     "id": "1191980",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "ぼんやり",
+     "id": "1011920",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "つぶっ",
+     "id": "1585820",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "さんざん",
+     "id": "1593980",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "おしまい",
+     "id": "1001970",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "たまり",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "ぼろぼろ",
+     "id": "1011900",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "らしい",
+     "id": "1013240",
+     "times": 1
+    },
+    {
+     "story": "桃太郎",
+     "word": "くるくる",
+     "id": "1003960",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "じっと",
+     "id": "1005870",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "いっこう",
+     "id": "1162410",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "たまら",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "HOUSE",
+     "id": "1095670",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "このうち",
+     "id": "2232980",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "ごめん",
+     "id": "1270670",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "ぼうっと",
+     "id": "1011760",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "ぎょっと",
+     "id": "1003630",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "がたがた",
+     "id": "1003100",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "おまけ",
+     "id": "1694410",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "きょろきょろ",
+     "id": "1003490",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "こそこそ",
+     "id": "1004420",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "あいつら",
+     "id": "1985390",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "もん",
+     "id": "1567610",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "フライ",
+     "id": "1111050",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "くしゃくしゃ",
+     "id": "1003700",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "うなっ",
+     "id": "1565300",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "にゃあ",
+     "id": "1632330",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "ごろごろ",
+     "id": "1005020",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "がさがさ",
+     "id": "1003090",
+     "times": 1
+    },
+    {
+     "story": "注文の多い料理店",
+     "word": "なおり",
+     "id": "2846390",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "かなっ",
+     "id": "1208870",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "にこにこ",
+     "id": "1091130",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "らしい",
+     "id": "1013240",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "いらっしゃる",
+     "id": "1000940",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "からっぽ",
+     "id": "1245380",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "いらし",
+     "id": "1000940",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "いじ",
+     "id": "1156720",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "いっこう",
+     "id": "1162410",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "きょろきょろ",
+     "id": "1003490",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "まま",
+     "id": "1585410",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "やたら",
+     "id": "1537780",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "たまら",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "かっと",
+     "id": "1002910",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "かなわ",
+     "id": "1208870",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "やれやれ",
+     "id": "1013000",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "ころころ",
+     "id": "1004840",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "さんご",
+     "id": "1303710",
+     "times": 1
+    },
+    {
+     "story": "一寸法師",
+     "word": "むじつ",
+     "id": "1530070",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "がやがや",
+     "id": "1003280",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "さんざん",
+     "id": "1593980",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "じゃあ",
+     "id": "1896380",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "わいわい",
+     "id": "1013300",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "なで",
+     "id": "1498290",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "やれやれ",
+     "id": "1013000",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "いや",
+     "id": "2857380",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "ほんの",
+     "id": "1011740",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "さんご",
+     "id": "1303710",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "ようこそ",
+     "id": "1013100",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "おもてなし",
+     "id": "2116050",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "たい",
+     "id": "1411550",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "たこ",
+     "id": "1581560",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "ちょうちょう",
+     "id": "1597640",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "せみ",
+     "id": "1387080",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "はす",
+     "id": "1559200",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "たまっ",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "おしまい",
+     "id": "1001970",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "いっこう",
+     "id": "1162410",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "すがっ",
+     "id": "1610010",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "もしもし",
+     "id": "1012550",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "いらっしゃら",
+     "id": "1000940",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "たまら",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "しわ",
+     "id": "1569740",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "つぶやき",
+     "id": "1565120",
+     "times": 1
+    },
+    {
+     "story": "浦島太郎",
+     "word": "ぼんやり",
+     "id": "1011920",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "めんど",
+     "id": "1533550",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "がさがさ",
+     "id": "1003090",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "たまり",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "はね",
+     "id": "1611260",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "にゃあ",
+     "id": "1632330",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "もうすっかり",
+     "id": "2230440",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "もりあがっ",
+     "id": "1379690",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "おいおい",
+     "id": "1631660",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ねぎ",
+     "id": "1467630",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "きれ",
+     "id": "1384840",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ぽとぽと",
+     "id": "1011960",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ざわざわ",
+     "id": "1005430",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "オリーブいろ",
+     "id": "1634260",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "びくびく",
+     "id": "1010730",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "いますぐ",
+     "id": "2026850",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ぎょっと",
+     "id": "1003630",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "にやにや",
+     "id": "1009620",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "まじめ",
+     "id": "1364360",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "いや",
+     "id": "2857380",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "いらっしゃい",
+     "id": "1000940",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "おやすみ",
+     "id": "1612680",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ぼろぼろ",
+     "id": "1011900",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "パチパチ",
+     "id": "1101650",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ぎらぎら",
+     "id": "1003650",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "らしく",
+     "id": "1013240",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "だいぶ",
+     "id": "1414920",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "かたづけ",
+     "id": "1511790",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "いり",
+     "id": "1465580",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "じんかく",
+     "id": "1366730",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ぱちぱち",
+     "id": "1101650",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "まま",
+     "id": "1585410",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ばたばた",
+     "id": "1098660",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "つぶっ",
+     "id": "1585820",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "ぐらぐら",
+     "id": "1004110",
+     "times": 1
+    },
+    {
+     "story": "どんぐりと山猫",
+     "word": "とぼけ",
+     "id": "1610900",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "ぎらぎら",
+     "id": "1003650",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "ぎょっと",
+     "id": "1003630",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "かばっ",
+     "id": "1483060",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "くそ",
+     "id": "1504900",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "むじつ",
+     "id": "1530070",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "きせ",
+     "id": "1422990",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "くるくる",
+     "id": "1003960",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "いや",
+     "id": "2857380",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "けれど",
+     "id": "2853889",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "つぶる",
+     "id": "1585820",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "つかん",
+     "id": "1433650",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "ひそひそ",
+     "id": "1010520",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "ちぎれ",
+     "id": "1610310",
+     "times": 1
+    },
+    {
+     "story": "雪渡り",
+     "word": "おしまい",
+     "id": "1001970",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "がれ",
+     "id": "1631750",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "たまら",
+     "id": "1552650",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "おお",
+     "id": "2082140",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "がっ",
+     "id": "1631750",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "がり",
+     "id": "1631750",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "せっせと",
+     "id": "2008620",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "はてしなく",
+     "id": "1192890",
+     "times": 1
+    },
+    {
+     "story": "赤い蝋燭と人魚",
+     "word": "じっと",
+     "id": "1005870",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "なさそう",
+     "id": "2246510",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "ひらひら",
+     "id": "1010680",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "そっと",
+     "id": "1006810",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "とりよせる",
+     "id": "1326620",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "おしまい",
+     "id": "1001970",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "にやにや",
+     "id": "1009620",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "ざわざわ",
+     "id": "1005430",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "きらきら",
+     "id": "1003500",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "つけこん",
+     "id": "1495900",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "つぶっ",
+     "id": "1585820",
+     "times": 1
+    },
+    {
+     "story": "杜子春",
+     "word": "はらはら",
+     "id": "1096260",
+     "times": 1
+    }
+   ]
+  },
+  "story-links": {
+   "area": "Stories",
+   "title": "Story files with broken links",
+   "why": "",
+   "count": 0,
+   "items": []
+  },
+  "story-jumbled": {
+   "area": "Stories",
+   "title": "Story text that may be jumbled",
+   "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
+   "count": 23,
+   "items": [
+    {
+     "story": "かまきり",
+     "paragraph": 5,
+     "unseen pairs": "83%",
+     "text": "12630きりまか「本読習学数数語ル本彙字ベ語文レ日"
+    },
+    {
+     "story": "つみっこ",
+     "paragraph": 1,
+     "unseen pairs": "43%",
+     "text": "本庄市埼玉県東京都若泉公園の桜マリーゴールドの丘公園"
+    },
+    {
+     "story": "ようこそ別府へ",
+     "paragraph": 14,
+     "unseen pairs": "48%",
+     "text": "北海道大阪東京九州ふくおかさが福岡佐賀別府長崎大分熊本宮崎かごしま鹿児島かごしま鹿児島沖縄"
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "paragraph": 2,
+     "unseen pairs": "75%",
+     "text": "館料資俗民史3歴町沢井軽「ポール・ジャクレー展」"
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "paragraph": 12,
+     "unseen pairs": "52%",
+     "text": "注10二ためき州十このもわ百んにれの六れ話きぁ回で、い宮才はをれ、もす二な廷の、しいこ！"
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "paragraph": 14,
+     "unseen pairs": "61%",
+     "text": "とぬ一にまの軽ま九入しに井で六った必沢、○た。"
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "paragraph": 14,
+     "unseen pairs": "56%",
+     "text": "要にジ年んな住ャにで摺んク六す師でレ十"
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "paragraph": 16,
+     "unseen pairs": "53%",
+     "text": "日ういし示じ料ょぇ部ぶャは、みす館か！"
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "paragraph": 17,
+     "unseen pairs": "59%",
+     "text": "喜多川歌麿（1798）注2歌麿の模写1911年（15才）紙本着色「青楼美人名花合」"
+    },
+    {
+     "story": "別府観光の父 油屋熊八",
+     "paragraph": 15,
+     "unseen pairs": "73%",
+     "text": "館書を志図の立覧県分遊御大泉（温年府19別「"
+    },
+    {
+     "story": "北海道",
+     "paragraph": 1,
+     "unseen pairs": "59%",
+     "text": "根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」"
+    },
+    {
+     "story": "日下川の猿猴",
+     "paragraph": 0,
+     "unseen pairs": "67%",
+     "text": "この川に・・・日高村仁淀川日高村役場日下川宇井"
+    },
+    {
+     "story": "日本の城",
+     "paragraph": 0,
+     "unseen pairs": "50%",
+     "text": "弘前城竹田城松本城彦根城姫路城まつえじょう松江城えどじょう江戸城熊本城犬山城なごやじょうおおさかじょう名古屋城大阪城首里城"
+    },
+    {
+     "story": "日本の城",
+     "paragraph": 1,
+     "unseen pairs": "62%",
+     "text": "しろ城しゃちほこ鯱天守石垣堀"
+    },
+    {
+     "story": "日本の城",
+     "paragraph": 24,
+     "unseen pairs": "52%",
+     "text": "しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。"
+    },
+    {
+     "story": "温泉の町 別府",
+     "paragraph": 0,
+     "unseen pairs": "45%",
+     "text": "ほっかいどう北海道おおさか大阪とうきょう東京九州べっぷ福岡別府さが佐賀長崎大分熊本みやざきかごしま宮崎おきなわ鹿児島沖縄鹿児島"
+    },
+    {
+     "story": "花と色",
+     "paragraph": 0,
+     "unseen pairs": "40%",
+     "text": "埼玉県ときがわ町（上）埼玉県小川町巾着田（下）"
+    },
+    {
+     "story": "花と色",
+     "paragraph": 2,
+     "unseen pairs": "52%",
+     "text": "東京都文京区六義園（上）埼玉県新座市平林寺（左）東京都立川市・昭島市昭和記念公園（右）"
+    },
+    {
+     "story": "花と色",
+     "paragraph": 4,
+     "unseen pairs": "48%",
+     "text": "神奈川県中郡吾妻山公園（上）埼玉県比企郡武蔵丘陵森林公園（下）"
+    },
+    {
+     "story": "花と色",
+     "paragraph": 7,
+     "unseen pairs": "53%",
+     "text": "神奈川県鎌倉市東慶寺（上）成就院（左）江ノ電沿線（右）"
+    },
+    {
+     "story": "花と色",
+     "paragraph": 8,
+     "unseen pairs": "50%",
+     "text": "群馬県足利市あしかがフラワーパーク"
+    },
+    {
+     "story": "雪渡り",
+     "paragraph": 68,
+     "unseen pairs": "50%",
+     "text": "「北風ぴいぴい風三郎、西風どうどう又三郎」"
+    },
+    {
+     "story": "黒コウモリと白コウモリ",
+     "paragraph": 14,
+     "unseen pairs": "41%",
+     "text": "花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ"
+    }
+   ]
+  },
+  "story-blanks": {
+   "area": "Stories",
+   "title": "Stories with ○○○ blanks",
+   "why": "Fill-in-the-blank pages from the book itself (入れて asks you to guess いれて / いいよ). Not damage, but they look odd without the book's pictures.",
+   "count": 6,
+   "items": [
+    {
+     "story": "入れて",
+     "paragraph": 3,
+     "text": "「わたしも、○○○。」"
+    },
+    {
+     "story": "入れて",
+     "paragraph": 4,
+     "text": "「うん、○○○。」"
+    },
+    {
+     "story": "入れて",
+     "paragraph": 6,
+     "text": "「○○も、○○○。」"
+    },
+    {
+     "story": "入れて",
+     "paragraph": 7,
+     "text": "「うん、○○○。」"
+    },
+    {
+     "story": "稲むらの火",
+     "paragraph": 6,
+     "text": "でも、儀兵衛はなにも言わなかった。儀兵衛は四〇〇人の村の人のことばかり考えていたのだ。忠は泣きながら、家の中に入った。儀"
+    },
+    {
+     "story": "ポール・ジャクレー",
+     "paragraph": 6,
+     "text": "日本画や、浮世絵も学んだんですよ。1浮世絵って？注絵江戸時代（一六〇〇～一八世浮六八年）にとても人気があっ麿歌た絵です。"
+    }
+   ]
+  },
+  "grammar-no-examples": {
+   "area": "Grammar",
+   "title": "Grammar points with no example",
+   "why": "",
+   "count": 0,
+   "items": []
+  },
+  "grammar-gap": {
+   "area": "Grammar",
+   "title": "Grammar examples with no {marked} part",
+   "why": "Each example marks the grammar point as {…} so it can be highlighted and quizzed.",
+   "count": 0,
+   "items": []
+  }
+ }
+}
