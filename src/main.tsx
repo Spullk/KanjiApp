@@ -22,7 +22,7 @@ import { GrammarPage, GrammarPointPage } from "./pages/GrammarPages";
 import { KanaPage, KanaPracticePage, KanaRowPage } from "./pages/KanaPages";
 import { Welcome } from "./components/Welcome";
 import { activeTab, barTools } from "./tools";
-import { dueCards, getStore, initStore, requestPersistence, useStore } from "./srs";
+import { dropJunkWords, dueCards, getStore, initStore, junkWordsStudied, requestPersistence, update, useStore } from "./srs";
 import { initNative, isNative } from "./native";
 import { initSync } from "./sync";
 import { Tour } from "./components/Tour";
@@ -101,6 +101,8 @@ function App() {
   useEffect(() => {
     Promise.all([loadData(), initStore()]).then(
       ([data]) => {
+        const junk = junkWordsStudied(getStore(), data);
+        if (junk.length) update((s) => dropJunkWords(s, junk));
         setReady(true);
         loadSentences().then(
           () => {

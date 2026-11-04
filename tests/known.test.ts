@@ -39,15 +39,19 @@ describe("WaniKani", () => {
         { id: 2, data: { subject_id: 11, srs_stage: 5, available_at: "2026-11-01T00:00:00Z" } },
         { id: 3, data: { subject_id: 12, srs_stage: 3, available_at: null } },
         { id: 4, data: { subject_id: 13, srs_stage: 4, available_at: null } },
+        { id: 5, data: { subject_id: 14, srs_stage: 6, available_at: null } },
+        { id: 6, data: { subject_id: 15, srs_stage: 2, available_at: null } },
       ],
       pages: { next_url: null },
     },
     "https://api.wanikani.com/v2/subjects?types=radical,kanji,vocabulary,kana_vocabulary": {
       data: [
-        { id: 10, data: { characters: "日" } },
-        { id: 11, data: { characters: "学生" } },
-        { id: 12, data: { characters: null } }, // image-only radical
-        { id: 13, data: { characters: "ぜんぜん違うもの" } },
+        { id: 10, object: "kanji", data: { characters: "日" } },
+        { id: 11, object: "vocabulary", data: { characters: "学生" } },
+        { id: 12, object: "radical", data: { characters: null } }, // image-only radical
+        { id: 13, object: "vocabulary", data: { characters: "ぜんぜん違うもの" } },
+        { id: 14, object: "radical", data: { characters: "ト" } }, // "toe": as a word, the 7th note of the scale
+        { id: 15, object: "vocabulary", data: { characters: "口" } },
       ],
       pages: { next_url: null },
     },
@@ -62,6 +66,7 @@ describe("WaniKani", () => {
     expect(found).toEqual([
       { kind: "kanji", key: "日", stage: 9, availableAt: null },
       { kind: "word", key: wordsBySpelling(data).get("学生"), stage: 5, availableAt: Date.parse("2026-11-01T00:00:00Z") },
+      { kind: "word", key: wordsBySpelling(data).get("口"), stage: 2, availableAt: null },
     ]);
   });
 

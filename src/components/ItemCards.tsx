@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "preact/hooks";
-import { useData } from "../data";
+import { isJunkWord, useData } from "../data";
 import { href } from "../router";
 import { allFaces, cardId, flushSave, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type ItemKind } from "../srs";
 import { Chip, Furigana, ReadingText } from "./bits";
@@ -103,10 +103,18 @@ export function ReadingUse({ id }: { id: string }) {
 /** Add-to-reviews button, current stage and your note, for kanji, word and radical pages. */
 export function StudyButton({ kind, k }: { kind: ItemKind; k: string }) {
   const store = useStore();
+  const data = useData();
   const added = isAdded(store, kind, k);
   const stage = stageOf(store, kind, k);
   const status = itemInfo(store, kind, k)?.status;
   const setStatus = (st?: "known" | "paused") => update((s) => setItemInfo(s, kind, k, { status: st }));
+  if (kind === "word" && isJunkWord(data.words[k])) {
+    return (
+      <div class="study-bar">
+        <span class="hint">A dictionary oddity rather than a word to study, so it can't be added to reviews.</span>
+      </div>
+    );
+  }
   return (
     <>
       <div class="study-bar">

@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "preact/hooks";
 import { checkParameters, createEmptyCard, fsrs, generatorParameters, migrateParameters, Rating, State, type Card, type Grade } from "ts-fsrs";
-import { isKanaWord, type Data } from "./data";
+import { isJunkWord, isKanaWord, type Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
 import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order";
 import { canonical, compactStore, expandStore, isCompact } from "./compact";
@@ -304,6 +304,26 @@ export function addReviewedItem(store: Store, kind: ItemKind, key: string, stabi
       updated: now,
     };
     delete store.removed[id];
+  }
+}
+
+/** Words that are dictionary oddities (see isJunkWord) and that you have cards for or marked known. */
+export function junkWordsStudied(store: Store, data: Data): string[] {
+  const keys = new Set<string>();
+  const marked = Object.keys(store.items).filter((id) => store.items[id].status);
+  for (const id of [...Object.keys(store.cards), ...marked]) {
+    if (!id.startsWith("word:")) continue;
+    const key = parseCardId(id).key;
+    if (isJunkWord(data.words[key])) keys.add(key);
+  }
+  return [...keys];
+}
+
+/** Takes the oddities an import brought in (ト as "7th note of the scale") out of your reviews and known words. */
+export function dropJunkWords(store: Store, keys: string[], now = Date.now()) {
+  for (const key of keys) {
+    removeItem(store, "word", key, now);
+    if (store.items[itemId("word", key)]?.status) setItemInfo(store, "word", key, { status: undefined }, now);
   }
 }
 
