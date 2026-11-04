@@ -369,7 +369,9 @@ class Linker:
             # Longest run of up to 4 tokens that is one dictionary word (お + じい + さん → おじいさん).
             for j in range(min(len(ms), i + 4), i + 1, -1):
                 run = ms[i:j]
-                if any(t.part_of_speech()[0] in SKIP_POS for t in run):
+                # Grammar can't be inside a word, but ない can end one (たまら + ない → たまらない).
+                if any(t.part_of_speech()[0] in SKIP_POS for t in run[:-1]) or (
+                        run[-1].part_of_speech()[0] in SKIP_POS and run[-1].dictionary_form() != "ない"):
                     continue
                 ids = self.by_text.get("".join(t.surface() for t in run[:-1]) + run[-1].dictionary_form())
                 if ids:
