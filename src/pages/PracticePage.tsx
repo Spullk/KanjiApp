@@ -2,7 +2,7 @@ import { useMemo, useState } from "preact/hooks";
 import { href } from "../router";
 import { getStore, PRACTICE_LABEL, practiceCards, useStore, type PracticeSet } from "../srs";
 import { Section } from "../components/bits";
-import { CardBack, CardFront } from "../cards";
+import { CardBack, CardFront, usePreloadFonts } from "../cards";
 
 /** Extra study: go through a set of cards as often as you like. Nothing here changes when they're due. */
 export function PracticePage({ set }: { set: PracticeSet }) {
@@ -11,6 +11,7 @@ export function PracticePage({ set }: { set: PracticeSet }) {
   const [shown, setShown] = useState(false);
   const [missed, setMissed] = useState(0);
   const current = queue[0];
+  usePreloadFonts(queue);
 
   const next = (gotIt: boolean) => {
     setQueue((q) => (gotIt ? q.slice(1) : [...q.slice(1), q[0]]));

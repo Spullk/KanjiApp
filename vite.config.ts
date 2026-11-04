@@ -54,6 +54,19 @@ export default defineConfig({
         // Daily reminders: public/push-sw.js shows the push messages. public/audio-sw.js keeps recordings.
         // The recordings themselves (public/audio/, ~50 MB) aren't in the install download: each is kept once played.
         importScripts: ["push-sw.js", "audio-sw.js"],
+        // Review fonts (a few KB per card, see src/fonts.ts) are kept once fetched, so a card seen before gets its
+        // font straight away, even offline.
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.origin === "https://fonts.googleapis.com" || url.origin === "https://fonts.gstatic.com",
+            handler: "CacheFirst",
+            options: {
+              cacheName: "nekko-fonts",
+              expiration: { maxEntries: 4000, maxAgeSeconds: 365 * 24 * 60 * 60 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+        ],
       },
     }),
   ],

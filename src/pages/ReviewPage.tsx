@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { href } from "../router";
 import { dueCards, grade, Rating, undoLast, update, useStore, type Grade } from "../srs";
-import { CardFront } from "../cards";
+import { CardFront, usePreloadFonts } from "../cards";
 import { SelfGrade, TypedAnswer } from "../components/AnswerModes";
 import { tap } from "../native";
 import { relTime } from "../components/ItemCards";
@@ -20,6 +20,8 @@ export function ReviewPage() {
   const current = undone && queue.includes(undone) ? undone : queue[0];
   // Answers sync together when the reviews run out or you leave this page.
   useSyncHold(!!current);
+  // The next cards' fonts download now, so none of them shows up in the usual font first.
+  usePreloadFonts(current ? [current, ...queue.filter((id) => id !== current)] : []);
 
   const answer = (g: Grade) => {
     tap(g === Rating.Again);
