@@ -138,7 +138,9 @@ def jesc_pool():
         cut = scored[int(len(scored) * (1 - JESC_KEEP))]
         print(f"Subtitle lines: alignment scores {scored[0]:.3g} to {scored[-1]:.3g}, keeping {cut:.3g} and up")
         out = [o for o in out if o[0] is None or o[0] >= cut]
-    return [(f"js{i + 1}", ja, en) for i, (_, ja, en) in enumerate(out)]
+    # Some lines carry private-use glyphs (a font's own symbols) or a stray quote mark. They're dropped here, after
+    # numbering, so the other lines keep their ids.
+    return [(f"js{i + 1}", ja, en) for i, (_, ja, en) in enumerate(out) if not re.search(r'[\ue000-\uf8ff"]', ja)]
 
 
 def add_sentences(words, sentences, con, level, wanted):

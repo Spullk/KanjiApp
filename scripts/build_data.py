@@ -313,11 +313,16 @@ def shipped_words():
 
 
 def story_word_ids():
-    """Every word the stories use (data/stories.json, written by build_stories.py), so each gets a page."""
+    """Every word the stories link to (data/stories, written by build_stories.py), so each gets a page. That
+    includes the everyday kana words (さま, けれど, トマト…) that coverage counts as known and so leaves out of
+    stories.json's word counts: without an entry they couldn't be tapped."""
     path = OUT / "stories.json"
     if not path.exists():
         return set()
-    return {wid for story in json.loads(path.read_text(encoding="utf-8")) for wid, _ in story["w"]}
+    ids = {wid for story in json.loads(path.read_text(encoding="utf-8")) for wid, _ in story["w"]}
+    for f in (OUT / "stories").glob("*.json"):
+        ids |= {link[2] for _, links, *_ in json.loads(f.read_text(encoding="utf-8")) for link in links}
+    return ids
 
 
 # ---------------------------------------------------------------- furigana
@@ -941,7 +946,12 @@ def main():
     add_kana_words(con, words, kanji, lessons, lesson_out)
     mark_retired_kana_words(words, shipped, lesson_out)
     for el, r in radicals.items():
-        r["usedIn"] = sorted((o for o in used_in[el] if o in joyo_set), key=lambda o: lesson_of[o])
+        users = {o for o in used_in[el] if o in joyo_set}
+        # Some radicals only reach Joyo kanji through a bigger part (𧘇 is in 睘, which is in 環 and 還), the same
+        # one step the lessons take; without this their page would say no kanji uses them.
+        if not users:
+            users = {o for mid in used_in[el] if mid not in joyo_set for o in used_in.get(mid, ()) if o in joyo_set}
+        r["usedIn"] = sorted(users, key=lambda o: lesson_of[o])
         r["lesson"] = next((l["id"] for l in lesson_out if el in l["radicals"]), None)
     for k in joyo:
         kanji[k]["usedIn"] = sorted((o for o in used_in[k] if o in joyo_set), key=lambda o: lesson_of[o])
