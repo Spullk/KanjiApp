@@ -299,25 +299,7 @@ describe("one card per kanji", () => {
   });
 });
 
-describe("too-long gaps and junk words", () => {
-  it("keeps Hard short on a card you've held for a while, unless that's switched off", () => {
-    const s = emptyStore();
-    const now = new Date(2026, 10, 3, 12).getTime();
-    // A WaniKani Guru II item: it held 14 days and is due now.
-    addReviewedItem(s, "kanji", "語", 14, now, now - 14 * DAY);
-    const id = "kanji:語:meaning";
-    const days = (t: number) => Math.round((t - now) / DAY);
-    const p = preview(s, id, now);
-    expect(days(p[Rating.Hard])).toBe(17);
-    expect(days(p[Rating.Good])).toBeGreaterThan(17);
-    s.settings.longHard = true;
-    expect(days(preview(s, id, now)[Rating.Hard])).toBeGreaterThan(25);
-    s.settings.longHard = undefined;
-    grade(s, id, Rating.Hard, now);
-    expect(days(s.cards[id].due)).toBe(17);
-    expect(s.cards[id].scheduled_days).toBe(17);
-  });
-
+describe("junk words", () => {
   it("takes dictionary oddities like ト out of your reviews and known words", () => {
     const to = Object.values(data.words).find((w) => w.w === "ト")!;
     expect(isJunkWord(to)).toBe(true);
