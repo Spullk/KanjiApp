@@ -518,6 +518,27 @@ def add_kana_words(con, words, kanji, lessons, lesson_out):
     print(f"Kana words: {len(kana_words)} from the JLPT lists, {len(moved)} of them usually written in kana")
 
 
+def words_of(text):
+    """The English words in a meaning, for comparing meanings."""
+    return set(re.findall(r"[a-z]+", text.lower())) - {"to", "a", "the", "of", "be", "an", "in", "e", "g", "etc"}
+
+
+def mark_retired_kana_words(words, shipped, lesson_out):
+    """An uncommon word a lesson used to teach in kana but no longer does was the wrong match for the JLPT list's
+    word (はず as purging croton, now back to its spelling 巴豆): w["junk"], so the app takes it out of reviews and
+    won't offer it again."""
+    taught = {wid for lesson in lesson_out for wid in lesson["words"]}
+    retired = [wid for wid, old in shipped.items()
+               if wid in words and wid not in taught and (old.get("junk") or old.get("lesson")
+               and not any(map(is_kanji, old["w"])) and words[wid]["rank"] >= RARE_RANK)]
+    for wid in retired:
+        words[wid]["junk"] = True
+    for wid in taught:
+        words[wid].pop("junk", None)
+    print(f"Kana words no longer taught, marked as junk: {len(retired)}, e.g. "
+          + ", ".join(words[wid]["w"] for wid in retired[:20]))
+
+
 def load_kana_words(con, words):
     """Words on the JLPT lists that are written in kana only: {JMdict id: (JLPT level, entry, already a word)},
     easiest first.
@@ -538,8 +559,9 @@ def load_kana_words(con, words):
                 # "いい/よい", "あげる (=やる)", "あいさつする", "～ごろ"
                 spellings = [v for v in (re.sub(r"\s*[(（].*?[)）]", "", v).strip(" ～〜~")
                                          for v in row["word"].split("/")) if v]
-                gloss = set(re.findall(r"[a-z]+", row["meanings"].lower())) - {"to", "a", "the", "of", "be", "an"}
-                listed.append((level, gloss, spellings + [v[:-2] for v in spellings if v.endswith("する")]))
+                # The meanings are listed most important first ("oh; ah; saw-edged perch", "(1) truck; (2) track").
+                gloss, first = words_of(row["meanings"]), words_of(row["meanings"].split(";")[0])
+                listed.append((level, gloss, first, spellings + [v[:-2] for v in spellings if v.endswith("する")]))
     wanted = {v for *_, vs in listed for v in vs}
     kanji_form = {idseq for (idseq,) in con.execute("SELECT DISTINCT idseq FROM Kanji")}
     tags = defaultdict(set)
@@ -554,17 +576,32 @@ def load_kana_words(con, words):
             e["rank"] = min(e["rank"], priority_rank(tags[kid]) or RARE_RANK)
     add_senses(con, entries)
     out = {}
-    for level, gloss, spellings in listed:
+    for level, gloss, first, spellings in listed:
         for v in spellings:
-            # The entry whose meaning fits the list's best (はし on the list is chopsticks, not a beak), and only
-            # if that one is a kana word: chopsticks are written 箸.
-            fits = [(-len(gloss & set(re.findall(r"[a-z]+", " ".join(entries[i]["senses"][0]["gloss"]).lower()))),
-                     entries[i]["rank"], i)
-                    for i in by_kana.get(v, ()) if i not in out and entries[i]["senses"]
-                    and not any(p in GRAMMAR_POS for p in entries[i]["senses"][0]["pos"])]
+            # The entry whose meaning fits the list's (はし on the list is chopsticks, not a beak), and only if that
+            # one is a kana word: chopsticks are written 箸. Entries sharing a meaning with the list come first,
+            # those that fit its first meaning (いつか: someday, not the fifth day), then common ones (トラック: a
+            # truck, not a running track). When the list means grammar or a word already taken (はず: "should"),
+            # an uncommon entry sharing no meaning is another word written the same (purging croton), so it's left
+            # out. A lone kana (と, the list's "if") is grammar too, or else a dictionary oddity.
+            if len(v) < 2:
+                break
+            fits, meant_elsewhere = [], False
+            for i in by_kana.get(v, ()):
+                e = entries[i]
+                if not e["senses"]:
+                    continue
+                meant = words_of(" ".join(g for s in e["senses"] for g in s["gloss"]))
+                if i in out or any(p in GRAMMAR_POS for p in e["senses"][0]["pos"]):
+                    meant_elsewhere |= bool(gloss & meant)
+                    continue
+                fits.append((not gloss & meant, not first & meant, e["rank"] >= RARE_RANK,
+                             -len(gloss & meant), e["rank"], i))
+            if meant_elsewhere:
+                fits = [f for f in fits if not (f[0] and f[2])]
             if not fits:
                 continue
-            idseq = min(fits)[2]
+            idseq = min(fits)[-1]
             if idseq in kanji_form and not entries[idseq]["usuallyKana"]:
                 break
             e = entries[idseq]
@@ -902,6 +939,7 @@ def main():
         w["lesson"] = lesson + 1
         lesson_out[lesson]["words"].append(wid)
     add_kana_words(con, words, kanji, lessons, lesson_out)
+    mark_retired_kana_words(words, shipped, lesson_out)
     for el, r in radicals.items():
         r["usedIn"] = sorted((o for o in used_in[el] if o in joyo_set), key=lambda o: lesson_of[o])
         r["lesson"] = next((l["id"] for l in lesson_out if el in l["radicals"]), None)
