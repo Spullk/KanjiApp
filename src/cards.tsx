@@ -2,7 +2,7 @@
 // entry here plus its face in FACES (srs.ts); the review screen picks it up without changes.
 
 import type { ComponentChildren } from "preact";
-import { useEffect } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { playWord } from "./audio";
 import { PitchAccent } from "./components/Pitch";
 import { isKanaWord, useData, type Data, type Sentence } from "./data";
@@ -10,7 +10,7 @@ import { href } from "./router";
 import { cardId, getStore, parseCardId, useStore, type Face, type ItemKind, type Store } from "./srs";
 import { cloze, exampleFor } from "./grammar";
 import { furiganaRule } from "./reading";
-import { fontFor, loadFont } from "./fonts";
+import { FONT_WAIT_MS, fontFor, fontState, loadFont } from "./fonts";
 import { alignFurigana, Furigana, Romaji, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
 import { readingForms } from "./answers";
@@ -271,16 +271,59 @@ export function cardType(id: string): CardType {
   return t;
 }
 
+/** The review font for a card and the text drawn in it, if the card shows its kanji or word in one. */
+function cardFont(data: Data, id: string, on: boolean | undefined): { font: string; text: string } | undefined {
+  if (!on) return undefined;
+  const { kind, key, face } = parseCardId(id);
+  const t = CARD_TYPES[`${kind}:${face}`];
+  if (!t || kind === "radical" || (t.front !== char && t.front !== word)) return undefined;
+  const font = fontFor(id);
+  return font ? { font, text: t.front(data, key) as string } : undefined;
+}
+
+/** Starts the fonts for the next few cards downloading, so each is ready by the time its card comes up. */
+export function usePreloadFonts(ids: string[]) {
+  const data = useData();
+  const on = useStore().settings.fonts;
+  const upcoming = ids.slice(0, 5).join("\n");
+  useEffect(() => {
+    if (!on) return;
+    for (const id of upcoming.split("\n")) {
+      const f = id && cardFont(data, id, on);
+      if (f) void loadFont(f.font, f.text);
+    }
+  }, [upcoming, on]);
+}
+
+/**
+ * The font to draw a card's front in: the review font once it has loaded, nothing (the usual font) if it can't be
+ * had in time, and `hidden` while it's still coming, so the card never shows one font and then jumps to another.
+ */
+function useCardFont(data: Data, id: string, on: boolean | undefined): { font?: string; hidden: boolean } {
+  const f = cardFont(data, id, on);
+  const state = f && fontState(f.font, f.text);
+  const [, rerender] = useState(0);
+  const [gaveUp, setGaveUp] = useState<string>();
+  useEffect(() => {
+    if (!f || state !== undefined) return;
+    let live = true;
+    const timer = setTimeout(() => live && setGaveUp(id), FONT_WAIT_MS);
+    loadFont(f.font, f.text).then(() => live && rerender((n) => n + 1));
+    return () => {
+      live = false;
+      clearTimeout(timer);
+    };
+  }, [id, f?.font, state]);
+  if (!f || state === false || gaveUp === id) return { hidden: false };
+  return state ? { font: f.font, hidden: false } : { hidden: true };
+}
+
 export function CardFront({ id }: { id: string }) {
   const data = useData();
   const { kind, key } = parseCardId(id);
   const t = cardType(id);
   const style = t.frontStyle ?? (kind === "word" ? "word" : "char");
-  const font = useStore().settings.fonts && kind !== "radical" && t.frontStyle === undefined ? fontFor(id) : undefined;
-  const text = kind === "word" ? data.words[key].w : key;
-  useEffect(() => {
-    if (font) loadFont(font, text);
-  }, [font, text]);
+  const { font, hidden } = useCardFont(data, id, useStore().settings.fonts);
   return (
     <div class={`card-front ${kind}`}>
       <div class="card-prompt">{kind === "word" && t.kanaPrompt && isKanaWord(data.words[key]) ? t.kanaPrompt : t.prompt}</div>
@@ -289,7 +332,11 @@ export function CardFront({ id }: { id: string }) {
       ) : t.frontStyle === "sentence" ? (
         <div class="card-sentence">{t.front(data, key)}</div>
       ) : (
-        <div class={style === "word" ? "card-word" : "card-char"} lang="ja" style={font ? { fontFamily: `"${font}", var(--ja-font)` } : undefined}>
+        <div
+          class={style === "word" ? "card-word" : "card-char"}
+          lang="ja"
+          style={{ fontFamily: font ? `"${font}", var(--ja-font)` : undefined, visibility: hidden ? "hidden" : undefined }}
+        >
           {t.front(data, key)}
         </div>
       )}
