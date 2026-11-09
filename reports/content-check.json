@@ -1,9 +1,9 @@
 {
  "counts": {
-  "words": 21880,
+  "words": 21891,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 44216,
+  "sentences": 44234,
   "stories": 115,
   "grammar points": 132
  },
@@ -26,7 +26,7 @@
    "area": "Words",
    "title": "Lesson words with no example sentence",
    "why": "Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.",
-   "count": 178,
+   "count": 179,
    "items": [
     {
      "lesson": 1,
@@ -315,6 +315,12 @@
      "word": "蔵相 (ぞうしょう)",
      "meaning": "Minister of Finance",
      "id": "1403520"
+    },
+    {
+     "lesson": 75,
+     "word": "タイア",
+     "meaning": "tire",
+     "id": "1076120"
     },
     {
      "lesson": 76,
@@ -1260,7 +1266,7 @@
    "area": "Words",
    "title": "Single-kana words outside the lessons",
    "why": "A lone kana as a word is usually a wrong dictionary match (ト as \"note G\"). Check these aren't shown as cards.",
-   "count": 9,
+   "count": 12,
    "items": [
     {
      "word": "が",
@@ -1278,9 +1284,29 @@
      "id": "2029080"
     },
     {
+     "word": "わ",
+     "meaning": "indicates emotion or admiration",
+     "id": "2029100"
+    },
+    {
      "word": "な",
      "meaning": "don't",
      "id": "2029110"
+    },
+    {
+     "word": "お",
+     "meaning": "oh! (expression of slight surprise)",
+     "id": "2089690"
+    },
+    {
+     "word": "え",
+     "meaning": "eh?",
+     "id": "2122310"
+    },
+    {
+     "word": "ん",
+     "meaning": "yes",
+     "id": "2139720"
     },
     {
      "word": "べ",
@@ -1301,11 +1327,6 @@
      "word": "ト",
      "meaning": "7th in a sequence denoted by the iroha system",
      "id": "2029780"
-    },
-    {
-     "word": "ん",
-     "meaning": "yes",
-     "id": "2139720"
     }
    ]
   },
