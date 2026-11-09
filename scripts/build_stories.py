@@ -437,7 +437,7 @@ class Linker:
             if not hit and pos[0] != "接頭辞" and (pos[0], pos[1]) not in SKIP_SUB:
                 # The word as written, or for kana Sudachi's usual spelling (きつね → 狐), finds the right entry first.
                 forms = (m.dictionary_form(), m.normalized_form())
-                if not any(map(is_kanji, forms[0])):
+                if not any(map(is_kanji, forms[0])) and any(map(is_kanji, forms[1])):
                     forms = forms[::-1]
                 ids = next((self.by_text[f] for f in forms if f in self.by_text), None)
                 if ids:
