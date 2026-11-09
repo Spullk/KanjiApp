@@ -386,7 +386,7 @@ function OfflineRecordings() {
 
 function FontSample({ family }: { family: string }) {
   const text = "字書";
-  useEffect(() => loadFont(family, text), [family]);
+  useEffect(() => void loadFont(family, text), [family]);
   return (
     <span title={family} style={{ fontFamily: `"${family}", var(--ja-font)` }}>
       {text}
