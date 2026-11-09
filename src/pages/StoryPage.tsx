@@ -40,7 +40,7 @@ export function StoryPage({ id }: { id: string }) {
       </p>
       <label class="story-option">
         <input type="checkbox" checked={allReadings} onChange={() => setAllReadings(!allReadings)} />
-        Readings over every kanji, not just the ones you haven't been taught (tap a word for its reading)
+        Readings over every kanji, not just in words you don't know yet (tap a word for its meaning)
       </label>
 
       <div class="story-text" lang="ja">
@@ -67,8 +67,8 @@ export function StoryPage({ id }: { id: string }) {
       <p class="hint">
         {info.source === "tadoku" ? (
           <>
-            © NPO多言語多読, <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>. Shown
-            unchanged. <a href={info.url}>The original, with pictures</a>.
+            © NPO多言語多読, <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>. Nekko
+            shows some words in kanji where the book uses kana. <a href={info.url}>The original, with pictures</a>.
           </>
         ) : (
           <>
@@ -82,36 +82,43 @@ export function StoryPage({ id }: { id: string }) {
 
 type ViewProps = { p: Paragraph; k: Knowledge; taught?: Set<string>; word?: string; onWord: (id: string) => void };
 
-/** One paragraph: words as buttons, with readings only over kanji you haven't been taught (all, without `taught`). */
+/** One paragraph: words as buttons, with readings over the words you don't know yet and, outside words, over kanji
+ * you haven't been taught (everywhere, without `taught`). A word the text spells in kana gets its usual kanji. */
 function ParagraphView({ p: [text, links, readings], k, taught, word, onWord }: ViewProps) {
   const out: ComponentChildren[] = [];
   let r = 0;
-  // Text from `at` to `to`, with ruby where a reading starts inside it. Returns where it stopped.
-  const plain = (at: number, to: number, into: ComponentChildren[]) => {
+  // Text from `at` to `to`, with ruby where a reading starts inside it (when `show` says so). Returns where it stopped.
+  const plain = (at: number, to: number, into: ComponentChildren[], show: (base: string) => boolean) => {
     for (; r < readings.length && readings[r][0] < to; r++) {
       const [start, len, kana] = readings[r];
       if (start < at) continue;
       if (start > at) into.push(text.slice(at, start));
       const base = text.slice(start, start + len);
-      into.push(!taught || [...base].some((ch) => isKanji(ch) && !taught.has(ch)) ? <ruby key={start}>{base}<rt>{kana}</rt></ruby> : base);
+      into.push(show(base) ? <ruby key={start}>{base}<rt>{kana}</rt></ruby> : base);
       at = start + len;
     }
     if (at < to) into.push(text.slice(at, to));
     return Math.max(at, to);
   };
+  const untaught = (base: string) => !taught || [...base].some((ch) => isKanji(ch) && !taught.has(ch));
   let pos = 0;
-  for (const [start, len, wid] of links) {
-    if (start < pos || (pos = plain(pos, start, out)) > start) continue;
+  for (const [start, len, wid, kanji, kanaLen = 0] of links) {
+    if (start < pos || (pos = plain(pos, start, out, untaught)) > start) continue;
     const stage = k.word(wid);
     if (!stage) continue;
-    const inner: ComponentChildren[] = [];
-    pos = plain(start, start + len, inner);
+    const show = !taught || stage !== "known";
+    let inner: ComponentChildren[] = [];
+    if (kanji) {
+      const kana = text.slice(start, start + kanaLen);
+      inner = [show ? <ruby>{kanji}<rt>{kana}</rt></ruby> : kanji, text.slice(start + kanaLen, start + len)];
+      pos = start + len;
+    } else pos = plain(start, start + len, inner, () => show);
     out.push(
       <button key={start} class={`read-word ${stage}${word === wid ? " on" : ""}`} onClick={() => onWord(wid)}>
         {inner}
       </button>,
     );
   }
-  plain(pos, text.length, out);
+  plain(pos, text.length, out, untaught);
   return <>{out}</>;
 }

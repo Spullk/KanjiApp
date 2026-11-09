@@ -48,6 +48,25 @@ AOZORA_WORKS = [
 SKIP_POS = {"助詞", "助動詞", "補助記号", "記号", "空白"}
 SKIP_SUB = {("名詞", "固有名詞"), ("名詞", "数詞")}
 COMMON = {"news1", "ichi1", "spec1", "spec2", "gai1"}  # JMdict's "common word" tags
+# Where words the text spells in kana get their usual kanji. Lucas chose Tadoku too (2026-11-09), though its
+# licence (CC BY-NC-ND) allows no changes; the reader says the kanji are added.
+KANJI_SOURCES = {"aozora", "tadoku"}
+# Sudachi's part of speech → the JMdict ones it can be (see pos_class).
+POS_FIT = {"名詞": {"n", "na", "pn"}, "代名詞": {"pn"}, "動詞": {"v"}, "形容詞": {"adj"}, "形状詞": {"na"},
+           "副詞": {"adv"}, "感動詞": {"int"}, "連体詞": {"adjpn"}, "接続詞": {"conj"}}
+BAD_KANJI = {"word containing out-dated kanji", "word containing irregular kanji usage", "irregular okurigana usage"}
+
+
+def pos_class(t):
+    """A JMdict part of speech, coarsely: n, na, v, adj, adv, int, pn, adjpn, conj or other."""
+    if re.search(r"Godan|Ichidan|Kuru|Yodan|Nidan|^(in)?transitive verb|irregular \w+ verb", t):
+        return "v"
+    for prefix, c in (("adjective", "adj"), ("'ku' adjective", "adj"), ("adjectival nouns", "na"), ("adverb", "adv"),
+                      ("interjection", "int"), ("pronoun", "pn"), ("pre-noun", "adjpn"), ("conjunction", "conj"),
+                      ("noun", "n")):
+        if t.startswith(prefix):
+            return c
+    return "other"
 
 
 def log(*args):
@@ -328,10 +347,58 @@ class Linker:
         self.rank = rank
         # Common words written in kana count as known (ある, いる, これ, なる…): they're learned by reading.
         self.common = {i for i, t in tags.items() if t & COMMON}
+        self.pos = defaultdict(set)
+        first_sense = {}
+        for sid, idseq in con.execute("SELECT ID, idseq FROM Sense ORDER BY ID"):
+            first_sense.setdefault(idseq, sid)
+        sense_entry = {sid: idseq for idseq, sid in first_sense.items()}
+        for idseq, t in con.execute("SELECT s.idseq, p.text FROM pos p JOIN Sense s ON s.ID = p.sid"):
+            self.pos[idseq].add(pos_class(t))
+        self.usually_kana = {sense_entry[sid] for sid, t in con.execute("SELECT sid, text FROM misc")
+                             if t == "word usually written using kana alone" and sid in sense_entry}
+        # Each entry's usual kanji spellings, all in Joyo kanji, and which readings go with which.
+        joyo = set(json.loads((OUT / "kanji.json").read_text(encoding="utf-8")))
+        bad = {kid for kid, t in con.execute("SELECT kid, text FROM KJI") if t in BAD_KANJI}
+        self.spellings = defaultdict(list)
+        for kid, idseq, text in con.execute("SELECT ID, idseq, text FROM Kanji ORDER BY ID"):
+            if kid not in bad and all(c in joyo or c == "々" for c in text if is_kanji(c)):
+                self.spellings[idseq].append(text)
+        self.restr = defaultdict(set)  # "idseq:reading" → the only spellings it's read with
+        for key, k in con.execute("SELECT k.idseq || ':' || k.text, r.text FROM KNR r JOIN Kana k ON k.ID = r.kid"):
+            self.restr[key].add(k)
+        self.no_kanji = {f"{i}:{t}" for i, t in con.execute("SELECT idseq, text FROM Kana WHERE nokanji")}
 
     @lru_cache(maxsize=None)
     def lemma_reading(self, lemma):
         return hira("".join(t.reading_form() for t in self.tok.tokenize(lemma)))
+
+    def fitting(self, ids, sudachi_pos):
+        """The entries that can be this part of speech (all of them when none can)."""
+        fit = POS_FIT.get(sudachi_pos)
+        return {i for i in ids if self.pos[i] & fit} or ids if fit else ids
+
+    def spelling(self, wid, reading):
+        """The usual kanji spelling of entry wid read like this, or None when it's usually kana."""
+        key = f"{wid}:{reading}"
+        if wid in self.usually_kana or key in self.no_kanji:
+            return None
+        allowed = self.restr.get(key)
+        return next((k for k in self.spellings[wid] if not allowed or k in allowed), None)
+
+    def kanji_for(self, surface, wid, ids, reading, sudachi):
+        """[kanji, kana it replaces] for a word written in hiragana that usually has kanji (いき → 行, いく).
+        sudachi: Sudachi's spelling of a one-token word, which must agree (it knows あけ from 開け and 明け);
+        None for a longer word, which must be the only one read that way (おとうさん)."""
+        if not re.fullmatch(r"[ぁ-ゖー]+", surface) or reading not in self.readings[wid]:
+            return None
+        k = self.spelling(wid, reading)
+        if not k or (sudachi not in self.spellings[wid] if sudachi is not None else any(
+                i != wid and reading in self.readings[i] and self.spelling(i, reading) for i in ids)):
+            return None
+        stem, r = k, reading
+        while stem and r and stem[-1] == r[-1] and not is_kanji(stem[-1]):
+            stem, r = stem[:-1], r[:-1]
+        return [stem, len(r)] if r and surface.startswith(r) else None
 
     def best(self, ids, reading):
         """The entry read like the word: exactly, else sharing the longest start, then the most common."""
@@ -343,8 +410,9 @@ class Linker:
 
         return min(ids, key=fit)
 
-    def paragraph(self, text):
-        """→ links [[start, length, id]], readings [[start, length, kana]], counted [(id, free)]."""
+    def paragraph(self, text, kanji=False):
+        """→ links [[start, length, id, (kanji, kana length)]], readings [[start, length, kana]], counted [(id, free)].
+        With kanji, a word the text spells in hiragana but that usually has kanji gets them (shown, not stored)."""
         ms = list(self.tok.tokenize(text))
         links, readings, counted = [], [], []
         i = 0
@@ -358,7 +426,9 @@ class Linker:
             # Longest run of up to 4 tokens that is one dictionary word (お + じい + さん → おじいさん).
             for j in range(min(len(ms), i + 4), i + 1, -1):
                 run = ms[i:j]
-                if any(t.part_of_speech()[0] in SKIP_POS for t in run):
+                # Grammar can't be inside a word, but ない can end one (たまら + ない → たまらない).
+                if any(t.part_of_speech()[0] in SKIP_POS for t in run[:-1]) or (
+                        run[-1].part_of_speech()[0] in SKIP_POS and run[-1].dictionary_form() != "ない"):
                     continue
                 ids = self.by_text.get("".join(t.surface() for t in run[:-1]) + run[-1].dictionary_form())
                 if ids:
@@ -371,15 +441,20 @@ class Linker:
                     forms = forms[::-1]
                 ids = next((self.by_text[f] for f in forms if f in self.by_text), None)
                 if ids:
-                    hit = i + 1, ids, self.lemma_reading(m.dictionary_form())
+                    hit = i + 1, self.fitting(ids, pos[0]), self.lemma_reading(m.dictionary_form())
             end = hit[0] if hit else i + 1
             start, stop = m.begin(), ms[end - 1].end()
             surface = text[start:stop]
             reading = hira("".join(t.reading_form() for t in ms[i:end]))
             if hit:
                 wid = self.best(hit[1], hit[2])
-                links.append([start, stop - start, str(wid)])
-                kana_only = not any(is_kanji(c) for c in surface)
+                link = [start, stop - start, str(wid)]
+                # Helper verbs after て stay in kana (見てみる, 持っていく).
+                helper = pos[1] == "非自立可能" and i and ms[i - 1].surface() in ("て", "で")
+                spelled = kanji and not helper and self.kanji_for(
+                    surface, wid, hit[1], hit[2], m.normalized_form() if end == i + 1 else None)
+                links.append(link + spelled if spelled else link)
+                kana_only = not spelled and not any(is_kanji(c) for c in surface)
                 counted.append((str(wid), kana_only and wid in self.common))
             if any(is_kanji(c) for c in surface):
                 readings.append(trim_reading(start, surface, reading))
@@ -413,7 +488,7 @@ def main():
         for meta, paras in gen:
             out, words, free, chars = [], Counter(), 0, 0
             for text, ruby in paras:
-                links, readings, counted = linker.paragraph(text)
+                links, readings, counted = linker.paragraph(text, meta["source"] in KANJI_SOURCES)
                 # The author's own ruby wins over Sudachi's guess.
                 furi = sorted(ruby + [r for r in readings if r[2] and not overlaps(r, ruby)])
                 out.append([text, links, furi])
