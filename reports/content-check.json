@@ -1,10 +1,10 @@
 {
  "counts": {
-  "words": 21833,
+  "words": 21878,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 46815,
-  "stories": 114,
+  "sentences": 46938,
+  "stories": 115,
   "grammar points": 132
  },
  "checks": {
@@ -26,7 +26,7 @@
    "area": "Words",
    "title": "Lesson words with no example sentence",
    "why": "Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.",
-   "count": 279,
+   "count": 272,
    "items": [
     {
      "lesson": 1,
@@ -51,12 +51,6 @@
      "word": "かける",
      "meaning": "to hang up (e.g. a coat, a picture on the wall)",
      "id": "1207610"
-    },
-    {
-     "lesson": 5,
-     "word": "どう",
-     "meaning": "how",
-     "id": "1008910"
     },
     {
      "lesson": 6,
@@ -125,12 +119,6 @@
      "id": "1260870"
     },
     {
-     "lesson": 19,
-     "word": "つまらない",
-     "meaning": "dull",
-     "id": "1008190"
-    },
-    {
      "lesson": 21,
      "word": "急いで (いそいで)",
      "meaning": "hurriedly",
@@ -159,12 +147,6 @@
      "word": "字 (あざ)",
      "meaning": "section of village",
      "id": "1315120"
-    },
-    {
-     "lesson": 24,
-     "word": "こう",
-     "meaning": "in this way",
-     "id": "1004310"
     },
     {
      "lesson": 24,
@@ -315,12 +297,6 @@
      "word": "認め (みとめ)",
      "meaning": "approval",
      "id": "1611790"
-    },
-    {
-     "lesson": 40,
-     "word": "ほぼ",
-     "meaning": "almost",
-     "id": "1551940"
     },
     {
      "lesson": 41,
@@ -546,12 +522,6 @@
     },
     {
      "lesson": 65,
-     "word": "たまらない",
-     "meaning": "intolerable",
-     "id": "1211340"
-    },
-    {
-     "lesson": 65,
      "word": "どうしても",
      "meaning": "by all means",
      "id": "1466950"
@@ -725,12 +695,6 @@
      "id": "2662230"
     },
     {
-     "lesson": 85,
-     "word": "すまない",
-     "meaning": "inexcusable",
-     "id": "1610020"
-    },
-    {
      "lesson": 86,
      "word": "早乙女 (さおとめ)",
      "meaning": "young female rice planter",
@@ -783,12 +747,6 @@
      "word": "くたびれる",
      "meaning": "to get tired",
      "id": "1003810"
-    },
-    {
-     "lesson": 94,
-     "word": "くだらない",
-     "meaning": "trivial",
-     "id": "1184360"
     },
     {
      "lesson": 94,
@@ -1840,12 +1798,27 @@
    "area": "Words",
    "title": "Single-kana words outside the lessons",
    "why": "A lone kana as a word is usually a wrong dictionary match (ト as \"note G\"). Check these aren't shown as cards.",
-   "count": 6,
+   "count": 9,
    "items": [
+    {
+     "word": "が",
+     "meaning": "indicates the subject of a sentence",
+     "id": "2028930"
+    },
+    {
+     "word": "で",
+     "meaning": "at",
+     "id": "2028980"
+    },
     {
      "word": "ね",
      "meaning": "right?",
      "id": "2029080"
+    },
+    {
+     "word": "な",
+     "meaning": "don't",
+     "id": "2029110"
     },
     {
      "word": "べ",
@@ -3168,8 +3141,14 @@
    "area": "Sentences",
    "title": "Sentences with a missing or untranslated English line",
    "why": "The English is empty or still has Japanese in it.",
-   "count": 0,
-   "items": []
+   "count": 1,
+   "items": [
+    {
+     "id": "408303",
+     "ja": "そうです。日本語ではウェートレスは英語の\"waitress\"と\"weightless\"にも該当する。でも\"waitress\"という意味が普通だね。",
+     "en": "That's correct. In Japanese, ウエートレス corresponds both to the English \"waitress\" and \"weightless\". However, \"waitress\" is the more usual meaning."
+    }
+   ]
   },
   "sentence-odd-text": {
    "area": "Sentences",
@@ -3266,7 +3245,7 @@
    "area": "Stories",
    "title": "Story text that may be jumbled",
    "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
-   "count": 12,
+   "count": 11,
    "items": [
     {
      "story": "つみっこ",
@@ -3291,12 +3270,6 @@
      "paragraph": 0,
      "unseen pairs": "50%",
      "text": "弘前城竹田城松本城彦根城姫路城まつえじょう松江城えどじょう江戸城熊本城犬山城なごやじょうおおさかじょう名古屋城大阪城首里城"
-    },
-    {
-     "story": "日本の城",
-     "paragraph": 23,
-     "unseen pairs": "52%",
-     "text": "しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。"
     },
     {
      "story": "温泉の町 別府",
