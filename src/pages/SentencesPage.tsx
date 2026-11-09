@@ -3,17 +3,18 @@ import { useMemo, useState } from "preact/hooks";
 import { useData } from "../data";
 import { href } from "../router";
 import { getStore } from "../srs";
-import { readableSentences, studiedKanji, unknownKanji } from "../reading";
+import { knowledgeOf, readableByWords } from "../examples";
 import { playSentence } from "../audio";
 import { SpeakButton, WordGloss } from "../components/bits";
 import { shuffle } from "./PracticePage";
 
-/** Read sentences built from kanji you've studied. Tap a word to see its reading and meaning. */
+/** Read sentences made of words you know, with at most one new one. Tap a word to see its reading and meaning. */
 export function SentencesPage() {
   const data = useData();
-  const [stretch, setStretch] = useState(false);
-  const known = useMemo(() => studiedKanji(getStore(), data), [data]);
-  const ids = useMemo(() => shuffle(readableSentences(data, known, stretch ? 1 : 0)), [data, known, stretch]);
+  const [stretch, setStretch] = useState(true);
+  const k = useMemo(() => knowledgeOf(getStore(), data), [data]);
+  const list = useMemo(() => shuffle(readableByWords(data, k, stretch ? 1 : 0)), [data, k, stretch]);
+  const ids = list.map((e) => e.id);
   const [i, setI] = useState(0);
   const [english, setEnglish] = useState(false);
   const [word, setWord] = useState<string>();
@@ -37,8 +38,8 @@ export function SentencesPage() {
           setWord(undefined);
         }}
       >
-        <option value="0">Only kanji I've studied</option>
-        <option value="1">Up to one new kanji</option>
+        <option value="1">Up to one new word</option>
+        <option value="0">Only words I know</option>
       </select>
     </label>
   );
@@ -49,9 +50,9 @@ export function SentencesPage() {
         <h1>Sentences</h1>
         {options}
         <p class="empty">
-          {known.size
-            ? "No sentences use only the kanji you've studied yet. Try allowing one new kanji, or learn a few more."
-            : "Study some kanji first, then come back to read sentences made of them."}
+          {stretch
+            ? "No sentences with at most one new word yet. Learn a few more words, then come back."
+            : "No sentences use only words you know yet. Try allowing one new word, or learn a few more."}
         </p>
         <a class="primary wide" href={href.learn()}>
           Learn new items
@@ -60,21 +61,21 @@ export function SentencesPage() {
     );
   }
 
-  // The sentence with each dictionary word as a button.
+  const newWords = list[i % list.length].unknown;
+  // The sentence with each dictionary word as a button; the new word underlined in solid like in stories.
   const parts: ComponentChildren[] = [];
   let pos = 0;
   for (const [start, len, wid] of s.links) {
     if (start < pos) continue;
     if (start > pos) parts.push(s.ja.slice(pos, start));
     parts.push(
-      <button key={start} class={`read-word${word === wid ? " on" : ""}`} onClick={() => setWord(word === wid ? undefined : wid)}>
+      <button key={start} class={`read-word${newWords.includes(wid) ? " new" : ""}${word === wid ? " on" : ""}`} onClick={() => setWord(word === wid ? undefined : wid)}>
         {s.ja.slice(start, start + len)}
       </button>,
     );
     pos = start + len;
   }
   parts.push(s.ja.slice(pos));
-  const newKanji = unknownKanji(s.ja, known);
 
   return (
     <article class="page reading">
@@ -89,9 +90,14 @@ export function SentencesPage() {
         </div>
         <div class="read-tools">
           <SpeakButton onClick={() => playSentence(s)} human={!!s.audio} />
-          {newKanji.length > 0 && (
-            <span class="hint" lang="ja">
-              New: {newKanji.map((c) => (data.kanji[c] ? <a key={c} href={href.kanji(c)}>{c}</a> : c))}
+          {newWords.length > 0 && (
+            <span class="hint">
+              New word:{" "}
+              {newWords.map((w) => (
+                <button key={w} class="link-button" lang="ja" onClick={() => setWord(word === w ? undefined : w)}>
+                  {data.words[w]?.w}
+                </button>
+              ))}
             </span>
           )}
         </div>

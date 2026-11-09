@@ -94,14 +94,15 @@ function GrammarGap({ id, filled }: { id: string; filled?: boolean }) {
   );
 }
 
-/** One of the word's example sentences you can read, a different one of the easiest few at each review. */
+/** One of the word's example sentences you can read (at most one other word you don't know), a different one of
+ * the easiest few at each review; a pattern sentence when there's none. */
 export function contextSentence(store: Store, data: Data, key: string): Sentence {
   const list = examplesFor(data, knowledgeOf(store, data), key, 3);
-  const easiest = list.filter((e) => e.unknown.length <= list[0].unknown.length + 1);
+  const easiest = list.filter((e) => e.unknown.length === list[0].unknown.length);
   const reps = store.cards[cardId("word", key, "context")]?.reps ?? 0;
-  if (easiest.length && easiest[0].unknown.length <= 1) return data.sentences[easiest[reps % easiest.length].id];
+  if (easiest.length) return data.sentences[easiest[reps % easiest.length].id];
   const w = data.words[key];
-  return patternSentence(data, key) ?? (list.length ? data.sentences[list[0].id] : { ja: w.w, en: "", links: [[0, w.w.length, key]] });
+  return patternSentence(data, key) ?? { ja: w.w, en: "", links: [[0, w.w.length, key]] };
 }
 
 /** The sentence with the word marked; its reading shows only once answered. Other words keep the furigana you need. */
