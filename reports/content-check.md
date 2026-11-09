@@ -2,20 +2,20 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 21,880 words, 2,136 kanji, 372 radicals, 44,216 sentences, 115 stories, 132 grammar points.
+Checked: 21,891 words, 2,136 kanji, 372 radicals, 44,234 sentences, 115 stories, 132 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
 | Words | [Lesson words with no dictionary entry](#lesson-word-missing) | 0 |
 | Words | [Words with no meaning](#word-no-meaning) | 0 |
-| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 178 |
+| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 179 |
 | Words | [Words pointing at sentences that don't exist](#word-sentence-missing) | 0 |
 | Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 16 |
 | Words | [Lesson words whose furigana doesn't spell the word](#lesson-word-furigana) | 0 |
 | Words | [The same word taught twice](#lesson-word-duplicate) | 0 |
 | Words | [Lesson words that may be the wrong dictionary entry](#lesson-word-rarer-homophone) | 3 |
 | Words | [Junk words still in a lesson](#lesson-word-junk) | 0 |
-| Words | [Single-kana words outside the lessons](#word-lone-kana) | 9 |
+| Words | [Single-kana words outside the lessons](#word-lone-kana) | 12 |
 | Kanji | [Kanji with no meaning](#kanji-no-meaning) | 0 |
 | Kanji | [Kanji with no reading](#kanji-no-reading) | 0 |
 | Kanji | [Kanji with fewer than 2 example words](#kanji-no-words) | 3 |
@@ -55,7 +55,7 @@ No sense has an English gloss, so the card has nothing to ask for.
 None. 🎉
 
 <a id="lesson-word-no-sentence"></a>
-## Words: Lesson words with no example sentence (178)
+## Words: Lesson words with no example sentence (179)
 
 Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.
 
@@ -84,7 +84,7 @@ Taught words should have at least one example sentence. Tatoeba, Wiktionary and 
 - 42 · 冊子 (さっし) · book · 1298530
 - 45 · 大路 (おおじ) · main street (esp. in a capital) · 1786960
 - 46 · 構図 (こうず) · composition (of painting) · 1279720
-- …and 153 more
+- …and 154 more
 
 <a id="word-sentence-missing"></a>
 ## Words: Words pointing at sentences that don't exist (0)
@@ -146,19 +146,22 @@ Words marked junk (a wrong dictionary match) shouldn't be taught.
 None. 🎉
 
 <a id="word-lone-kana"></a>
-## Words: Single-kana words outside the lessons (9)
+## Words: Single-kana words outside the lessons (12)
 
 A lone kana as a word is usually a wrong dictionary match (ト as "note G"). Check these aren't shown as cards.
 
 - が · indicates the subject of a sentence · 2028930
 - で · at · 2028980
 - ね · right? · 2029080
+- わ · indicates emotion or admiration · 2029100
 - な · don't · 2029110
+- お · oh! (expression of slight surprise) · 2089690
+- え · eh? · 2122310
+- ん · yes · 2139720
 - べ · word used at sentence-end (like a particle) to indicate speculation, volition or invitation · 2213460
 - て · and · 2654270
 - ザ · the · 1058900
 - ト · 7th in a sequence denoted by the iroha system · 2029780
-- ん · yes · 2139720
 
 <a id="kanji-no-meaning"></a>
 ## Kanji: Kanji with no meaning (0)
