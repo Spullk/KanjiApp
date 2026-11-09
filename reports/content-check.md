@@ -34,7 +34,7 @@ Checked: 21,833 words, 2,136 kanji, 372 radicals, 46,815 sentences, 114 stories,
 | Stories | [Story text with damaged characters](#story-odd-characters) | 0 |
 | Stories | [Story words with no dictionary entry](#story-word-missing) | 0 |
 | Stories | [Story files with broken links](#story-links) | 0 |
-| Stories | [Story text that may be jumbled](#story-jumbled) | 13 |
+| Stories | [Story text that may be jumbled](#story-jumbled) | 12 |
 | Stories | [Stories with ○○○ blanks](#story-blanks) | 5 |
 | Grammar | [Grammar points with no example](#grammar-no-examples) | 0 |
 | Grammar | [Grammar examples with no {marked} part](#grammar-gap) | 0 |
@@ -319,7 +319,7 @@ None. 🎉
 None. 🎉
 
 <a id="story-jumbled"></a>
-## Stories: Story text that may be jumbled (13)
+## Stories: Story text that may be jumbled (12)
 
 Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.
 
@@ -332,7 +332,6 @@ Half or more of the character pairs never appear in real Japanese. Usually side 
 - 花と色 · 0 · 40% · 埼玉県ときがわ町（上）埼玉県小川町巾着田（下）
 - 花と色 · 2 · 52% · 東京都文京区六義園（上）埼玉県新座市平林寺（左）東京都立川市・昭島市昭和記念公園（右）
 - 花と色 · 4 · 48% · 神奈川県中郡吾妻山公園（上）埼玉県比企郡武蔵丘陵森林公園（下）
-- 花と色 · 7 · 60% · 神奈川県鎌倉市東慶寺（上）成就院（左）江ノ電沿線（右）
 - 花と色 · 8 · 50% · 群馬県足利市あしかがフラワーパーク
 - 雪渡り · 68 · 50% · 「北風ぴいぴい風三郎、西風どうどう又三郎」
 - 黒コウモリと白コウモリ · 14 · 41% · 花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ

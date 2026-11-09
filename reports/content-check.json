@@ -3266,7 +3266,7 @@
    "area": "Stories",
    "title": "Story text that may be jumbled",
    "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
-   "count": 13,
+   "count": 12,
    "items": [
     {
      "story": "つみっこ",
@@ -3321,12 +3321,6 @@
      "paragraph": 4,
      "unseen pairs": "48%",
      "text": "神奈川県中郡吾妻山公園（上）埼玉県比企郡武蔵丘陵森林公園（下）"
-    },
-    {
-     "story": "花と色",
-     "paragraph": 7,
-     "unseen pairs": "60%",
-     "text": "神奈川県鎌倉市東慶寺（上）成就院（左）江ノ電沿線（右）"
     },
     {
      "story": "花と色",
