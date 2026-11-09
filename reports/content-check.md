@@ -2,17 +2,18 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 21,833 words, 2,136 kanji, 372 radicals, 46,815 sentences, 114 stories, 132 grammar points.
+Checked: 21,834 words, 2,136 kanji, 372 radicals, 44,128 sentences, 114 stories, 132 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
 | Words | [Lesson words with no dictionary entry](#lesson-word-missing) | 0 |
 | Words | [Words with no meaning](#word-no-meaning) | 0 |
-| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 279 |
+| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 178 |
 | Words | [Words pointing at sentences that don't exist](#word-sentence-missing) | 0 |
 | Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 16 |
 | Words | [Lesson words whose furigana doesn't spell the word](#lesson-word-furigana) | 0 |
 | Words | [The same word taught twice](#lesson-word-duplicate) | 0 |
+| Words | [Lesson words that may be the wrong dictionary entry](#lesson-word-rarer-homophone) | 2 |
 | Words | [Junk words still in a lesson](#lesson-word-junk) | 0 |
 | Words | [Single-kana words outside the lessons](#word-lone-kana) | 6 |
 | Kanji | [Kanji with no meaning](#kanji-no-meaning) | 0 |
@@ -30,7 +31,7 @@ Checked: 21,833 words, 2,136 kanji, 372 radicals, 46,815 sentences, 114 stories,
 | Sentences | [Sentences with a missing or untranslated English line](#sentence-translation) | 0 |
 | Sentences | [Sentences with damaged text](#sentence-odd-text) | 0 |
 | Sentences | [Sentences linking to missing words](#sentence-bad-link) | 0 |
-| Sentences | [The same Japanese sentence more than once](#sentence-duplicate) | 12 |
+| Sentences | [The same Japanese sentence more than once](#sentence-duplicate) | 8 |
 | Stories | [Story text with damaged characters](#story-odd-characters) | 0 |
 | Stories | [Story words with no dictionary entry](#story-word-missing) | 0 |
 | Stories | [Story files with broken links](#story-links) | 0 |
@@ -54,36 +55,36 @@ No sense has an English gloss, so the card has nothing to ask for.
 None. 🎉
 
 <a id="lesson-word-no-sentence"></a>
-## Words: Lesson words with no example sentence (279)
+## Words: Lesson words with no example sentence (178)
 
 Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.
 
 - 1 · 本木 (もとき) · original stock · 1523260
-- 1 · ください · please (give me) · 1184270
 - 2 · 三十日 (みそか) · last day of the month · 1604510
-- 2 · かける · to hang up (e.g. a coat, a picture on the wall) · 1207610
-- 5 · どう · how · 1008910
 - 6 · 二百十日 (にひゃくとおか) · 210th day (from the first day of spring according to the lunar calendar) · 1463030
 - 7 · 上田 (じょうでん) · high rice field · 1353990
-- 10 · すぐに · immediately · 1430620
-- 10 · つける · to turn on · 1610400
-- 12 · 開き (ひらき) · opening · 1989500
-- 12 · 千代 (ちよ) · thousand years · 1581030
 - 13 · 貸出用 (かしだしよう) · circulation or lending (e.g. library books) · 1949630
-- 13 · ボタン · button (clothing) · 1123880
-- 16 · そうして · and · 1612860
-- 17 · どうして · how · 1466940
 - 18 · 元首 (げんしゅ) · sovereign · 1260870
-- 19 · つまらない · dull · 1008190
-- 21 · 急いで (いそいで) · hurriedly · 1228570
 - 22 · 大店 (おおだな) · large store · 1862050
-- 23 · または · or · 1524990
-- 23 · できるだけ · as much as one can · 1340460
 - 24 · 字 (あざ) · section of village · 1315120
-- 24 · こう · in this way · 1004310
-- 24 · すり · pickpocket · 1567450
-- 25 · 買い占め (かいしめ) · buying up of goods · 1589670
-- …and 254 more
+- 26 · 上っ調子 (うわっちょうし) · flippant · 1352450
+- 26 · 室町 (むろまち) · Muromachi period (1336-1573) · 1608060
+- 28 · 今秋 (こんしゅう) · this autumn · 1289210
+- 30 · 米飯 (べいはん) · cooked rice · 1509010
+- 33 · 実兄 (じっけい) · biological older brother · 1320960
+- 35 · 要 (かなめ) · pivot · 1609600
+- 35 · 一期 (いちご) · one's whole life · 1161690
+- 38 · 多角 (たかく) · many-sided · 1610200
+- 39 · 告別 (こくべつ) · farewell · 1286080
+- 39 · 面 (おもて) · face · 1584680
+- 40 · 利払い (りばらい) · interest payment · 1549650
+- 41 · 在りし日 (ありしひ) · past days · 1741040
+- 41 · 決め球 (きめだま) · winning pitch · 1630640
+- 42 · 減反 (げんたん) · reduction (of crop size) · 1263310
+- 42 · 冊子 (さっし) · book · 1298530
+- 45 · 大路 (おおじ) · main street (esp. in a capital) · 1786960
+- 46 · 構図 (こうず) · composition (of painting) · 1279720
+- …and 153 more
 
 <a id="word-sentence-missing"></a>
 ## Words: Words pointing at sentences that don't exist (0)
@@ -127,6 +128,14 @@ None. 🎉
 Two lesson words share the spelling and the first meaning, so they'd be two cards for one thing.
 
 None. 🎉
+
+<a id="lesson-word-rarer-homophone"></a>
+## Words: Lesson words that may be the wrong dictionary entry (2)
+
+Another entry written and read the same way is more common, so the lesson may teach the rare meaning (ロケット as "locket" instead of "rocket").
+
+- 2 · あの · that · say
+- 149 · ソース · source (of information) · sauce
 
 <a id="lesson-word-junk"></a>
 ## Words: Junk words still in a lesson (0)
@@ -280,20 +289,16 @@ A tappable word in the sentence points at nothing.
 None. 🎉
 
 <a id="sentence-duplicate"></a>
-## Sentences: The same Japanese sentence more than once (12)
+## Sentences: The same Japanese sentence more than once (8)
 
 Usually harmless (different sources), listed so they can be merged.
 
 - ウラウラとした日差しに誘われて、眠りに落ちた。 · 2
 - 著者が本を書き直す度に新版となる。 · 2
-- 伝説では、彼女は人魚だったと言われる。 · 2
-- カール・マルクス曰く「あらゆる社会の歴史は階級闘争の歴史である」だそうです。 · 2
 - その事典は約５０万語の単語を収めている。 · 2
 - 彼は私に毒舌を浴びせた。 · 2
 - 人間は万物の霊長である。 · 2
-- 少年よ、大志を抱け。 · 2
 - そのチームは準決勝に勝って決勝に進出した。 · 2
-- アフリカの難民が救いを求めている。 · 2
 - 彼女は他の人と一味違う。 · 2
 - あーんして。 · 2
 
@@ -326,15 +331,15 @@ Half or more of the character pairs never appear in real Japanese. Usually side 
 - つみっこ · 1 · 43% · 本庄市埼玉県東京都若泉公園の桜マリーゴールドの丘公園
 - ようこそ別府へ · 14 · 48% · 北海道大阪東京九州ふくおかさが福岡佐賀別府長崎大分熊本宮崎かごしま鹿児島かごしま鹿児島沖縄
 - 北海道 · 1 · 59% · 根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」
-- 日本の城 · 0 · 50% · 弘前城竹田城松本城彦根城姫路城まつえじょう松江城えどじょう江戸城熊本城犬山城なごやじょうおおさかじょう名古屋城大阪城首里城
+- 日本の城 · 0 · 52% · 弘前城竹田城松本城彦根城姫路城まつえじょう松江城えどじょう江戸城熊本城犬山城なごやじょうおおさかじょう名古屋城大阪城首里城
 - 日本の城 · 23 · 52% · しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。
 - 温泉の町 別府 · 0 · 45% · ほっかいどう北海道おおさか大阪とうきょう東京九州べっぷ福岡別府さが佐賀長崎大分熊本みやざきかごしま宮崎おきなわ鹿児島沖縄鹿児島
 - 花と色 · 0 · 40% · 埼玉県ときがわ町（上）埼玉県小川町巾着田（下）
 - 花と色 · 2 · 52% · 東京都文京区六義園（上）埼玉県新座市平林寺（左）東京都立川市・昭島市昭和記念公園（右）
 - 花と色 · 4 · 48% · 神奈川県中郡吾妻山公園（上）埼玉県比企郡武蔵丘陵森林公園（下）
-- 花と色 · 7 · 60% · 神奈川県鎌倉市東慶寺（上）成就院（左）江ノ電沿線（右）
 - 花と色 · 8 · 50% · 群馬県足利市あしかがフラワーパーク
 - 雪渡り · 68 · 50% · 「北風ぴいぴい風三郎、西風どうどう又三郎」
+- 飯田くん · 1 · 42% · -広縄2沖-国州満（一九四二年ごろの日本）
 - 黒コウモリと白コウモリ · 14 · 41% · 花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ
 
 <a id="story-blanks"></a>
