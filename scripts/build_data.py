@@ -420,6 +420,10 @@ def load_sentences(words, kanji_lesson=None):
     by_form = defaultdict(list)
     for wid, w in words.items():
         by_form[w["w"]].append(wid)
+        # Words taught in kana (どう) are indexed under their dictionary spelling (如何{どう}); the reading check
+        # below keeps it to the right word.
+        if w.get("kanjiForm") and w["kanjiForm"] != w["w"]:
+            by_form[w["kanjiForm"]].append(wid)
 
     candidates = defaultdict(list)  # word id -> [(checked, jpn_id, eng_id)]
     tokens = {}                      # jpn_id -> [(word id, surface)] for linking words inside it
@@ -600,10 +604,12 @@ def load_kana_words(con, words):
                 if i in out or any(p in GRAMMAR_POS for p in e["senses"][0]["pos"]):
                     meant_elsewhere |= bool(gloss & meant)
                     continue
-                fits.append((not gloss & meant, not first & meant, e["rank"] >= RARE_RANK,
+                # A common entry beats a rare one before the first meaning counts: the list gives ロケット as
+                # "locket; rocket" and ランチ as "launch; lunch", but learners mean the rocket and the lunch.
+                fits.append((not gloss & meant, e["rank"] >= RARE_RANK, not first & meant,
                              -len(gloss & meant), e["rank"], i))
             if meant_elsewhere:
-                fits = [f for f in fits if not (f[0] and f[2])]
+                fits = [f for f in fits if not (f[0] and f[1])]
             if not fits:
                 continue
             idseq = min(fits)[-1]

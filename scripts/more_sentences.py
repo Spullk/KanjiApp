@@ -15,7 +15,7 @@ import re
 import tarfile
 from collections import defaultdict
 
-from build_data import SOURCES, is_kanji, kana_only
+from build_data import SOURCES, hira, is_kanji, kana_only
 
 KAIKKI = SOURCES / "kaikki-japanese.jsonl"
 JESC = SOURCES / "jesc" / "raw.tar.gz"
@@ -152,9 +152,11 @@ def add_sentences(words, sentences, con, level, wanted):
         print("More sentences: skipped (needs sudachipy, see the Build data workflow)")
         return 0
     added = 0
-    # Tatoeba and Wiktionary first, ranked together; subtitles only for the words they leave short.
+    # The sentences already in the data come first (a word may be in one without being linked, see spelled_out),
+    # then Tatoeba and Wiktionary, ranked together; subtitles only for the words they leave short.
+    shipped = [(sid, s["ja"], s["en"]) for sid, s in sentences.items()]
     for name, pools, keep in (
-            ("Tatoeba and Wiktionary", lambda: (tatoeba_pool(set(sentences)), wiktionary_pool()), None),
+            ("Tatoeba and Wiktionary", lambda: (shipped, tatoeba_pool(set(sentences)), wiktionary_pool()), None),
             # 2.8 million lines: stop reading for a word once it has 50 to choose from.
             ("subtitles", lambda: (jesc_pool(),), 50)):
         # Subtitle translations are often loose or belong to another line, so a subtitle counts for a word only
@@ -165,6 +167,38 @@ def add_sentences(words, sentences, con, level, wanted):
 
 STOP = {"the", "and", "for", "with", "that", "this", "one", "something", "someone", "thing", "things", "etc", "esp",
         "make", "get", "have", "become", "out", "from", "into", "about", "very", "not", "who", "what", "when"}
+
+
+def spelled_out(linker, ja, w):
+    """Where a lesson word appears in a sentence spelled exactly as taught, though the dictionary split it another
+    way (ください read as くださる, すぐに as 直ぐ + に, 急いで as 急ぐ). It has to be a whole run of Sudachi's
+    tokens read like the word, and not the start or end of a longer dictionary word (どう in どうぞ, それで in
+    それでも, かける in 出かける). → [start, length] or None."""
+    form = w["w"]
+    if len(form) < 2 or form not in ja:
+        return None
+    conjunction = kana_only(form) and "conjunction" in w["senses"][0]["pos"]
+    tokens = list(linker.tok.tokenize(ja))
+    at = {t.begin(): n for n, t in enumerate(tokens)}
+    ends = {t.end(): n for n, t in enumerate(tokens)}
+    i = ja.find(form)
+    while i >= 0:
+        j = i + len(form)
+        if i in at and j in ends:
+            first, last = at[i], ends[j]
+            reading = hira("".join(t.reading_form() for t in tokens[first:last + 1]))
+            longer = (last + 1 < len(tokens) and ja[i:tokens[last + 1].end()] in linker.by_text) or \
+                     (first > 0 and ja[tokens[first - 1].begin():j] in linker.by_text)
+            head, before = tokens[first], tokens[first - 1] if first > 0 else None
+            # Not the tail of the word before it (改善|したがって is 改善したがって, not "therefore").
+            tail = head.part_of_speech()[0] in ("助動詞", "接尾辞") or (
+                before and head.dictionary_form() == "する" and before.part_of_speech()[0] == "名詞")
+            # A conjunction starts a clause (ところが, not 傲慢な|ところ|が).
+            clause = not conjunction or not before or before.part_of_speech()[0] in ("補助記号", "空白")
+            if reading == hira(w["r"]) and not longer and not tail and clause:
+                return [i, len(form)]
+        i = ja.find(form, i + 1)
+    return None
 
 
 def gloss_stems(text):
@@ -202,8 +236,17 @@ def fill(words, sentences, linker, level, wanted, name, pools, keep, check=False
             hits = {wid for wid in candidates(ja) if keep is None or len(found.get(wid, ())) < keep}
             if not hits:
                 continue
-            links = sorted(l for l in linker.paragraph(ja)[0] if l[2] in words)
+            if sid in sentences:  # already in the data: keep its links, only add the word
+                links = [list(l) for l in sentences[sid]["links"]]
+            else:
+                links = sorted(l for l in linker.paragraph(ja)[0] if l[2] in words)
             ids = {l[2] for l in links}
+            for wid in hits - ids:
+                span = level(wid) is not None and spelled_out(linker, ja, words[wid])
+                if span:
+                    links = sorted([l for l in links if l[0] + l[1] <= span[0] or l[0] >= span[0] + span[1]]
+                                   + [[*span, wid]])
+                    ids.add(wid)
             en_stems = gloss_stems(en) if check else None
             for wid in hits & ids:
                 if check and en_stems.isdisjoint(meanings(wid)):
@@ -217,6 +260,8 @@ def fill(words, sentences, linker, level, wanted, name, pools, keep, check=False
     for wid, cs in found.items():
         room = wanted(wid) - len(words[wid]["sentences"])
         for *_, sid in sorted(cs)[:room]:
+            if sid in sentences:
+                sentences[sid]["links"] = pool[sid]["links"]
             sentences.setdefault(sid, pool[sid])
             words[wid]["sentences"].append(sid)
             added += 1
