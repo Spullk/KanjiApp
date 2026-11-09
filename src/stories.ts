@@ -21,8 +21,9 @@ export type StoryInfo = {
   w: [string, number][];
 };
 
-/** One paragraph: text, word links [start, length, word id] and readings [start, length, kana]. */
-export type Paragraph = [string, [number, number, string][], [number, number, string][]];
+/** One paragraph: text, word links [start, length, word id] and readings [start, length, kana]. A word the text
+ * spells in kana but that's usually written in kanji also has [kanji, length of the kana they replace] (いき → 行, 1). */
+export type Paragraph = [string, [number, number, string, string?, number?][], [number, number, string][]];
 
 export const READY = 0.95;
 export const ALMOST = 0.85;
