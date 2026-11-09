@@ -121,6 +121,17 @@ def check_words(r, words, lessons, sentences, kanji):
           "Two lesson words share the spelling and the first meaning, so they'd be two cards for one thing.",
           [{"word": word_label(ws[0]), "meaning": k[1], "lessons": ", ".join(str(lesson_of[w["id"]]) for w in ws)}
            for k, ws in same.items() if len(ws) > 1])
+    spelled = defaultdict(list)
+    for w in words.values():
+        if not w.get("junk"):
+            spelled[(w["w"], w["r"])].append(w)
+    r.add("lesson-word-rarer-homophone", "Words", "Lesson words that may be the wrong dictionary entry",
+          "Another entry written and read the same way is more common, so the lesson may teach the rare meaning "
+          "(ロケット as \"locket\" instead of \"rocket\").",
+          [{"lesson": lesson_of[w["id"]], "word": word_label(w), "taught": first_gloss(w),
+            "more common": " / ".join(first_gloss(o) for o in better)}
+           for w in sorted(taught, key=lambda w: lesson_of[w["id"]])
+           if (better := [o for o in spelled[(w["w"], w["r"])] if o["id"] != w["id"] and o["rank"] < w["rank"]])])
     r.add("lesson-word-junk", "Words", "Junk words still in a lesson",
           "Words marked junk (a wrong dictionary match) shouldn't be taught.",
           [{"lesson": lesson_of[w["id"]], "word": word_label(w)} for w in taught if w.get("junk")])

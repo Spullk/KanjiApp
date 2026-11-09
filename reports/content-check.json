@@ -1,9 +1,9 @@
 {
  "counts": {
-  "words": 21878,
+  "words": 21880,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 46938,
+  "sentences": 44216,
   "stories": 115,
   "grammar points": 132
  },
@@ -26,7 +26,7 @@
    "area": "Words",
    "title": "Lesson words with no example sentence",
    "why": "Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.",
-   "count": 272,
+   "count": 178,
    "items": [
     {
      "lesson": 1,
@@ -35,22 +35,10 @@
      "id": "1523260"
     },
     {
-     "lesson": 1,
-     "word": "ください",
-     "meaning": "please (give me)",
-     "id": "1184270"
-    },
-    {
      "lesson": 2,
      "word": "三十日 (みそか)",
      "meaning": "last day of the month",
      "id": "1604510"
-    },
-    {
-     "lesson": 2,
-     "word": "かける",
-     "meaning": "to hang up (e.g. a coat, a picture on the wall)",
-     "id": "1207610"
     },
     {
      "lesson": 6,
@@ -65,52 +53,10 @@
      "id": "1353990"
     },
     {
-     "lesson": 10,
-     "word": "すぐに",
-     "meaning": "immediately",
-     "id": "1430620"
-    },
-    {
-     "lesson": 10,
-     "word": "つける",
-     "meaning": "to turn on",
-     "id": "1610400"
-    },
-    {
-     "lesson": 12,
-     "word": "開き (ひらき)",
-     "meaning": "opening",
-     "id": "1989500"
-    },
-    {
-     "lesson": 12,
-     "word": "千代 (ちよ)",
-     "meaning": "thousand years",
-     "id": "1581030"
-    },
-    {
      "lesson": 13,
      "word": "貸出用 (かしだしよう)",
      "meaning": "circulation or lending (e.g. library books)",
      "id": "1949630"
-    },
-    {
-     "lesson": 13,
-     "word": "ボタン",
-     "meaning": "button (clothing)",
-     "id": "1123880"
-    },
-    {
-     "lesson": 16,
-     "word": "そうして",
-     "meaning": "and",
-     "id": "1612860"
-    },
-    {
-     "lesson": 17,
-     "word": "どうして",
-     "meaning": "how",
-     "id": "1466940"
     },
     {
      "lesson": 18,
@@ -119,46 +65,16 @@
      "id": "1260870"
     },
     {
-     "lesson": 21,
-     "word": "急いで (いそいで)",
-     "meaning": "hurriedly",
-     "id": "1228570"
-    },
-    {
      "lesson": 22,
      "word": "大店 (おおだな)",
      "meaning": "large store",
      "id": "1862050"
     },
     {
-     "lesson": 23,
-     "word": "または",
-     "meaning": "or",
-     "id": "1524990"
-    },
-    {
-     "lesson": 23,
-     "word": "できるだけ",
-     "meaning": "as much as one can",
-     "id": "1340460"
-    },
-    {
      "lesson": 24,
      "word": "字 (あざ)",
      "meaning": "section of village",
      "id": "1315120"
-    },
-    {
-     "lesson": 24,
-     "word": "すり",
-     "meaning": "pickpocket",
-     "id": "1567450"
-    },
-    {
-     "lesson": 25,
-     "word": "買い占め (かいしめ)",
-     "meaning": "buying up of goods",
-     "id": "1589670"
     },
     {
      "lesson": 26,
@@ -179,46 +95,10 @@
      "id": "1289210"
     },
     {
-     "lesson": 28,
-     "word": "それで",
-     "meaning": "so",
-     "id": "1007000"
-    },
-    {
-     "lesson": 28,
-     "word": "それに",
-     "meaning": "besides",
-     "id": "1007040"
-    },
-    {
      "lesson": 30,
      "word": "米飯 (べいはん)",
      "meaning": "cooked rice",
      "id": "1509010"
-    },
-    {
-     "lesson": 30,
-     "word": "アフリカ",
-     "meaning": "Africa",
-     "id": "1929050"
-    },
-    {
-     "lesson": 30,
-     "word": "アメリカ",
-     "meaning": "(United States of) America",
-     "id": "1149830"
-    },
-    {
-     "lesson": 31,
-     "word": "これから",
-     "meaning": "from now on",
-     "id": "1004790"
-    },
-    {
-     "lesson": 32,
-     "word": "それほど",
-     "meaning": "to that degree",
-     "id": "1007060"
     },
     {
      "lesson": 33,
@@ -245,22 +125,10 @@
      "id": "1610200"
     },
     {
-     "lesson": 38,
-     "word": "アジア",
-     "meaning": "Asia",
-     "id": "1015840"
-    },
-    {
      "lesson": 39,
      "word": "告別 (こくべつ)",
      "meaning": "farewell",
      "id": "1286080"
-    },
-    {
-     "lesson": 39,
-     "word": "面白 (おもしろ)",
-     "meaning": "amusing",
-     "id": "1533570"
     },
     {
      "lesson": 39,
@@ -269,34 +137,10 @@
      "id": "1584680"
     },
     {
-     "lesson": 39,
-     "word": "しかる",
-     "meaning": "a particular",
-     "id": "1394730"
-    },
-    {
-     "lesson": 39,
-     "word": "おいでになる",
-     "meaning": "to be",
-     "id": "1001180"
-    },
-    {
-     "lesson": 39,
-     "word": "したがって",
-     "meaning": "therefore",
-     "id": "1335230"
-    },
-    {
      "lesson": 40,
      "word": "利払い (りばらい)",
      "meaning": "interest payment",
      "id": "1549650"
-    },
-    {
-     "lesson": 40,
-     "word": "認め (みとめ)",
-     "meaning": "approval",
-     "id": "1611790"
     },
     {
      "lesson": 41,
@@ -335,12 +179,6 @@
      "id": "1279720"
     },
     {
-     "lesson": 46,
-     "word": "そこで",
-     "meaning": "so",
-     "id": "1406090"
-    },
-    {
      "lesson": 47,
      "word": "新鋭 (しんえい)",
      "meaning": "young and energetic",
@@ -359,12 +197,6 @@
      "id": "1614730"
     },
     {
-     "lesson": 48,
-     "word": "どこか",
-     "meaning": "somewhere",
-     "id": "1189000"
-    },
-    {
      "lesson": 51,
      "word": "前頭 (まえがしら)",
      "meaning": "rank-and-file wrestlers in the highest division",
@@ -377,22 +209,10 @@
      "id": "1826440"
     },
     {
-     "lesson": 52,
-     "word": "もしも",
-     "meaning": "if",
-     "id": "1612050"
-    },
-    {
      "lesson": 53,
      "word": "望月 (もちづき)",
      "meaning": "full moon",
      "id": "1519680"
-    },
-    {
-     "lesson": 54,
-     "word": "いつでも",
-     "meaning": "always",
-     "id": "1577130"
     },
     {
      "lesson": 55,
@@ -407,18 +227,6 @@
      "id": "1787370"
     },
     {
-     "lesson": 56,
-     "word": "しきりに",
-     "meaning": "frequently",
-     "id": "1005480"
-    },
-    {
-     "lesson": 57,
-     "word": "雨が降る (あめがふる)",
-     "meaning": "to rain",
-     "id": "2851949"
-    },
-    {
      "lesson": 58,
      "word": "齢 (よわい)",
      "meaning": "(one's) age",
@@ -431,52 +239,10 @@
      "id": "1472650"
     },
     {
-     "lesson": 59,
-     "word": "座り込み (すわりこみ)",
-     "meaning": "sit-in (protest)",
-     "id": "1291780"
-    },
-    {
-     "lesson": 59,
-     "word": "それでも",
-     "meaning": "but (still)",
-     "id": "1406060"
-    },
-    {
-     "lesson": 59,
-     "word": "それとも",
-     "meaning": "or",
-     "id": "1007010"
-    },
-    {
      "lesson": 60,
      "word": "理髪 (りはつ)",
      "meaning": "haircut",
      "id": "1550070"
-    },
-    {
-     "lesson": 60,
-     "word": "ところが",
-     "meaning": "even so",
-     "id": "1008570"
-    },
-    {
-     "lesson": 60,
-     "word": "ところで",
-     "meaning": "by the way",
-     "id": "1343110"
-    },
-    {
-     "lesson": 61,
-     "word": "なぜなら",
-     "meaning": "because",
-     "id": "1009410"
-    },
-    {
-     "lesson": 63,
-     "word": "戻し (もどし)",
-     "meaning": "returning",
-     "id": "1641890"
     },
     {
      "lesson": 63,
@@ -492,12 +258,6 @@
     },
     {
      "lesson": 64,
-     "word": "君が代 (きみがよ)",
-     "meaning": "Imperial reign",
-     "id": "1630470"
-    },
-    {
-     "lesson": 64,
      "word": "上越 (じょうえつ)",
      "meaning": "area on Japan Sea side of Japan, including Niigata",
      "id": "1352660"
@@ -509,40 +269,10 @@
      "id": "1226310"
     },
     {
-     "lesson": 64,
-     "word": "いつまでも",
-     "meaning": "forever",
-     "id": "1188880"
-    },
-    {
      "lesson": 65,
      "word": "歳暮 (せいぼ)",
      "meaning": "year-end gift",
      "id": "1295000"
-    },
-    {
-     "lesson": 65,
-     "word": "どうしても",
-     "meaning": "by all means",
-     "id": "1466950"
-    },
-    {
-     "lesson": 67,
-     "word": "いただきます",
-     "meaning": "thank you (for the meal just served)",
-     "id": "1410800"
-    },
-    {
-     "lesson": 67,
-     "word": "かもしれない",
-     "meaning": "may",
-     "id": "1002970"
-    },
-    {
-     "lesson": 68,
-     "word": "鳴り (なり)",
-     "meaning": "ringing",
-     "id": "1899440"
     },
     {
      "lesson": 68,
@@ -551,64 +281,10 @@
      "id": "1753350"
     },
     {
-     "lesson": 68,
-     "word": "バン",
-     "meaning": "bun (hairstyle)",
-     "id": "1100090"
-    },
-    {
-     "lesson": 69,
-     "word": "グランド",
-     "meaning": "grand",
-     "id": "1046840"
-    },
-    {
-     "lesson": 69,
-     "word": "ヨーロッパ",
-     "meaning": "Europe",
-     "id": "1137570"
-    },
-    {
-     "lesson": 70,
-     "word": "パス",
-     "meaning": "path (of a file, directory, etc.)",
-     "id": "2861508"
-    },
-    {
-     "lesson": 70,
-     "word": "いつか",
-     "meaning": "sometime",
-     "id": "1188790"
-    },
-    {
-     "lesson": 70,
-     "word": "ロケット",
-     "meaning": "locket",
-     "id": "2862534"
-    },
-    {
-     "lesson": 70,
-     "word": "ごめんなさい",
-     "meaning": "I'm sorry",
-     "id": "1270680"
-    },
-    {
      "lesson": 71,
      "word": "市町村 (しちょうそん)",
      "meaning": "cities, towns and villages",
      "id": "1308600"
-    },
-    {
-     "lesson": 72,
-     "word": "インキ",
-     "meaning": "ink",
-     "id": "2856157"
-    },
-    {
-     "lesson": 73,
-     "word": "カラー",
-     "meaning": "collar",
-     "id": "2853151"
     },
     {
      "lesson": 73,
@@ -639,12 +315,6 @@
      "word": "蔵相 (ぞうしょう)",
      "meaning": "Minister of Finance",
      "id": "1403520"
-    },
-    {
-     "lesson": 75,
-     "word": "タイア",
-     "meaning": "tire",
-     "id": "1076120"
     },
     {
      "lesson": 76,
@@ -701,18 +371,6 @@
      "id": "1844500"
     },
     {
-     "lesson": 87,
-     "word": "練り (ねり)",
-     "meaning": "kneading",
-     "id": "1642900"
-    },
-    {
-     "lesson": 87,
-     "word": "とっくに",
-     "meaning": "long ago",
-     "id": "1320570"
-    },
-    {
      "lesson": 88,
      "word": "酪農 (らくのう)",
      "meaning": "dairy farming",
@@ -731,46 +389,16 @@
      "id": "1012110"
     },
     {
-     "lesson": 92,
-     "word": "やっぱり",
-     "meaning": "as expected",
-     "id": "1012810"
-    },
-    {
      "lesson": 94,
      "word": "焼け跡 (やけあと)",
      "meaning": "ruins of a fire",
      "id": "1634560"
     },
     {
-     "lesson": 94,
-     "word": "くたびれる",
-     "meaning": "to get tired",
-     "id": "1003810"
-    },
-    {
-     "lesson": 94,
-     "word": "くれぐれも",
-     "meaning": "sincerely",
-     "id": "1269140"
-    },
-    {
      "lesson": 96,
      "word": "鈍化 (どんか)",
      "meaning": "becoming dull",
      "id": "1457580"
-    },
-    {
-     "lesson": 96,
-     "word": "そういえば",
-     "meaning": "now that you mention it",
-     "id": "1982210"
-    },
-    {
-     "lesson": 96,
-     "word": "なんとなく",
-     "meaning": "somehow",
-     "id": "1599730"
     },
     {
      "lesson": 97,
@@ -792,12 +420,6 @@
     },
     {
      "lesson": 97,
-     "word": "荒れ (あれ)",
-     "meaning": "stormy weather",
-     "id": "1857320"
-    },
-    {
-     "lesson": 97,
      "word": "硬さ (かたさ)",
      "meaning": "firmness",
      "id": "1610650"
@@ -813,12 +435,6 @@
      "word": "普賢 (ふげん)",
      "meaning": "Samantabhadra (bodhisattva)",
      "id": "1497140"
-    },
-    {
-     "lesson": 98,
-     "word": "おかげさまで",
-     "meaning": "thankfully",
-     "id": "1270220"
     },
     {
      "lesson": 99,
@@ -839,37 +455,7 @@
      "id": "1577770"
     },
     {
-     "lesson": 100,
-     "word": "はじめまして",
-     "meaning": "nice to meet you",
-     "id": "1625780"
-    },
-    {
-     "lesson": 101,
-     "word": "もしかしたら",
-     "meaning": "perhaps",
-     "id": "1012510"
-    },
-    {
-     "lesson": 101,
-     "word": "もしかすると",
-     "meaning": "perhaps",
-     "id": "1012530"
-    },
-    {
-     "lesson": 101,
-     "word": "ごめんください",
-     "meaning": "may I come in?",
-     "id": "1270690"
-    },
-    {
-     "lesson": 102,
-     "word": "かしこまりました",
-     "meaning": "certainly!",
-     "id": "1002790"
-    },
-    {
-     "lesson": 102,
+     "lesson": 103,
      "word": "レクリェーション",
      "meaning": "recreation",
      "id": "1144860"
@@ -894,39 +480,9 @@
     },
     {
      "lesson": 108,
-     "word": "躍り (おどり)",
-     "meaning": "leaping",
-     "id": "1643460"
-    },
-    {
-     "lesson": 108,
      "word": "清涼 (せいりょう)",
      "meaning": "cool",
      "id": "1378390"
-    },
-    {
-     "lesson": 108,
-     "word": "こうして",
-     "meaning": "thus",
-     "id": "2008040"
-    },
-    {
-     "lesson": 108,
-     "word": "こないだ",
-     "meaning": "the other day",
-     "id": "1004610"
-    },
-    {
-     "lesson": 109,
-     "word": "繰り延べ (くりのべ)",
-     "meaning": "postponement",
-     "id": "1246920"
-    },
-    {
-     "lesson": 109,
-     "word": "チョーク",
-     "meaning": "chock (wedge placed under a wheel)",
-     "id": "2854421"
     },
     {
      "lesson": 110,
@@ -957,18 +513,6 @@
      "word": "旗揚げ (はたあげ)",
      "meaning": "raising an army",
      "id": "1220290"
-    },
-    {
-     "lesson": 111,
-     "word": "さっと",
-     "meaning": "quickly (esp. actions)",
-     "id": "1005200"
-    },
-    {
-     "lesson": 113,
-     "word": "整った (ととのった)",
-     "meaning": "well-ordered",
-     "id": "1897670"
     },
     {
      "lesson": 114,
@@ -1019,12 +563,6 @@
      "id": "1579730"
     },
     {
-     "lesson": 119,
-     "word": "きちっと",
-     "meaning": "properly",
-     "id": "1003390"
-    },
-    {
      "lesson": 120,
      "word": "嫡出 (ちゃくしゅつ)",
      "meaning": "legitimate birth",
@@ -1061,34 +599,10 @@
      "id": "1583000"
     },
     {
-     "lesson": 129,
-     "word": "染め (そめ)",
-     "meaning": "dyeing",
-     "id": "1854060"
-    },
-    {
-     "lesson": 130,
-     "word": "至上 (しじょう)",
-     "meaning": "supremacy",
-     "id": "1311950"
-    },
-    {
-     "lesson": 130,
-     "word": "なんだかんだ",
-     "meaning": "something or other",
-     "id": "1188360"
-    },
-    {
      "lesson": 131,
      "word": "喪主 (もしゅ)",
      "meaning": "chief mourner",
      "id": "1399300"
-    },
-    {
-     "lesson": 131,
-     "word": "ずれ",
-     "meaning": "gap",
-     "id": "1006450"
     },
     {
      "lesson": 133,
@@ -1169,12 +683,6 @@
      "id": "1855260"
     },
     {
-     "lesson": 144,
-     "word": "誓って (ちかって)",
-     "meaning": "surely",
-     "id": "1622640"
-    },
-    {
      "lesson": 145,
      "word": "沿って (そって)",
      "meaning": "along",
@@ -1197,12 +705,6 @@
      "word": "貫 (かん)",
      "meaning": "kan (obs. unit of weight, approx. 3.75 kg, 8.3 lb)",
      "id": "1956010"
-    },
-    {
-     "lesson": 147,
-     "word": "仙台 (せんだい)",
-     "meaning": "Sendai (city in Miyagi)",
-     "id": "2164680"
     },
     {
      "lesson": 147,
@@ -1229,18 +731,6 @@
      "id": "1001130"
     },
     {
-     "lesson": 148,
-     "word": "あられ",
-     "meaning": "hail (esp. hailballs under 5 mm)",
-     "id": "1574100"
-    },
-    {
-     "lesson": 148,
-     "word": "いやに",
-     "meaning": "awfully",
-     "id": "1000910"
-    },
-    {
      "lesson": 149,
      "word": "侍従 (じじゅう)",
      "meaning": "chamberlain",
@@ -1248,27 +738,9 @@
     },
     {
      "lesson": 149,
-     "word": "ソース",
-     "meaning": "source (of information)",
-     "id": "2843727"
-    },
-    {
-     "lesson": 149,
-     "word": "ポーズ",
-     "meaning": "pause",
-     "id": "2858735"
-    },
-    {
-     "lesson": 149,
      "word": "ぼやく",
      "meaning": "to grumble",
      "id": "1011850"
-    },
-    {
-     "lesson": 149,
-     "word": "もろに",
-     "meaning": "completely",
-     "id": "1012710"
     },
     {
      "lesson": 150,
@@ -1284,12 +756,6 @@
     },
     {
      "lesson": 150,
-     "word": "倉敷 (くらしき)",
-     "meaning": "Kurashiki (city)",
-     "id": "1399220"
-    },
-    {
-     "lesson": 150,
      "word": "敷き布団 (しきぶとん)",
      "meaning": "futon (laid on the floor)",
      "id": "1594170"
@@ -1302,27 +768,21 @@
     },
     {
      "lesson": 151,
-     "word": "ハンガー",
-     "meaning": "hangar",
-     "id": "2861509"
-    },
-    {
-     "lesson": 151,
      "word": "ビールス",
      "meaning": "virus",
      "id": "2843940"
     },
     {
      "lesson": 151,
-     "word": "フォーム",
-     "meaning": "foam",
-     "id": "2855933"
-    },
-    {
-     "lesson": 151,
      "word": "ふんだん",
      "meaning": "plentiful",
      "id": "1011100"
+    },
+    {
+     "lesson": 151,
+     "word": "ぼつぼつ",
+     "meaning": "gradually",
+     "id": "1011840"
     },
     {
      "lesson": 152,
@@ -1332,33 +792,21 @@
     },
     {
      "lesson": 152,
-     "word": "ぼつぼつ",
-     "meaning": "gradually",
-     "id": "1011840"
-    },
-    {
-     "lesson": 152,
      "word": "インターフォン",
      "meaning": "intercom",
      "id": "1022990"
     },
     {
      "lesson": 152,
-     "word": "トランジスター",
-     "meaning": "transistor",
-     "id": "1086180"
+     "word": "インターチェンジ",
+     "meaning": "interchange",
+     "id": "1022840"
     },
     {
      "lesson": 153,
      "word": "租税 (そぜい)",
      "meaning": "taxes",
      "id": "1396900"
-    },
-    {
-     "lesson": 153,
-     "word": "インターチェンジ",
-     "meaning": "interchange",
-     "id": "1022840"
     },
     {
      "lesson": 154,
@@ -1419,12 +867,6 @@
      "word": "懐疑 (かいぎ)",
      "meaning": "doubt",
      "id": "1200530"
-    },
-    {
-     "lesson": 165,
-     "word": "東亜 (とうあ)",
-     "meaning": "East Asia",
-     "id": "1598600"
     },
     {
      "lesson": 165,
@@ -1619,12 +1061,6 @@
      "id": "1208770"
     },
     {
-     "lesson": 191,
-     "word": "埼玉 (さいたま)",
-     "meaning": "Saitama (city, prefecture)",
-     "id": "2164700"
-    },
-    {
      "lesson": 192,
      "word": "関脇 (せきわけ)",
      "meaning": "wrestler of the third highest rank",
@@ -1786,6 +1222,32 @@
    "why": "Two lesson words share the spelling and the first meaning, so they'd be two cards for one thing.",
    "count": 0,
    "items": []
+  },
+  "lesson-word-rarer-homophone": {
+   "area": "Words",
+   "title": "Lesson words that may be the wrong dictionary entry",
+   "why": "Another entry written and read the same way is more common, so the lesson may teach the rare meaning (ロケット as \"locket\" instead of \"rocket\").",
+   "count": 3,
+   "items": [
+    {
+     "lesson": 2,
+     "word": "あの",
+     "taught": "that",
+     "more common": "say"
+    },
+    {
+     "lesson": 41,
+     "word": "そう",
+     "taught": "in that way",
+     "more common": "appearing that"
+    },
+    {
+     "lesson": 149,
+     "word": "ソース",
+     "taught": "source (of information)",
+     "more common": "sauce"
+    }
+   ]
   },
   "lesson-word-junk": {
    "area": "Words",
@@ -3168,7 +2630,7 @@
    "area": "Sentences",
    "title": "The same Japanese sentence more than once",
    "why": "Usually harmless (different sources), listed so they can be merged.",
-   "count": 12,
+   "count": 8,
    "items": [
     {
      "ja": "ウラウラとした日差しに誘われて、眠りに落ちた。",
@@ -3176,14 +2638,6 @@
     },
     {
      "ja": "著者が本を書き直す度に新版となる。",
-     "times": 2
-    },
-    {
-     "ja": "伝説では、彼女は人魚だったと言われる。",
-     "times": 2
-    },
-    {
-     "ja": "カール・マルクス曰く「あらゆる社会の歴史は階級闘争の歴史である」だそうです。",
      "times": 2
     },
     {
@@ -3199,15 +2653,7 @@
      "times": 2
     },
     {
-     "ja": "少年よ、大志を抱け。",
-     "times": 2
-    },
-    {
      "ja": "そのチームは準決勝に勝って決勝に進出した。",
-     "times": 2
-    },
-    {
-     "ja": "アフリカの難民が救いを求めている。",
      "times": 2
     },
     {
@@ -3245,7 +2691,7 @@
    "area": "Stories",
    "title": "Story text that may be jumbled",
    "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
-   "count": 11,
+   "count": 12,
    "items": [
     {
      "story": "つみっこ",
@@ -3268,7 +2714,7 @@
     {
      "story": "日本の城",
      "paragraph": 0,
-     "unseen pairs": "50%",
+     "unseen pairs": "52%",
      "text": "弘前城竹田城松本城彦根城姫路城まつえじょう松江城えどじょう江戸城熊本城犬山城なごやじょうおおさかじょう名古屋城大阪城首里城"
     },
     {
@@ -3306,6 +2752,12 @@
      "paragraph": 68,
      "unseen pairs": "50%",
      "text": "「北風ぴいぴい風三郎、西風どうどう又三郎」"
+    },
+    {
+     "story": "飯田くん",
+     "paragraph": 1,
+     "unseen pairs": "42%",
+     "text": "-広縄2沖-国州満（一九四二年ごろの日本）"
     },
     {
      "story": "黒コウモリと白コウモリ",
