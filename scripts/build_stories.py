@@ -17,6 +17,7 @@ import re
 import sqlite3
 import sys
 import time
+import unicodedata
 import urllib.parse
 import urllib.request
 import zipfile
@@ -47,8 +48,9 @@ AOZORA_WORKS = [
 SKIP_POS = {"助詞", "助動詞", "補助記号", "記号", "空白"}
 SKIP_SUB = {("名詞", "固有名詞"), ("名詞", "数詞")}
 COMMON = {"news1", "ichi1", "spec1", "spec2", "gai1"}  # JMdict's "common word" tags
-# Where words the text spells in kana get their usual kanji. Tadoku's licence (CC BY-NC-ND) allows no changes.
-KANJI_SOURCES = {"aozora"}
+# Where words the text spells in kana get their usual kanji. Lucas chose Tadoku too (2026-11-09), though its
+# licence (CC BY-NC-ND) allows no changes; the reader says the kanji are added.
+KANJI_SOURCES = {"aozora", "tadoku"}
 # Sudachi's part of speech → the JMdict ones it can be (see pos_class).
 POS_FIT = {"名詞": {"n", "na", "pn"}, "代名詞": {"pn"}, "動詞": {"v"}, "形容詞": {"adj"}, "形状詞": {"na"},
            "副詞": {"adv"}, "感動詞": {"int"}, "連体詞": {"adjpn"}, "接続詞": {"conj"}}
@@ -212,6 +214,19 @@ def page_text(chars):
                    and not (i + 1 < len(text) and KANA_ONLY.match(t) and size[i] < size[i + 1] * 0.75))
 
 
+# Some PDF fonts map kanji to their look-alike radical characters (⼈ U+2F08 for 人) and use vertical-only
+# punctuation (︒ for 。). They look right on screen but match no word, so they go back to the usual characters.
+# NFKC covers the Kangxi radicals and the vertical forms; the CJK Radicals Supplement needs a table (only the
+# forms that are whole characters in Japanese, so radical shapes like ⺅ stay as they are).
+RADICAL_SUPPLEMENT = dict(zip("⺄⺌⺒⺓⺟⺠⺧⺩⺫⺬⺮⺶⺻⻄⻆⻑⻗⻘⻝⻣⻤⻨⻩⻫⻭⻯⻲",
+                              "乙小巳幺母民牛王目示竹羊聿西角長雨青食骨鬼麦黄斉歯竜亀"))
+LOOKALIKE = re.compile(r"[\u2e80-\u2fdf\ufe10-\ufe19\ufe30-\ufe4f]")
+
+
+def usual_chars(text):
+    return LOOKALIKE.sub(lambda m: RADICAL_SUPPLEMENT.get(m[0]) or unicodedata.normalize("NFKC", m[0]), text)
+
+
 def pdf_paragraphs(data):
     """Each page's main text as one paragraph, without the cover, credits and teachers' notes.
     None when the PDF's fonts don't say which characters they draw."""
@@ -224,7 +239,7 @@ def pdf_paragraphs(data):
             total += len(chars)
             unknown += sum(c["text"].startswith("(cid:") for c in chars)
             chars = [c for c in chars if not c["text"].startswith("(cid:")]
-            text = page_text(chars) if chars else ""
+            text = usual_chars(page_text(chars)) if chars else ""
             # Leftovers from covers and pictures are short and have no sentence punctuation.
             if re.search(r"[ぁ-ん]", text) and not any(m in text for m in NOT_STORY) \
                     and (len(text) >= 12 or re.search(r"[。！？!?」]", text)) and latin(text) < 0.3:
@@ -232,6 +247,45 @@ def pdf_paragraphs(data):
     # Some PDFs draw characters with fonts that map to the wrong letters (少年Kは%一人で…3): skip those.
     readable = total and unknown / total < 0.02 and latin("".join(t for t, _ in paras)) < 0.05
     return paras if readable and len(paras) >= 3 else None
+
+
+MAX_JUMBLED = 4  # a book with more jumbled sentences than this is left out
+
+
+@lru_cache(maxsize=None)
+def real_pairs():
+    """Character pairs seen in real Japanese: the example sentences and the dictionary in the current data/."""
+    from check_content import bigram_model
+
+    def read(name):
+        path = OUT / name
+        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+    return bigram_model(read("sentences.json"), read("words.json"))
+
+
+def without_jumbled(paras, title):
+    """Drops sentences read in the wrong order (side notes or picture labels whose columns got mixed together,
+    furigana read backwards). None when there are too many to trust the rest of the book."""
+    from check_content import SENTENCE_END, jumbled
+
+    # Picture labels and lists of names score 50-60% too, so only clearly jumbled sentences are dropped, but the
+    # whole book goes when many sentences look off.
+    seen, out, dropped, doubtful = real_pairs(), [], [], 0
+    for text, ruby in paras:
+        keep = []
+        for s in SENTENCE_END.split(text):
+            score = jumbled(s, seen)
+            doubtful += score >= 0.5
+            (dropped if score >= 0.6 else keep).append(s)
+        if "".join(keep).strip():
+            out.append(("".join(keep), ruby))
+    if doubtful > MAX_JUMBLED:
+        log(f"Tadoku: skipped {title}: {doubtful} jumbled-looking sentences")
+        return None
+    for s in dropped:
+        log(f"Tadoku: {title}: dropped jumbled text {s[:40]}")
+    return out
 
 
 def latin(text):
@@ -257,6 +311,9 @@ def tadoku_stories():
             continue
         if not paras:
             log(f"Tadoku: skipped {title}: no readable text")
+            continue
+        paras = without_jumbled(paras, title)
+        if not paras:
             continue
         titles.add(title)
         yield {"id": "t" + re.sub(r"[^A-Za-z0-9]+", "-", name).strip("-").lower(), "title": title or name,

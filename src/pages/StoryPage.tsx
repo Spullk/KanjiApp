@@ -67,8 +67,8 @@ export function StoryPage({ id }: { id: string }) {
       <p class="hint">
         {info.source === "tadoku" ? (
           <>
-            © NPO多言語多読, <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>. Shown
-            unchanged. <a href={info.url}>The original, with pictures</a>.
+            © NPO多言語多読, <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>. Nekko
+            shows some words in kanji where the book uses kana. <a href={info.url}>The original, with pictures</a>.
           </>
         ) : (
           <>
