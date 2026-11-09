@@ -1600,6 +1600,9 @@ button.next.wrong {
   border-bottom: 2px dotted var(--line);
   cursor: pointer;
 }
+.read-word.new {
+  border-bottom: 2px solid var(--vocab);
+}
 .read-word.on {
   background: var(--hl);
   color: var(--hl-text);

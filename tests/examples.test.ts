@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { examplesFor, patternSentence, unknownWords } from "../src/examples";
+import { examplesFor, patternSentence, readableByWords, unknownWords } from "../src/examples";
 import type { Data } from "../src/data";
 import type { Knowledge } from "../src/stories";
 
@@ -12,26 +12,63 @@ const data = {
     "1": { ...word("1", "猫", ["noun"], ["cat"], 1), sentences: ["a"] },
     "2": word("2", "犬", ["noun"], ["dog"], 1),
     "3": word("3", "難解", ["na-adjective"], ["(very) difficult"], 50),
-    "4": word("4", "これ", ["pronoun"], ["this"]),
+    "4": word("4", "ねえ", ["interjection"], ["hey"]),
+    "7": word("7", "うようよ", ["adverb"], ["in swarms"]),
     "5": word("5", "食べる", ["ichidan verb", "transitive"], ["to eat"], 2),
+    "6": word("6", "ちょっと", ["adverb"], ["a little"], 16),
   },
   sentences: {
     a: { ja: "猫は難解だ", en: "", links: [[0, 1, "1"], [2, 2, "3"]] },
-    b: { ja: "これは猫と犬", en: "", links: [[0, 2, "4"], [3, 1, "1"], [5, 1, "2"]] },
+    b: { ja: "ねえ猫と犬", en: "", links: [[0, 2, "4"], [2, 1, "1"], [4, 1, "2"]] },
+    c: { ja: "ちょっと猫", en: "", links: [[0, 4, "6"], [4, 1, "1"]] },
   },
 } as unknown as Data;
 
-const k = (known: string[]): Knowledge => ({ word: (id: string) => (known.includes(id) ? "known" : "new") });
+const k = (known: string[], kanaFree = false): Knowledge & { kanaFree: boolean } => ({
+  word: (id: string) => (known.includes(id) ? "known" : "new"),
+  kanaFree,
+});
 
 describe("example sentences", () => {
-  it("counts new words, not the word itself or everyday kana words", () => {
+  it("counts new words, not the word itself or kana words no lesson teaches", () => {
     expect(unknownWords(data, k([]), data.sentences.b, "1")).toEqual(["2"]);
     expect(unknownWords(data, k(["2"]), data.sentences.b, "1")).toEqual([]);
+    // A kana word no lesson teaches that isn't grammar is a new word.
+    expect(unknownWords(data, k([]), { ja: "うようよ", en: "", links: [[0, 4, "7"]] })).toEqual(["7"]);
   });
 
-  it("puts sentences you can read first, including ones picked for other words", () => {
-    expect(examplesFor(data, k(["2"]), "1").map((e) => e.id)).toEqual(["b", "a"]);
-    expect(examplesFor(data, k(["3"]), "1").map((e) => e.id)).toEqual(["a", "b"]);
+  it("counts a kana word a lesson teaches until you've learned it", () => {
+    expect(unknownWords(data, k([]), data.sentences.c, "1")).toEqual(["6"]);
+    expect(unknownWords(data, k(["6"]), data.sentences.c, "1")).toEqual([]);
+    // Kana words left out of lessons in Settings never count.
+    expect(unknownWords(data, k([], true), data.sentences.c, "1")).toEqual([]);
+  });
+
+  it("keeps only sentences with one word you don't know, including the word itself", () => {
+    // 猫 not learned yet: it's the one new word, so every other word must be known.
+    expect(examplesFor(data, k(["2"]), "1").map((e) => e.id)).toEqual(["b"]);
+    expect(examplesFor(data, k(["3"]), "1").map((e) => e.id)).toEqual(["a"]);
+    expect(examplesFor(data, k([]), "1").map((e) => e.id)).toEqual([]);
+    // 猫 learned: one other new word is fine, easiest first.
+    expect(examplesFor(data, k(["1", "2"]), "1").map((e) => e.id)).toEqual(["b", "a", "c"]);
+    expect(examplesFor(data, k(["1"]), "1").map((e) => e.id)).toEqual(["a", "b", "c"]);
+  });
+
+  it("leaves out sentences with kanji outside their words that you haven't studied", () => {
+    const d = { ...data, sentences: { x: { ja: "自分で猫", en: "", links: [[3, 1, "1"]] } } } as unknown as Data;
+    expect(readableByWords(d, { ...k(["1"]), kanji: new Set(["猫"]) })).toEqual([]);
+    expect(readableByWords(d, { ...k(["1"]), kanji: new Set(["猫", "自", "分"]) }).map((e) => e.id)).toEqual(["x"]);
+  });
+
+  it("leaves out sentences with a katakana word that isn't linked", () => {
+    const d = { ...data, sentences: { x: { ja: "猫はボウフラ", en: "", links: [[0, 1, "1"]] } } } as unknown as Data;
+    expect(readableByWords(d, k(["1"]))).toEqual([]);
+  });
+
+  it("finds sentences to read with at most one new word", () => {
+    expect(readableByWords(data, k(["1"])).map((e) => e.id)).toEqual(["a", "b", "c"]);
+    expect(readableByWords(data, k(["1"]), 0).map((e) => e.id)).toEqual([]);
+    expect(readableByWords(data, k([])).map((e) => e.id)).toEqual([]);
   });
 
   it("makes pattern sentences from kana grammar only", () => {
