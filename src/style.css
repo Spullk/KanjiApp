@@ -2629,3 +2629,88 @@ details.advanced > summary {
   color: var(--muted);
   font-size: 0.75rem;
 }
+
+/* ---------- reset progress: two "are you sure" screens */
+
+button.danger,
+button.danger-outline {
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+button.danger {
+  background: #c43d3d;
+  border: 1px solid #c43d3d;
+  color: #fff;
+}
+button.danger-outline {
+  background: var(--card);
+  border: 1px solid #c43d3d;
+  color: #c43d3d;
+}
+button.danger:disabled,
+button.danger-outline:disabled {
+  opacity: 0.6;
+}
+@media (prefers-color-scheme: dark) {
+  button.danger-outline {
+    border-color: #e06666;
+    color: #e06666;
+  }
+}
+.confirm-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow-y: auto;
+  background: var(--bg);
+  padding: calc(32px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+}
+.confirm-inner {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.confirm-inner h1 {
+  margin: 4px 0 0;
+}
+.confirm-inner p {
+  margin: 0;
+}
+.confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #c43d3d;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.confirm-list {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.6;
+}
+.confirm-inner > button.secondary {
+  align-self: flex-start;
+}
+.confirm-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+.confirm-buttons button {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+}
+.reset-done {
+  margin-top: 10px;
+}

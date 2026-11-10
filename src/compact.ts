@@ -22,6 +22,7 @@ export type CompactStore = {
   settings: Settings;
   settingsUpdated: number;
   undo: Store["undo"];
+  resetAt?: number;
 };
 
 export function cardRow(c: StoredCard): CardRow {
@@ -80,6 +81,7 @@ export function compactStore(s: Store): CompactStore {
     settings: s.settings,
     settingsUpdated: s.settingsUpdated,
     undo: s.undo,
+    ...(s.resetAt !== undefined && { resetAt: s.resetAt }),
   };
 }
 
@@ -94,6 +96,7 @@ export function expandStore(c: CompactStore): Omit<Store, "version"> & { version
     settings: c.settings,
     settingsUpdated: c.settingsUpdated ?? 0,
     undo: c.undo ?? [],
+    ...(c.resetAt !== undefined && { resetAt: c.resetAt }),
   };
 }
 
@@ -125,11 +128,14 @@ const cardKey = (id: string) => (id.startsWith("undone:") ? id.slice(7, id.lastI
 const month = (t: number) => new Date(t).toISOString().slice(0, 7);
 
 /** One piece's data: any of a store's parts, in compact form. */
-export type Piece = Partial<Pick<CompactStore, "cards" | "removed" | "items" | "log" | "settings" | "settingsUpdated">>;
+export type Piece = Partial<Pick<CompactStore, "cards" | "removed" | "items" | "log" | "settings" | "settingsUpdated" | "resetAt">>;
 
-/** The store cut into pieces by id: "settings", "items-3", "cards-41", "log-2026-10". The undo history stays on the device. */
+/** The store cut into pieces by id: "settings" (with the reset time), "items-3", "cards-41", "log-2026-10". The undo
+ * history stays on the device. */
 export function piecesOf(s: Store): Map<string, Piece> {
-  const out = new Map<string, Piece>([["settings", { settings: s.settings, settingsUpdated: s.settingsUpdated }]]);
+  const head: Piece = { settings: s.settings, settingsUpdated: s.settingsUpdated };
+  if (s.resetAt !== undefined) head.resetAt = s.resetAt;
+  const out = new Map<string, Piece>([["settings", head]]);
   const get = (id: string) => {
     let p = out.get(id);
     if (!p) out.set(id, (p = {}));
@@ -157,6 +163,7 @@ export function storeOfPieces(pieces: Piece[]): Omit<Store, "version"> & { versi
     Object.assign(s.removed, p.removed);
     Object.assign(s.items, p.items);
     if (p.log) s.log.push(...expandLog(p.log));
+    if (p.resetAt !== undefined) s.resetAt = Math.max(s.resetAt ?? 0, p.resetAt);
     if (p.settings && (p.settingsUpdated ?? 0) >= s.settingsUpdated) {
       s.settings = p.settings;
       s.settingsUpdated = p.settingsUpdated ?? 0;

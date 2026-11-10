@@ -145,6 +145,9 @@ export type Store = {
   settingsUpdated: number;
   /** The last few answers on this device, newest last. Not merged. */
   undo: Undo[];
+  /** When progress was last reset (Settings → Account). A copy that hasn't seen that reset yet (another device, the
+   * online copy) loses everything from before it when merged, so the old progress can't sync back. */
+  resetAt?: number;
 };
 
 export const DEFAULT_SETTINGS: Settings = { batch: 5, retention: 0.9, answerMode: "self", dailyNew: 0, order: "lessons" };
@@ -179,6 +182,18 @@ const later = (a: { updated: number }, b: { updated: number }) => a.updated > b.
 /** Combines two copies of the progress, e.g. a backup from another device with this one. */
 export function merge(local: Store, other: Store): Store {
   const out = emptyStore();
+  // A reset drops what was there before it. `local` is always a whole store: one that never saw the reset still has
+  // everything from before it. `other` without a reset time is a backup being restored, or online pieces without
+  // the settings piece; those are taken as they are.
+  const reset = Math.max(local.resetAt ?? 0, other.resetAt ?? 0);
+  const keep = (s: Store, whole: boolean) => {
+    if (!reset || (!whole && s.resetAt === undefined) || (s.resetAt ?? 0) >= reset) return s;
+    const after = <T,>(o: Record<string, T>, t: (v: T) => number) => Object.fromEntries(Object.entries(o).filter(([, v]) => t(v) > reset));
+    return { ...s, cards: after(s.cards, (c) => c.updated), removed: after(s.removed, (t) => t), items: after(s.items, (i) => i.updated), log: s.log.filter((r) => r[2] > reset), undo: s.undo.filter((u) => u.time > reset) };
+  };
+  local = keep(local, true);
+  other = keep(other, false);
+  if (reset) out.resetAt = reset;
   for (const [id, t] of [...Object.entries(local.removed), ...Object.entries(other.removed)]) {
     out.removed[id] = Math.max(out.removed[id] ?? 0, t);
   }
@@ -663,6 +678,23 @@ export function update(fn: (s: Store) => void) {
 /** Re-renders without saving, e.g. when the app comes back to the foreground and more is due. */
 export function refresh() {
   listeners.forEach((l) => l());
+}
+
+/**
+ * Erases all progress (cards, reviews, what you marked known, notes, kana drill) and keeps the settings. With a
+ * time (signed in, see sync.ts), the reset goes with the settings when synced, so other devices drop their old
+ * progress too instead of sending it back.
+ */
+export function resetProgress(at?: number) {
+  update((s) => {
+    s.cards = {};
+    s.removed = {};
+    s.items = {};
+    s.log = [];
+    s.undo = [];
+    if (at !== undefined) s.resetAt = at;
+    else delete s.resetAt;
+  });
 }
 
 /** Folds another copy of the progress (a backup, another device's) into this one. */

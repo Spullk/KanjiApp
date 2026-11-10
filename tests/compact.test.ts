@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { canonical, compactStore, hash, piecesOf, storeOfPieces, type Piece } from "../src/compact";
-import { addItem, emptyStore, grade, merge, migrate, Rating, removeItem, setItemInfo, undoLast, type Store } from "../src/srs";
+import { addItem, emptyStore, grade, merge, migrate, Rating, removeItem, resetProgress, setItemInfo, undoLast, type Store } from "../src/srs";
 
 /** A store with a bit of everything: cards in every state, reviews over two months, notes, removals, an undo. */
 function sample(): Store {
@@ -123,5 +123,76 @@ describe("piece-by-piece sync", () => {
     expect(a.store.cards["kanji:語:meaning"]).toEqual(b.store.cards["kanji:語:meaning"]);
     expect(writes).toBeLessThanOrEqual(2);
     expect(sync(a, online) + sync(b, online)).toBe(0);
+  });
+});
+
+describe("resetting progress", () => {
+  const T = Date.UTC(2026, 10, 10);
+  /** resetProgress() works on the app's own store; this does the same to a test device's. */
+  const reset = (d: Device, at: number) => {
+    d.store = { ...d.store, cards: {}, removed: {}, items: {}, log: [], undo: [], resetAt: at };
+  };
+  /** What clearOnline() in sync.ts does: empty every online piece the device no longer has. */
+  const clear = (d: Device, online: Map<string, Piece>) => {
+    const have = piecesOf(d.store);
+    for (const id of online.keys()) if (!have.has(id)) online.set(id, {}), (d.seen[id] = pieceHash({}));
+  };
+
+  it("doesn't come back from the online copy or another device", () => {
+    const online = new Map<string, Piece>();
+    const phone: Device = { store: sample(), seen: {} };
+    const laptop: Device = { store: emptyStore(), seen: {} };
+    sync(phone, online);
+    sync(laptop, online);
+    grade(laptop.store, "kanji:語:meaning", Rating.Good, T - 1000); // studied on the laptop before the reset, not synced
+
+    reset(phone, T);
+    sync(phone, online);
+    clear(phone, online);
+    sync(phone, online);
+    expect([...online.values()].filter((p) => p.cards || p.log || p.items || p.removed)).toEqual([]);
+
+    // The laptop studies something new after the reset, then syncs: its old progress goes, the new answer stays.
+    addItem(laptop.store, "kanji", "水", T + 5000);
+    grade(laptop.store, "kanji:水:meaning", Rating.Good, T + 6000);
+    sync(laptop, online);
+    expect(Object.keys(laptop.store.cards).sort()).toEqual(["kanji:水:meaning", "kanji:水:reading"]);
+    expect(laptop.store.log).toEqual([["kanji:水:meaning", Rating.Good, T + 6000]]);
+    expect(laptop.store.items).toEqual({});
+    expect(laptop.store.settings.batch).toBe(7); // settings are kept
+
+    sync(phone, online);
+    expect(phone.store.cards).toEqual(laptop.store.cards);
+    expect(phone.store.log).toEqual(laptop.store.log);
+    expect(sync(phone, online) + sync(laptop, online)).toBe(0);
+
+    // A device signing in for the first time gets only what came after the reset.
+    const tablet: Device = { store: emptyStore(), seen: {} };
+    sync(tablet, online);
+    expect(tablet.store.log).toEqual(laptop.store.log);
+  });
+
+  it("can still restore a backup from before the reset", () => {
+    const backup = migrate(JSON.parse(JSON.stringify(sample())));
+    const s = migrate(JSON.parse(JSON.stringify(sample())));
+    Object.assign(s, { cards: {}, removed: {}, items: {}, log: [], undo: [], resetAt: T });
+    delete backup.resetAt; // importStore() in SettingsPage does this
+    const back = merge(s, backup);
+    expect(back.log).toEqual(sample().log);
+    expect(back.cards).toEqual(sample().cards);
+    expect(back.resetAt).toBe(T);
+  });
+
+  it("keeps the settings and, signed out, leaves no reset time behind", async () => {
+    const { getStore, initStore } = await import("../src/srs");
+    let saved: string | null = JSON.stringify(compactStore(sample()));
+    await initStore({ load: async () => saved, save: async (s: string) => void (saved = s) });
+    resetProgress();
+    expect(getStore().cards).toEqual({});
+    expect(getStore().log).toEqual([]);
+    expect(getStore().settings.batch).toBe(7);
+    expect(getStore().resetAt).toBeUndefined();
+    resetProgress(T);
+    expect(getStore().resetAt).toBe(T);
   });
 });

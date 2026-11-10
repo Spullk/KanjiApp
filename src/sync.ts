@@ -11,7 +11,7 @@ import { useEffect, useState } from "preact/hooks";
 import { gunzipSync, gzipSync, strFromU8, strToU8 } from "fflate";
 import type { Bytes } from "firebase/firestore";
 import { firebaseConfig, googleWebClientId } from "./firebase-config";
-import { getStore, merge, migrate, onSave, update, type Store } from "./srs";
+import { getStore, merge, migrate, onSave, resetProgress, update, type Store } from "./srs";
 import { canonical, hash, piecesOf, storeOfPieces, type Piece } from "./compact";
 import { isNative } from "./native";
 import { savePushState } from "./push";
@@ -232,11 +232,65 @@ export async function signIn() {
 export async function signOut() {
   const { auth, authMod } = await firebase();
   await authMod.signOut(auth);
+  // A reset belongs to the account it was made on: signing in again (or to another account) shouldn't erase anything.
+  if (getStore().resetAt !== undefined) update((s) => delete s.resetAt);
   if (isNative) {
     // Also forget the Google account on the phone, so the next sign-in can pick another one.
     const { FirebaseAuthentication } = await import("@capacitor-firebase/authentication");
     await FirebaseAuthentication.signOut().catch(() => {});
   }
+}
+
+// ---------------------------------------------------------------- reset
+
+/** Set after a reset while signed in, until the online copy has been emptied: { uid, at }. */
+const CLEAR = "nekko.sync.clear";
+
+/**
+ * Erases all progress here and, when signed in, online too. Every online piece is emptied on the next sync (now, or
+ * next time if this device is offline), and the reset time goes up with the settings, so your other devices drop
+ * their old progress when they next sync instead of sending it back. Signed out, it erases this device only.
+ */
+export async function resetAllProgress() {
+  const f = state.user ? ready ?? (await firebase()) : null;
+  const uid = f?.auth.currentUser?.uid;
+  if (!uid) {
+    resetProgress();
+    return;
+  }
+  const at = Date.now();
+  try {
+    localStorage.setItem(CLEAR, JSON.stringify({ uid, at }));
+  } catch {
+    // private mode: the reset time in the settings piece still keeps the old progress from coming back
+  }
+  resetProgress(at);
+  await syncNow();
+}
+
+function pendingClear(uid: string): boolean {
+  try {
+    const c = JSON.parse(localStorage.getItem(CLEAR) ?? "null") as { uid: string; at: number } | null;
+    return c?.uid === uid;
+  } catch {
+    return false;
+  }
+}
+
+/** Empties every online piece this device no longer has (after a reset, that's all but the settings). */
+async function clearOnline(f: Fb, uid: string, m: Meta) {
+  const { fs, db } = f;
+  const have = piecesOf(getStore());
+  const all = await fs.getDocs(pieces(f, uid));
+  const stale = all.docs.filter((d) => !have.has(d.id));
+  const empty = pieceHash({});
+  for (let i = 0; i < stale.length; i += 400) {
+    const batch = fs.writeBatch(db);
+    for (const d of stale.slice(i, i + 400)) batch.set(d.ref, { data: encode(fs, {}), updated: fs.serverTimestamp() });
+    await batch.commit();
+    for (const d of stale.slice(i, i + 400)) m.hashes[d.id] = empty;
+  }
+  localStorage.removeItem(CLEAR);
 }
 
 /** How long after a change it's uploaded. */
@@ -319,6 +373,7 @@ export async function syncNow() {
     const m = metaFor(uid);
     dirty = false; // a change made while this runs marks it again
     await pull(f, uid, m);
+    if (pendingClear(uid)) await clearOnline(f, uid, m);
     await push(f, uid, m);
     saveMeta();
     if (!isNative) savePushState({ app: f.app, db: f.db, fs: f.fs, uid }, getStore()).catch((e) => console.error("Could not save reminder times", e));
@@ -352,6 +407,7 @@ async function pull(f: Fb, uid: string, m: Meta) {
   if (old?.parts && written > m.legacy) {
     const docs = await Promise.all(Array.from({ length: old.parts }, (_, i) => fs.getDoc(fs.doc(db, "users", uid, "parts", String(i)))));
     const legacy = unpack(docs.map((d) => (d.data()!.data as Bytes).toUint8Array()));
+    legacy.resetAt ??= 0; // a whole old copy: anything in it from before a reset stays out
     update((s) => Object.assign(s, merge(s, legacy)));
     m.legacy = written;
   }

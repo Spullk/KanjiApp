@@ -12,7 +12,7 @@ import { openWelcome } from "../components/Welcome";
 import { pickedTools } from "../tools";
 import { ToolbarEditor } from "../components/ToolbarEditor";
 import { allowReminders, isNative, shareFile } from "../native";
-import { account, installed, prepareSignIn, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
+import { account, installed, prepareSignIn, resetAllProgress, signIn, signOut, syncAvailable, syncNow, useSync } from "../sync";
 import { ORDER_LABEL, parseStudyList, type StudyOrder } from "../order";
 import { wordsBySpelling } from "../known";
 import { useData } from "../data";
@@ -86,10 +86,10 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
           <>
             {syncAvailable && <Account />}
             <Section
-              title="Backup"
+              title="Export and backup"
               hint={
                 sync.user
-                  ? "Your progress is kept in your account and synced. A backup file is an extra copy you keep yourself. Importing a backup merges it with your progress."
+                  ? "Your progress is kept in your account and synced. Export saves all of it as a file (cards, reviews, notes and settings) that you keep yourself. Importing a backup merges it with your progress."
                   : `Progress is saved on this ${isNative ? "phone" : "device"} only. Sign in above, or export now and then, so you can't lose it. Importing a backup merges it with your progress.`
               }
             >
@@ -101,6 +101,7 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                 </label>
               </div>
             </Section>
+            <ResetProgress />
           </>
         );
       case "learning":
@@ -741,6 +742,93 @@ async function setReminder(hours: number | undefined) {
   update((s) => (s.settings.reminder = hours));
 }
 
+/** What a reset would erase, in numbers. */
+function progressCounts(store: Store) {
+  const items = new Set(Object.keys(store.cards).map((id) => id.slice(0, id.lastIndexOf(":"))));
+  const known = Object.values(store.items).filter((i) => i.status === "known").length;
+  const notes = Object.values(store.items).filter((i) => i.note).length;
+  return { items: items.size, reviews: store.log.length, known, notes };
+}
+
+const plural = (n: number, one: string, many = one + "s") => `${n.toLocaleString()} ${n === 1 ? one : many}`;
+
+/** Erases all progress, behind two "are you sure" screens. Signed in, the online copy goes too. */
+function ResetProgress() {
+  const store = useStore();
+  const sync = useSync();
+  const [step, setStep] = useState<0 | 1 | 2 | "working">(0);
+  const [done, setDone] = useState(false);
+  const c = progressCounts(store);
+  const where = sync.user ? "on every device and in your account" : `on this ${isNative ? "phone" : "device"}`;
+  const close = () => setStep(0);
+  const reset = async () => {
+    setStep("working");
+    await resetAllProgress();
+    setStep(0);
+    setDone(true);
+  };
+  return (
+    <Section title="Reset progress" hint={`Start over from nothing. Your settings stay as they are; everything you've learned is erased ${where}.`}>
+      <button class="danger-outline" onClick={() => (setDone(false), setStep(1))}>
+        Reset progress…
+      </button>
+      {done && <p class="hint reset-done">Your progress was reset.{sync.status === "error" ? " Your account will be cleared the next time Nekko syncs." : ""}</p>}
+      {step !== 0 && (
+        <div class="confirm-screen" role="dialog" aria-modal="true" aria-labelledby="reset-title">
+          <div class="confirm-inner">
+            {step === 1 && (
+              <>
+                <div class="confirm-icon" aria-hidden="true">!</div>
+                <h1 id="reset-title">Reset all your progress?</h1>
+                <p>This erases {where}:</p>
+                <ul class="confirm-list">
+                  <li>{plural(c.items, "kanji, word or radical", "kanji, words and radicals")} you've started</li>
+                  <li>{plural(c.reviews, "review")} in your history and stats</li>
+                  {c.known > 0 && <li>{plural(c.known, "item")} you marked as already known</li>}
+                  {c.notes > 0 && <li>{plural(c.notes, "note")} you wrote</li>}
+                  <li>your kana practice</li>
+                </ul>
+                <p class="hint">Your settings (order, fonts, reminders, bottom bar) are kept.{sync.user ? " You stay signed in." : ""}</p>
+                <p class="hint">Want a copy first? Export saves everything as a file you can import again later.</p>
+                <button class="secondary" onClick={() => exportStore(store)}>
+                  Export progress first
+                </button>
+                <div class="confirm-buttons">
+                  <button class="primary" onClick={close}>
+                    Cancel
+                  </button>
+                  <button class="danger-outline" onClick={() => setStep(2)}>
+                    Continue
+                  </button>
+                </div>
+              </>
+            )}
+            {step !== 1 && (
+              <>
+                <div class="confirm-icon" aria-hidden="true">!!</div>
+                <h1 id="reset-title">Are you really sure?</h1>
+                <p>
+                  <b>This can't be undone.</b> All {plural(c.reviews, "review")} and {plural(c.items, "started item")} will be gone {where}, and Nekko
+                  starts again from the very beginning.
+                </p>
+                {sync.user && <p class="hint">Your other devices drop their copy the next time they sync.</p>}
+                <div class="confirm-buttons">
+                  <button class="primary" disabled={step === "working"} onClick={close}>
+                    No, keep my progress
+                  </button>
+                  <button class="danger" disabled={step === "working"} onClick={reset}>
+                    {step === "working" ? "Erasing…" : "Yes, erase everything"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </Section>
+  );
+}
+
 function exportStore(store: Store) {
   const name = `nekko-progress-${new Date().toISOString().slice(0, 10)}.json`;
   const json = JSON.stringify({ ...store, undo: [] });
@@ -748,6 +836,18 @@ function exportStore(store: Store) {
     shareFile(name, json).catch((e) => console.error(e));
     return;
   }
+  // The home-screen app on iPhone can't save a download; its share sheet can save to Files, AirDrop or mail it.
+  const file = typeof File !== "undefined" ? new File([json], name, { type: "application/json" }) : null;
+  if (installed && file && navigator.canShare?.({ files: [file] })) {
+    navigator.share({ files: [file], title: "Nekko progress" }).catch((e) => {
+      if ((e as Error).name !== "AbortError") download(name, json);
+    });
+    return;
+  }
+  download(name, json);
+}
+
+function download(name: string, json: string) {
   const blob = new Blob([json], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -760,7 +860,10 @@ async function importStore(input: HTMLInputElement) {
   const file = input.files?.[0];
   if (!file) return;
   try {
-    mergeIntoStore(migrate(JSON.parse(await file.text())));
+    const backup = migrate(JSON.parse(await file.text()));
+    // Restoring a backup from before a reset brings it all back; the reset time is only for keeping old copies out.
+    delete backup.resetAt;
+    mergeIntoStore(backup);
     input.value = "";
   } catch (e) {
     input.value = "";
