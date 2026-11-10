@@ -52,22 +52,26 @@ export function SelfGrade({ id, onAnswer: answer }: AnswerProps) {
 
   if (!shown) {
     return (
-      <button class="primary wide reveal" onClick={() => setShown(true)}>
-        Show answer
-      </button>
+      <div class="answer-bar">
+        <button class="primary wide reveal" onClick={() => setShown(true)}>
+          Show answer
+        </button>
+      </div>
     );
   }
   const times = preview(getStore(), id);
   return (
     <>
       <CardBack id={id} note={itemInfo(store, kind, key)?.note} />
-      <div class="grade-buttons">
-        {BUTTONS.map(([g, label]) => (
-          <button key={g} class={`grade g${g}`} onClick={() => onAnswer(g)}>
-            <span>{label}</span>
-            <small>{shortInterval(times[g])}</small>
-          </button>
-        ))}
+      <div class="answer-bar">
+        <div class="grade-buttons">
+          {BUTTONS.map(([g, label]) => (
+            <button key={g} class={`grade g${g}`} onClick={() => onAnswer(g)}>
+              <span>{label}</span>
+              <small>{shortInterval(times[g])}</small>
+            </button>
+          ))}
+        </div>
       </div>
     </>
   );

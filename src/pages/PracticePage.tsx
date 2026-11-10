@@ -44,20 +44,24 @@ export function PracticePage({ set }: { set: PracticeSet }) {
       {shown ? (
         <>
           <CardBack id={current} note={getStore().items[current.slice(0, current.lastIndexOf(":"))]?.note} />
-          <div class="grade-buttons two">
-            <button class="grade g1" onClick={() => next(false)}>
-              <span>Missed it</span>
-              <small>see it again</small>
-            </button>
-            <button class="grade g3" onClick={() => next(true)}>
-              <span>Got it</span>
-            </button>
+          <div class="answer-bar">
+            <div class="grade-buttons two">
+              <button class="grade g1" onClick={() => next(false)}>
+                <span>Missed it</span>
+                <small>see it again</small>
+              </button>
+              <button class="grade g3" onClick={() => next(true)}>
+                <span>Got it</span>
+              </button>
+            </div>
           </div>
         </>
       ) : (
-        <button class="primary wide reveal" onClick={() => setShown(true)}>
-          Show answer
-        </button>
+        <div class="answer-bar">
+          <button class="primary wide reveal" onClick={() => setShown(true)}>
+            Show answer
+          </button>
+        </div>
       )}
     </article>
   );

@@ -11,6 +11,7 @@
   --hl: #fde68a;
   --hl-text: #1f1b24;
   --tab: rgba(255, 255, 255, 0.92);
+  --tabbar-h: calc(58px + env(safe-area-inset-bottom)); /* measured and set by the app once the tab bar is up */
   --ja-font: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
   color-scheme: light;
 }
@@ -978,6 +979,27 @@ a.primary {
 
 .review-done {
   text-align: center;
+}
+
+/* Show answer and the grade buttons sit at the bottom of the screen, just above the tab bar, where a thumb
+   reaches them. The page gets room at the end so the last of the answer can scroll out from behind them. */
+.answer-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--tabbar-h);
+  z-index: 19;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px calc(16px + env(safe-area-inset-right)) 8px calc(16px + env(safe-area-inset-left));
+  background: var(--bg);
+}
+.answer-bar .wide,
+.answer-bar .grade-buttons {
+  margin-top: 0;
+}
+.page.review {
+  padding-bottom: 88px;
 }
 
 /* progress */

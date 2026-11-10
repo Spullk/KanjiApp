@@ -1,5 +1,5 @@
 import { render } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { loadData, loadSentences } from "./data";
 import { useRoute, type Route } from "./router";
 import { HomePage } from "./pages/HomePage";
@@ -98,6 +98,17 @@ function App() {
   const due = dueCards(store).length;
   const bar = barTools(store.settings);
   const on = activeTab(bar, route.page);
+  // Things pinned to the bottom of the screen (the review buttons) sit on top of the tab bar, so they need its height.
+  const tabbar = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const nav = tabbar.current;
+    if (!nav) return;
+    const set = () => document.documentElement.style.setProperty("--tabbar-h", `${nav.offsetHeight}px`);
+    set();
+    const watch = new ResizeObserver(set);
+    watch.observe(nav);
+    return () => watch.disconnect();
+  }, []);
   useEffect(() => {
     Promise.all([loadData(), initStore()]).then(
       ([data]) => {
@@ -124,7 +135,7 @@ function App() {
       <main>
         {error ? <p class="empty">Couldn't load the dictionary: {error}</p> : ready && (sentences || NO_SENTENCES.has(route.page)) ? <Page route={route} /> : <Loading />}
       </main>
-      <nav class="tabbar">
+      <nav class="tabbar" ref={tabbar}>
         {bar.map((t) => (
           <a key={t.tab} data-tab={t.tab} class={[t.tab === on && "on", t.group].filter(Boolean).join(" ")} href={t.href}>
             {t.path ? (
