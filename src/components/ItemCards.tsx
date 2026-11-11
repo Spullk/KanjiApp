@@ -3,6 +3,7 @@ import { isJunkWord, useData } from "../data";
 import { href } from "../router";
 import { allFaces, cardId, flushSave, getStore, isAdded, isLeech, itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, addItem, removeItem, type ItemKind } from "../srs";
 import { Chip, Furigana, ReadingText } from "./bits";
+import { FlagButton } from "./FlagButton";
 import { itemHistory, percent } from "../stats";
 
 /** The kanji's readings worth knowing: those that have words, each with its most common word. */
@@ -148,6 +149,7 @@ export function StudyButton({ kind, k }: { kind: ItemKind; k: string }) {
           </>
         )}
       </div>
+      <FlagButton key={`${kind}:${k}`} card={`${kind}:${k}`} />
       <HistoryLine kind={kind} k={k} />
       <NoteBox kind={kind} k={k} />
     </>

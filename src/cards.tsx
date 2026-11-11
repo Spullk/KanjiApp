@@ -14,7 +14,7 @@ import { FONT_WAIT_MS, fontFor, fontState, loadFont } from "./fonts";
 import { alignFurigana, Furigana, RobotIcon, Romaji, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
 import { readingForms } from "./answers";
-import { examplesFor, knowledgeOf, newCount, patternSentence } from "./examples";
+import { examplesFor, knowledgeOf, newCount } from "./examples";
 
 /** One thing to type in typed-answer mode, and every answer that counts. */
 export type Ask = {
@@ -112,14 +112,16 @@ function GrammarHear({ id }: { id: string }) {
 }
 
 /** One of the word's example sentences you can read (at most one other word you don't know), a different one of
- * the easiest few at each review; a pattern sentence when there's none. */
+ * the easiest few at each review. When none is that easy, its first sentence anyway, and the word alone if it has
+ * no sentence at all. */
 export function contextSentence(store: Store, data: Data, key: string): Sentence {
   const list = examplesFor(data, knowledgeOf(store, data), key, 3);
   const easiest = list.filter((e) => newCount(e) === newCount(list[0]));
   const reps = store.cards[cardId("word", key, "context")]?.reps ?? 0;
   if (easiest.length) return data.sentences[easiest[reps % easiest.length].id];
   const w = data.words[key];
-  return patternSentence(data, key) ?? { ja: w.w, en: "", links: [[0, w.w.length, key]] };
+  const own = w.sentences[0] && data.sentences[w.sentences[0]];
+  return own || { ja: w.w, en: "", links: [[0, w.w.length, key]] };
 }
 
 /** The sentence with the word marked; its reading shows only once answered. Other words keep the furigana you need. */

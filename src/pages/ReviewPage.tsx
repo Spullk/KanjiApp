@@ -6,6 +6,7 @@ import { SelfGrade, TypedAnswer } from "../components/AnswerModes";
 import { tap } from "../native";
 import { relTime } from "../components/ItemCards";
 import { useSyncHold } from "../sync";
+import { FlagButton } from "../components/FlagButton";
 
 const EARLY_WINDOW = 20 * 60 * 1000; // learning steps due within 20 min can be done now
 
@@ -72,7 +73,7 @@ export function ReviewPage() {
   return (
     <article class="page review">
       <div class="review-count">
-        {queue.length} left{done > 0 && ` · ${done} done`} {undoButton}
+        {queue.length} left{done > 0 && ` · ${done} done`} {undoButton} <FlagButton key={current} card={current} />
       </div>
       <CardFront id={current} />
       <Answer key={`${current}#${done}`} id={current} onAnswer={answer} />

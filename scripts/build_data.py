@@ -570,6 +570,42 @@ def mark_retired_kana_words(words, shipped, lesson_out):
           + ", ".join(words[wid]["w"] for wid in retired[:20]))
 
 
+def jlpt_word_forms():
+    """Every spelling on the JLPT word lists: "いい/よい" and "あげる (=やる)" give いい, よい and あげる."""
+    folder = SOURCES / "jlpt-vocab"
+    forms = set()
+    for level in (5, 4, 3, 2, 1):
+        path = folder / f"vocab-n{level}.csv"
+        if path.exists():
+            with open(path, encoding="utf-8") as f:
+                for row in csv.DictReader(f):
+                    forms |= {v for v in (re.sub(r"\s*[(（].*?[)）]", "", v).strip(" ～〜~")
+                                          for v in row["word"].split("/")) if v}
+    return forms
+
+
+def drop_unused_lesson_words(words, lesson_out, study_words):
+    """A lesson word no sentence anywhere uses (本木 "original stock", 二百十日) is too rare to teach early, or at
+    all: it leaves the lessons, unless it's on the JLPT lists. Its kanji's page still lists it."""
+    if not any(w.get("sentences") for w in words.values()):
+        print("Unused lesson words: kept (no sentences loaded)")
+        return
+    jlpt = jlpt_word_forms()
+    dropped = []
+    for lesson in lesson_out:
+        keep = []
+        for wid in lesson["words"]:
+            w = words[wid]
+            if w.get("sentences") or w["w"] in jlpt or w.get("kanjiForm") in jlpt:
+                keep.append(wid)
+            else:
+                del w["lesson"]
+                study_words.discard(wid)
+                dropped.append(w["w"])
+        lesson["words"] = keep
+    print(f"Lesson words no sentence uses, taken out of the lessons: {len(dropped)}, e.g. " + ", ".join(dropped[:30]))
+
+
 # Kana words whose JLPT list entry means more than one thing, where learners mean this one first: the list has
 # ソース as "source; sauce", but the word people meet is the sauce.
 KANA_MEANT = {"ソース": "sauce"}
@@ -1003,6 +1039,7 @@ def main():
                   lambda wid: SENTENCES_PER_LESSON_WORD if words[wid].get("lesson") else SENTENCES_PER_WORD)
     import relink_sentences  # every word in every sentence, not just the ones the sources linked
     relink_sentences.main(con, words, sentences)
+    drop_unused_lesson_words(words, lesson_out, study_words)
     audio_words = load_word_audio(words)
     commons_words = load_commons_audio(words)
     audio_sentences = load_sentence_audio(sentences)

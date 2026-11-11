@@ -53,7 +53,7 @@ export function plain(v) {
   return null;
 }
 
-async function accessToken(account) {
+export async function accessToken(account) {
   const now = Math.floor(Date.now() / 1000);
   const enc = (o) => Buffer.from(JSON.stringify(o)).toString("base64url");
   const head = enc({ alg: "RS256", typ: "JWT" });

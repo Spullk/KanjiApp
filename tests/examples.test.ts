@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { examplesFor, patternSentence, readableByWords, unknownWords } from "../src/examples";
+import { examplesFor, readableByWords, unknownWords } from "../src/examples";
 import type { Data } from "../src/data";
 import type { Knowledge } from "../src/stories";
 
@@ -71,11 +71,6 @@ describe("example sentences", () => {
     expect(readableByWords(data, k([])).map((e) => e.id)).toEqual([]);
   });
 
-  it("makes pattern sentences from kana grammar only", () => {
-    expect(patternSentence(data, "2")).toMatchObject({ ja: "犬について はなしましょう。", en: "Let's talk about dog.", links: [[0, 1, "2"]] });
-    expect(patternSentence(data, "3")).toMatchObject({ ja: "とても 難解です。", en: "It's very difficult.", links: [[4, 2, "3"]] });
-    expect(patternSentence(data, "5")?.en).toBe("It's hard to eat.");
-  });
 
   it("leaves out a sentence with a word Nekko has no entry for, but not one with a name", () => {
     const d = {

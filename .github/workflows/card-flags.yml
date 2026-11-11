@@ -1,0 +1,30 @@
+name: Card flags
+
+# Lists the cards flagged with the dev-only Flag button (src/flags.ts), and deletes the ones given in "done" once
+# they're fixed. Uses the FIREBASE_SERVICE_ACCOUNT secret, like the reminders.
+on:
+  workflow_dispatch:
+    inputs:
+      done:
+        description: "Flag ids that are dealt with, to delete (spaces or commas between)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node .github/card-flags/list.mjs
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DONE: ${{ inputs.done }}

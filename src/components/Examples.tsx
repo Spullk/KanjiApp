@@ -4,7 +4,7 @@ import { useMemo } from "preact/hooks";
 import { useData } from "../data";
 import { href } from "../router";
 import { useStore } from "../srs";
-import { examplesFor, kanjiExamples, knowledgeOf, patternSentence, type Example } from "../examples";
+import { examplesFor, kanjiExamples, knowledgeOf, type Example } from "../examples";
 import { MoreList, Section, SentenceView } from "./bits";
 
 /** "Every other word known", or the one new word in a sentence with its meaning, linked. */
@@ -35,12 +35,9 @@ export function WordExamples({ id }: { id: string }) {
   const data = useData();
   const store = useStore();
   const list = useMemo(() => examplesFor(data, knowledgeOf(store, data), id), [data, store, id]);
-  // No real sentence with at most one word you don't know: lead with one made from a pattern.
-  const pattern = list.length ? undefined : patternSentence(data, id);
-  if (!list.length && !pattern) return null;
+  if (!list.length) return null;
   return (
     <Section title="Example sentences" hint="Only sentences with at most one word or grammar point you don't know.">
-      {pattern && <SentenceView sentence={pattern} highlight={id} note="A simple sentence Nekko made from a pattern." />}
       <MoreList items={list} n={3} render={render(id)} />
     </Section>
   );

@@ -1,6 +1,6 @@
 // Example sentences you can read: a word's sentences, plus every other sentence that uses it, keeping only the ones
-// with at most one word you don't know (the word itself, if you haven't learned it yet). When none is easy enough,
-// Nekko writes a simple one from a pattern.
+// with at most one word you don't know (the word itself, if you haven't learned it yet). Only real sentences: Nekko
+// doesn't make any up.
 
 import { isKanji, type Data, type Sentence } from "./data";
 import { knowledge, type Knowledge } from "./stories";
@@ -163,40 +163,4 @@ export function kanjiExamples(data: Data, k: ExampleKnowledge, words: string[], 
     }
   }
   return out.sort((a, b) => newCount(a) - newCount(b)).slice(0, max);
-}
-
-/** First meaning, without notes like "(another's)". */
-function gloss(data: Data, wid: string): string {
-  const g = data.words[wid].senses[0]?.gloss[0] ?? "";
-  return g.replace(/\([^)]*\)\s*/g, "").trim();
-}
-
-/**
- * A simple sentence for a word, from a pattern built only from kana grammar, so the word is the only thing
- * to read: nouns "〜について はなしましょう", adjectives "とても〜です", verbs "〜のは むずかしいです".
- * Undefined for other kinds of word.
- */
-export function patternSentence(data: Data, wid: string): Sentence | undefined {
-  const w = data.words[wid];
-  if (!w) return;
-  const pos = w.senses[0]?.pos ?? [];
-  const has = (p: string) => pos.some((x) => x.startsWith(p));
-  const g = gloss(data, wid);
-  if (!g) return;
-  let before = "";
-  let after: string;
-  let en: string;
-  if (has("godan verb") || has("ichidan verb") || has("Kuru verb")) {
-    after = "のは むずかしいです。";
-    en = `It's hard ${g.startsWith("to ") ? g : `to ${g}`}.`;
-  } else if (has("i-adjective") || has("na-adjective")) {
-    before = "とても ";
-    after = "です。";
-    en = `It's very ${g}.`;
-  } else if (has("noun") || has("pronoun")) {
-    after = "について はなしましょう。";
-    en = `Let's talk about ${g}.`;
-  } else return;
-  const ja = before + w.w + after;
-  return { ja, en, links: [[before.length, w.w.length, wid]] };
 }

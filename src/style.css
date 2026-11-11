@@ -673,7 +673,8 @@ a.primary {
 .note-box label {
   color: var(--muted);
 }
-.note-box textarea {
+.note-box textarea,
+.flag-box textarea {
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -2849,4 +2850,31 @@ button.danger-outline:disabled {
 .listen-button.small .robot-badge svg {
   width: 16px;
   height: 16px;
+}
+
+/* Dev only: flagging a bad card (components/FlagButton.tsx). */
+.flag-done {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.flag-box {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+.flag-what {
+  color: var(--muted);
+}
+.flag-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+.flag-box .error {
+  color: #c43d3d;
+  margin: 6px 0 0;
 }
