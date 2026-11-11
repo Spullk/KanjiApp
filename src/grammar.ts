@@ -89,9 +89,17 @@ export function cloze([ja, en]: [string, string]): Cloze {
   return { before: segments(before), gap: segments(alts[0]), after: segments(after), answers: [...kana, ...kana.flatMap((k) => SAID[k] ?? [])], en };
 }
 
-/** Which example a grammar card shows: a different one each time it comes up. */
-export function exampleFor(store: Store, g: GrammarPoint): [string, string] {
-  return g.ex[(store.cards[cardId("grammar", g.id, "cloze")]?.reps ?? 0) % g.ex.length];
+/** Which example a grammar card shows: a different one each time it comes up. The listening card starts one
+ * further on, so the two cards of a point don't show the same sentence at first. */
+export function exampleFor(store: Store, g: GrammarPoint, face: "cloze" | "hear" = "cloze"): [string, string] {
+  const reps = store.cards[cardId("grammar", g.id, face)]?.reps ?? 0;
+  return g.ex[(reps + (face === "hear" ? 1 : 0)) % g.ex.length];
+}
+
+/** An example as it's said, gap filled in, for the computer voice: "学生[がくせい]{です}" → "学生です". */
+export function spoken([ja]: [string, string]): string {
+  const c = cloze([ja, ""]);
+  return [...c.before, ...c.gap, ...c.after].map(([t]) => t).join("");
 }
 
 /** Done: in your reviews, marked known, or a note you've read (notes have no examples to review). */

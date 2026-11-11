@@ -3,15 +3,15 @@
 
 import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { playWord } from "./audio";
+import { playWord, speak } from "./audio";
 import { PitchAccent } from "./components/Pitch";
 import { isKanaWord, useData, type Data, type Sentence } from "./data";
 import { href } from "./router";
 import { cardId, getStore, parseCardId, useStore, type Face, type ItemKind, type Store } from "./srs";
-import { cloze, exampleFor } from "./grammar";
+import { cloze, exampleFor, spoken } from "./grammar";
 import { furiganaRule } from "./reading";
 import { FONT_WAIT_MS, fontFor, fontState, loadFont } from "./fonts";
-import { alignFurigana, Furigana, Romaji, WordSpeak } from "./components/bits";
+import { alignFurigana, Furigana, RobotIcon, Romaji, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
 import { readingForms } from "./answers";
 import { examplesFor, knowledgeOf, newCount, patternSentence } from "./examples";
@@ -70,11 +70,11 @@ function wordBack(data: Data, key: string, use = true) {
 }
 
 /** A grammar example with its gap empty, or filled in and highlighted once answered. */
-function GrammarGap({ id, filled }: { id: string; filled?: boolean }) {
+function GrammarGap({ id, filled, face = "cloze" }: { id: string; filled?: boolean; face?: "cloze" | "hear" }) {
   const data = useData();
   const store = useStore();
   const g = data.grammar[id];
-  const c = cloze(exampleFor(store, g));
+  const c = cloze(exampleFor(store, g, face));
   const hide = furiganaRule(store, data);
   return (
     <>
@@ -89,7 +89,24 @@ function GrammarGap({ id, filled }: { id: string; filled?: boolean }) {
         )}
         <Furigana segments={c.after} link={false} hide={hide} reveal />
       </div>
-      <div class="cloze-en">{c.en}</div>
+      {(face === "cloze" || filled) && <div class="cloze-en">{c.en}</div>}
+    </>
+  );
+}
+
+/** A grammar example read out by the computer voice as soon as the card appears (the examples are written for
+ * Nekko, so nobody has recorded them), with a button to hear it again, above the sentence with its gap. */
+function GrammarHear({ id }: { id: string }) {
+  const data = useData();
+  const store = useStore();
+  const text = spoken(exampleFor(store, data.grammar[id], "hear"));
+  useEffect(() => speak(text), [text]);
+  return (
+    <>
+      <button class="listen-button small" onClick={() => speak(text)} aria-label="Play again (computer voice)" title="Play again (computer voice)">
+        <RobotIcon />
+      </button>
+      <GrammarGap id={id} face="hear" />
     </>
   );
 }
@@ -239,6 +256,26 @@ export const CARD_TYPES: Partial<Record<`${ItemKind}:${Face}`, CardType>> = {
         kana: true,
         placeholder: "What goes in the gap?",
         answers: (data, key) => cloze(exampleFor(getStore(), data.grammar[key])).answers,
+      },
+    ],
+  },
+  "grammar:hear": {
+    prompt: "Grammar · listen and fill the gap",
+    frontStyle: "sentence",
+    front: (_, key) => <GrammarHear id={key} />,
+    back: (data, key) => (
+      <>
+        <GrammarGap id={key} face="hear" filled />
+        <div class="answer-sub">{data.grammar[key].title}</div>
+      </>
+    ),
+    link: href.grammarPoint,
+    asks: [
+      {
+        label: "Gap",
+        kana: true,
+        placeholder: "What did you hear in the gap?",
+        answers: (data, key) => cloze(exampleFor(getStore(), data.grammar[key], "hear")).answers,
       },
     ],
   },

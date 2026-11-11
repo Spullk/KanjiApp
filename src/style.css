@@ -2829,3 +2829,24 @@ button.danger-outline:disabled {
   display: block;
   margin: 18px auto 0;
 }
+/* Grammar listening: a smaller play button above the sentence. */
+.listen-button.small {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  display: block;
+}
+.listen-button.small svg {
+  width: 34px;
+  height: 34px;
+}
+.listen-button.small .robot-badge {
+  right: 2px;
+  bottom: 2px;
+  width: 22px;
+  height: 22px;
+}
+.listen-button.small .robot-badge svg {
+  width: 16px;
+  height: 16px;
+}

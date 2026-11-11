@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import points from "../data/grammar.json";
 import type { GrammarPoint } from "../src/data";
-import { cloze, placedTier, placementQuiz, QUIZ_PER_TIER, segments, tierOf, TIERS } from "../src/grammar";
+import { cloze, placedTier, placementQuiz, QUIZ_PER_TIER, segments, spoken, tierOf, TIERS } from "../src/grammar";
 import { alignFurigana } from "../src/components/bits";
 import { activeTab, barTools, DEFAULT_TABS } from "../src/tools";
 import { DEFAULT_SETTINGS } from "../src/srs";
@@ -80,5 +80,16 @@ describe("placement quiz", () => {
     expect(placedTier(["beginner", "n5"])).toBe("n4");
     expect(placedTier(["beginner", "n5", "n4", "n3"])).toBe("n2");
     expect(placedTier(["beginner", "n5", "n4", "n3", "n2"])).toBe("n2");
+  });
+});
+
+describe("grammar listening", () => {
+  it("reads the example with its gap filled in, without readings or markup", () => {
+    expect(spoken(["学生[がくせい]{です|だ}。", "I'm a student."])).toBe("学生です。");
+    expect(spoken(["{毎朝[まいあさ]}パンを食[た]べます", ""])).toBe("毎朝パンを食べます");
+  });
+  it("every example can be read out", () => {
+    for (const g of Object.values(points as unknown as Record<string, GrammarPoint>))
+      for (const ex of g.ex ?? []) expect(spoken(ex)).not.toMatch(/[[\]{}|]/);
   });
 });

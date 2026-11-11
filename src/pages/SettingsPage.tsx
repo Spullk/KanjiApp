@@ -209,7 +209,7 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
                 <FsrsParams />
               </details>
             </Section>
-            <Section title="Extra card types" hint="Words always get a card asking their reading and meaning. These add more ways to practise them. Words you learn from now on get the cards you switch on.">
+            <Section title="Extra card types" hint="Words always get a card asking their reading and meaning, and grammar a fill-the-gap card. These add more ways to practise them. What you learn from now on gets the cards you switch on.">
               {EXTRA_CARDS.map(([face, label, about]) => (
                 <ExtraCard key={face} face={face} label={label} about={about} />
               ))}
@@ -399,6 +399,7 @@ const EXTRA_CARDS: [ExtraFace, string, string][] = [
   ["recall", "English → Japanese", "See the meaning, recall the word. The hardest direction, and the one you need for speaking."],
   ["listen", "Listening", "Hear the word, say what it means. Uses the recording if there is one, otherwise a computer voice."],
   ["context", "Words in sentences", "Read the word inside an example sentence made of words you know, then give its reading and meaning."],
+  ["hear", "Grammar listening", "Hear a grammar example, then fill the gap in it. Read by a computer voice, since nobody has recorded these examples."],
 ];
 const SPREAD_PER_DAY = 10;
 
@@ -422,7 +423,7 @@ function ExtraCard({ face, label, about }: { face: ExtraFace; label: string; abo
       </label>
       {missing > 0 && (
         <button class="secondary" onClick={() => update((s) => void addFaceToStudied(s, face, SPREAD_PER_DAY))}>
-          Add to the {missing} {missing === 1 ? "word" : "words"} you already study ({SPREAD_PER_DAY} a day)
+          Add to the {missing} {face === "hear" ? (missing === 1 ? "grammar point" : "grammar points") : missing === 1 ? "word" : "words"} you already study ({SPREAD_PER_DAY} a day)
         </button>
       )}
     </div>
