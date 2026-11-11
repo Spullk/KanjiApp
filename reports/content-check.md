@@ -2,7 +2,7 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 21,891 words, 2,136 kanji, 372 radicals, 44,234 sentences, 115 stories, 132 grammar points.
+Checked: 21,903 words, 2,136 kanji, 372 radicals, 44,227 sentences, 115 stories, 223 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
@@ -10,10 +10,10 @@ Checked: 21,891 words, 2,136 kanji, 372 radicals, 44,234 sentences, 115 stories,
 | Words | [Words with no meaning](#word-no-meaning) | 0 |
 | Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 179 |
 | Words | [Words pointing at sentences that don't exist](#word-sentence-missing) | 0 |
-| Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 16 |
+| Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 0 |
 | Words | [Lesson words whose furigana doesn't spell the word](#lesson-word-furigana) | 0 |
 | Words | [The same word taught twice](#lesson-word-duplicate) | 0 |
-| Words | [Lesson words that may be the wrong dictionary entry](#lesson-word-rarer-homophone) | 3 |
+| Words | [Lesson words that may be the wrong dictionary entry](#lesson-word-rarer-homophone) | 0 |
 | Words | [Junk words still in a lesson](#lesson-word-junk) | 0 |
 | Words | [Single-kana words outside the lessons](#word-lone-kana) | 12 |
 | Kanji | [Kanji with no meaning](#kanji-no-meaning) | 0 |
@@ -23,19 +23,19 @@ Checked: 21,891 words, 2,136 kanji, 372 radicals, 44,234 sentences, 115 stories,
 | Kanji | [Kanji with no stroke order](#kanji-no-strokes) | 0 |
 | Kanji | [Kanji in no lesson](#kanji-not-taught) | 0 |
 | Kanji | [Lessons listing kanji that don't exist](#lesson-kanji-missing) | 0 |
-| Kanji | [On readings with no example word](#kanji-reading-no-word) | 298 |
+| Kanji | [On readings with no example word](#kanji-reading-no-word) | 294 |
 | Radicals | [Radicals without exactly one name](#radical-name) | 0 |
 | Radicals | [Radicals no kanji uses](#radical-unused) | 0 |
 | Radicals | [Radicals pointing at kanji that don't exist](#radical-used-in-missing) | 0 |
 | Radicals | [Radicals in no lesson](#radical-not-taught) | 0 |
-| Sentences | [Sentences with a missing or untranslated English line](#sentence-translation) | 1 |
+| Sentences | [Sentences with a missing or untranslated English line](#sentence-translation) | 0 |
 | Sentences | [Sentences with damaged text](#sentence-odd-text) | 0 |
 | Sentences | [Sentences linking to missing words](#sentence-bad-link) | 0 |
-| Sentences | [The same Japanese sentence more than once](#sentence-duplicate) | 8 |
+| Sentences | [The same Japanese sentence more than once](#sentence-duplicate) | 0 |
 | Stories | [Story text with damaged characters](#story-odd-characters) | 0 |
 | Stories | [Story words with no dictionary entry](#story-word-missing) | 0 |
 | Stories | [Story files with broken links](#story-links) | 0 |
-| Stories | [Story text that may be jumbled](#story-jumbled) | 12 |
+| Stories | [Story text that may be jumbled](#story-jumbled) | 1 |
 | Stories | [Stories with ○○○ blanks](#story-blanks) | 5 |
 | Grammar | [Grammar points with no example](#grammar-no-examples) | 0 |
 | Grammar | [Grammar examples with no {marked} part](#grammar-gap) | 0 |
@@ -61,7 +61,7 @@ Taught words should have at least one example sentence. Tatoeba, Wiktionary and 
 
 - 1 · 本木 (もとき) · original stock · 1523260
 - 2 · 三十日 (みそか) · last day of the month · 1604510
-- 6 · 二百十日 (にひゃくとおか) · 210th day (from the first day of spring according to the lunar calendar) · 1463030
+- 6 · 二百十日 (にひゃくとおか) · 210th day after spring begins (typhoon season) · 1463030
 - 7 · 上田 (じょうでん) · high rice field · 1353990
 - 13 · 貸出用 (かしだしよう) · circulation or lending (e.g. library books) · 1949630
 - 18 · 元首 (げんしゅ) · sovereign · 1260870
@@ -94,26 +94,11 @@ The word lists a sentence id that sentences.json doesn't have.
 None. 🎉
 
 <a id="lesson-word-weak-meaning"></a>
-## Words: Lesson words whose first meaning is hard to use (16)
+## Words: Lesson words whose first meaning is hard to use (0)
 
 The first meaning is what the card asks for. These are a cross-reference, contain markup, or run over 60 characters.
 
-- 6 · 二百十日 (にひゃくとおか) · 210th day (from the first day of spring according to the lunar calendar) · very long
-- 9 · 天下り (あまくだり) · retiring high-ranking government officials taking a lucrative job in a private or semi-private corporation · very long
-- 20 · 下町 (したまち) · low-lying part of a city (usu. containing shops, factories, etc.) · very long
-- 33 · 関西 (かんさい) · Kansai (region comprising Kyoto, Osaka, Kobe and surrounding prefectures) · very long
-- 36 · 受験 (じゅけん) · taking an examination (esp. for entrance to a school or university) · very long
-- 40 · 参院 (さんいん) · House of Councillors (upper house of the National Diet of Japan) · very long
-- 78 · 偏差値 (へんさち) · deviation value (usu. scaled to mean of 50, standard deviation of 10, and often used for academic grades) · very long
-- 83 · 豆 (まめ) · legume (esp. edible legumes or their seeds, e.g. beans, peas, pulses) · very long
-- 116 · 衆院 (しゅういん) · House of Representatives (lower house of the National Diet of Japan) · very long
-- 149 · 侍 (さむらい) · warrior (esp. of military retainers of daimyos in the Edo period) · very long
-- 157 · 鶴 (つる) · crane (any bird of the family Gruidae, esp. the red-crowned crane, Grus japonensis) · very long
-- 168 · 幼稚園 (ようちえん) · kindergarten (in Japan, non-compulsory education from age 3 until primary school) · very long
-- 177 · 碑 (いしぶみ) · stone monument bearing an inscription (esp. memorial for future generations) · very long
-- 184 · 長唄 (ながうた) · long epic song with shamisen accompaniment (developed in Edo in the early 17th century) · very long
-- 192 · 慌てる (あわてる) · to become confused (disconcerted, disorganized, disorganised) · very long
-- 205 · 覚醒剤 (かくせいざい) · stimulant (e.g. psychoactive drugs like methamphetamine, ritalin, etc.) · very long
+None. 🎉
 
 <a id="lesson-word-furigana"></a>
 ## Words: Lesson words whose furigana doesn't spell the word (0)
@@ -130,13 +115,11 @@ Two lesson words share the spelling and the first meaning, so they'd be two card
 None. 🎉
 
 <a id="lesson-word-rarer-homophone"></a>
-## Words: Lesson words that may be the wrong dictionary entry (3)
+## Words: Lesson words that may be the wrong dictionary entry (0)
 
 Another entry written and read the same way is more common, so the lesson may teach the rare meaning (ロケット as "locket" instead of "rocket").
 
-- 2 · あの · that · say
-- 41 · そう · in that way · appearing that
-- 149 · ソース · source (of information) · sauce
+None. 🎉
 
 <a id="lesson-word-junk"></a>
 ## Words: Junk words still in a lesson (0)
@@ -215,7 +198,7 @@ The lesson can't show these.
 None. 🎉
 
 <a id="kanji-reading-no-word"></a>
-## Kanji: On readings with no example word (298)
+## Kanji: On readings with no example word (294)
 
 Kun readings often have no word of their own, but an on reading with none can't be shown in use.
 
@@ -233,18 +216,18 @@ Kun readings often have no word of their own, but an on reading with none can't 
 - 餌 · ニ
 - 栄 · ヨウ
 - 怨 · ウン
-- 縁 · -ネン
 - 応 · ヨウ
-- 応 · -ノウ
-- 王 · -ノウ
 - 臆 · ヨク
 - 俺 · エン
-- 音 · -ノン
 - 価 · ケ
 - 可 · コク
 - 夏 · ガ
 - 画 · カイ
-- …and 273 more
+- 塊 · ケ
+- 懐 · エ
+- 崖 · ゲ
+- 崖 · ギ
+- …and 269 more
 
 <a id="radical-name"></a>
 ## Radicals: Radicals without exactly one name (0)
@@ -275,11 +258,11 @@ None. 🎉
 None. 🎉
 
 <a id="sentence-translation"></a>
-## Sentences: Sentences with a missing or untranslated English line (1)
+## Sentences: Sentences with a missing or untranslated English line (0)
 
 The English is empty or still has Japanese in it.
 
-- 408303 · そうです。日本語ではウェートレスは英語の"waitress"と"weightless"にも該当する。でも"waitress"という意味が普通だね。 · That's correct. In Japanese, ウエートレス corresponds both to the English "waitress" and "weightless". However, "waitress" is the more usual meaning.
+None. 🎉
 
 <a id="sentence-odd-text"></a>
 ## Sentences: Sentences with damaged text (0)
@@ -296,18 +279,11 @@ A tappable word in the sentence points at nothing.
 None. 🎉
 
 <a id="sentence-duplicate"></a>
-## Sentences: The same Japanese sentence more than once (8)
+## Sentences: The same Japanese sentence more than once (0)
 
 Usually harmless (different sources), listed so they can be merged.
 
-- ウラウラとした日差しに誘われて、眠りに落ちた。 · 2
-- 著者が本を書き直す度に新版となる。 · 2
-- その事典は約５０万語の単語を収めている。 · 2
-- 彼は私に毒舌を浴びせた。 · 2
-- 人間は万物の霊長である。 · 2
-- そのチームは準決勝に勝って決勝に進出した。 · 2
-- 彼女は他の人と一味違う。 · 2
-- あーんして。 · 2
+None. 🎉
 
 <a id="story-odd-characters"></a>
 ## Stories: Story text with damaged characters (0)
@@ -331,22 +307,11 @@ None. 🎉
 None. 🎉
 
 <a id="story-jumbled"></a>
-## Stories: Story text that may be jumbled (12)
+## Stories: Story text that may be jumbled (1)
 
 Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.
 
-- つみっこ · 1 · 43% · 本庄市埼玉県東京都若泉公園の桜マリーゴールドの丘公園
-- ようこそ別府へ · 14 · 48% · 北海道大阪東京九州ふくおかさが福岡佐賀別府長崎大分熊本宮崎かごしま鹿児島かごしま鹿児島沖縄
 - 北海道 · 1 · 59% · 根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」
-- 日本の城 · 0 · 52% · 弘前城竹田城松本城彦根城姫路城まつえじょう松江城えどじょう江戸城熊本城犬山城なごやじょうおおさかじょう名古屋城大阪城首里城
-- 温泉の町 別府 · 0 · 45% · ほっかいどう北海道おおさか大阪とうきょう東京九州べっぷ福岡別府さが佐賀長崎大分熊本みやざきかごしま宮崎おきなわ鹿児島沖縄鹿児島
-- 花と色 · 0 · 40% · 埼玉県ときがわ町（上）埼玉県小川町巾着田（下）
-- 花と色 · 2 · 52% · 東京都文京区六義園（上）埼玉県新座市平林寺（左）東京都立川市・昭島市昭和記念公園（右）
-- 花と色 · 4 · 48% · 神奈川県中郡吾妻山公園（上）埼玉県比企郡武蔵丘陵森林公園（下）
-- 花と色 · 8 · 50% · 群馬県足利市あしかがフラワーパーク
-- 雪渡り · 68 · 50% · 「北風ぴいぴい風三郎、西風どうどう又三郎」
-- 飯田くん · 1 · 42% · -広縄2沖-国州満（一九四二年ごろの日本）
-- 黒コウモリと白コウモリ · 14 · 41% · 花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ
 
 <a id="story-blanks"></a>
 ## Stories: Stories with ○○○ blanks (5)

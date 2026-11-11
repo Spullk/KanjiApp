@@ -1,11 +1,11 @@
 {
  "counts": {
-  "words": 21891,
+  "words": 21903,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 44234,
+  "sentences": 44227,
   "stories": 115,
-  "grammar points": 132
+  "grammar points": 223
  },
  "checks": {
   "lesson-word-missing": {
@@ -43,7 +43,7 @@
     {
      "lesson": 6,
      "word": "二百十日 (にひゃくとおか)",
-     "meaning": "210th day (from the first day of spring according to the lunar calendar)",
+     "meaning": "210th day after spring begins (typhoon season)",
      "id": "1463030"
     },
     {
@@ -713,12 +713,6 @@
      "id": "1956010"
     },
     {
-     "lesson": 147,
-     "word": "ティッシュペーパー",
-     "meaning": "tissue paper",
-     "id": "1079110"
-    },
-    {
      "lesson": 148,
      "word": "棋聖 (きせい)",
      "meaning": "great master of go",
@@ -729,6 +723,12 @@
      "word": "兼ね合い (かねあい)",
      "meaning": "equilibrium",
      "id": "1256530"
+    },
+    {
+     "lesson": 148,
+     "word": "ティッシュペーパー",
+     "meaning": "tissue paper",
+     "id": "1079110"
     },
     {
      "lesson": 148,
@@ -1015,7 +1015,7 @@
     {
      "lesson": 184,
      "word": "長唄 (ながうた)",
-     "meaning": "long epic song with shamisen accompaniment (developed in Edo in the early 17th century)",
+     "meaning": "long epic song with shamisen accompaniment",
      "id": "1607380"
     },
     {
@@ -1115,105 +1115,8 @@
    "area": "Words",
    "title": "Lesson words whose first meaning is hard to use",
    "why": "The first meaning is what the card asks for. These are a cross-reference, contain markup, or run over 60 characters.",
-   "count": 16,
-   "items": [
-    {
-     "lesson": 6,
-     "word": "二百十日 (にひゃくとおか)",
-     "meaning": "210th day (from the first day of spring according to the lunar calendar)",
-     "why": "very long"
-    },
-    {
-     "lesson": 9,
-     "word": "天下り (あまくだり)",
-     "meaning": "retiring high-ranking government officials taking a lucrative job in a private or semi-private corporation",
-     "why": "very long"
-    },
-    {
-     "lesson": 20,
-     "word": "下町 (したまち)",
-     "meaning": "low-lying part of a city (usu. containing shops, factories, etc.)",
-     "why": "very long"
-    },
-    {
-     "lesson": 33,
-     "word": "関西 (かんさい)",
-     "meaning": "Kansai (region comprising Kyoto, Osaka, Kobe and surrounding prefectures)",
-     "why": "very long"
-    },
-    {
-     "lesson": 36,
-     "word": "受験 (じゅけん)",
-     "meaning": "taking an examination (esp. for entrance to a school or university)",
-     "why": "very long"
-    },
-    {
-     "lesson": 40,
-     "word": "参院 (さんいん)",
-     "meaning": "House of Councillors (upper house of the National Diet of Japan)",
-     "why": "very long"
-    },
-    {
-     "lesson": 78,
-     "word": "偏差値 (へんさち)",
-     "meaning": "deviation value (usu. scaled to mean of 50, standard deviation of 10, and often used for academic grades)",
-     "why": "very long"
-    },
-    {
-     "lesson": 83,
-     "word": "豆 (まめ)",
-     "meaning": "legume (esp. edible legumes or their seeds, e.g. beans, peas, pulses)",
-     "why": "very long"
-    },
-    {
-     "lesson": 116,
-     "word": "衆院 (しゅういん)",
-     "meaning": "House of Representatives (lower house of the National Diet of Japan)",
-     "why": "very long"
-    },
-    {
-     "lesson": 149,
-     "word": "侍 (さむらい)",
-     "meaning": "warrior (esp. of military retainers of daimyos in the Edo period)",
-     "why": "very long"
-    },
-    {
-     "lesson": 157,
-     "word": "鶴 (つる)",
-     "meaning": "crane (any bird of the family Gruidae, esp. the red-crowned crane, Grus japonensis)",
-     "why": "very long"
-    },
-    {
-     "lesson": 168,
-     "word": "幼稚園 (ようちえん)",
-     "meaning": "kindergarten (in Japan, non-compulsory education from age 3 until primary school)",
-     "why": "very long"
-    },
-    {
-     "lesson": 177,
-     "word": "碑 (いしぶみ)",
-     "meaning": "stone monument bearing an inscription (esp. memorial for future generations)",
-     "why": "very long"
-    },
-    {
-     "lesson": 184,
-     "word": "長唄 (ながうた)",
-     "meaning": "long epic song with shamisen accompaniment (developed in Edo in the early 17th century)",
-     "why": "very long"
-    },
-    {
-     "lesson": 192,
-     "word": "慌てる (あわてる)",
-     "meaning": "to become confused (disconcerted, disorganized, disorganised)",
-     "why": "very long"
-    },
-    {
-     "lesson": 205,
-     "word": "覚醒剤 (かくせいざい)",
-     "meaning": "stimulant (e.g. psychoactive drugs like methamphetamine, ritalin, etc.)",
-     "why": "very long"
-    }
-   ]
+   "count": 0,
+   "items": []
   },
   "lesson-word-furigana": {
    "area": "Words",
@@ -1233,27 +1136,8 @@
    "area": "Words",
    "title": "Lesson words that may be the wrong dictionary entry",
    "why": "Another entry written and read the same way is more common, so the lesson may teach the rare meaning (ロケット as \"locket\" instead of \"rocket\").",
-   "count": 3,
-   "items": [
-    {
-     "lesson": 2,
-     "word": "あの",
-     "taught": "that",
-     "more common": "say"
-    },
-    {
-     "lesson": 41,
-     "word": "そう",
-     "taught": "in that way",
-     "more common": "appearing that"
-    },
-    {
-     "lesson": 149,
-     "word": "ソース",
-     "taught": "source (of information)",
-     "more common": "sauce"
-    }
-   ]
+   "count": 0,
+   "items": []
   },
   "lesson-word-junk": {
    "area": "Words",
@@ -1396,7 +1280,7 @@
    "area": "Kanji",
    "title": "On readings with no example word",
    "why": "Kun readings often have no word of their own, but an on reading with none can't be shown in use.",
-   "count": 298,
+   "count": 294,
    "items": [
     {
      "kanji": "圧",
@@ -1455,20 +1339,8 @@
      "reading": "ウン"
     },
     {
-     "kanji": "縁",
-     "reading": "-ネン"
-    },
-    {
      "kanji": "応",
      "reading": "ヨウ"
-    },
-    {
-     "kanji": "応",
-     "reading": "-ノウ"
-    },
-    {
-     "kanji": "王",
-     "reading": "-ノウ"
     },
     {
      "kanji": "臆",
@@ -1477,10 +1349,6 @@
     {
      "kanji": "俺",
      "reading": "エン"
-    },
-    {
-     "kanji": "音",
-     "reading": "-ノン"
     },
     {
      "kanji": "価",
@@ -2624,14 +2492,8 @@
    "area": "Sentences",
    "title": "Sentences with a missing or untranslated English line",
    "why": "The English is empty or still has Japanese in it.",
-   "count": 1,
-   "items": [
-    {
-     "id": "408303",
-     "ja": "そうです。日本語ではウェートレスは英語の\"waitress\"と\"weightless\"にも該当する。でも\"waitress\"という意味が普通だね。",
-     "en": "That's correct. In Japanese, ウエートレス corresponds both to the English \"waitress\" and \"weightless\". However, \"waitress\" is the more usual meaning."
-    }
-   ]
+   "count": 0,
+   "items": []
   },
   "sentence-odd-text": {
    "area": "Sentences",
@@ -2651,41 +2513,8 @@
    "area": "Sentences",
    "title": "The same Japanese sentence more than once",
    "why": "Usually harmless (different sources), listed so they can be merged.",
-   "count": 8,
-   "items": [
-    {
-     "ja": "ウラウラとした日差しに誘われて、眠りに落ちた。",
-     "times": 2
-    },
-    {
-     "ja": "著者が本を書き直す度に新版となる。",
-     "times": 2
-    },
-    {
-     "ja": "その事典は約５０万語の単語を収めている。",
-     "times": 2
-    },
-    {
-     "ja": "彼は私に毒舌を浴びせた。",
-     "times": 2
-    },
-    {
-     "ja": "人間は万物の霊長である。",
-     "times": 2
-    },
-    {
-     "ja": "そのチームは準決勝に勝って決勝に進出した。",
-     "times": 2
-    },
-    {
-     "ja": "彼女は他の人と一味違う。",
-     "times": 2
-    },
-    {
-     "ja": "あーんして。",
-     "times": 2
-    }
-   ]
+   "count": 0,
+   "items": []
   },
   "story-odd-characters": {
    "area": "Stories",
@@ -2712,79 +2541,13 @@
    "area": "Stories",
    "title": "Story text that may be jumbled",
    "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
-   "count": 12,
+   "count": 1,
    "items": [
-    {
-     "story": "つみっこ",
-     "paragraph": 1,
-     "unseen pairs": "43%",
-     "text": "本庄市埼玉県東京都若泉公園の桜マリーゴールドの丘公園"
-    },
-    {
-     "story": "ようこそ別府へ",
-     "paragraph": 14,
-     "unseen pairs": "48%",
-     "text": "北海道大阪東京九州ふくおかさが福岡佐賀別府長崎大分熊本宮崎かごしま鹿児島かごしま鹿児島沖縄"
-    },
     {
      "story": "北海道",
      "paragraph": 1,
      "unseen pairs": "59%",
      "text": "根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」"
-    },
-    {
-     "story": "日本の城",
-     "paragraph": 0,
-     "unseen pairs": "52%",
-     "text": "弘前城竹田城松本城彦根城姫路城まつえじょう松江城えどじょう江戸城熊本城犬山城なごやじょうおおさかじょう名古屋城大阪城首里城"
-    },
-    {
-     "story": "温泉の町 別府",
-     "paragraph": 0,
-     "unseen pairs": "45%",
-     "text": "ほっかいどう北海道おおさか大阪とうきょう東京九州べっぷ福岡別府さが佐賀長崎大分熊本みやざきかごしま宮崎おきなわ鹿児島沖縄鹿児島"
-    },
-    {
-     "story": "花と色",
-     "paragraph": 0,
-     "unseen pairs": "40%",
-     "text": "埼玉県ときがわ町（上）埼玉県小川町巾着田（下）"
-    },
-    {
-     "story": "花と色",
-     "paragraph": 2,
-     "unseen pairs": "52%",
-     "text": "東京都文京区六義園（上）埼玉県新座市平林寺（左）東京都立川市・昭島市昭和記念公園（右）"
-    },
-    {
-     "story": "花と色",
-     "paragraph": 4,
-     "unseen pairs": "48%",
-     "text": "神奈川県中郡吾妻山公園（上）埼玉県比企郡武蔵丘陵森林公園（下）"
-    },
-    {
-     "story": "花と色",
-     "paragraph": 8,
-     "unseen pairs": "50%",
-     "text": "群馬県足利市あしかがフラワーパーク"
-    },
-    {
-     "story": "雪渡り",
-     "paragraph": 68,
-     "unseen pairs": "50%",
-     "text": "「北風ぴいぴい風三郎、西風どうどう又三郎」"
-    },
-    {
-     "story": "飯田くん",
-     "paragraph": 1,
-     "unseen pairs": "42%",
-     "text": "-広縄2沖-国州満（一九四二年ごろの日本）"
-    },
-    {
-     "story": "黒コウモリと白コウモリ",
-     "paragraph": 14,
-     "unseen pairs": "41%",
-     "text": "花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ"
     }
    ]
   },
