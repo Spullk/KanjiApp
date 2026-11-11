@@ -3,7 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 import { useData, type GrammarPoint, type Segment } from "../data";
 import { href } from "../router";
 import { itemInfo, setItemInfo, STAGE_LABEL, stageOf, update, useStore, type Store } from "../srs";
-import { cloze, grammarDone, lastTier, LEVELS, rememberTier, segments, tierOf, TIERS, type Tier } from "../grammar";
+import { cloze, grammarDone, lastTier, LEVELS, placedTier, placementQuiz, QUIZ_PASS, QUIZ_PER_TIER, rememberTier, segments, tierOf, TIERS, type QuizQuestion, type Tier } from "../grammar";
 import { furiganaRule } from "../reading";
 import { ALL_KANA, scriptOf, type Script } from "../kana";
 import { drillOf } from "../kanaDrill";
@@ -38,11 +38,30 @@ export function GrammarPage() {
   const points = Object.values(data.grammar);
   const done = !startNext(store, points);
   const [openStart, setOpenStart] = useState(!done);
-  const [tier, setTier] = useState(() => lastTier() ?? firstTier(store, points));
+  const placed = store.settings.grammarLevel;
+  const [tier, setTier] = useState(() => lastTier() ?? (placed && placed !== "skipped" ? placed : firstTier(store, points)));
   const pick = (t: Tier) => {
     setTier(t);
     rememberTier(t);
   };
+  // The first time, a short quiz finds your level. Not for someone who said they're brand new (they start at the
+  // beginning anyway), and not once you've begun any grammar.
+  const [quiz, setQuiz] = useState(
+    () => !placed && store.settings.start !== "new" && !lastTier() && !points.some((g) => grammarDone(store, g.id)),
+  );
+  if (quiz) {
+    return (
+      <GrammarQuiz
+        points={points}
+        onDone={(t) => {
+          update((s) => void (s.settings.grammarLevel = t ?? "skipped"));
+          if (t) pick(t);
+          setQuiz(false);
+          scrollTo(0, 0);
+        }}
+      />
+    );
+  }
   const levels = TIERS.find((t) => t.tier === tier)!.levels;
 
   return (
@@ -79,6 +98,117 @@ export function GrammarPage() {
           </Section>
         );
       })}
+      <button class="link-button quiz-again" onClick={() => setQuiz(true)}>
+        {placed && placed !== "skipped" ? "Retake the grammar level quiz" : "Not sure where to start? Take the grammar level quiz"}
+      </button>
+    </article>
+  );
+}
+
+const tierLabel = (t: Tier) => TIERS.find((x) => x.tier === t)!.label;
+
+/** A few gap-fill questions per tab, easiest first. Pass a tab (QUIZ_PASS of QUIZ_PER_TIER) and you move on;
+ * miss too many and that's your level. */
+function GrammarQuiz({ points, onDone }: { points: GrammarPoint[]; onDone: (tier: Tier | undefined) => void }) {
+  const [questions] = useState(() => placementQuiz(points));
+  const [started, setStarted] = useState(false);
+  const [i, setI] = useState(0);
+  const [score, setScore] = useState<Record<string, { right: number; wrong: number }>>({});
+  const [chosen, setChosen] = useState<number | null>(null); // -1: "I don't know"
+  const [result, setResult] = useState<Tier>();
+  const q: QuizQuestion | undefined = questions[i];
+
+  if (!started) {
+    return (
+      <article class="page quiz">
+        <h1>Find your grammar level</h1>
+        <p class="hint">
+          A few fill-the-gap questions, from beginner up to N3. It stops once the questions get too hard, so it takes a
+          minute or two. Grammar then opens on your level.
+        </p>
+        <button class="primary wide" onClick={() => setStarted(true)}>
+          Start the quiz
+        </button>
+        <button class="link-button" onClick={() => onDone(undefined)}>
+          Skip, I'll pick a level myself
+        </button>
+      </article>
+    );
+  }
+
+  if (result) {
+    const passed = TIERS.slice(0, TIERS.findIndex((t) => t.tier === result)).map((t) => t.label);
+    return (
+      <article class="page quiz">
+        <h1>Your level: {tierLabel(result)}</h1>
+        <p class="hint">
+          {passed.length ? `You got ${passed.join(" and ")} grammar right, ` : "Let's start from the beginning, "}
+          so Grammar opens on {tierLabel(result)}. Every level stays open: switch tabs any time.
+        </p>
+        <button class="primary wide" onClick={() => onDone(result)}>
+          Go to {tierLabel(result)} grammar
+        </button>
+      </article>
+    );
+  }
+  if (!q) return null;
+
+  const tierQs = questions.filter((x) => x.tier === q.tier);
+  const s = score[q.tier] ?? { right: 0, wrong: 0 };
+  const answer = (k: number) => {
+    if (chosen !== null) return;
+    setChosen(k);
+    const right = k === q.right;
+    setScore({ ...score, [q.tier]: { right: s.right + (right ? 1 : 0), wrong: s.wrong + (right ? 0 : 1) } });
+  };
+  const next = () => {
+    const now = score[q.tier];
+    const allowedWrong = Math.min(QUIZ_PER_TIER, tierQs.length) - QUIZ_PASS;
+    setChosen(null);
+    if (now.wrong > allowedWrong) return setResult(q.tier); // can't pass this tab any more: this is your level
+    const rest = questions.findIndex((x, j) => j > i && (now.right >= QUIZ_PASS ? x.tier !== q.tier : true));
+    if (rest < 0) return setResult(placedTier(TIERS.map((t) => t.tier)));
+    setI(rest);
+  };
+
+  return (
+    <article class="page quiz">
+      <div class="review-count">
+        {tierLabel(q.tier)} · question {tierQs.indexOf(q) + 1} of {tierQs.length}
+      </div>
+      <p class="quiz-ask">Which fits the gap?</p>
+      <div class="sentence quiz-sentence">
+        <div class="sent-ja" lang="ja">
+          <Furigana segments={q.cloze.before} link={false} />
+          <b class={`cloze-gap ${chosen !== null ? "filled" : ""}`}>
+            {chosen !== null ? <Furigana segments={q.cloze.gap} link={false} /> : "？"}
+          </b>
+          <Furigana segments={q.cloze.after} link={false} />
+        </div>
+        <div class="sent-en">{q.cloze.en}</div>
+      </div>
+      <div class="quiz-options" lang="ja">
+        {q.options.map((o, k) => (
+          <button
+            key={k}
+            class={`secondary ${chosen === null ? "" : k === q.right ? "right" : k === chosen ? "wrong" : "dim"}`}
+            onClick={() => answer(k)}
+          >
+            <Furigana segments={o} link={false} />
+          </button>
+        ))}
+      </div>
+      {chosen === null ? (
+        <button class="link-button" onClick={() => answer(-1)}>
+          I don't know
+        </button>
+      ) : (
+        <div class="answer-bar">
+          <button class="primary wide" onClick={next}>
+            Next
+          </button>
+        </div>
+      )}
     </article>
   );
 }

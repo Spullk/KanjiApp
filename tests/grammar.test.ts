@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import points from "../data/grammar.json";
 import type { GrammarPoint } from "../src/data";
-import { cloze, segments, tierOf, TIERS } from "../src/grammar";
+import { cloze, placedTier, placementQuiz, QUIZ_PER_TIER, segments, tierOf, TIERS } from "../src/grammar";
 import { alignFurigana } from "../src/components/bits";
 import { activeTab, barTools, DEFAULT_TABS } from "../src/tools";
 import { DEFAULT_SETTINGS } from "../src/srs";
@@ -57,5 +57,27 @@ describe("bottom bar", () => {
     const mine = barTools({ ...DEFAULT_SETTINGS, tabs: ["grammar", "progress", "nope", "kana"] });
     expect(mine.map((t) => t.tab)).toEqual(["home", "grammar", "kana", "review", "progress"]);
     expect(activeTab(mine, "kanaRow")).toBe("kana");
+  });
+});
+
+describe("placement quiz", () => {
+  const all = points as unknown as GrammarPoint[];
+  it("asks three questions per tab, each with one right choice among four different ones", () => {
+    for (let seed = 1; seed < 30; seed++) {
+      let x = seed;
+      const rand = () => ((x = (x * 16807) % 2147483647) / 2147483647);
+      const qs = placementQuiz(all, rand);
+      for (const t of TIERS) expect(qs.filter((q) => q.tier === t.tier)).toHaveLength(QUIZ_PER_TIER);
+      for (const q of qs) {
+        const texts = q.options.map((o) => o.map(([t]) => t).join(""));
+        expect(new Set(texts).size).toBe(4);
+        expect(q.options[q.right]).toBe(q.cloze.gap);
+      }
+    }
+  });
+  it("places you on the first tab you didn't pass", () => {
+    expect(placedTier([])).toBe("beginner");
+    expect(placedTier(["beginner", "n5"])).toBe("n4");
+    expect(placedTier(["beginner", "n5", "n4", "n3"])).toBe("n3");
   });
 });

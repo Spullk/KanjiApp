@@ -2778,3 +2778,41 @@ button.danger-outline:disabled {
 .learn-bar .primary {
   flex: 1;
 }
+
+/* grammar level quiz */
+.page.quiz {
+  padding-bottom: 88px;
+}
+.quiz-ask {
+  color: var(--muted);
+  margin: 4px 0 8px;
+}
+.quiz-sentence .sent-ja {
+  font-size: 1.35rem;
+}
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 14px 0 8px;
+}
+.quiz-options button {
+  font-size: 1.15rem;
+  padding: 12px 8px;
+  min-height: 56px;
+}
+.quiz-options button.right {
+  border-color: var(--good, #2e9d63);
+  background: color-mix(in srgb, var(--good, #2e9d63) 18%, var(--card));
+}
+.quiz-options button.wrong {
+  border-color: var(--bad, #d64545);
+  background: color-mix(in srgb, var(--bad, #d64545) 18%, var(--card));
+}
+.quiz-options button.dim {
+  opacity: 0.5;
+}
+.quiz-again {
+  display: block;
+  margin: 18px auto 0;
+}

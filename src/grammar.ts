@@ -82,3 +82,55 @@ export function exampleFor(store: Store, g: GrammarPoint): [string, string] {
 export function grammarDone(store: Store, id: string): boolean {
   return isAdded(store, "grammar", id) || !!itemInfo(store, "grammar", id)?.status;
 }
+
+// The placement quiz: a few gap-fill questions per tab, easiest first, until you miss too many.
+
+export const QUIZ_PER_TIER = 3;
+export const QUIZ_PASS = 2;
+
+// Spelling and sounds rather than grammar: a gap inside one word (ケー{キ}, の{み}ます) isn't a fair question.
+const NOT_IN_QUIZ = new Set(["loanwords", "numbers", "dakuten", "small-ya", "small-tsu", "long-vowels", "n-beats", "katakana-words", "verb-groups"]);
+
+// Particles that often fit the same gap (ねこ{が}すき, ねこ{は}すき, パン{も}たべます), so one is never the wrong
+// choice for another.
+const SWAPPABLE = [["は", "が", "も", "を", "わ", "お"], ["に", "へ", "え"]];
+
+export type QuizQuestion = { tier: Tier; point: string; cloze: Cloze; options: Segment[][]; right: number };
+
+const gapText = (segs: Segment[]) => segs.map(([t]) => t).join("");
+
+function shuffled<T>(xs: T[], rand: () => number): T[] {
+  const a = [...xs];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/** QUIZ_PER_TIER questions for each tab, each from a different point, with three wrong choices taken from other
+ * gaps on the same tab. */
+export function placementQuiz(points: GrammarPoint[], rand: () => number = Math.random): QuizQuestion[] {
+  const out: QuizQuestion[] = [];
+  for (const t of TIERS) {
+    const pool = points.filter((g) => t.levels.includes(g.level) && !NOT_IN_QUIZ.has(g.level) && !NOT_IN_QUIZ.has(g.id) && g.ex.length);
+    const gaps = [...new Map(pool.flatMap((g) => g.ex.map((ex) => cloze(ex).gap)).map((gap) => [gapText(gap), gap])).values()];
+    for (const g of shuffled(pool, rand)) {
+      if (out.filter((q) => q.tier === t.tier).length === QUIZ_PER_TIER) break;
+      const c = cloze(shuffled(g.ex, rand)[0]);
+      // A wrong choice mustn't also fit: not one of this point's answers, nor one of its gaps.
+      const taken = new Set([...c.answers, ...g.ex.flatMap((ex) => cloze(ex).answers), gapText(c.gap)]);
+      for (const group of SWAPPABLE) if (c.answers.some((a) => group.includes(a))) group.forEach((x) => taken.add(x));
+      const wrong = shuffled(gaps, rand).filter((x) => !taken.has(gapText(x)) && !taken.has(x.map(([text, r]) => r ?? text).join("")));
+      if (wrong.length < 3) continue;
+      const options = shuffled([c.gap, ...wrong.slice(0, 3)], rand);
+      out.push({ tier: t.tier, point: g.id, cloze: c, options, right: options.indexOf(c.gap) });
+    }
+  }
+  return out;
+}
+
+/** The tab to study from: the first one you didn't pass. */
+export function placedTier(passed: Tier[]): Tier {
+  return TIERS.find((t) => !passed.includes(t.tier))?.tier ?? TIERS[TIERS.length - 1].tier;
+}
