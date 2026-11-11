@@ -123,7 +123,7 @@ function GrammarQuiz({ points, onDone }: { points: GrammarPoint[]; onDone: (tier
       <article class="page quiz">
         <h1>Find your grammar level</h1>
         <p class="hint">
-          A few fill-the-gap questions, from beginner up to N3. It stops once the questions get too hard, so it takes a
+          A few fill-the-gap questions, from beginner up to N2. It stops once the questions get too hard, so it takes a
           minute or two. Grammar then opens on your level.
         </p>
         <button class="primary wide" onClick={() => setStarted(true)}>

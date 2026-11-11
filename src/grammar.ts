@@ -11,9 +11,10 @@ export const LEVELS: { level: GrammarPoint["level"]; title: string; hint: string
   { level: "n5", title: "N5 grammar", hint: "The rest of the beginner grammar, roughly JLPT N5." },
   { level: "n4", title: "N4 grammar", hint: "Verb forms (can, let's, if, was done, made to), giving and receiving, seems and probably." },
   { level: "n3", title: "N3 grammar", hint: "Intermediate patterns: reasons, contrasts, \"the more… the more\", and the set phrases of written Japanese." },
+  { level: "n2", title: "N2 grammar", hint: "Upper-intermediate and written Japanese: formal versions of everyday patterns, \"regardless of\", \"no choice but\", and the language of news and notices." },
 ];
 
-export type Tier = "beginner" | "n5" | "n4" | "n3";
+export type Tier = "beginner" | "n5" | "n4" | "n3" | "n2";
 
 /** The tabs on the Grammar page, easiest first; Beginner holds the levels a newcomer needs before N5. */
 export const TIERS: { tier: Tier; label: string; levels: GrammarPoint["level"][] }[] = [
@@ -21,6 +22,7 @@ export const TIERS: { tier: Tier; label: string; levels: GrammarPoint["level"][]
   { tier: "n5", label: "N5", levels: ["n5"] },
   { tier: "n4", label: "N4", levels: ["n4"] },
   { tier: "n3", label: "N3", levels: ["n3"] },
+  { tier: "n2", label: "N2", levels: ["n2"] },
 ];
 
 export const tierOf = (level: GrammarPoint["level"]): Tier => TIERS.find((t) => t.levels.includes(level))!.tier;

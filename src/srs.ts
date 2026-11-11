@@ -109,7 +109,7 @@ export type Settings = {
   homeTools?: string[];
   homeGroups?: string[];
   /** The grammar level the placement quiz put you on ("skipped" if you skipped it). Unset: not taken yet. */
-  grammarLevel?: "beginner" | "n5" | "n4" | "n3" | "skipped";
+  grammarLevel?: "beginner" | "n5" | "n4" | "n3" | "n2" | "skipped";
 };
 
 /** What you've told Nekko about an item, apart from its cards. */

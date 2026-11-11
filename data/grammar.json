@@ -922,5 +922,642 @@
     "title": "最中に: right in the middle of",
     "note": "ている + 最中[さいちゅう]に, or noun + の最中[さいちゅう]に, is \"right in the middle of\", usually when something interrupts.",
     "ex": [["会議[かいぎ]の{最中[さいちゅう]}に、電話[でんわ]が鳴[な]った。", "My phone rang right in the middle of the meeting."], ["食事[しょくじ]をしている{最中[さいちゅう]に}、地震[じしん]があった。", "There was an earthquake right while we were eating."]]
+  },
+  {
+    "id": "ni-chigainai",
+    "level": "n3",
+    "title": "に違いない: must be, surely",
+    "note": "Plain form + に違[ちが]いない is a confident guess: \"it must be\". It's stronger than だろう and かもしれない. After a noun or な adjective, drop だ: 犯人[はんにん]に違[ちが]いない.",
+    "ex": [["あの人[ひと]が犯人[はんにん]{に違[ちが]いない}。", "That person must be the culprit."], ["電気[でんき]がついているから、家[いえ]にいる{に違[ちが]いない}。", "The lights are on, so they must be home."], ["この店[みせ]はいつも込[こ]んでいるから、おいしい{に違[ちが]いない}。", "This shop is always busy, so it must be good."]]
+  },
+  {
+    "id": "ni-kurabete",
+    "level": "n3",
+    "title": "に比べて: compared with",
+    "note": "Noun + に比[くら]べて is \"compared with\". に比[くら]べると is the same. The thing you compare comes first: 去年[きょねん]に比[くら]べて, \"compared with last year\".",
+    "ex": [["去年[きょねん]{に比[くら]べて}、今年[*ことし]は雪[ゆき]が多[おお]い。", "Compared with last year, there's more snow this year."], ["東京[とうきょう]{に比[くら]べると}、この町[まち]は静[しず]かです。", "Compared with Tokyo, this town is quiet."]]
+  },
+  {
+    "id": "ni-taishite",
+    "level": "n3",
+    "title": "に対して: towards, against, whereas",
+    "note": "Noun + に対[たい]して points something at someone or something: 先生[せんせい]に対[たい]して失礼[しつれい]だ, \"rude to the teacher\". After a clause + のに対[たい]して, it contrasts two things: \"whereas\". Before a noun it's に対[たい]する.",
+    "ex": [["お客[きゃく]さん{に対[たい]して}、ていねいに話[はな]してください。", "Please speak politely to customers."], ["兄[あに]が背[せ]が高[たか]いの{に対[たい]して}、弟[おとうと]は低[ひく]い。", "The older brother is tall, whereas the younger one is short."]]
+  },
+  {
+    "id": "ni-kanshite",
+    "level": "n3",
+    "title": "に関して: about, concerning",
+    "note": "Noun + に関[かん]して is a formal について: \"concerning\". Before a noun it's に関[かん]する: 環境[かんきょう]に関[かん]する本[ほん].",
+    "ex": [["この問題[もんだい]{に関[かん]して}、何[なに]か質問[しつもん]はありますか。", "Are there any questions concerning this problem?"], ["環境[かんきょう]{に関[かん]する}本[ほん]を読[よ]んでいます。", "I'm reading a book about the environment."]]
+  },
+  {
+    "id": "toori",
+    "level": "n3",
+    "title": "とおり: just as, the way",
+    "note": "とおり(に) is \"just as, the way\": 言[い]ったとおり, \"just as I said\". After a noun it's のとおり or a joined どおり: 予定[よてい]どおり, \"as planned\".",
+    "ex": [["先生[せんせい]が言[い]った{とおり}に書[か]いてください。", "Please write it the way the teacher said."], ["予定[よてい]{どおり}、三時[さんじ]に着[つ]きました。", "We arrived at three, as planned."], ["説明書[せつめいしょ]の{とおり}に組[く]み立[た]てた。", "I put it together as the instructions said."]]
+  },
+  {
+    "id": "kawari-ni",
+    "level": "n3",
+    "title": "かわりに: instead of, in exchange",
+    "note": "かわりに is \"instead of\": 父[ちち]のかわりに, \"in place of my father\". After a verb it can also mean \"in exchange for\": 教[おし]えてもらうかわりに, \"in return for being taught\".",
+    "ex": [["今日[*きょう]は父[ちち]の{かわりに}私[わたし]が行[い]きます。", "I'll go today instead of my father."], ["英語[えいご]を教[おし]える{かわりに}、日本語[にほんご]を教[おし]えてもらった。", "In exchange for teaching English, I was taught Japanese."], ["パンの{かわりに}ご飯[はん]を食[た]べた。", "I had rice instead of bread."]]
+  },
+  {
+    "id": "kuse-ni",
+    "level": "n3",
+    "title": "くせに: even though (and it annoys me)",
+    "note": "くせに is のに with blame in it: \"even though, and yet\". It's used for someone else, not yourself: 知[し]っているくせに, \"even though you know\". After a noun: 子[こ]どものくせに.",
+    "ex": [["知[し]っている{くせに}、教[おし]えてくれない。", "You know, and yet you won't tell me."], ["下手[へた]な{くせに}、いつも歌[うた]いたがる。", "He's bad at it, yet he always wants to sing."], ["子[こ]どもの{くせに}、生意気[なまいき]だ。", "Cheeky, for a kid."]]
+  },
+  {
+    "id": "mono-da",
+    "level": "n3",
+    "title": "ものだ: that's how it is, used to",
+    "note": "ものだ states how things are or should be: 人[ひと]は変[か]わるものだ, \"people change\". After た form it's fond memory: よく遊[あそ]んだものだ, \"we used to play a lot\". Casual: もんだ.",
+    "ex": [["子[こ]どものころは、よくこの川[かわ]で遊[あそ]んだ{ものだ}。", "When I was a child, I used to play in this river a lot."], ["年上[としうえ]の人[ひと]には敬語[けいご]を使[つか]う{ものだ}。", "You're supposed to use polite language with older people."], ["時間[じかん]がたつのは早[はや]い{もの}ですね。", "Time sure flies, doesn't it."]]
+  },
+  {
+    "id": "koto-da",
+    "level": "n3",
+    "title": "ことだ: the thing to do is",
+    "note": "Dictionary form (or ない form) + ことだ is advice: \"the best thing is to\". 早[はや]く寝[ね]ることだ, \"you should get to bed early\". It sounds like someone older giving advice.",
+    "ex": [["上手[じょうず]になりたければ、毎日[まいにち]練習[れんしゅう]する{ことだ}。", "If you want to get good, practise every day."], ["かぜのときは、よく寝[ね]る{ことです}。", "When you have a cold, the thing to do is sleep a lot."], ["人[ひと]の悪口[わるくち]は言[い]わない{ことだ}。", "Best not to speak ill of others."]]
+  },
+  {
+    "id": "ppanashi",
+    "level": "n3",
+    "title": "っぱなし: left that way",
+    "note": "Verb stem + っぱなし is \"left as is\", usually when it shouldn't be: 開[あ]けっぱなし, \"left open\". It can also mean \"non-stop\": 立[た]ちっぱなし, \"standing the whole time\".",
+    "ex": [["窓[まど]を開[あ]け{っぱなし}にしないで。", "Don't leave the window open."], ["電気[でんき]がつけ{っぱなし}だった。", "The light had been left on."], ["電車[でんしゃ]で一時間[いちじかん]立[た]ち{っぱなし}だった。", "I was standing the whole hour on the train."]]
+  },
+  {
+    "id": "gachi",
+    "level": "n3",
+    "title": "がち: tend to",
+    "note": "Verb stem or noun + がち is \"tends to, prone to\", usually something you'd rather not: 忘[わす]れがち, \"forgetful\"; 病気[びょうき]がち, \"often sick\".",
+    "ex": [["冬[ふゆ]は運動[うんどう]不足[ぶそく]になり{がち}だ。", "In winter you tend not to get enough exercise."], ["母[はは]は最近[さいきん]、病気[びょうき]{がち}です。", "My mother has been sickly lately."], ["忙[いそが]しいと、食事[しょくじ]が遅[おそ]くなり{がち}です。", "When I'm busy, my meals tend to get late."]]
+  },
+  {
+    "id": "gimi",
+    "level": "n3",
+    "title": "ぎみ: a bit, -ish",
+    "note": "Noun or verb stem + ぎみ is \"slightly, a touch of\": かぜぎみ, \"a bit of a cold\"; 疲[つか]れぎみ, \"a little tired\".",
+    "ex": [["今日[*きょう]はちょっとかぜ{ぎみ}です。", "I have a bit of a cold today."], ["最近[さいきん]、太[ふと]り{ぎみ}だ。", "I've been putting on a little weight lately."]]
+  },
+  {
+    "id": "darake",
+    "level": "n3",
+    "title": "だらけ: covered in",
+    "note": "Noun + だらけ is \"full of, covered in\", usually something unpleasant: どろだらけ, \"covered in mud\"; まちがいだらけ, \"full of mistakes\".",
+    "ex": [["子[こ]どもたちはどろ{だらけ}で帰[かえ]ってきた。", "The kids came home covered in mud."], ["この作文[さくぶん]はまちがい{だらけ}だ。", "This essay is full of mistakes."], ["部屋[へや]がごみ{だらけ}です。", "The room is full of rubbish."]]
+  },
+  {
+    "id": "tatoe-temo",
+    "level": "n3",
+    "title": "たとえ〜ても: even if",
+    "note": "たとえ + て form + も is \"even if\". たとえ is optional but makes it stronger. After a noun or な adjective it's でも: たとえ雨[あめ]でも.",
+    "ex": [["たとえ雨[あめ]が降[ふ]っ{ても}、行[い]きます。", "I'll go even if it rains."], ["たとえ高[たか]く{ても}、買[か]いたい。", "I want to buy it even if it's expensive."], ["たとえ子[こ]ども{でも}、わかることだ。", "Even a child would understand it."]]
+  },
+  {
+    "id": "wari-ni",
+    "level": "n3",
+    "title": "わりに: for, considering",
+    "note": "わりに is \"considering, for\": the result isn't what you'd expect. 年[とし]のわりに若[わか]く見[み]える, \"looks young for their age\".",
+    "ex": [["このレストランは値段[ねだん]の{わりに}おいしい。", "This restaurant is good for the price."], ["父[ちち]は年[とし]の{わりに}元気[げんき]だ。", "My father is energetic for his age."], ["勉強[べんきょう]した{わりに}、点数[てんすう]が悪[わる]かった。", "My score was bad, considering how much I studied."]]
+  },
+  {
+    "id": "kurai",
+    "level": "n3",
+    "title": "くらい: about, to the point that",
+    "note": "くらい (or ぐらい) is \"about\" with numbers, and \"so much that\" with a clause: 泣[な]きたいくらい, \"so much I could cry\". After a noun it can mean \"at least\": 名前[なまえ]くらい書[か]ける.",
+    "ex": [["駅[えき]まで十分[じゅっぷん]{くらい}かかります。", "It takes about ten minutes to the station."], ["泣[な]きたい{くらい}うれしかった。", "I was so happy I could cry."], ["自分[じぶん]の名前[なまえ]{くらい}書[か]けるよ。", "I can at least write my own name."]]
+  },
+  {
+    "id": "hodo",
+    "level": "n3",
+    "title": "ほど: to the extent, not as… as",
+    "note": "ほど is \"to the extent that\": 死[し]ぬほど疲[つか]れた, \"tired to death\". With a negative it compares: AはBほど〜ない, \"A isn't as … as B\".",
+    "ex": [["今日[*きょう]は昨日[きのう]{ほど}寒[さむ]くない。", "Today isn't as cold as yesterday."], ["死[し]ぬ{ほど}疲[つか]れた。", "I'm dead tired."], ["この本[ほん]は思[おも]った{ほど}難[むずか]しくなかった。", "This book wasn't as hard as I thought."]]
+  },
+  {
+    "id": "ni-shite-wa",
+    "level": "n3",
+    "title": "にしては: for (unexpectedly)",
+    "note": "にしては is \"for, considering\": the fact is surprising for what it is. 初[はじ]めてにしては上手[じょうず]だ, \"good for a first time\". It's close to わりに but about one fact.",
+    "ex": [["初[はじ]めて{にしては}、上手[じょうず]にできました。", "You did it well for a first try."], ["十月[じゅうがつ]{にしては}暑[あつ]いですね。", "It's hot for October, isn't it."], ["学生[がくせい]{にしては}いい車[くるま]に乗[の]っている。", "He drives a nice car for a student."]]
+  },
+  {
+    "id": "te-kara-de-nai-to",
+    "level": "n3",
+    "title": "てからでないと: not until",
+    "note": "て form + からでないと (or からでなければ) is \"not unless first\": the second thing can't happen before the first. 食[た]べてからでないと, \"not until I've eaten\".",
+    "ex": [["宿題[しゅくだい]をして{からでないと}、遊[あそ]んではいけません。", "You can't play until you've done your homework."], ["お金[かね]をはらって{からでないと}、入[はい]れません。", "You can't go in until you've paid."]]
+  },
+  {
+    "id": "you-ga-nai",
+    "level": "n3",
+    "title": "ようがない: there's no way to",
+    "note": "Verb stem + ようがない is \"there's no way to\": 連絡[れんらく]のしようがない, \"no way to get in touch\". する becomes しよう.",
+    "ex": [["住所[じゅうしょ]がわからないので、連絡[れんらく]のし{ようがない}。", "I don't know the address, so there's no way to contact them."], ["こんなに壊[こわ]れたら、直[なお]し{ようがない}。", "Broken this badly, there's no way to fix it."]]
+  },
+  {
+    "id": "ta-tokoro",
+    "level": "n3",
+    "title": "たところ: when I did, it turned out",
+    "note": "た form + ところ is \"when I did it, (I found that)\": the second half is what happened as a result. 聞[き]いたところ, \"when I asked\".",
+    "ex": [["先生[せんせい]に聞[き]いた{ところ}、明日[あした]は休[やす]みだそうだ。", "When I asked the teacher, it turned out tomorrow is a day off."], ["店[みせ]に電話[でんわ]した{ところ}、もう閉[し]まっていた。", "When I called the shop, it was already closed."]]
+  },
+  {
+    "id": "koto-ni-natte-iru",
+    "level": "n3",
+    "title": "ことになっている: it's arranged, the rule is",
+    "note": "Dictionary or ない form + ことになっている is \"it's been arranged\" or \"the rule is\". It's a decision nobody in particular made: 中[なか]でたばこを吸[す]わないことになっている.",
+    "ex": [["明日[あした]、田中[たなか]さんに会[あ]う{ことになっています}。", "I'm supposed to meet Mr Tanaka tomorrow."], ["ここでは靴[くつ]を脱[ぬ]ぐ{ことになっている}。", "The rule here is to take off your shoes."]]
+  },
+  {
+    "id": "to-iu-koto-da",
+    "level": "n3",
+    "title": "ということだ: I hear, that means",
+    "note": "Plain form + ということだ is \"I hear that\", passing on information: 来月[らいげつ]から値段[ねだん]が上[あ]がるということだ. It also sums up: \"which means\".",
+    "ex": [["天気[てんき]予報[よほう]によると、明日[あした]は雨[あめ]だ{ということだ}。", "The forecast says it will rain tomorrow."], ["電話[でんわ]に出[で]ないのは、忙[いそが]しい{ということだ}。", "Not answering the phone means they're busy."]]
+  },
+  {
+    "id": "to-wa-kagiranai",
+    "level": "n3",
+    "title": "とは限らない: not necessarily",
+    "note": "Plain form + とは限[かぎ]らない is \"not necessarily, not always\". With かならずしも it's even clearer: 高[たか]いものがかならずしもいいとは限[かぎ]らない.",
+    "ex": [["高[たか]いものがいい{とは限[かぎ]らない}。", "Expensive things aren't necessarily good."], ["日本人[にほんじん]がみんな寿司[すし]が好[す]きだ{とは限[かぎ]らない}。", "Not every Japanese person likes sushi."]]
+  },
+  {
+    "id": "nai-koto-wa-nai",
+    "level": "n3",
+    "title": "ないことはない: it's not that I can't",
+    "note": "ない form + ことはない is a double negative: \"it's not that I don't\", a reluctant yes. 食[た]べられないことはない, \"I can eat it, I suppose\".",
+    "ex": [["辛[から]いものも、食[た]べられ{ないことはない}。", "It's not that I can't eat spicy food."], ["急[いそ]げば間[ま]に合[あ]わ{ないことはない}。", "If we hurry, we might just make it."]]
+  },
+  {
+    "id": "ni-kawatte",
+    "level": "n3",
+    "title": "にかわって: on behalf of, replacing",
+    "note": "Noun + にかわって is \"in place of, on behalf of\": 社長[しゃちょう]にかわって, \"on the president's behalf\". It's the formal かわりに.",
+    "ex": [["社長[しゃちょう]{にかわって}、私[わたし]があいさつします。", "I'll give the greeting on behalf of the president."], ["手紙[てがみ]{にかわって}、メールを使[つか]う人[ひと]が増[ふ]えた。", "More people now use email instead of letters."]]
+  },
+  {
+    "id": "o-hajime",
+    "level": "n3",
+    "title": "をはじめ: starting with",
+    "note": "Noun + をはじめ(として) is \"starting with, including\": the noun is the main example of a group. 東京[とうきょう]をはじめ, \"Tokyo and other places\".",
+    "ex": [["東京[とうきょう]{をはじめ}、大阪[おおさか]や京都[きょうと]にも行[い]った。", "I went to Tokyo, and Osaka and Kyoto too."], ["社長[しゃちょう]{をはじめ}、社員[しゃいん]みんなが喜[よろこ]んだ。", "Everyone, starting with the president, was pleased."]]
+  },
+  {
+    "id": "o-chuushin-ni",
+    "level": "n3",
+    "title": "を中心に: centred on",
+    "note": "Noun + を中心[ちゅうしん]に is \"centred on, mainly\": 若[わか]い人[ひと]を中心[ちゅうしん]に人気[にんき]がある, \"popular, mainly among young people\".",
+    "ex": [["この歌[うた]は若[わか]い人[ひと]{を中心[ちゅうしん]に}人気[にんき]がある。", "This song is popular, mainly with young people."], ["駅[えき]{を中心[ちゅうしん]に}町[まち]が広[ひろ]がっている。", "The town spreads out around the station."]]
+  },
+  {
+    "id": "ni-kuwaete",
+    "level": "n3",
+    "title": "に加えて: on top of",
+    "note": "Noun + に加[くわ]えて is \"in addition to, on top of\": 雨[あめ]に加[くわ]えて風[かぜ]も強[つよ]い, \"wind as well as rain\".",
+    "ex": [["雨[あめ]{に加[くわ]えて}、風[かぜ]も強[つよ]くなってきた。", "On top of the rain, the wind has picked up too."], ["英語[えいご]{に加[くわ]えて}、中国語[ちゅうごくご]も勉強[べんきょう]している。", "I'm studying Chinese as well as English."]]
+  },
+  {
+    "id": "ni-tsurete",
+    "level": "n3",
+    "title": "につれて: as, the more",
+    "note": "Dictionary form or noun + につれて is \"as one thing changes, so does another\": 時間[じかん]がたつにつれて, \"as time passes\".",
+    "ex": [["時間[じかん]がたつ{につれて}、だんだん慣[な]れてきた。", "As time went by, I gradually got used to it."], ["高[たか]く登[のぼ]る{につれて}、寒[さむ]くなった。", "The higher we climbed, the colder it got."]]
+  },
+  {
+    "id": "kakeru",
+    "level": "n3",
+    "title": "かける: half-done",
+    "note": "Verb stem + かける is \"started but not finished\": 読[よ]みかけの本[ほん], \"a book I'm partway through\"; 言[い]いかけた, \"started to say\".",
+    "ex": [["読[よ]み{かけ}の本[ほん]がたくさんある。", "I have lots of half-read books."], ["何[なに]か言[い]い{かけて}、やめた。", "She started to say something, then stopped."], ["食[た]べ{かけ}のパンが机[つくえ]の上[うえ]にある。", "There's a half-eaten piece of bread on the desk."]]
+  },
+  {
+    "id": "kiru",
+    "level": "n3",
+    "title": "きる: all the way",
+    "note": "Verb stem + きる is \"completely, to the end\": 食[た]べきる, \"eat it all\". きれない is \"can't finish\": 数[かぞ]えきれない, \"too many to count\".",
+    "ex": [["一日[いちにち]で本[ほん]を読[よ]み{きった}。", "I read the whole book in one day."], ["こんなにたくさん、食[た]べ{きれない}。", "I can't eat all of this."], ["空[そら]には数[かぞ]え{きれない}ほど星[ほし]があった。", "There were more stars in the sky than I could count."]]
+  },
+  {
+    "id": "dasu",
+    "level": "n3",
+    "title": "だす: suddenly start",
+    "note": "Verb stem + だす is \"start to\", usually suddenly: 泣[な]きだす, \"burst into tears\"; 降[ふ]りだす, \"start to rain\". はじめる is the plain \"begin\".",
+    "ex": [["急[きゅう]に雨[あめ]が降[ふ]り{だした}。", "It suddenly started to rain."], ["赤[あか]ちゃんが泣[な]き{だした}。", "The baby burst into tears."]]
+  },
+  {
+    "id": "tagaru",
+    "level": "n3",
+    "title": "たがる: wants to (someone else)",
+    "note": "Verb stem + たがる is \"wants to\" for someone else: you can't see inside them, so たい becomes たがる. 弟[おとうと]は外[そと]で遊[あそ]びたがる.",
+    "ex": [["子[こ]どもは何[なん]でも自分[じぶん]でやり{たがる}。", "Kids want to do everything themselves."], ["弟[おとうと]が新[あたら]しいゲームを買[か]い{たがっています}。", "My little brother wants to buy a new game."]]
+  },
+  {
+    "id": "koso",
+    "level": "n3",
+    "title": "こそ: this very, it's X that",
+    "note": "こそ puts strong weight on the word before it: \"this very, precisely\". 今年[*ことし]こそ, \"this year for sure\"; こちらこそ, \"no, it's me who should thank you\".",
+    "ex": [["今年[*ことし]{こそ}、日本[にほん]に行[い]きたい。", "This year I really want to go to Japan."], ["こちら{こそ}、よろしくお願[ねが]いします。", "No, it's I who should say that. Nice to meet you."], ["これ{こそ}、私[わたし]がさがしていた本[ほん]だ。", "This is the very book I was looking for."]]
+  },
+  {
+    "id": "te-irai",
+    "level": "n3",
+    "title": "て以来: ever since",
+    "note": "て form + 以来[いらい] is \"ever since\": the state has lasted from then until now. 日本[にほん]に来[き]て以来[いらい], \"since I came to Japan\".",
+    "ex": [["日本[にほん]に来[き]て{以来[いらい]}、毎日[まいにち]日本語[にほんご]を話[はな]している。", "Ever since I came to Japan, I've spoken Japanese every day."], ["卒業[そつぎょう]して{以来[いらい]}、彼[かれ]に会[あ]っていない。", "I haven't seen him since we graduated."]]
+  },
+  {
+    "id": "te-tamaranai",
+    "level": "n3",
+    "title": "てたまらない: unbearably",
+    "note": "て form of an adjective or feeling + たまらない is \"unbearably, dying to\": 暑[あつ]くてたまらない, \"unbearably hot\"; 会[あ]いたくてたまらない, \"dying to see you\".",
+    "ex": [["今日[*きょう]は暑[あつ]くて{たまらない}。", "It's unbearably hot today."], ["家族[かぞく]に会[あ]いたくて{たまらない}。", "I'm dying to see my family."]]
+  },
+  {
+    "id": "oki-ni",
+    "level": "n3",
+    "title": "おきに: every other",
+    "note": "Number + おきに is \"at intervals of\": 一日[いちにち]おきに, \"every other day\"; 五分[ごふん]おきに, \"every five minutes\".",
+    "ex": [["バスは十分[じゅっぷん]{おきに}来[き]ます。", "The bus comes every ten minutes."], ["一日[いちにち]{おきに}ジムに行[い]っています。", "I go to the gym every other day."]]
+  },
+  {
+    "id": "dokoroka",
+    "level": "n3",
+    "title": "どころか: far from, let alone",
+    "note": "どころか is \"far from it\" or \"let alone\": the truth is the opposite, or even more. 漢字[かんじ]どころか、ひらがなも読[よ]めない, \"can't even read hiragana, let alone kanji\".",
+    "ex": [["漢字[かんじ]{どころか}、ひらがなも読[よ]めない。", "I can't even read hiragana, let alone kanji."], ["雨[あめ]はやむ{どころか}、ますます強[つよ]くなった。", "Far from stopping, the rain got even heavier."]]
+  },
+  {
+    "id": "wake-ni-wa-ikanai",
+    "level": "n3",
+    "title": "わけにはいかない: can't very well",
+    "note": "Dictionary form + わけにはいかない is \"I can't very well\": it's possible, but not right. ない form + わけにはいかない is \"I have to\".",
+    "ex": [["明日[あした]は試験[しけん]だから、遊[あそ]ぶ{わけにはいかない}。", "There's a test tomorrow, so I can't very well go out and play."], ["約束[やくそく]したから、行[い]かない{わけにはいかない}。", "I promised, so I have to go."]]
+  },
+  {
+    "id": "tara-ii-noni",
+    "level": "n3",
+    "title": "たらいいのに: I wish",
+    "note": "たら (or ば) + いいのに is \"I wish, it would be nice if\": 雨[あめ]がやめばいいのに, \"I wish the rain would stop\". The のに adds a sigh: it isn't so.",
+    "ex": [["もっと時間[じかん]があっ{たらいいのに}。", "I wish I had more time."], ["明日[あした]、晴[は]れれ{ばいいのに}。", "I wish it would be sunny tomorrow."]]
+  },
+  {
+    "id": "ni-oite",
+    "level": "n2",
+    "title": "において: in, at (formal)",
+    "note": "Noun + において is a formal で: where or in what field something happens. 会議[かいぎ]は東京[とうきょう]において行[おこな]われる. Before a noun: における.",
+    "ex": [["会議[かいぎ]は東京[とうきょう]{において}行[おこな]われる。", "The meeting will be held in Tokyo."], ["現代[げんだい]社会[しゃかい]{における}問題[もんだい]について考[かんが]える。", "We think about problems in modern society."]]
+  },
+  {
+    "id": "ni-kakawarazu",
+    "level": "n2",
+    "title": "にかかわらず: regardless of",
+    "note": "Noun + にかかわらず is \"regardless of\", often with pairs: 天気[てんき]にかかわらず, 年齢[ねんれい]にかかわらず; 行[い]くか行[い]かないかにかかわらず.",
+    "ex": [["天気[てんき]{にかかわらず}、試合[しあい]は行[おこな]われます。", "The match will go ahead regardless of the weather."], ["年齢[ねんれい]{にかかわらず}、だれでも参加[さんか]できます。", "Anyone can take part, whatever their age."]]
+  },
+  {
+    "id": "ni-mo-kakawarazu",
+    "level": "n2",
+    "title": "にもかかわらず: despite",
+    "note": "Plain form or noun + にもかかわらず is \"despite, even though\": a formal のに. 雨[あめ]にもかかわらず, \"despite the rain\".",
+    "ex": [["雨[あめ]{にもかかわらず}、たくさんの人[ひと]が来[き]た。", "Lots of people came despite the rain."], ["注意[ちゅうい]した{にもかかわらず}、彼[かれ]はまた遅[おく]れた。", "Even though I warned him, he was late again."]]
+  },
+  {
+    "id": "ni-kagitte",
+    "level": "n2",
+    "title": "に限って: of all times, only",
+    "note": "Noun + に限[かぎ]って is \"of all (times/people)\": the bad luck lands right there. 急[いそ]いでいる時[とき]に限[かぎ]って, \"just when I'm in a hurry\". に限[かぎ]り is \"only, limited to\".",
+    "ex": [["急[いそ]いでいる時[とき]{に限[かぎ]って}、電車[でんしゃ]が遅[おく]れる。", "The train is late just when I'm in a hurry."], ["先着[せんちゃく]百名[ひゃくめい]{に限[かぎ]り}、無料[むりょう]です。", "Free for the first hundred people only."]]
+  },
+  {
+    "id": "ni-sotte",
+    "level": "n2",
+    "title": "に沿って: along, in line with",
+    "note": "Noun + に沿[そ]って is \"along\" a line, or \"in line with\" a plan: 川[かわ]に沿[そ]って歩[ある]く; 計画[けいかく]に沿[そ]って進[すす]める.",
+    "ex": [["川[かわ]{に沿[そ]って}桜[さくら]が咲[さ]いている。", "Cherry trees are blooming along the river."], ["計画[けいかく]{に沿[そ]って}、仕事[しごと]を進[すす]めます。", "We'll carry on with the work as planned."]]
+  },
+  {
+    "id": "ni-motozuite",
+    "level": "n2",
+    "title": "に基づいて: based on",
+    "note": "Noun + に基[もと]づいて is \"based on\": 事実[じじつ]に基[もと]づいた話[はなし], \"a story based on fact\".",
+    "ex": [["この映画[えいが]は事実[じじつ]{に基[もと]づいて}作[つく]られた。", "This film was made based on true events."], ["データ{に基[もと]づいて}判断[はんだん]してください。", "Please decide based on the data."]]
+  },
+  {
+    "id": "o-tooshite",
+    "level": "n2",
+    "title": "を通して: through",
+    "note": "Noun + を通[とお]して (or を通[つう]じて) is \"through, by way of\", and with time \"throughout\": 一年[いちねん]を通[とお]して, \"all year round\".",
+    "ex": [["友[とも]だち{を通[とお]して}、彼女[かのじょ]と知[し]り合[あ]った。", "I got to know her through a friend."], ["この島[しま]は一年[いちねん]{を通[とお]して}暖[あたた]かい。", "This island is warm all year round."]]
+  },
+  {
+    "id": "o-megutte",
+    "level": "n2",
+    "title": "をめぐって: over, concerning",
+    "note": "Noun + をめぐって is \"over, surrounding\", for an issue people argue about: 土地[とち]をめぐって争[あらそ]う.",
+    "ex": [["遺産[いさん]{をめぐって}、家族[かぞく]がもめている。", "The family is quarrelling over the inheritance."], ["新[あたら]しい空港[くうこう]{をめぐって}、議論[ぎろん]が続[つづ]いている。", "The debate over the new airport goes on."]]
+  },
+  {
+    "id": "o-towazu",
+    "level": "n2",
+    "title": "を問わず: regardless of",
+    "note": "Noun + を問[と]わず is \"regardless of, no matter\": 経験[けいけん]を問[と]わず, \"experience not required\"; 昼夜[ちゅうや]を問[と]わず, \"day or night\".",
+    "ex": [["経験[けいけん]{を問[と]わず}、だれでも応募[おうぼ]できます。", "Anyone can apply, experience or not."], ["この店[みせ]は季節[きせつ]{を問[と]わず}込[こ]んでいる。", "This shop is busy whatever the season."]]
+  },
+  {
+    "id": "o-kikkake-ni",
+    "level": "n2",
+    "title": "をきっかけに: taking the chance",
+    "note": "Noun + をきっかけに is \"prompted by, taking the occasion\": 結婚[けっこん]をきっかけに, \"when I got married (I started…)\".",
+    "ex": [["留学[りゅうがく]{をきっかけに}、料理[りょうり]を始[はじ]めた。", "Studying abroad got me into cooking."], ["この本[ほん]{をきっかけに}、歴史[れきし]に興味[きょうみ]を持[も]った。", "This book sparked my interest in history."]]
+  },
+  {
+    "id": "o-komete",
+    "level": "n2",
+    "title": "を込めて: with (feeling)",
+    "note": "Noun + を込[こ]めて is \"filled with\" a feeling: 心[こころ]を込[こ]めて, \"with all my heart\"; 感謝[かんしゃ]を込[こ]めて, \"with thanks\".",
+    "ex": [["心[こころ]{を込[こ]めて}、手紙[てがみ]を書[か]いた。", "I wrote the letter with all my heart."], ["感謝[かんしゃ]{を込[こ]めて}、花[はな]を贈[おく]ります。", "I'm sending flowers with my thanks."]]
+  },
+  {
+    "id": "ue-de",
+    "level": "n2",
+    "title": "上で: after, in doing",
+    "note": "た form + 上[うえ]で is \"after doing, once\": よく考[かんが]えた上[うえ]で, \"after thinking it over\". Dictionary form + 上[うえ]で is \"in doing, for\": 生活[せいかつ]する上[うえ]で.",
+    "ex": [["よく考[かんが]えた{上[うえ]で}、決[き]めてください。", "Please decide after thinking it over carefully."], ["日本[にほん]で生活[せいかつ]する{上[うえ]で}、日本語[にほんご]は大切[たいせつ]だ。", "Japanese matters for living in Japan."]]
+  },
+  {
+    "id": "ue-ni",
+    "level": "n2",
+    "title": "上に: on top of that",
+    "note": "Plain form + 上[うえ]に is \"not only… but also\", adding something of the same kind: 安[やす]い上[うえ]においしい, \"cheap, and tasty too\".",
+    "ex": [["この店[みせ]は安[やす]い{上[うえ]に}、おいしい。", "This shop is cheap, and the food is good too."], ["道[みち]に迷[まよ]った{上[うえ]に}、雨[あめ]まで降[ふ]ってきた。", "We got lost, and on top of that it started to rain."]]
+  },
+  {
+    "id": "ue-wa",
+    "level": "n2",
+    "title": "上は: now that",
+    "note": "Plain form + 上[うえ]は is \"now that, since\", with a firm resolve after it: 引[ひ]き受[う]けた上[うえ]は, \"now that I've taken it on (I'll do it properly)\".",
+    "ex": [["約束[やくそく]した{上[うえ]は}、守[まも]らなければならない。", "Now that I've promised, I have to keep it."], ["やると決[き]めた{上[うえ]は}、最後[さいご]までがんばる。", "Now that I've decided to do it, I'll see it through."]]
+  },
+  {
+    "id": "ijou-wa",
+    "level": "n2",
+    "title": "以上は: since, as long as",
+    "note": "Plain form + 以上[いじょう](は) is \"since, now that\": 学生[がくせい]である以上[いじょう], \"since you're a student\". Close to 上[うえ]は and からには.",
+    "ex": [["引[ひ]き受[う]けた{以上[いじょう]}、責任[せきにん]を持[も]ってやります。", "Since I agreed to it, I'll take responsibility for it."], ["約束[やくそく]した{以上[いじょう]は}、守[まも]るべきだ。", "Once you've promised, you should keep it."]]
+  },
+  {
+    "id": "kara-ni-wa",
+    "level": "n2",
+    "title": "からには: now that, since",
+    "note": "Plain form + からには is \"now that, seeing as\", with a should or a will after it: 日本[にほん]に来[き]たからには, \"now that I'm in Japan (I'll…)\".",
+    "ex": [["日本[にほん]に来[き]た{からには}、日本語[にほんご]をしっかり勉強[べんきょう]したい。", "Now that I'm in Japan, I want to study Japanese properly."], ["試合[しあい]に出[で]る{からには}、勝[か]ちたい。", "Since I'm in the match, I want to win."]]
+  },
+  {
+    "id": "bakari-ka",
+    "level": "n2",
+    "title": "ばかりか: not only… but",
+    "note": "ばかりか is \"not only… but even\": the second thing is more surprising. 彼[かれ]は英語[えいご]ばかりか、中国語[ちゅうごくご]も話[はな]せる.",
+    "ex": [["彼[かれ]は英語[えいご]{ばかりか}、中国語[ちゅうごくご]も話[はな]せる。", "He speaks not only English but Chinese too."], ["薬[くすり]を飲[の]んだが、治[なお]らない{ばかりか}、ひどくなった。", "I took medicine, but far from getting better, I got worse."]]
+  },
+  {
+    "id": "nomi-narazu",
+    "level": "n2",
+    "title": "のみならず: not only (formal)",
+    "note": "のみならず is a formal だけでなく: \"not only\". 国内[こくない]のみならず、海外[かいがい]でも, \"not only at home but abroad too\".",
+    "ex": [["この歌[うた]は国内[こくない]{のみならず}、海外[かいがい]でも人気[にんき]がある。", "This song is popular not only at home but abroad too."]]
+  },
+  {
+    "id": "mono-no",
+    "level": "n2",
+    "title": "ものの: although",
+    "note": "Plain form + ものの is \"although, but\": you did the first thing, but it didn't go as hoped. 買[か]ったものの、まだ使[つか]っていない.",
+    "ex": [["ギターを買[か]った{ものの}、ほとんど弾[ひ]いていない。", "I bought a guitar, but I've hardly played it."], ["約束[やくそく]はした{ものの}、行[い]けるかどうかわからない。", "I did promise, but I don't know if I can go."]]
+  },
+  {
+    "id": "mono-nara",
+    "level": "n2",
+    "title": "ものなら: if you could, if you dare",
+    "note": "Potential form + ものなら is \"if only I could\": 行[い]けるものなら行[い]きたい. Volitional + ものなら is a warning: \"if you dare\": そんなことをしようものなら.",
+    "ex": [["帰[かえ]れる{ものなら}、今[いま]すぐ国[くに]に帰[かえ]りたい。", "If I could, I'd go home right now."], ["遅刻[ちこく]しよう{ものなら}、先生[せんせい]にひどく叱[しか]られる。", "If you're ever late, the teacher scolds you badly."]]
+  },
+  {
+    "id": "mono-ka",
+    "level": "n2",
+    "title": "ものか: as if I would",
+    "note": "Plain form + ものか (casual もんか) is a strong \"no way\": 負[ま]けるものか, \"there's no way I'll lose\".",
+    "ex": [["あんな店[みせ]、二度[にど]と行[い]く{ものか}。", "As if I'd ever go to that shop again."], ["こんなところで負[ま]ける{もんか}。", "There's no way I'm losing here."]]
+  },
+  {
+    "id": "mono-dakara",
+    "level": "n2",
+    "title": "ものだから: because, you see",
+    "note": "Plain form + ものだから (casual もんだから) is \"because\", used to explain or excuse: 道[みち]が込[こ]んでいたものだから, \"the roads were jammed, you see\".",
+    "ex": [["道[みち]が込[こ]んでいた{ものだから}、遅[おく]れてしまいました。", "The roads were jammed, so I'm afraid I'm late."], ["あまりに安[やす]かった{ものだから}、つい買[か]ってしまった。", "It was so cheap that I ended up buying it."]]
+  },
+  {
+    "id": "kagiri",
+    "level": "n2",
+    "title": "限り: as long as, as far as",
+    "note": "Plain form + 限[かぎ]り is \"as long as\" or \"as far as\": 私[わたし]が知[し]っている限[かぎ]り, \"as far as I know\"; 生[い]きている限[かぎ]り, \"as long as I live\".",
+    "ex": [["私[わたし]が知[し]っている{限[かぎ]り}、彼[かれ]はうそをつかない。", "As far as I know, he doesn't lie."], ["雨[あめ]が降[ふ]らない{限[かぎ]り}、試合[しあい]は行[おこな]われる。", "As long as it doesn't rain, the match will go ahead."]]
+  },
+  {
+    "id": "kanenai",
+    "level": "n2",
+    "title": "かねない: might well (something bad)",
+    "note": "Verb stem + かねない is \"could well, there's a risk of\": a bad result. そんな運転[うんてん]をしたら、事故[じこ]を起[お]こしかねない.",
+    "ex": [["そんなに急[いそ]いだら、事故[じこ]を起[お]こし{かねない}。", "Rushing like that, you could well cause an accident."], ["彼[かれ]なら、そんなことも言[い]い{かねない}。", "He's just the sort to say something like that."]]
+  },
+  {
+    "id": "kaneru",
+    "level": "n2",
+    "title": "かねる: can't (politely)",
+    "note": "Verb stem + かねる is a polite \"I'm unable to\": わかりかねます, \"I'm afraid I can't say\". Shops and offices use it to refuse softly.",
+    "ex": [["その質問[しつもん]にはお答[こた]えし{かねます}。", "I'm afraid I can't answer that question."], ["この件[けん]は私[わたし]には決[き]め{かねます}。", "I'm not in a position to decide this."]]
+  },
+  {
+    "id": "eru",
+    "level": "n2",
+    "title": "得る: can, possible",
+    "note": "Verb stem + 得[う]る (or える) is \"can, it's possible\", in written Japanese. The negative is 得[え]ない: あり得[え]ない, \"impossible\".",
+    "ex": [["そういうことも起[お]こり{得[う]る}。", "That kind of thing can happen."], ["そんなことはあり{得[え]ない}。", "That's impossible."]]
+  },
+  {
+    "id": "zaru-o-enai",
+    "level": "n2",
+    "title": "ざるを得ない: have no choice but",
+    "note": "ない stem + ざるを得[え]ない is \"can't help but, have no choice but\". する becomes せざるを得[え]ない.",
+    "ex": [["雨[あめ]がひどいので、中止[ちゅうし]せ{ざるを得[え]ない}。", "The rain is so bad that we have no choice but to call it off."], ["上司[じょうし]の命令[めいれい]なら、行[い]か{ざるを得[え]ない}。", "If it's the boss's order, I have to go."]]
+  },
+  {
+    "id": "zu-ni-wa-irarenai",
+    "level": "n2",
+    "title": "ずにはいられない: can't help doing",
+    "note": "ない stem + ずにはいられない is \"can't help doing\": 笑[わら]わずにはいられない, \"can't help laughing\". する becomes せずには.",
+    "ex": [["その話[はなし]を聞[き]いて、泣[な]か{ずにはいられなかった}。", "Hearing that story, I couldn't help crying."], ["彼[かれ]の顔[かお]を見[み]ると、笑[わら]わ{ずにはいられない}。", "I can't help laughing when I see his face."]]
+  },
+  {
+    "id": "ni-sugi-nai",
+    "level": "n2",
+    "title": "にすぎない: merely",
+    "note": "Plain form or noun + にすぎない is \"no more than, merely\": 冗談[じょうだん]にすぎない, \"just a joke\".",
+    "ex": [["それはうわさ{にすぎない}。", "That's nothing more than a rumour."], ["私[わたし]は自分[じぶん]の仕事[しごと]をした{にすぎません}。", "I merely did my job."]]
+  },
+  {
+    "id": "ni-hoka-naranai",
+    "level": "n2",
+    "title": "にほかならない: nothing other than",
+    "note": "Noun + にほかならない is \"is nothing but, is precisely\": 成功[せいこう]は努力[どりょく]の結果[けっか]にほかならない.",
+    "ex": [["この成功[せいこう]はみんなの努力[どりょく]の結果[けっか]{にほかならない}。", "This success is nothing other than the result of everyone's effort."]]
+  },
+  {
+    "id": "to-shitemo",
+    "level": "n2",
+    "title": "としても: even if",
+    "note": "Plain form + としても is \"even supposing\": 行[い]くとしても, \"even if I do go\". It's a hypothetical ても.",
+    "ex": [["今[いま]から急[いそ]いだ{としても}、間[ま]に合[あ]わないだろう。", "Even if we hurry now, we probably won't make it."], ["たとえ反対[はんたい]された{としても}、やるつもりだ。", "Even if they're against it, I intend to do it."]]
+  },
+  {
+    "id": "to-shitara",
+    "level": "n2",
+    "title": "としたら: supposing",
+    "note": "Plain form + としたら (or とすれば) is \"supposing, if it's true that\": 行[い]くとしたら, \"if I were to go\".",
+    "ex": [["もし一億円[いちおくえん]あった{としたら}、何[なに]をしますか。", "Supposing you had a hundred million yen, what would you do?"], ["彼[かれ]が犯人[はんにん]だ{とすれば}、すべて説明[せつめい]がつく。", "If he's the culprit, it explains everything."]]
+  },
+  {
+    "id": "to-ittemo",
+    "level": "n2",
+    "title": "といっても: although, that said",
+    "note": "Plain form + といっても is \"even though I say, that said\": the truth is less than it sounds. 料理[りょうり]ができるといっても, \"I can cook, but only…\".",
+    "ex": [["料理[りょうり]ができる{といっても}、簡単[かんたん]なものだけです。", "I can cook, but only simple things."], ["休[やす]み{といっても}、一日[いちにち]だけだ。", "It's a holiday, but just one day."]]
+  },
+  {
+    "id": "tokoro-o",
+    "level": "n2",
+    "title": "ところを: just when (and sorry)",
+    "note": "Plain form + ところを is \"at the moment when\", often in apologies and thanks: お忙[いそが]しいところを, \"when you're busy (thank you for coming)\".",
+    "ex": [["お忙[いそが]しい{ところを}、ありがとうございます。", "Thank you for coming when you're so busy."], ["寝[ね]ている{ところを}起[お]こされた。", "I was woken up while I was asleep."]]
+  },
+  {
+    "id": "tsutsu",
+    "level": "n2",
+    "title": "つつ: while, even though",
+    "note": "Verb stem + つつ is a written ながら: \"while\". つつも is \"even though\": 悪[わる]いと思[おも]いつつも, \"knowing it was wrong, but…\". つつある is \"in the middle of changing\".",
+    "ex": [["悪[わる]いと思[おも]い{つつも}、また遅[おく]れてしまった。", "I knew it was bad, but I was late again anyway."], ["地球[ちきゅう]の気温[きおん]は上[あ]がり{つつある}。", "The Earth's temperature is rising."]]
+  },
+  {
+    "id": "ni-tsuke",
+    "level": "n2",
+    "title": "につけ: whenever",
+    "note": "Dictionary form + につけ is \"whenever\": 写真[しゃしん]を見[み]るにつけ, \"whenever I see the photo\". It's used with feelings and memories.",
+    "ex": [["この写真[しゃしん]を見[み]る{につけ}、昔[むかし]を思[おも]い出[だ]す。", "Whenever I see this photo, I remember the old days."]]
+  },
+  {
+    "id": "ni-kotaete",
+    "level": "n2",
+    "title": "に応えて: in response to",
+    "note": "Noun + に応[こた]えて is \"in response to\" a hope or request: 期待[きたい]に応[こた]えて, \"living up to expectations\".",
+    "ex": [["ファンの声[こえ]{に応[こた]えて}、もう一曲[いっきょく]歌[うた]った。", "In response to the fans, they sang one more song."], ["親[おや]の期待[きたい]{に応[こた]えたい}。", "I want to live up to my parents' hopes."]]
+  },
+  {
+    "id": "ni-shitagatte",
+    "level": "n2",
+    "title": "にしたがって: as, following",
+    "note": "Dictionary form or noun + にしたがって is \"as one thing changes, the other follows\", or \"following\" a rule: 指示[しじ]にしたがって.",
+    "ex": [["年[とし]をとる{にしたがって}、体[からだ]が弱[よわ]くなる。", "As we grow older, our bodies get weaker."], ["係[かかり]の人[ひと]の指示[しじ]{にしたがって}ください。", "Please follow the staff's instructions."]]
+  },
+  {
+    "id": "ni-tomonatte",
+    "level": "n2",
+    "title": "に伴って: along with",
+    "note": "Noun or dictionary form + に伴[ともな]って is \"along with, as\": one change brings another. 人口[じんこう]の増加[ぞうか]に伴[ともな]って.",
+    "ex": [["人口[じんこう]が増[ふ]える{に伴[ともな]って}、問題[もんだい]も増[ふ]えた。", "As the population grew, so did the problems."], ["台風[たいふう]{に伴[ともな]って}、雨[あめ]が強[つよ]くなった。", "The rain got heavier with the typhoon."]]
+  },
+  {
+    "id": "ni-mukete",
+    "level": "n2",
+    "title": "に向けて: towards, aimed at",
+    "note": "Noun + に向[む]けて is \"towards\" a goal or \"aimed at\" someone: 試験[しけん]に向[む]けて, \"for the exam\"; 子[こ]ども向[む]け, \"for children\".",
+    "ex": [["試験[しけん]{に向[む]けて}、毎日[まいにち]勉強[べんきょう]している。", "I'm studying every day for the exam."], ["この本[ほん]は子[こ]ども{向[む]け}です。", "This book is for children."]]
+  },
+  {
+    "id": "ni-oujite",
+    "level": "n2",
+    "title": "に応じて: according to",
+    "note": "Noun + に応[おう]じて is \"according to, depending on\": 能力[のうりょく]に応[おう]じて, \"according to ability\".",
+    "ex": [["レベル{に応[おう]じて}、クラスを選[えら]んでください。", "Please choose a class according to your level."], ["経験[けいけん]{に応[おう]じて}、給料[きゅうりょう]が決[き]まる。", "Pay depends on experience."]]
+  },
+  {
+    "id": "ni-hanshite",
+    "level": "n2",
+    "title": "に反して: contrary to",
+    "note": "Noun + に反[はん]して is \"contrary to, against\": 予想[よそう]に反[はん]して, \"against expectations\".",
+    "ex": [["予想[よそう]{に反[はん]して}、試験[しけん]は簡単[かんたん]だった。", "Contrary to expectations, the test was easy."], ["親[おや]の希望[きぼう]{に反[はん]して}、彼[かれ]は歌手[かしゅ]になった。", "Against his parents' wishes, he became a singer."]]
+  },
+  {
+    "id": "ni-saishite",
+    "level": "n2",
+    "title": "に際して: on the occasion of",
+    "note": "Noun or dictionary form + に際[さい]して is a formal \"when, at the time of\": 出発[しゅっぱつ]に際[さい]して, \"on departing\".",
+    "ex": [["入学[にゅうがく]{に際[さい]して}、書類[しょるい]を出[だ]してください。", "Please hand in the forms on enrolling."], ["出発[しゅっぱつ]{に際[さい]して}、注意[ちゅうい]を説明[せつめい]します。", "We'll explain the precautions before departure."]]
+  },
+  {
+    "id": "ni-watatte",
+    "level": "n2",
+    "title": "にわたって: over, throughout",
+    "note": "Noun + にわたって is \"over, across\" a stretch of time or space: 三日間[みっかかん]にわたって, \"over three days\".",
+    "ex": [["会議[かいぎ]は三日間[みっかかん]{にわたって}行[おこな]われた。", "The conference was held over three days."], ["台風[たいふう]は広[ひろ]い地域[ちいき]{にわたって}被害[ひがい]を出[だ]した。", "The typhoon caused damage across a wide area."]]
+  },
+  {
+    "id": "ippou-da",
+    "level": "n2",
+    "title": "一方だ: more and more",
+    "note": "Dictionary form + 一方[いっぽう]だ is \"just keeps -ing\", usually for the worse: 物価[ぶっか]は上[あ]がる一方[いっぽう]だ.",
+    "ex": [["物価[ぶっか]は上[あ]がる{一方[いっぽう]}だ。", "Prices just keep going up."], ["仕事[しごと]は増[ふ]える{一方[いっぽう]}で、休[やす]む暇[ひま]がない。", "The work keeps piling up and I get no time off."]]
+  },
+  {
+    "id": "bekarazu",
+    "level": "n2",
+    "title": "べからず and べく: must not, in order to",
+    "note": "べからず is a sign-style \"must not\": 入[はい]るべからず, \"no entry\". べく is a written \"in order to\": 合格[ごうかく]すべく, \"in order to pass\".",
+    "ex": [["芝生[しばふ]に入[はい]る{べからず}。", "Keep off the grass."], ["試験[しけん]に合格[ごうかく]す{べく}、毎晩[まいばん]勉強[べんきょう]している。", "I study every night in order to pass the exam."]]
+  },
+  {
+    "id": "you-ni-mo",
+    "level": "n2",
+    "title": "ようにも〜ない: can't, however much I want",
+    "note": "Volitional + にも + potential negative is \"I want to, but can't\": 帰[かえ]ろうにも帰[かえ]れない, \"I'd go home, but I can't\".",
+    "ex": [["電車[でんしゃ]が止[と]まって、帰[かえ]ろう{にも}帰[かえ]れない。", "The trains have stopped, so I can't go home even if I try."], ["連絡[れんらく]しよう{にも}、電話[でんわ]番号[ばんごう]がわからない。", "I'd get in touch, but I don't know the number."]]
+  },
+  {
+    "id": "koto-ni-feeling",
+    "level": "n2",
+    "title": "ことに: to my (feeling)",
+    "note": "A feeling word + ことに is \"to my surprise, sadly\": 残念[ざんねん]なことに, \"unfortunately\"; 驚[おどろ]いたことに, \"to my surprise\".",
+    "ex": [["残念[ざんねん]な{ことに}、試合[しあい]に負[ま]けた。", "Sadly, we lost the match."], ["驚[おどろ]いた{ことに}、彼[かれ]はもう結婚[けっこん]していた。", "To my surprise, he was already married."]]
+  },
+  {
+    "id": "ni-kimatte-iru",
+    "level": "n2",
+    "title": "に決まっている: of course, bound to",
+    "note": "Plain form + に決[き]まっている is \"definitely, it's obvious\": 勝[か]つに決[き]まっている, \"of course we'll win\". Stronger and more casual than に違[ちが]いない.",
+    "ex": [["そんなに食[た]べたら、太[ふと]る{に決[き]まっている}。", "Eat that much and you're bound to put on weight."], ["彼[かれ]が来[く]る{に決[き]まっている}よ。", "Of course he'll come."]]
+  },
+  {
+    "id": "kkonai",
+    "level": "n2",
+    "title": "っこない: no way",
+    "note": "Verb stem + っこない is a casual \"no way, there's no chance\": できっこない, \"there's no way I can\".",
+    "ex": [["こんなにたくさん、一日[いちにち]でできっ{こない}。", "There's no way I can do this much in a day."], ["宝[たから]くじなんか、当[あ]たりっ{こない}よ。", "You're never going to win the lottery."]]
   }
 ]

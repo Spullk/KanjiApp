@@ -78,6 +78,7 @@ describe("placement quiz", () => {
   it("places you on the first tab you didn't pass", () => {
     expect(placedTier([])).toBe("beginner");
     expect(placedTier(["beginner", "n5"])).toBe("n4");
-    expect(placedTier(["beginner", "n5", "n4", "n3"])).toBe("n3");
+    expect(placedTier(["beginner", "n5", "n4", "n3"])).toBe("n2");
+    expect(placedTier(["beginner", "n5", "n4", "n3", "n2"])).toBe("n2");
   });
 });
