@@ -2714,3 +2714,67 @@ button.danger-outline:disabled {
 .reset-done {
   margin-top: 10px;
 }
+
+/* learn, one item at a time */
+.learn-one {
+  padding-bottom: 88px;
+}
+.learn-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.learn-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: flex-end;
+}
+.learn-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.learn-dots i.seen {
+  background: var(--muted);
+}
+.learn-dots i.on {
+  background: var(--vocab);
+}
+.learn-one .summary {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px;
+}
+.learn-one .summary-char {
+  min-width: 120px;
+  height: 120px;
+  font-size: 4rem;
+}
+.learn-one .summary-char.word {
+  font-size: 2rem;
+  max-width: 100%;
+  height: auto;
+  min-height: 120px;
+  padding: 8px 16px;
+}
+.learn-one .summary-body {
+  align-items: center;
+}
+.learn-one .summary-title {
+  font-size: 1.3rem;
+}
+.learn-one .chips {
+  justify-content: center;
+}
+.learn-bar {
+  display: flex;
+  gap: 8px;
+}
+.learn-bar .primary {
+  flex: 1;
+}

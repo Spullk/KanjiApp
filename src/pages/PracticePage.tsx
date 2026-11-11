@@ -3,6 +3,7 @@ import { href } from "../router";
 import { getStore, PRACTICE_LABEL, practiceCards, useStore, type PracticeSet } from "../srs";
 import { Section } from "../components/bits";
 import { CardBack, CardFront, usePreloadFonts } from "../cards";
+import { useTapToReveal } from "../components/AnswerModes";
 
 /** Extra study: go through a set of cards as often as you like. Nothing here changes when they're due. */
 export function PracticePage({ set }: { set: PracticeSet }) {
@@ -12,6 +13,7 @@ export function PracticePage({ set }: { set: PracticeSet }) {
   const [missed, setMissed] = useState(0);
   const current = queue[0];
   usePreloadFonts(queue);
+  useTapToReveal(!!current && !shown, () => setShown(true));
 
   const next = (gotIt: boolean) => {
     setQueue((q) => (gotIt ? q.slice(1) : [...q.slice(1), q[0]]));

@@ -23,6 +23,24 @@ const BUTTONS: [Grade, string][] = [
   [Rating.Easy, "Easy"],
 ];
 
+// Taps that do something of their own: links, buttons, fields, the tab bar, the tour.
+const OWN_TAP = "a, button, input, textarea, select, label, summary, details, audio, [role=button], [role=dialog], .tabbar, .tour-backdrop, .welcome";
+
+/** While the answer is hidden, a tap anywhere empty on the screen shows it, not just the Show answer button. */
+export function useTapToReveal(active: boolean, reveal: () => void) {
+  useEffect(() => {
+    if (!active) return;
+    const onClick = (e: MouseEvent) => {
+      const t = e.target as Element | null;
+      if (!t?.closest || t.closest(OWN_TAP)) return;
+      if (getSelection()?.toString()) return; // selecting text to copy isn't a tap
+      reveal();
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  });
+}
+
 /** Anki style: show the answer, then say how well you knew it. */
 export function SelfGrade({ id, onAnswer: answer }: AnswerProps) {
   const [shown, setShownState] = useState(() => revealed === id);
@@ -36,6 +54,7 @@ export function SelfGrade({ id, onAnswer: answer }: AnswerProps) {
   };
   const store = useStore();
   const { kind, key } = parseCardId(id);
+  useTapToReveal(!shown, () => setShown(true));
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
