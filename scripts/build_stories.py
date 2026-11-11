@@ -267,9 +267,10 @@ def real_pairs():
 def without_jumbled(paras, title):
     """Drops sentences read in the wrong order (side notes or picture labels whose columns got mixed together,
     furigana read backwards). None when there are too many to trust the rest of the book."""
-    from check_content import SENTENCE_END, jumbled
+    from check_content import ENDED, SENTENCE_END, jumbled, looks_jumbled
 
-    # Picture labels and lists of names score 50-60% too, so only clearly jumbled sentences are dropped, but the
+    # Picture labels and lists of names score 50-60% too, so only clearly jumbled sentences are dropped, along
+    # with jumbled-looking text that isn't a sentence (no end mark: a picture label, a map's place names). The
     # whole book goes when many sentences look off.
     seen, out, dropped, doubtful = real_pairs(), [], [], 0
     for text, ruby in paras:
@@ -277,7 +278,8 @@ def without_jumbled(paras, title):
         for s in SENTENCE_END.split(text):
             score = jumbled(s, seen)
             doubtful += score >= 0.5
-            (dropped if score >= 0.6 else keep).append(s)
+            label = not ENDED.search(s.strip()) and looks_jumbled(s, seen)
+            (dropped if score >= 0.6 or label else keep).append(s)
         if "".join(keep).strip():
             out.append(("".join(keep), ruby))
     if doubtful > MAX_JUMBLED:

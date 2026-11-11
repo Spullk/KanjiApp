@@ -131,7 +131,8 @@ def check_words(r, words, lessons, sentences, kanji):
           [{"lesson": lesson_of[w["id"]], "word": word_label(w), "taught": first_gloss(w),
             "more common": " / ".join(first_gloss(o) for o in better)}
            for w in sorted(taught, key=lambda w: lesson_of[w["id"]])
-           if (better := [o for o in spelled[(w["w"], w["r"])] if o["id"] != w["id"] and o["rank"] < w["rank"]])])
+           if w["w"] not in RIGHT_HOMOPHONE
+           and (better := [o for o in spelled[(w["w"], w["r"])] if o["id"] != w["id"] and o["rank"] < w["rank"]])])
     r.add("lesson-word-junk", "Words", "Junk words still in a lesson",
           "Words marked junk (a wrong dictionary match) shouldn't be taught.",
           [{"lesson": lesson_of[w["id"]], "word": word_label(w)} for w in taught if w.get("junk")])
@@ -140,6 +141,11 @@ def check_words(r, words, lessons, sentences, kanji):
           "A lone kana as a word is usually a wrong dictionary match (ト as \"note G\"). Check these aren't shown as cards.",
           [{"word": word_label(w), "meaning": first_gloss(w), "id": w["id"]} for w in words.values()
            if len(w["w"]) == 1 and KANA.match(w["w"]) and w["id"] not in lesson_of and not w.get("junk")])
+
+
+# Checked by hand: the lesson teaches the meaning learners need, though another entry ranks higher (あの "that",
+# not the filler "say"; そう "in that way", not the ending "appearing that").
+RIGHT_HOMOPHONE = {"あの", "そう"}
 
 
 def check_kanji(r, kanji, words, lessons, strokes):
@@ -223,6 +229,16 @@ def jumbled(sentence, seen):
     return sum(p not in seen for p in pairs) / len(pairs)
 
 
+ENDED = re.compile(r"[。！？!?」』]$")
+
+
+def looks_jumbled(sentence, seen):
+    """Half the pairs unseen, or for a long run with no end mark (kana-heavy jumbles share more pairs with real
+    text, but they also run on), 40%."""
+    score = jumbled(sentence, seen)
+    return score >= 0.5 or (score >= 0.4 and len(sentence) >= 20 and not ENDED.search(sentence))
+
+
 def check_stories(r, stories, words, sentences):
     seen = bigram_model(sentences, words)
     odd, missing, spans, mess, blanks = [], Counter(), [], [], []
@@ -247,11 +263,11 @@ def check_stories(r, stories, words, sentences):
                 if start < end or start + length > len(text):
                     spans.append({"story": info["title"], "paragraph": n, "problem": f"link at {start} overlaps or runs past the end"})
                 end = start + length
-            for s in SENTENCE_END.split(text):
-                score = jumbled(s, seen)
-                # Kana-heavy jumbles share more pairs with real text, but they also run on with no end mark.
-                if score >= 0.5 or (score >= 0.4 and len(s) >= 20 and not re.search(r"[。！？!?」』]$", s)):
-                    mess.append({"story": info["title"], "paragraph": n, "unseen pairs": f"{score:.0%}", "text": s[:70]})
+            # Aozora's texts are typed, so only the PDF books can come out jumbled (宮沢賢治's 風三郎 scores high).
+            for s in SENTENCE_END.split(text) if info.get("source") != "aozora" else ():
+                if looks_jumbled(s, seen):
+                    mess.append({"story": info["title"], "paragraph": n, "unseen pairs": f"{jumbled(s, seen):.0%}",
+                                 "text": s[:70]})
     r.add("story-odd-characters", "Stories", "Story text with damaged characters",
           "Look-alike radicals (⼈ for 人) or vertical-only punctuation (︒ for 。) from the PDF's fonts. "
           "They look right but don't link to any word.", odd)

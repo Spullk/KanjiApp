@@ -11,6 +11,8 @@ For each sentence (in place):
 Grammar words (particles, endings, interjections) are never gaps.
 """
 
+import re
+
 from build_stories import Linker, is_kanji
 
 # JMdict classes (build_stories.pos_class) that are grammar rather than a word to learn: interjections, conjunctions, and "other"
@@ -55,7 +57,33 @@ def relink(sentences, words, linker):
     return added, gapped, named
 
 
+JAPANESE = re.compile(r"[ぁ-ゖァ-ヺ一-鿿]")
+
+
+def tidy(sentences, words):
+    """Keeps one copy of a sentence that came in twice (from two sources, or twice in Tatoeba), the one with a
+    recording if either has it, and drops sentences whose English still has Japanese in it. Words point at the
+    copy that's kept. → (copies merged, dropped)."""
+    keep, merged, dropped = {}, {}, set()
+    for sid in sorted(sentences, key=lambda i: "audio" not in sentences[i]):
+        s = sentences[sid]
+        if JAPANESE.search(s["en"]):
+            dropped.add(sid)
+        elif s["ja"] in keep:
+            merged[sid] = keep[s["ja"]]
+        else:
+            keep[s["ja"]] = sid
+    for sid in [*merged, *dropped]:
+        del sentences[sid]
+    for w in words.values():
+        if w.get("sentences"):
+            w["sentences"] = list(dict.fromkeys(merged.get(i, i) for i in w["sentences"] if i not in dropped))
+    return len(merged), len(dropped)
+
+
 def main(con, words, sentences):
+    merged, dropped = tidy(sentences, words)
+    print(f"Sentences: {merged} duplicates merged, {dropped} with Japanese left in the English dropped")
     try:
         linker = Linker(con)
     except ImportError:

@@ -83,7 +83,7 @@ def sound_variants(r):
 def reading_forms(key, rtype):
     """Kana a kanji can stand for, given one KANJIDIC reading, mapped to a penalty."""
     if rtype == "on":
-        return sound_variants(hira(key))
+        return sound_variants(hira(key.strip("-")))  # -ノウ: only after another kanji (反応 はんのう)
     r = key.strip("-")
     stem, _, oku = r.partition(".")
     bases = [stem]
@@ -283,7 +283,29 @@ def add_senses(con, entries):
         if not e["senses"] and "word usually written using kana alone" in s["misc"]:
             e["usuallyKana"] = True
         if len(e["senses"]) < 5 and s["gloss"]:
-            e["senses"].append({"pos": pos, "gloss": s["gloss"][:6]})
+            gloss = s["gloss"][:6]
+            if not e["senses"]:
+                gloss = [short_meaning(sense_of[sid], gloss[0])] + gloss[1:]
+            e["senses"].append({"pos": pos, "gloss": gloss})
+
+
+# First meanings too long to ask for on a card, with no shorter part to keep (see short_meaning).
+SHORT_MEANINGS = {
+    1438480: "cushy job for a retired official",  # 天下り
+    1463030: "210th day after spring begins (typhoon season)",  # 二百十日
+}
+
+
+def short_meaning(idseq, gloss):
+    """The first meaning is what a card asks for, so a long one loses its trailing note: "low-lying part of a
+    city (usu. containing shops, factories, etc.)" → "low-lying part of a city"."""
+    if idseq in SHORT_MEANINGS:
+        return SHORT_MEANINGS[idseq]
+    if len(gloss) > 60:
+        m = re.fullmatch(r"(.{3,}?)\s*\([^()]*\)", gloss)
+        if m:
+            return m[1]
+    return gloss
 
 
 def load_story_words(con, ids):
@@ -548,6 +570,11 @@ def mark_retired_kana_words(words, shipped, lesson_out):
           + ", ".join(words[wid]["w"] for wid in retired[:20]))
 
 
+# Kana words whose JLPT list entry means more than one thing, where learners mean this one first: the list has
+# ソース as "source; sauce", but the word people meet is the sauce.
+KANA_MEANT = {"ソース": "sauce"}
+
+
 def load_kana_words(con, words):
     """Words on the JLPT lists that are written in kana only: {JMdict id: (JLPT level, entry, already a word)},
     easiest first.
@@ -606,8 +633,8 @@ def load_kana_words(con, words):
                     continue
                 # A common entry beats a rare one before the first meaning counts: the list gives ロケット as
                 # "locket; rocket" and ランチ as "launch; lunch", but learners mean the rocket and the lunch.
-                fits.append((not gloss & meant, e["rank"] >= RARE_RANK, not first & meant,
-                             -len(gloss & meant), e["rank"], i))
+                fits.append((KANA_MEANT.get(v, "") not in meant, not gloss & meant, e["rank"] >= RARE_RANK,
+                             not first & meant, -len(gloss & meant), e["rank"], i))
             if meant_elsewhere:
                 fits = [f for f in fits if not (f[0] and f[1])]
             if not fits:
