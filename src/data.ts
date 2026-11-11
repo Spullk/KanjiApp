@@ -59,7 +59,15 @@ export type Word = {
 };
 
 /** audio: [Tatoeba audio id, speaker] when a freely licensed recording exists. */
-export type Sentence = { ja: string; en: string; links: [number, number, string][]; audio?: [string, string] };
+/** links: [start, length, word id]. gaps: words in kana Nekko has no entry for. names: people and places. */
+export type Sentence = {
+  ja: string;
+  en: string;
+  links: [number, number, string][];
+  gaps?: [number, number][];
+  names?: [number, number][];
+  audio?: [string, string];
+};
 export type Lesson = { id: number; radicals: string[]; kanji: string[]; words: string[] };
 
 /** A grammar point (hand-written in data/grammar.json). Examples mark the gap as {は}, alternatives as {なに|なん},

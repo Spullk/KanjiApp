@@ -76,13 +76,17 @@ export function unknownWords(data: Data, k: ExampleKnowledge, s: Sentence, excep
 const KATAKANA = /^[ァ-ヺー]$/;
 
 /**
- * Whether a sentence has a word outside its dictionary links that you might not know: kanji you haven't studied
- * (自分 in 自分で, where the data didn't link a word) or a katakana word (ボウフラ). Nekko can't show what those
- * mean, so the sentence would need guessing: it's left out. Unlinked hiragana is mostly grammar (は, ました, んだよ).
+ * Whether a sentence has a word outside its dictionary links that you might not know: a word Nekko has no entry
+ * for (s.gaps: もつれ, たっぷり), kanji you haven't studied (in a word the data didn't link) or a katakana word
+ * (ボウフラ). Nekko can't show what those mean, so the sentence would need guessing: it's left out. Names in
+ * katakana (トム) are fine; other unlinked hiragana is grammar (は, ました, んだよ).
  */
 function strayWords(s: Sentence, k: ExampleKnowledge): boolean {
+  if (s.gaps?.length) return true;
   const linked = new Uint8Array(s.ja.length);
   for (const [start, len] of s.links) linked.fill(1, start, start + len);
+  // A name's katakana is fine; its kanji still have to be ones you know.
+  for (const [start, len] of s.names ?? []) for (let i = start; i < start + len; i++) if (!isKanji(s.ja[i])) linked[i] = 1;
   let kata = 0;
   for (let i = 0; i < s.ja.length; i++) {
     const c = s.ja[i];

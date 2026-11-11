@@ -974,6 +974,8 @@ def main():
     from more_sentences import add_sentences  # it imports this module, so only once it's loaded
     add_sentences(words, sentences, con, levels.get,
                   lambda wid: SENTENCES_PER_LESSON_WORD if words[wid].get("lesson") else SENTENCES_PER_WORD)
+    import relink_sentences  # every word in every sentence, not just the ones the sources linked
+    relink_sentences.main(con, words, sentences)
     audio_words = load_word_audio(words)
     commons_words = load_commons_audio(words)
     audio_sentences = load_sentence_audio(sentences)

@@ -76,4 +76,18 @@ describe("example sentences", () => {
     expect(patternSentence(data, "3")).toMatchObject({ ja: "とても 難解です。", en: "It's very difficult.", links: [[4, 2, "3"]] });
     expect(patternSentence(data, "5")?.en).toBe("It's hard to eat.");
   });
+
+  it("leaves out a sentence with a word Nekko has no entry for, but not one with a name", () => {
+    const d = {
+      ...data,
+      sentences: {
+        g: { ja: "猫がもつれた", en: "", links: [[0, 1, "1"]], gaps: [[2, 3]] },
+        n: { ja: "トムの猫", en: "", links: [[3, 1, "1"]], names: [[0, 2]] },
+        s: { ja: "トムの猫", en: "", links: [[3, 1, "1"]] },
+      },
+    } as unknown as Data;
+    const ids = readableByWords(d, k(["1"])).map((e) => e.id);
+    expect(ids).toEqual(["n"]);
+  });
 });
+
