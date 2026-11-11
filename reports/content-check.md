@@ -8,7 +8,7 @@ Checked: 21,903 words, 2,136 kanji, 372 radicals, 44,227 sentences, 115 stories,
 |---|---|---:|
 | Words | [Lesson words with no dictionary entry](#lesson-word-missing) | 0 |
 | Words | [Words with no meaning](#word-no-meaning) | 0 |
-| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 179 |
+| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 30 |
 | Words | [Words pointing at sentences that don't exist](#word-sentence-missing) | 0 |
 | Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 0 |
 | Words | [Lesson words whose furigana doesn't spell the word](#lesson-word-furigana) | 0 |
@@ -55,36 +55,36 @@ No sense has an English gloss, so the card has nothing to ask for.
 None. 🎉
 
 <a id="lesson-word-no-sentence"></a>
-## Words: Lesson words with no example sentence (179)
+## Words: Lesson words with no example sentence (30)
 
 Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.
 
-- 1 · 本木 (もとき) · original stock · 1523260
-- 2 · 三十日 (みそか) · last day of the month · 1604510
-- 6 · 二百十日 (にひゃくとおか) · 210th day after spring begins (typhoon season) · 1463030
-- 7 · 上田 (じょうでん) · high rice field · 1353990
-- 13 · 貸出用 (かしだしよう) · circulation or lending (e.g. library books) · 1949630
 - 18 · 元首 (げんしゅ) · sovereign · 1260870
-- 22 · 大店 (おおだな) · large store · 1862050
 - 24 · 字 (あざ) · section of village · 1315120
-- 26 · 上っ調子 (うわっちょうし) · flippant · 1352450
-- 26 · 室町 (むろまち) · Muromachi period (1336-1573) · 1608060
-- 28 · 今秋 (こんしゅう) · this autumn · 1289210
-- 30 · 米飯 (べいはん) · cooked rice · 1509010
-- 33 · 実兄 (じっけい) · biological older brother · 1320960
-- 35 · 要 (かなめ) · pivot · 1609600
-- 35 · 一期 (いちご) · one's whole life · 1161690
-- 38 · 多角 (たかく) · many-sided · 1610200
-- 39 · 告別 (こくべつ) · farewell · 1286080
 - 39 · 面 (おもて) · face · 1584680
-- 40 · 利払い (りばらい) · interest payment · 1549650
-- 41 · 在りし日 (ありしひ) · past days · 1741040
-- 41 · 決め球 (きめだま) · winning pitch · 1630640
-- 42 · 減反 (げんたん) · reduction (of crop size) · 1263310
-- 42 · 冊子 (さっし) · book · 1298530
-- 45 · 大路 (おおじ) · main street (esp. in a capital) · 1786960
-- 46 · 構図 (こうず) · composition (of painting) · 1279720
-- …and 154 more
+- 59 · 背 (せい) · height · 1472650
+- 63 · 抱く (だく) · to hold in one's arms (e.g. a baby) · 2844997
+- 73 · かるた · karuta · 1590710
+- 75 · 蔵相 (ぞうしょう) · Minister of Finance · 1403520
+- 75 · タイア · tire · 1076120
+- 76 · 管 (くだ) · pipe · 2868440
+- 88 · 酪農 (らくのう) · dairy farming · 1548890
+- 91 · まごまご · confused · 1012110
+- 99 · 殿 (どの) · Mr. · 1442500
+- 103 · レクリェーション · recreation · 1144860
+- 106 · 蒸す (むす) · to steam (food, towel, etc.) · 1356900
+- 107 · あぶる · to warm (e.g. one's hands over a fire) · 1568910
+- 143 · 感慨 (かんがい) · deep emotion · 1212310
+- 146 · 柄 (え) · handle · 1508290
+- 148 · ティッシュペーパー · tissue paper · 1079110
+- 148 · えい · ray (any fish of superorder Batoidea) · 1001130
+- 149 · ぼやく · to grumble · 1011850
+- 150 · 罰 (ばち) · (divine) punishment · 1478050
+- 150 · ずらっと · in a line · 1006430
+- 151 · ビールス · virus · 2843940
+- 151 · ふんだん · plentiful · 1011100
+- 151 · ぼつぼつ · gradually · 1011840
+- …and 5 more
 
 <a id="word-sentence-missing"></a>
 ## Words: Words pointing at sentences that don't exist (0)
