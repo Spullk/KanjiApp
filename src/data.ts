@@ -58,14 +58,15 @@ export type Word = {
   junk?: boolean;
 };
 
-/** audio: [Tatoeba audio id, speaker] when a freely licensed recording exists. */
-/** links: [start, length, word id]. gaps: words in kana Nekko has no entry for. names: people and places. */
+/** links: [start, length, word id]. gaps: words in kana Nekko has no entry for. names: people and places.
+ * g: the grammar points it uses (N5 and up). audio: [Tatoeba audio id, speaker] for a free recording. */
 export type Sentence = {
   ja: string;
   en: string;
   links: [number, number, string][];
   gaps?: [number, number][];
   names?: [number, number][];
+  g?: string[];
   audio?: [string, string];
 };
 export type Lesson = { id: number; radicals: string[]; kanji: string[]; words: string[] };

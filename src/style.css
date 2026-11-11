@@ -427,6 +427,19 @@ ruby rt {
   letter-spacing: 0.02em;
 }
 
+.sent-grammar {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.sent-grammar a {
+  color: inherit;
+}
+.sent-grammar a.new {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .sent-note {
   margin-top: 4px;
   color: var(--muted);

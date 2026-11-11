@@ -25,6 +25,20 @@ export const TIERS: { tier: Tier; label: string; levels: GrammarPoint["level"][]
 
 export const tierOf = (level: GrammarPoint["level"]): Tier => TIERS.find((t) => t.levels.includes(level))!.tier;
 
+const tierRank = (t: Tier) => TIERS.findIndex((x) => x.tier === t);
+
+/**
+ * Which grammar you know, for picking example sentences: what you've started or marked known, plus every level
+ * below where the grammar quiz placed you. Undefined until you've taken the quiz: then no sentence is left out
+ * for its grammar, since Nekko can't tell what you know.
+ */
+export function grammarKnown(store: Store, points: Record<string, GrammarPoint>): ((id: string) => boolean) | undefined {
+  const level = store.settings.grammarLevel;
+  if (!level || level === "skipped") return;
+  const below = tierRank(level);
+  return (id) => !points[id] || tierRank(tierOf(points[id].level)) < below || grammarDone(store, id);
+}
+
 // The tab you were last on, so Grammar opens straight to your level. Kept on this phone only: it's a place, not progress.
 const LAST_TIER = "nekko.grammarTier";
 

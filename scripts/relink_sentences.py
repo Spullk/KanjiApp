@@ -8,10 +8,13 @@ For each sentence (in place):
   gaps   [[start, length]]: words written in kana that Nekko has no entry for (もつれ, たっぷり). The app can't
          explain them, so a sentence with one is left out of the examples.
   names  [[start, length]]: names of people and places (トム, メアリー). A name is never a word to learn.
+  g      the grammar points it uses, from grammar_tags.py.
 Grammar words (particles, endings, interjections) are never gaps.
 """
 
+import json
 import re
+from pathlib import Path
 
 from build_stories import Linker, is_kanji
 
@@ -92,3 +95,7 @@ def main(con, words, sentences):
     added, gapped, named = relink(sentences, words, linker)
     print(f"Sentence words: {added} more links, {gapped} sentences with a word Nekko has no entry for, "
           f"{named} with a name")
+    import grammar_tags
+    points = json.loads((Path(__file__).parent.parent / "data" / "grammar.json").read_text(encoding="utf-8"))
+    tagged = grammar_tags.tag_sentences(sentences, [p["id"] for p in points], linker.tok)
+    print(f"Sentence grammar: {tagged} sentences use grammar from N5 up")

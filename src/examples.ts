@@ -6,6 +6,7 @@ import { isKanji, type Data, type Sentence } from "./data";
 import { knowledge, type Knowledge } from "./stories";
 import type { Store } from "./srs";
 import { studiedKanji } from "./reading";
+import { grammarKnown } from "./grammar";
 
 const indexes = new WeakMap<Data, Map<string, string[]>>();
 
@@ -34,15 +35,19 @@ export function warmExamples(data: Data) {
   else setTimeout(run, 2000);
 }
 
-/** What you know, plus whether kana-only words count as known (see `free`) and the kanji you've studied. */
-export type ExampleKnowledge = Knowledge & { kanaFree?: boolean; kanji?: Set<string> };
+/** What you know, plus whether kana-only words count as known (see `free`), the kanji you've studied and the
+ * grammar you know (unset: grammar doesn't count). */
+export type ExampleKnowledge = Knowledge & { kanaFree?: boolean; kanji?: Set<string>; grammar?: (id: string) => boolean };
 
 const knowCache = new WeakMap<Store, ExampleKnowledge>();
 
 /** What you know, worked out once per change to your progress. */
 export function knowledgeOf(store: Store, data: Data): ExampleKnowledge {
   let k = knowCache.get(store);
-  if (!k) knowCache.set(store, (k = { ...knowledge(store, data), kanaFree: store.settings.kanaWords === false, kanji: studiedKanji(store, data) }));
+  if (!k) {
+    k = { ...knowledge(store, data), kanaFree: store.settings.kanaWords === false, kanji: studiedKanji(store, data), grammar: grammarKnown(store, data.grammar) };
+    knowCache.set(store, k);
+  }
   return k;
 }
 
@@ -73,6 +78,11 @@ export function unknownWords(data: Data, k: ExampleKnowledge, s: Sentence, excep
   return out;
 }
 
+/** The grammar points in a sentence you don't know yet. */
+export function unknownGrammar(k: ExampleKnowledge, s: Sentence): string[] {
+  return k.grammar && s.g ? s.g.filter((id) => !k.grammar!(id)) : [];
+}
+
 const KATAKANA = /^[ァ-ヺー]$/;
 
 /**
@@ -101,7 +111,8 @@ function strayWords(s: Sentence, k: ExampleKnowledge): boolean {
   return false;
 }
 
-/** The most words you don't know a sentence may have: one, and the word itself is it if you haven't learned it. */
+/** The most words (or grammar points) you don't know a sentence may have: one, and the word itself is it if you
+ * haven't learned it. */
 export const MAX_UNKNOWN = 1;
 
 /** Sentences with at most one word you don't know, and at least one kanji, for Read → Sentences. */
@@ -111,12 +122,17 @@ export function readableByWords(data: Data, k: ExampleKnowledge, maxUnknown = MA
     const s = data.sentences[id];
     if (![...s.ja].some(isKanji) || strayWords(s, k)) continue;
     const unknown = unknownWords(data, k, s);
-    if (unknown.length <= maxUnknown) out.push({ id, unknown });
+    const grammar = unknownGrammar(k, s);
+    if (unknown.length + grammar.length <= maxUnknown) out.push({ id, unknown, grammar });
   }
   return out;
 }
 
-export type Example = { id: string; unknown: string[] };
+/** unknown: words you don't know. grammar: grammar points you don't know. */
+export type Example = { id: string; unknown: string[]; grammar: string[] };
+
+/** How much in a sentence is new to you. */
+export const newCount = (e: Example) => e.unknown.length + e.grammar.length;
 
 /**
  * A word's example sentences you can read, easiest first: no other new word, then its own picks, then the rest.
@@ -128,11 +144,11 @@ export function examplesFor(data: Data, k: ExampleKnowledge, wordId: string, max
   const room = MAX_UNKNOWN - (k.word(wordId) === "new" ? 1 : 0);
   return ids
     .filter((id) => !strayWords(data.sentences[id], k))
-    .map((id, i) => ({ id, i, unknown: unknownWords(data, k, data.sentences[id], wordId) }))
-    .filter((e) => e.unknown.length <= room)
-    .sort((a, b) => a.unknown.length - b.unknown.length || a.i - b.i)
+    .map((id, i) => ({ id, i, unknown: unknownWords(data, k, data.sentences[id], wordId), grammar: unknownGrammar(k, data.sentences[id]) }))
+    .filter((e) => newCount(e) <= room)
+    .sort((a, b) => newCount(a) - newCount(b) || a.i - b.i)
     .slice(0, max)
-    .map(({ id, unknown }) => ({ id, unknown }));
+    .map(({ id, unknown, grammar }) => ({ id, unknown, grammar }));
 }
 
 /** Sentences for a kanji page: the easiest one for each of its words, easiest overall first. */
@@ -146,7 +162,7 @@ export function kanjiExamples(data: Data, k: ExampleKnowledge, words: string[], 
       out.push(best);
     }
   }
-  return out.sort((a, b) => a.unknown.length - b.unknown.length).slice(0, max);
+  return out.sort((a, b) => newCount(a) - newCount(b)).slice(0, max);
 }
 
 /** First meaning, without notes like "(another's)". */

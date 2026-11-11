@@ -14,7 +14,7 @@ import { FONT_WAIT_MS, fontFor, fontState, loadFont } from "./fonts";
 import { alignFurigana, Furigana, Romaji, WordSpeak } from "./components/bits";
 import { MainReadings, ReadingUse } from "./components/ItemCards";
 import { readingForms } from "./answers";
-import { examplesFor, knowledgeOf, patternSentence } from "./examples";
+import { examplesFor, knowledgeOf, newCount, patternSentence } from "./examples";
 
 /** One thing to type in typed-answer mode, and every answer that counts. */
 export type Ask = {
@@ -98,7 +98,7 @@ function GrammarGap({ id, filled }: { id: string; filled?: boolean }) {
  * the easiest few at each review; a pattern sentence when there's none. */
 export function contextSentence(store: Store, data: Data, key: string): Sentence {
   const list = examplesFor(data, knowledgeOf(store, data), key, 3);
-  const easiest = list.filter((e) => e.unknown.length === list[0].unknown.length);
+  const easiest = list.filter((e) => newCount(e) === newCount(list[0]));
   const reps = store.cards[cardId("word", key, "context")]?.reps ?? 0;
   if (easiest.length) return data.sentences[easiest[reps % easiest.length].id];
   const w = data.words[key];

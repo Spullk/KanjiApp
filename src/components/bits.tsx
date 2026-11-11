@@ -6,6 +6,7 @@ import { furiganaRule } from "../reading";
 import { useStore } from "../srs";
 import { href } from "../router";
 import { hasRecording, playSentence, playWord } from "../audio";
+import { knowledgeOf, unknownGrammar } from "../examples";
 
 /**
  * A word with furigana, where each kanji links to its own page. With `hide`, readings it hides (kanji you've been
@@ -150,9 +151,39 @@ export function SentenceView({
         {parts}
       </div>
       <div class="sent-en">{s.en}</div>
+      <GrammarIn s={s} />
       {note && <div class="sent-note">{note}</div>}
     </div>
   );
+}
+
+/** "Grammar: てしまう · ために", each linked to its grammar point; the ones you haven't learned marked new. */
+export function GrammarIn({ s }: { s: Sentence }) {
+  const data = useData();
+  const store = useStore();
+  if (!s.g?.length) return null;
+  const fresh = unknownGrammar(knowledgeOf(store, data), s);
+  return (
+    <div class="sent-grammar">
+      Grammar:{" "}
+      {s.g.map((id, i) => (
+        <span key={id}>
+          {i > 0 && " · "}
+          <a href={href.grammarPoint(id)} lang="ja" class={fresh.includes(id) ? "new" : undefined}>
+            {grammarLabel(data.grammar[id]?.title ?? id)}
+          </a>
+          {fresh.includes(id) && <small> new</small>}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/** A grammar point's name without its explanation, the Japanese half when there is one: "てしまう: all done, or
+ * oops" → "てしまう", "Plain past: た" → "た", "Potential form: can do" → "Potential form". */
+export function grammarLabel(title: string): string {
+  const parts = title.split(": ");
+  return parts.find((p) => /[ぁ-ヿ一-鿿]/.test(p)) ?? parts[0];
 }
 
 /** A word's furigana fitted to how it's written in a sentence: 言う's segments over 言った. Null if they don't fit. */

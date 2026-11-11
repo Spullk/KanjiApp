@@ -5,7 +5,7 @@ import { href } from "../router";
 import { getStore } from "../srs";
 import { knowledgeOf, readableByWords } from "../examples";
 import { playSentence } from "../audio";
-import { SpeakButton, WordGloss } from "../components/bits";
+import { GrammarIn, SpeakButton, WordGloss } from "../components/bits";
 import { shuffle } from "./PracticePage";
 
 /** Read sentences made of words you know, with at most one new one. Tap a word to see its reading and meaning. */
@@ -102,6 +102,7 @@ export function SentencesPage() {
           )}
         </div>
         {word && <WordGloss id={word} />}
+        <GrammarIn s={s} />
         {english ? (
           <div class="read-en">{s.en}</div>
         ) : (

@@ -89,5 +89,15 @@ describe("example sentences", () => {
     const ids = readableByWords(d, k(["1"])).map((e) => e.id);
     expect(ids).toEqual(["n"]);
   });
+
+  it("counts grammar you haven't learned like a new word", () => {
+    const d = { ...data, sentences: { p: { ja: "猫と犬", en: "", links: [[0, 1, "1"], [2, 1, "2"]], g: ["passive"] } } } as unknown as Data;
+    const knows = (ids: string[]) => ({ ...k(["1"]), grammar: (id: string) => ids.includes(id) });
+    // 犬 is new, so new grammar on top is one too many.
+    expect(readableByWords(d, knows([]))).toEqual([]);
+    expect(readableByWords(d, knows(["passive"]))).toEqual([{ id: "p", unknown: ["2"], grammar: [] }]);
+    // Without a grammar level, grammar doesn't count.
+    expect(readableByWords(d, k(["1"]))).toEqual([{ id: "p", unknown: ["2"], grammar: [] }]);
+  });
 });
 
