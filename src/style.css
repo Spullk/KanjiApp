@@ -38,11 +38,18 @@
   box-sizing: border-box;
 }
 
+/* NO SIDEWAYS SCROLL RULE: the page never scrolls left-right on a phone. Anything too wide (a long word
+   list, a big table) must cut itself off with an ellipsis, wrap, or scroll inside its own box. Fixed-count grids
+   use minmax(0, 1fr) and flex children get min-width: 0 so long content can't stretch them past the screen.
+   The clip below is the safety net, not the fix. */
 html {
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
+  overflow-x: clip;
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -715,12 +722,13 @@ a.primary {
 
 .home-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 8px;
 }
 
 .big-action {
+  min-width: 0;
   border-radius: 18px;
   padding: 16px;
   color: #fff;
@@ -949,12 +957,12 @@ a.primary {
 
 .grade-buttons {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin-top: 12px;
 }
 .grade-buttons.two {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .grade {
@@ -1020,7 +1028,7 @@ a.primary {
 
 .stat-tiles {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -1067,7 +1075,7 @@ a.primary {
 
 .forecast {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 6px;
   height: 120px;
   align-items: end;
@@ -1310,7 +1318,7 @@ button.secondary,
 
 .known-levels {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
 .known-levels button {
@@ -2806,7 +2814,7 @@ button.danger-outline:disabled {
 }
 .quiz-options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin: 14px 0 8px;
 }
