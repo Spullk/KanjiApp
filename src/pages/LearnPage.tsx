@@ -4,6 +4,7 @@ import { href } from "../router";
 import { addItem, getStore, isAdded, newLeftToday, nextToLearn, update, useStore } from "../srs";
 import { ItemSummary } from "../components/ItemCards";
 import { knowledge, newWords, useStories } from "../stories";
+import { BottomBar } from "../components/BottomBar";
 
 /** The next items to learn, or with `story` that story's new words, most used first. They come one at a time:
  * each is added to your reviews as you move past it, so leaving halfway keeps what you've seen. */
@@ -80,7 +81,7 @@ export function LearnPage({ story }: { story?: string }) {
       <a class="link-button" href={link}>
         See everything about it
       </a>
-      <div class="answer-bar learn-bar">
+      <BottomBar class="learn-bar">
         {i > 0 && (
           <button class="secondary" onClick={back}>
             Back
@@ -89,7 +90,7 @@ export function LearnPage({ story }: { story?: string }) {
         <button class="primary" onClick={next}>
           {last ? "Start reviews" : "Got it, next"}
         </button>
-      </div>
+      </BottomBar>
     </article>
   );
 }

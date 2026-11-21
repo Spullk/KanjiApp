@@ -4,6 +4,7 @@ import { getStore, PRACTICE_LABEL, practiceCards, useStore, type PracticeSet } f
 import { Section } from "../components/bits";
 import { CardBack, CardFront, usePreloadFonts } from "../cards";
 import { useTapToReveal } from "../components/AnswerModes";
+import { BottomBar } from "../components/BottomBar";
 
 /** Extra study: go through a set of cards as often as you like. Nothing here changes when they're due. */
 export function PracticePage({ set }: { set: PracticeSet }) {
@@ -46,7 +47,7 @@ export function PracticePage({ set }: { set: PracticeSet }) {
       {shown ? (
         <>
           <CardBack id={current} note={getStore().items[current.slice(0, current.lastIndexOf(":"))]?.note} />
-          <div class="answer-bar">
+          <BottomBar>
             <div class="grade-buttons two">
               <button class="grade g1" onClick={() => next(false)}>
                 <span>Missed it</span>
@@ -56,14 +57,14 @@ export function PracticePage({ set }: { set: PracticeSet }) {
                 <span>Got it</span>
               </button>
             </div>
-          </div>
+          </BottomBar>
         </>
       ) : (
-        <div class="answer-bar">
+        <BottomBar>
           <button class="primary wide reveal" onClick={() => setShown(true)}>
             Show answer
           </button>
-        </div>
+        </BottomBar>
       )}
     </article>
   );

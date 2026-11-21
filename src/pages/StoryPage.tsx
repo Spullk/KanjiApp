@@ -7,6 +7,7 @@ import { coverage, isFinished, knowledge, loadStory, newWords, setFinished, useS
 import { studiedKanji } from "../reading";
 import { WordGloss } from "../components/bits";
 import { minutes } from "./StoriesPage";
+import { BottomBar } from "../components/BottomBar";
 
 /** A story, exactly as published, with every word tappable and the words you don't know underlined. */
 export function StoryPage({ id }: { id: string }) {
@@ -51,9 +52,9 @@ export function StoryPage({ id }: { id: string }) {
         ))}
       </div>
       {word && (
-        <div class="story-gloss">
+        <BottomBar class="story-gloss">
           <WordGloss id={word} />
-        </div>
+        </BottomBar>
       )}
 
       {fresh.length > 0 && (

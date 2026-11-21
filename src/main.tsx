@@ -2,6 +2,7 @@ import { render } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { loadData, loadSentences } from "./data";
 import { useRoute, type Route } from "./router";
+import { DOCK_SLOT } from "./components/BottomBar";
 import { HomePage } from "./pages/HomePage";
 import { KanjiPage } from "./pages/KanjiPage";
 import { WordPage } from "./pages/WordPage";
@@ -98,15 +99,16 @@ function App() {
   const due = dueCards(store).length;
   const bar = barTools(store.settings);
   const on = activeTab(bar, route.page);
-  // Things pinned to the bottom of the screen (the review buttons) sit on top of the tab bar, so they need its height.
-  const tabbar = useRef<HTMLElement>(null);
+  // Overlays (the tour card) sit above the dock, so they need its height. Layout itself never uses this number:
+  // the dock is a normal row at the end of the page, so nothing can end up underneath it.
+  const dock = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const nav = tabbar.current;
-    if (!nav) return;
-    const set = () => document.documentElement.style.setProperty("--tabbar-h", `${nav.offsetHeight}px`);
+    const el = dock.current;
+    if (!el) return;
+    const set = () => document.documentElement.style.setProperty("--dock-h", `${el.offsetHeight}px`);
     set();
     const watch = new ResizeObserver(set);
-    watch.observe(nav);
+    watch.observe(el, { box: "border-box" }); // border-box: also catches the phone's home-strip padding changing
     return () => watch.disconnect();
   }, []);
   useEffect(() => {
@@ -135,21 +137,24 @@ function App() {
       <main>
         {error ? <p class="empty">Couldn't load the dictionary: {error}</p> : ready && (sentences || NO_SENTENCES.has(route.page)) ? <Page route={route} /> : <Loading />}
       </main>
-      <nav class="tabbar" ref={tabbar}>
-        {bar.map((t) => (
-          <a key={t.tab} data-tab={t.tab} class={[t.tab === on && "on", t.group].filter(Boolean).join(" ")} href={t.href}>
-            {t.path ? (
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d={t.path} />
-              </svg>
-            ) : (
-              <span aria-hidden="true">{t.icon}</span>
-            )}
-            {t.short ?? t.label}
-            {t.tab === "review" && due > 0 && <b class="tab-badge">{due}</b>}
-          </a>
-        ))}
-      </nav>
+      <div class="dock" ref={dock}>
+        <div class="dock-actions" id={DOCK_SLOT} />
+        <nav class="tabbar">
+          {bar.map((t) => (
+            <a key={t.tab} data-tab={t.tab} class={[t.tab === on && "on", t.group].filter(Boolean).join(" ")} href={t.href}>
+              {t.path ? (
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={t.path} />
+                </svg>
+              ) : (
+                <span aria-hidden="true">{t.icon}</span>
+              )}
+              {t.short ?? t.label}
+              {t.tab === "review" && due > 0 && <b class="tab-badge">{due}</b>}
+            </a>
+          ))}
+        </nav>
+      </div>
       {ready && <Welcome />}
       {ready && <Tour />}
     </>

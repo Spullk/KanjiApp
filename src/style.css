@@ -11,7 +11,9 @@
   --hl: #fde68a;
   --hl-text: #1f1b24;
   --tab: rgba(255, 255, 255, 0.92);
-  --tabbar-h: calc(58px + env(safe-area-inset-bottom)); /* measured and set by the app once the tab bar is up */
+  /* Height of the dock (action bar + tab bar), measured by the app. Only overlays such as the tour card use it:
+     page layout never does (see LAYOUT RULES below and docs/design-rules.md). */
+  --dock-h: calc(58px + env(safe-area-inset-bottom));
   --ja-font: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
   color-scheme: light;
 }
@@ -50,6 +52,7 @@ html {
 
 body {
   overflow-x: clip;
+  overflow-wrap: break-word; /* a long unbroken word wraps instead of pushing the page wider */
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -66,11 +69,48 @@ a {
   text-decoration: none;
 }
 
+/* LAYOUT RULES: the app is one column of three rows: the page (main), then the dock (a page's action bar,
+   then the tab bar). The dock is part of the layout, at the end of the page, and sticky keeps it on screen while
+   the page scrolls. Because it's a real row and not laid over the page:
+   - nothing needs to know its height, and the end of the page is never hidden under it;
+   - a page's bottom buttons go in the dock (the BottomBar component), stacked above the tab bar, never
+     position: fixed with a guessed bottom offset;
+   - the phone's home strip (env(safe-area-inset-bottom)) is padding on the tab bar only, in one place. */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+html,
+body {
+  overscroll-behavior-y: none; /* no rubber-band bounce, so the dock never jiggles at the ends of the page */
+}
+
 main {
+  flex: 1 0 auto;
+  width: 100%;
+  min-width: 0;
   max-width: 720px;
   margin: 0 auto;
-  padding: calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(84px + env(safe-area-inset-bottom))
-    calc(16px + env(safe-area-inset-left));
+  padding: calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) 24px calc(16px + env(safe-area-inset-left));
+}
+img,
+video {
+  max-width: 100%;
+}
+
+.dock {
+  position: sticky;
+  bottom: 0;
+  z-index: 21;
+}
+/* A page's action bar (BottomBar) lands here, above the tab bar. Empty, it takes no space. */
+.dock-actions {
+  background: var(--bg);
+}
+.dock-actions:empty {
+  display: none;
 }
 
 h1 {
@@ -546,10 +586,6 @@ a.more {
 /* ---------- tab bar */
 
 .tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   display: flex;
   justify-content: space-around;
   background: var(--tab);
@@ -1004,13 +1040,8 @@ a.primary {
 }
 
 /* Show answer and the grade buttons sit at the bottom of the screen, just above the tab bar, where a thumb
-   reaches them. The page gets room at the end so the last of the answer can scroll out from behind them. */
+   reaches them. They're rendered into the dock (BottomBar), so they stack on the tab bar instead of overlapping it. */
 .answer-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: var(--tabbar-h);
-  z-index: 19;
   max-width: 720px;
   margin: 0 auto;
   padding: 8px calc(16px + env(safe-area-inset-right)) 8px calc(16px + env(safe-area-inset-left));
@@ -1019,9 +1050,6 @@ a.primary {
 .answer-bar .wide,
 .answer-bar .grade-buttons {
   margin-top: 0;
-}
-.page.review {
-  padding-bottom: 88px;
 }
 
 /* progress */
@@ -1743,11 +1771,9 @@ button.next.wrong {
 .story .read-word.on {
   border-bottom-color: transparent;
 }
-.story-gloss {
-  position: sticky;
-  bottom: calc(64px + env(safe-area-inset-bottom));
-  background: var(--bg);
-  padding: 4px 0;
+.answer-bar.story-gloss {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 .story-option {
   display: flex;
@@ -1918,7 +1944,7 @@ button.next.wrong {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 16px 16px calc(84px + env(safe-area-inset-bottom));
+  padding: 16px 16px calc(var(--dock-h) + 8px);
   background: rgba(10, 8, 14, 0.45);
 }
 .tour-card {
@@ -2738,9 +2764,6 @@ button.danger-outline:disabled {
 }
 
 /* learn, one item at a time */
-.learn-one {
-  padding-bottom: 88px;
-}
 .learn-head {
   display: flex;
   align-items: center;
@@ -2802,9 +2825,6 @@ button.danger-outline:disabled {
 }
 
 /* grammar level quiz */
-.page.quiz {
-  padding-bottom: 88px;
-}
 .quiz-ask {
   color: var(--muted);
   margin: 4px 0 8px;

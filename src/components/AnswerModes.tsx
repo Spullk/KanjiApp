@@ -8,6 +8,7 @@ import { checkMeaning, checkReading, type Verdict } from "../answers";
 import { CardBack, cardType, type Ask } from "../cards";
 import { getStore, itemInfo, parseCardId, preview, Rating, setItemInfo, update, useStore, type Grade } from "../srs";
 import { shortInterval } from "./ItemCards";
+import { BottomBar } from "./BottomBar";
 
 export type AnswerProps = { id: string; onAnswer: (g: Grade) => void };
 
@@ -23,8 +24,8 @@ const BUTTONS: [Grade, string][] = [
   [Rating.Easy, "Easy"],
 ];
 
-// Taps that do something of their own: links, buttons, fields, the tab bar, the tour.
-const OWN_TAP = "a, button, input, textarea, select, label, summary, details, audio, [role=button], [role=dialog], .tabbar, .tour-backdrop, .welcome";
+// Taps that do something of their own: links, buttons, fields, the dock (tab bar and action bar), the tour.
+const OWN_TAP = "a, button, input, textarea, select, label, summary, details, audio, [role=button], [role=dialog], .dock, .tour-backdrop, .welcome";
 
 /** While the answer is hidden, a tap anywhere empty on the screen shows it, not just the Show answer button. */
 export function useTapToReveal(active: boolean, reveal: () => void) {
@@ -71,18 +72,18 @@ export function SelfGrade({ id, onAnswer: answer }: AnswerProps) {
 
   if (!shown) {
     return (
-      <div class="answer-bar">
+      <BottomBar>
         <button class="primary wide reveal" onClick={() => setShown(true)}>
           Show answer
         </button>
-      </div>
+      </BottomBar>
     );
   }
   const times = preview(getStore(), id);
   return (
     <>
       <CardBack id={id} note={itemInfo(store, kind, key)?.note} />
-      <div class="answer-bar">
+      <BottomBar>
         <div class="grade-buttons">
           {BUTTONS.map(([g, label]) => (
             <button key={g} class={`grade g${g}`} onClick={() => onAnswer(g)}>
@@ -91,7 +92,7 @@ export function SelfGrade({ id, onAnswer: answer }: AnswerProps) {
             </button>
           ))}
         </div>
-      </div>
+      </BottomBar>
     </>
   );
 }

@@ -10,6 +10,7 @@ import { drillOf } from "../kanaDrill";
 import { speak } from "../audio";
 import { Furigana, readingOf, Romaji, Section, SpeakButton } from "../components/bits";
 import { StudyButton } from "../components/ItemCards";
+import { BottomBar } from "../components/BottomBar";
 
 /** Where the kana sit among the Start here points: hiragana before the sound rules, katakana before foreign words. */
 const KANA_BEFORE: Record<string, Script> = { dakuten: "hira", "katakana-words": "kata" };
@@ -203,11 +204,11 @@ function GrammarQuiz({ points, onDone }: { points: GrammarPoint[]; onDone: (tier
           I don't know
         </button>
       ) : (
-        <div class="answer-bar">
+        <BottomBar>
           <button class="primary wide" onClick={next}>
             Next
           </button>
-        </div>
+        </BottomBar>
       )}
     </article>
   );
