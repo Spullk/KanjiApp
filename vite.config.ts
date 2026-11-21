@@ -57,6 +57,12 @@ export default defineConfig({
         // Review fonts (a few KB per card, see src/fonts.ts) are kept once fetched, so a card seen before gets its
         // font straight away, even offline.
         runtimeCaching: [
+          // The Songs word splitter's dictionary (~18 MB): downloaded the first time Songs needs it, then kept.
+          {
+            urlPattern: ({ url }) => url.pathname.includes("/kuromoji/dict/"),
+            handler: "CacheFirst",
+            options: { cacheName: "nekko-kuromoji", cacheableResponse: { statuses: [200] } },
+          },
           {
             urlPattern: ({ url }) => url.origin === "https://fonts.googleapis.com" || url.origin === "https://fonts.gstatic.com",
             handler: "CacheFirst",

@@ -20,6 +20,9 @@ export type Route =
   | { page: "read" }
   | { page: "sentences" }
   | { page: "story"; id: string }
+  | { page: "songs" }
+  | { page: "songAdd" }
+  | { page: "song"; id: string }
   | { page: "grammar" }
   | { page: "grammarPoint"; id: string }
   | { page: "kana" }
@@ -44,6 +47,9 @@ export const href = {
   read: () => "#/read",
   sentences: () => "#/sentences",
   story: (id: string) => `#/story/${id}`,
+  songs: () => "#/songs",
+  songAdd: () => "#/songs/add",
+  song: (id: string) => `#/song/${id}`,
   grammar: () => "#/grammar",
   grammarPoint: (id: string) => `#/grammar/${id}`,
   kana: () => "#/kana",
@@ -81,6 +87,10 @@ export function parse(hash: string): Route {
       return { page: "sentences" };
     case "story":
       return { page: "story", id: seg[1] };
+    case "songs":
+      return seg[1] === "add" ? { page: "songAdd" } : { page: "songs" };
+    case "song":
+      return { page: "song", id: seg[1] };
     case "grammar":
       return seg[1] ? { page: "grammarPoint", id: seg[1] } : { page: "grammar" };
     case "kana":

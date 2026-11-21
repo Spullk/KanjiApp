@@ -19,6 +19,8 @@ import { WritePage } from "./pages/WritePage";
 import { SentencesPage } from "./pages/SentencesPage";
 import { StoriesPage } from "./pages/StoriesPage";
 import { StoryPage } from "./pages/StoryPage";
+import { SongAddPage, SongsPage } from "./pages/SongsPage";
+import { SongPage } from "./pages/SongPage";
 import { GrammarPage, GrammarPointPage } from "./pages/GrammarPages";
 import { KanaPage, KanaPracticePage, KanaRowPage } from "./pages/KanaPages";
 import { Welcome } from "./components/Welcome";
@@ -68,6 +70,12 @@ function Page({ route }: { route: Route }) {
       return <SentencesPage />;
     case "story":
       return <StoryPage id={route.id} />;
+    case "songs":
+      return <SongsPage />;
+    case "songAdd":
+      return <SongAddPage />;
+    case "song":
+      return <SongPage id={route.id} />;
     case "grammar":
       return <GrammarPage />;
     case "grammarPoint":
@@ -88,7 +96,7 @@ function Page({ route }: { route: Route }) {
 }
 
 /** Pages that open without the example sentences, so they can show before those have loaded. */
-const NO_SENTENCES = new Set<Route["page"]>(["home", "lessons", "lesson", "progress", "settings", "known", "search", "grammar", "grammarPoint", "kana", "kanaRow", "kanaPractice", "read", "story", "write", "radical"]);
+const NO_SENTENCES = new Set<Route["page"]>(["home", "lessons", "lesson", "progress", "settings", "known", "search", "grammar", "grammarPoint", "kana", "kanaRow", "kanaPractice", "read", "story", "write", "radical", "songs", "songAdd", "song"]);
 
 function App() {
   const [ready, setReady] = useState(false);

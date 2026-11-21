@@ -7,6 +7,7 @@ import { isJunkWord, isKanaWord, type Data } from "./data";
 import { defaultAdapter, localStorageAdapter, type StorageAdapter } from "./storage";
 import { customOrder, kanjiOrder, teachingOrder, type StudyOrder } from "./order";
 import { canonical, compactStore, expandStore, isCompact } from "./compact";
+import type { Song } from "./songs";
 
 export { Rating, State };
 export type { Grade };
@@ -111,6 +112,8 @@ export type Settings = {
   homeGroups?: string[];
   /** The grammar level the placement quiz put you on ("skipped" if you skipped it). Unset: not taken yet. */
   grammarLevel?: "beginner" | "n5" | "n4" | "n3" | "n2" | "skipped";
+  /** The Claude model Songs uses with your own API key. Unset means Sonnet. */
+  aiModel?: "haiku" | "sonnet" | "opus";
 };
 
 /** What you've told Nekko about an item, apart from its cards. */
@@ -123,6 +126,10 @@ export type ItemInfo = {
   synonyms?: string[];
   /** Kana drill only ("kana:か"): where the kana sits in the practice queue (see kanaDrill.ts). */
   drill?: Drill;
+  /** Put at the front of your new lessons (from a song), and when. Earlier comes first. */
+  queued?: number;
+  /** "song:<id>" only: the song (songs.ts). */
+  song?: Song;
   updated: number;
 };
 
@@ -274,6 +281,7 @@ export function setItemInfo(store: Store, kind: ItemKind, key: string, change: P
   if (!next.status) delete next.status;
   if (!next.note?.trim()) delete next.note;
   if (!next.synonyms?.length) delete next.synonyms;
+  if (!next.queued) delete next.queued;
   store.items[id] = next;
 }
 
@@ -581,6 +589,14 @@ export function nextToLearn(store: Store, data: Data, n: number): { kind: ItemKi
     seen.add(id);
     return out.length >= n;
   };
+  // Words you picked in a song (and their kanji) come first, in the order you added them.
+  const queued = Object.entries(store.items)
+    .filter(([, info]) => info.queued)
+    .sort((a, b) => a[1].queued! - b[1].queued!);
+  for (const [id] of queued) {
+    const [kind, key] = id.split(":") as [ItemKind, string];
+    if ((kind === "word" && data.words[key]) || (kind === "kanji" && data.kanji[key])) if (take({ kind, key })) return out;
+  }
   const order = store.settings.order ?? "lessons";
   if (order === "custom") {
     for (const it of customOrder(data, store.settings.customList ?? [])) if (take(it)) return out;

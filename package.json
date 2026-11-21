@@ -14,6 +14,7 @@
     "android": "npm run app && cap open android"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.12.0",
     "@capacitor-community/text-to-speech": "^8.0.2",
     "@capacitor-firebase/authentication": "8.5.2",
     "@capacitor/android": "^8.5.3",

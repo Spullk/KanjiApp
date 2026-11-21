@@ -11,7 +11,7 @@ const BASE = process.env.BASE || "http://127.0.0.1:5173/";
 const SHOTS = process.env.SHOTS;
 const PHONES = ["iPhone SE", "iPhone 13", "Pixel 7"];
 
-const ROUTES = ["#/", "#/lessons", "#/lesson/1", "#/k/日", "#/r/日", "#/search?q=hi", "#/progress", "#/settings", "#/read", "#/sentences", "#/grammar", "#/kana", "#/write", "#/practice", "#/known"];
+const ROUTES = ["#/", "#/songs", "#/songs/add", "#/lessons", "#/lesson/1", "#/k/日", "#/r/日", "#/search?q=hi", "#/progress", "#/settings", "#/read", "#/sentences", "#/grammar", "#/kana", "#/write", "#/practice", "#/known"];
 
 async function measure(p) {
   return p.evaluate(() => {

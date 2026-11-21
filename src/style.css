@@ -15,6 +15,12 @@
      page layout never does (see LAYOUT RULES below and docs/design-rules.md). */
   --dock-h: calc(58px + env(safe-area-inset-bottom));
   --ja-font: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  /* ACCENT RULE: highlights (underlines, the open line, buttons on new pages) come from these few tokens, so the
+     colours can change in one place. New screens and the redesign use them instead of fixed colours. */
+  --accent: var(--vocab);
+  --accent-ink: #ffffff;
+  --added: var(--grammar);
+  --sung: #d97706;
   color-scheme: light;
 }
 
@@ -32,6 +38,7 @@
     --hl: #6b5313;
     --hl-text: #fff4cf;
     --tab: rgba(30, 26, 35, 0.92);
+    --sung: #f59e0b;
     color-scheme: dark;
   }
 }
@@ -2905,4 +2912,645 @@ button.danger-outline:disabled {
 .flag-box .error {
   color: #c43d3d;
   margin: 6px 0 0;
+}
+
+/* ---------------------------------------------------------------- songs */
+
+.text-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 16px;
+}
+.form-error {
+  color: #c2410c;
+  font-size: 0.9rem;
+}
+.muted {
+  color: var(--muted);
+}
+.field-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 10px 0 6px;
+}
+.ai-key-row {
+  display: flex;
+  gap: 8px;
+}
+.ai-key-row .text-input {
+  flex: 1;
+  min-width: 0;
+}
+.seg-tabs {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 12px;
+  background: var(--line);
+  margin: 12px 0;
+}
+.seg-tabs button {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  border-radius: 9px;
+  padding: 8px;
+  color: var(--muted);
+}
+.seg-tabs button.on {
+  background: var(--card);
+  color: var(--text);
+  font-weight: 600;
+}
+.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+.song-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  color: var(--text);
+  min-width: 0;
+}
+.song-row-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.song-row-meta {
+  color: var(--muted);
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+.song-search {
+  display: flex;
+  gap: 8px;
+}
+.song-search .search-box {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+.song-paste {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.song-paste textarea,
+.ai-notes textarea,
+.ai-steps textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 16px;
+  resize: vertical;
+}
+.song-paste .wide {
+  margin-top: 0;
+}
+
+.song-page h1 {
+  margin-bottom: 2px;
+  overflow-wrap: anywhere;
+}
+.song-meta {
+  color: var(--muted);
+  margin: 2px 0 12px;
+  font-size: 0.93rem;
+}
+.song-about {
+  margin: 0 0 10px;
+}
+.song-about summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.93rem;
+}
+.song-about p {
+  font-size: 0.93rem;
+  margin: 8px 0 0;
+}
+.song-sources a {
+  display: block;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+.ask-song,
+.askline,
+.word-card .ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ask-song {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+.ask-song svg,
+.askline svg,
+.word-card .ask svg,
+.lb svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+.ai-notes {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin: 0 0 18px;
+}
+.ai-notes h2 {
+  font-size: 1rem;
+  margin: 0 0 4px;
+}
+.ai-steps {
+  padding-left: 20px;
+  margin: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ai-steps textarea {
+  margin-top: 6px;
+}
+.ai-steps .wide {
+  margin-top: 8px;
+}
+.ai-run {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.lyrics {
+  display: flex;
+  flex-direction: column;
+}
+.stanza-gap {
+  height: 18px;
+}
+.lrow {
+  border-radius: 14px;
+  min-width: 0;
+}
+.lrow.open {
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 0 10px 12px;
+  margin: 4px -11px;
+}
+.lmain {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ja-line {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.32rem;
+  line-height: 2.35;
+  overflow-wrap: anywhere;
+}
+.sw {
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  padding: 0 1px;
+  border-radius: 5px;
+  line-height: inherit;
+}
+.sw.new {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.sw.learning {
+  background-image: linear-gradient(to right, var(--accent) 55%, transparent 55%);
+  background-size: 5px 2px;
+  background-repeat: repeat-x;
+  background-position: 0 calc(100% - 1px);
+}
+.sw.added {
+  box-shadow: inset 0 -2px 0 var(--added);
+}
+.sw.on {
+  background: var(--hl);
+  color: var(--hl-text);
+  box-shadow: none;
+}
+.sw rt {
+  font-size: 0.48em;
+  color: var(--sung);
+  font-weight: 600;
+}
+.lb {
+  flex: none;
+  border: none;
+  background: none;
+  color: var(--muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  opacity: 0.55;
+}
+.lb.on {
+  opacity: 1;
+  color: var(--accent);
+  background: var(--bg);
+}
+.lb svg {
+  width: 18px;
+  height: 18px;
+}
+.lpanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.97rem;
+}
+.wbw {
+  display: flex;
+  flex-direction: column;
+}
+.wbw button {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 10px;
+  text-align: left;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--line);
+  padding: 7px 2px;
+  color: var(--text);
+}
+.wbw .jw {
+  font-size: 1.08rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.wbw .jr {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.wbw .base {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin-left: 4px;
+  vertical-align: 1px;
+}
+.tag.new {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.tag.learning {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+.tag.sung {
+  background: var(--sung);
+  color: #fff;
+}
+.tag.added {
+  background: var(--added);
+  color: #fff;
+}
+.lpanel .note {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.92rem;
+}
+.lpanel .note b,
+.wc-sec > b {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.askline {
+  align-self: flex-start;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 4px 2px;
+}
+.song-credit {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin: 26px 0 0;
+}
+.song-tools {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+/* Room to scroll past the last line, so any line can sit at the height you like to read at. */
+.runout {
+  height: 72vh;
+}
+/* The word card floats above the tab bar: it never adds to how far the page scrolls. */
+.word-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--dock-h, 60px) + 8px); /* an overlay above the dock (docs/design-rules.md): it never changes how far the page scrolls */
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  padding: 0 12px;
+  pointer-events: none;
+}
+.word-card {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 536px;
+  max-height: 58vh;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.22);
+}
+.wc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.wc-word {
+  font-size: 2rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.wc-read {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.x {
+  border: none;
+  background: var(--bg);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--muted);
+  flex: none;
+}
+.wc-sec {
+  margin-top: 10px;
+}
+.ai-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  border: 1px solid var(--muted);
+  border-radius: 5px;
+  padding: 0 4px;
+  margin-left: 4px;
+  letter-spacing: 0;
+}
+.sungbox {
+  border-left: 3px solid var(--sung);
+  padding: 5px 10px;
+  background: var(--bg);
+  border-radius: 0 10px 10px 0;
+  font-size: 0.92rem;
+}
+.sungbox .sr {
+  color: var(--sung);
+  font-weight: 700;
+}
+.word-card .actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 12px;
+}
+.word-card .primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.word-card .primary.done {
+  background: var(--added);
+  color: #fff;
+}
+.secondary-link {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+}
+/* the Ask chat: a sheet over the song */
+body.no-scroll {
+  overflow: hidden;
+}
+.chat-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.35);
+}
+.chat {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: max(44px, 8vh);
+  z-index: 41;
+  margin: 0 auto;
+  max-width: 560px;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -10px 34px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+.chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--line);
+}
+.chat-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.chat-sub {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.chat-tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overscroll-behavior: contain;
+}
+.ctxmark {
+  align-self: center;
+  max-width: 100%;
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: var(--card);
+  border-radius: 999px;
+  padding: 4px 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.msg {
+  max-width: 88%;
+  font-size: 0.96rem;
+  overflow-wrap: anywhere;
+}
+.msg.me {
+  align-self: flex-end;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 16px 16px 4px 16px;
+  padding: 8px 12px;
+  white-space: pre-wrap;
+}
+.msg.ai {
+  align-self: flex-start;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px 16px 16px 4px;
+  padding: 8px 12px;
+}
+.msg.ai p,
+.msg.ai ul {
+  margin: 0 0 8px;
+}
+.msg.ai ul {
+  padding-left: 20px;
+}
+.msg.ai p:last-child,
+.msg.ai ul:last-child {
+  margin-bottom: 0;
+}
+.chat-off {
+  font-size: 0.88rem;
+  color: var(--muted);
+  background: var(--card);
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+.sugs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 0 16px 8px;
+  scrollbar-width: none;
+}
+.sugs button {
+  flex: none;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.86rem;
+}
+.composer {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  padding: 8px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--line);
+  background: var(--card);
+}
+.composer textarea {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 9px 14px;
+  font: inherit;
+  font-size: 16px;
+  max-height: 120px;
+}
+.composer .send {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: grid;
+  place-items: center;
+}
+.composer .send:disabled {
+  opacity: 0.4;
+}
+.composer .send svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }

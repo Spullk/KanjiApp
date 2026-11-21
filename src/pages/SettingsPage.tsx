@@ -19,6 +19,7 @@ import { useData } from "../data";
 import { disablePush, enablePush, pushOnHere, pushSupport, savePushState } from "../push";
 import { buildLabel, checkForUpdate, type UpdateCheck } from "../update";
 import { allRecordings, savedRecordings, saveRecordings } from "../audio";
+import { getAIKey, MODELS, setAIKey, type AIModel } from "../songAI";
 
 // Every option lives in Settings (srs.ts) with a default in DEFAULT_SETTINGS; this page only edits it.
 // A new option gets a field there, a default, and a row here.
@@ -249,6 +250,12 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
               <BarSetting />
             </Section>
             <Section title="Reminders">{isNative ? <NativeReminder /> : <WebReminder />}</Section>
+            <Section
+              title="AI"
+              hint="Songs can ask Claude for notes on a song and answer your questions, in one tap, with your own API key. Without a key you can still copy Nekko's request into the Claude app and paste the answer back."
+            >
+              <AISetting />
+            </Section>
             <Section
               title="Vacation mode"
               hint="Nothing comes due while you're away. When you come back, every review moves on by the time you were gone, so there's no pile waiting."
@@ -717,6 +724,60 @@ function WebReminder() {
           </button>
         ))}
       {error && <p class="hint error">{error}</p>}
+    </>
+  );
+}
+
+/** Your own Claude API key (kept only on this device) and which model Songs uses. */
+function AISetting() {
+  const store = useStore();
+  const [key, setKey] = useState(getAIKey);
+  const [saved, setSaved] = useState(!!getAIKey());
+  const pick = store.settings.aiModel ?? "sonnet";
+  return (
+    <>
+      <label class="field-label" for="ai-key">
+        Claude API key
+      </label>
+      <div class="ai-key-row">
+        <input
+          id="ai-key"
+          class="text-input"
+          type="password"
+          autocomplete="off"
+          placeholder="sk-ant-…"
+          value={key}
+          onInput={(e) => {
+            setKey(e.currentTarget.value);
+            setSaved(false);
+          }}
+        />
+        <button
+          class="secondary"
+          onClick={() => {
+            setAIKey(key);
+            setSaved(!!key.trim());
+          }}
+        >
+          {saved ? "Saved" : "Save"}
+        </button>
+      </div>
+      <p class="hint">
+        Kept only on this device, never synced. A Claude Pro subscription doesn't include the API: create a key and add credit (for example $5) at{" "}
+        <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">
+          console.anthropic.com
+        </a>
+        .
+      </p>
+      <div class="field-label">Model</div>
+      <div class="seg-tabs">
+        {(Object.keys(MODELS) as AIModel[]).map((m) => (
+          <button key={m} class={pick === m ? "on" : ""} onClick={() => update((s) => (s.settings.aiModel = m))}>
+            {MODELS[m].label}
+          </button>
+        ))}
+      </div>
+      <p class="hint">{MODELS[pick].label}: {MODELS[pick].price}, paid once per song. Questions in the chat cost a fraction of a cent each.</p>
     </>
   );
 }
