@@ -756,6 +756,62 @@
     "ex": [["先生[せんせい]は明日[あした]{いらっしゃいます}。", "The teacher will come tomorrow."], ["どうぞ{召[め]し上[あ]がって}ください。", "Please, help yourself."], ["少々[しょうしょう]お{待[ま]ち}ください。", "One moment, please."], ["田中[たなか]と{申[もう]します}。", "My name is Tanaka."]]
   },
   {
+    "id": "kedo",
+    "level": "n4",
+    "title": "けど: but, although",
+    "note": "けど joins two clauses like が (\"but\") and is the everyday spoken choice. けれど and けれども are a little more formal. At the end of a sentence it softens a request or leaves the rest unsaid: 行[い]きたいんですけど…, \"I'd like to go, but…\".",
+    "ex": [["いい人[ひと]だ{けど|けれど}イマイチね。", "He is nice, but he's not the one for me."], ["申[もう]し訳[わけ]ない{けど|けれど}長居[ながい]できないんですよ。", "I'm sorry, I can't stay long."], ["ペソを両替[りょうがえ]して欲[ほ]しいんです{けど|けれど}。", "I'd like to change these pesos, please."]]
+  },
+  {
+    "id": "shika",
+    "level": "n4",
+    "title": "しか〜ない: only",
+    "note": "しか + a negative verb is \"only\" or \"nothing but\", with a feeling of \"not enough\": 五分[ごふん]しかない, \"there are only five minutes\". The verb is always negative even though the English isn't. だけ is the neutral \"only\" and goes with a positive verb.",
+    "ex": [["今年[ことし]も残[のこ]りわずかな日[ひ]{しか}ない。", "There are only a few days left before the end of the year."], ["人間[にんげん]はこの世[よ]に一度[いちど]{しか}生[い]きない。", "One lives but once in the world."], ["乗[の]り換[か]えに５分[ふん]の余裕[よゆう]{しか}ない。", "We have a margin of just five minutes to change trains."]]
+  },
+  {
+    "id": "te-iku",
+    "level": "n4",
+    "title": "ていく and てくる: going and coming",
+    "note": "て form + いく is an action moving away, or carrying on from now: 歩[ある]いていく, \"walk off\"; 明[あか]るくなっていく, \"keep getting lighter\". て form + くる is the opposite, moving toward the speaker or up to now: 近[ちか]づいてきた, \"has been getting closer\". In songs and writing ていく is often written てゆく, with the same meaning.",
+    "ex": [["外[そと]はだんだん明[あか]るくなって{いく|ゆく}。", "It is getting lighter outside."], ["時[とき]がどんどんたって{ゆく|いく}。", "Time is going by very quickly."], ["私[わたし]たちは狭[せま]い道[みち]を歩[ある]いて{いった}。", "We walked along a narrow path."], ["クリスマスが近[ちか]づいて{きた}。", "Christmas is fast approaching."]]
+  },
+  {
+    "id": "teru-teta",
+    "level": "n4",
+    "title": "てる and てた: casual ている",
+    "note": "In speech ている drops its い: 見[み]ている → 見[み]てる, していた → してた, 読[よ]んでいる → 読[よ]んでる. The meaning is exactly the same as ている, just casual.",
+    "ex": [["こっちの人[ひと]はのんびり{してる|している}ね。", "The locals around here really live at a relaxed pace."], ["さっき電話[でんわ]が{鳴[な]ってた|鳴[な]っていた}よね？", "The telephone was just ringing, wasn't it?"], ["若[わか]い頃[ころ]は{痩[や]せてた|痩[や]せていた}んだよ。", "I used to be thin when I was young."]]
+  },
+  {
+    "id": "ni-suru",
+    "level": "n4",
+    "title": "にする: make it, choose",
+    "note": "Noun + にする is \"make it into\" or \"go with\": コーヒーにする, \"I'll have coffee\"; 複雑[ふくざつ]にする, \"make it complicated\". い-adjectives take くする: 明[あか]るくする, \"make brighter\". Some set uses: 気[き]にする, \"to worry about\"; 終[お]わりにする, \"to put an end to\"; 言葉[ことば]にする, \"to put into words\". ことにする, \"decide to do\", is its own point.",
+    "ex": [["ひと休[やす]みしてコーヒー{にしよう}。", "Let's take a coffee break."], ["それは問題[もんだい]をより複雑[ふくざつ]{にする}でしょう。", "That'll complicate matters more."], ["彼[かれ]はその誤[あやま]りを私[わたし]のせい{にした}。", "He blamed me for the mistake."]]
+  },
+  {
+    "id": "no-noun",
+    "level": "n4",
+    "title": "の: turning a verb into a noun",
+    "note": "Plain form + の turns a clause into a noun, \"doing…\" or \"the one that…\": 話[はな]すのは難[むずか]しい, \"speaking is hard\"; 読[よ]むのが好[す]き, \"I like reading\". の can also stand for a thing both people know about: 赤[あか]いの, \"the red one\"; そんなの, \"something like that\".",
+    "ex": [["中国語[ちゅうごくご]を上手[じょうず]に話[はな]す{の}は難[むずか]しい。", "It is difficult to speak Chinese well."], ["テッドはトランペットを吹[ふ]く{の}が好[す]きです。", "Ted likes playing the trumpet."], ["私[わたし]は人前[ひとまえ]で話[はなし]をする{の}が嫌[きら]いだ。", "I don't like to speak in public."]]
+  },
+  {
+    "id": "no-ending",
+    "level": "n4",
+    "title": "の at the end: casual questions",
+    "note": "In casual speech, の at the end of a sentence makes a soft question with a rising voice: 何[なに]をしてるの？, \"what are you doing?\". With a falling voice it explains, like a casual んです: 聞[き]きたい時[とき]もあるの, \"sometimes I want to hear it, that's all\". It sounds gentle; explaining の sounds a little feminine.",
+    "ex": [["パーティーでは何[なに]が出[だ]された{の}？", "What was served at the party?"], ["どうしてそんなミスをした{の}？", "How come you made such a mistake?"], ["でもね、聞[き]きたい時[とき]もある{の}よ。", "You know, sometimes you need to hear it."]]
+  },
+  {
+    "id": "sa",
+    "level": "n4",
+    "title": "さ: casual sentence ending",
+    "note": "さ at the end of a sentence is relaxed speech, more often used by men. It says something lightly, like a shrug or \"you know\". After a noun or な-adjective it takes the place of だ: 当[あ]たり前[まえ]さ, not 当[あ]たり前[まえ]ださ. In the middle of a sentence (でもさ、実[じつ]はさ) it's a filler, like \"so, like…\".",
+    "ex": [["私[わたし]の好[この]みはごく当[あ]たり前[まえ]{さ}。", "My taste is quite normal."], ["なぜならそこにあるから{さ}。", "Because it is there."], ["実[じつ]は{さ}、ハワイ旅行[りょこう]が懸賞[けんしょう]で当[あ]たったんだ。", "As a matter of fact, I won the trip to Hawaii as a prize."]]
+  },
+  {
     "id": "wake",
     "level": "n3",
     "title": "わけだ and わけではない: no wonder, it's not that",
@@ -1211,6 +1267,34 @@
     "ex": [["もっと時間[じかん]があっ{たらいいのに}。", "I wish I had more time."], ["明日[あした]、晴[は]れれ{ばいいのに}。", "I wish it would be sunny tomorrow."]]
   },
   {
+    "id": "datte",
+    "level": "n3",
+    "title": "だって: even, because",
+    "note": "After a word, だって is a casual でも, \"even\" or \"too\": 子供[こども]だって, \"even a child\"; いつだって, \"always, any time\"; 何度[なんど]だって, \"any number of times\". At the start of a sentence だって is \"but…\" or \"because…\", giving an excuse. Don't mix it up with だ + the quoting って: 雨[あめ]だって, \"they say it'll rain\".",
+    "ex": [["どんな子供[こども]{だって}そのくらい答[こた]えられる。", "Any child can answer that."], ["いつ{だって}読書[どくしょ]の時間[じかん]は見[み]つけられる。", "We can always find time for reading."], ["{だって}この世[よ]には悪者[わるもの]と偽善者[ぎぜんしゃ]しかいないのよ。", "You see in this world there are only scoundrels and hypocrites."]]
+  },
+  {
+    "id": "nante",
+    "level": "n3",
+    "title": "なんて: things like, how…!",
+    "note": "After a word or clause, なんて shows the speaker finds it surprising, silly or hard to accept: 怒[おこ]るなんて, \"getting angry like that\". It can also make light of something: 着物[きもの]なんて, \"things like kimono\". At the start of an exclamation it's \"how…!\" or \"what a…!\": なんてすばらしい日[ひ], \"what a lovely day\".",
+    "ex": [["あんなに怒[おこ]る{なんて}彼[かれ]らしくない。", "It's unlike him to get so angry."], ["このような義務[ぎむ]がある{なんて}知[し]らなかった。", "I never knew about such a duty."], ["{なんて}すばらしい日[ひ]でしょう。", "What a lovely day it is!"]]
+  },
+  {
+    "id": "ranuki",
+    "level": "n3",
+    "title": "ら抜き: 見れる, 来れる",
+    "note": "The \"can\" form of ru-verbs and 来[く]る officially takes られる: 見[み]られる, 来[こ]られる. In everyday speech the ら is often dropped: 見[み]れる, 来[こ]れる, 寝[ね]れる, 信[しん]じれる. This is called ら抜[ぬ]き言葉[ことば], \"ら-less words\". It's very common in speech and songs, but use the full られる in careful writing and on tests. 見[み]れば, \"if you look\", is the ば form, not ら抜き.",
+    "ex": [["電灯[でんとう]を消[け]してくれ。{寝[ね]れない|寝[ね]られない}よ。", "Switch off the light. I can't get to sleep."], ["奥[おく]さんが{来[こ]れなかった|来[こ]られなかった}なんて至極[しごく]残念[ざんねん]です。", "It's an awful shame your wife couldn't come."], ["天気[てんき]が悪[わる]くて今年[ことし]は天[あま]の川[がわ]が{見[み]れない|見[み]られない}わね。", "We can't see the Milky Way this year because of the bad weather, huh?"]]
+  },
+  {
+    "id": "goshi",
+    "level": "n3",
+    "title": "越し: through, across",
+    "note": "Noun + 越[ご]しに is \"through\" or \"over\" something in between: 窓[まど]越[ご]しに, \"through the window\"; 眼鏡[めがね]越[ご]しに, \"over his glasses\". After a length of time it means \"for, spanning\": 三年[さんねん]越[ご]しの計画[けいかく], \"a plan three years in the making\".",
+    "ex": [["窓[まど]{越[ご]し}に彼[かれ]がやってくるのが見[み]えた。", "I was able to see him coming through the window."], ["列車[れっしゃ]の窓[まど]{越[ご]し}に富士山[ふじさん]が見[み]えた。", "I saw Mt Fuji through the train window."], ["彼[かれ]は眼鏡[めがね]{越[ご]し}に私[わたし]をにらみつけた。", "He looked sharply at me over his spectacles."]]
+  },
+  {
     "id": "ni-oite",
     "level": "n2",
     "title": "において: in, at (formal)",
@@ -1559,5 +1643,19 @@
     "title": "っこない: no way",
     "note": "Verb stem + っこない is a casual \"no way, there's no chance\": できっこない, \"there's no way I can\".",
     "ex": [["こんなにたくさん、一日[いちにち]でできっ{こない}。", "There's no way I can do this much in a day."], ["宝[たから]くじなんか、当[あ]たりっ{こない}よ。", "You're never going to win the lottery."]]
+  },
+  {
+    "id": "ka-no-you",
+    "level": "n2",
+    "title": "かのように: as if",
+    "note": "Plain form + かのように (before a verb) or かのような (before a noun) is \"as if\", for something that isn't really so. It's stronger and more written than みたいに, and often comes with まるで: まるで夢[ゆめ]を見[み]ているかのようだ, \"it's as if I'm dreaming\".",
+    "ex": [["私[わたし]に殴[なぐ]ろうとする{かのように}彼女[かのじょ]はこぶしを上[あ]げた。", "She raised her fist as if to hit me."], ["まるで太陽[たいよう]が沈[しず]んでしまった{かのように}空[そら]は暗[くら]くなった。", "The sky became as dark as if the sun had sunk."], ["彼[かれ]らは盟約[めいやく]している{かのように}一致[いっち]して行動[こうどう]した。", "They acted together as if by compact."]]
+  },
+  {
+    "id": "e-to",
+    "level": "n2",
+    "title": "へと: on toward",
+    "note": "へと is へ (\"toward\") with と added for a sense of moving onward, or of changing from one state to the next. It's written or literary style: 次[つぎ]から次[つぎ]へと, \"one after another\"; 世代[せだい]から世代[せだい]へと, \"from generation to generation\".",
+    "ex": [["文化[ぶんか]は世代[せだい]から世代[せだい]{へと}伝[つた]えられる。", "Culture is handed down from generation to generation."], ["次[つぎ]から次[つぎ]{へと}失敗[しっぱい]がかさなった。", "One failure followed another."], ["人々[ひとびと]は近[ちか]くの出口[でぐち]{へと}向[む]かった。", "The crowd made for the nearest door."]]
   }
 ]

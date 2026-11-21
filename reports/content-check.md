@@ -2,7 +2,7 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 21,903 words, 2,136 kanji, 372 radicals, 44,227 sentences, 115 stories, 223 grammar points.
+Checked: 21,903 words, 2,136 kanji, 372 radicals, 44,227 sentences, 115 stories, 237 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
