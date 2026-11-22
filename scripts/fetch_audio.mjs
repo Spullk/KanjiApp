@@ -2,6 +2,8 @@
 // offline once heard (or after Settings → Save all recordings), and in the phone apps they're built in.
 // Run before `vite build` (the App workflow does, with a cache, so each deploy only fetches new ones).
 // Files that fail to download are skipped; the app then streams Kanji alive and Tatoeba ones from the source.
+// AUDIO_MINUTES=4 stops starting new downloads after 4 minutes, so a deploy never waits long on recordings: the
+// rest (often Commons files that hit its rate limit) are tried again on the next run.
 // Wikimedia Commons recordings are .wav/.ogg there, so the mp3 copy Commons makes is used, or ffmpeg converts it.
 //
 //   node scripts/fetch_audio.mjs
@@ -26,10 +28,12 @@ function commons(file) {
   };
 }
 
+const deadline = process.env.AUDIO_MINUTES ? Date.now() + Number(process.env.AUDIO_MINUTES) * 60_000 : Infinity;
+
 async function get(url) {
   for (let attempt = 0; ; attempt++) {
     const res = await fetch(url, { headers: UA });
-    if (res.status === 429 && attempt < 4) {
+    if (res.status === 429 && attempt < 4 && Date.now() < deadline) {
       await new Promise((ok) => setTimeout(ok, 2000 * 2 ** attempt));
       continue;
     }
@@ -71,7 +75,7 @@ let got = 0;
 const failed = [];
 const todo = jobs.filter(([, file]) => (existsSync(file) ? (have++, false) : true));
 async function worker() {
-  for (let job = todo.shift(); job; job = todo.shift()) {
+  for (let job = todo.shift(); job && Date.now() < deadline; job = todo.shift()) {
     const [url, file] = job;
     try {
       writeFileSync(file, url.commons ? await commonsMp3(url.commons, file) : await get(url));
@@ -82,5 +86,6 @@ async function worker() {
   }
 }
 await Promise.all(Array.from({ length: 16 }, worker));
-console.log(`Recordings: ${jobs.length} in the data, ${have} already here, ${got} downloaded, ${failed.length} failed.`);
+console.log(`Recordings: ${jobs.length} in the data, ${have} already here, ${got} downloaded, ${failed.length} failed${todo.length ? `, ${todo.length} left for the next run (time limit)` : ""}.`);
+if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `got=${got}\n`, { flag: "a" });
 if (failed.length) console.log("First failures:\n" + failed.slice(0, 10).join("\n"));
