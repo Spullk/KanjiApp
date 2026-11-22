@@ -12,10 +12,39 @@ import type { Knowledge } from "./stories";
 /** One entry of the AI's word list: a word or grammar piece, in dictionary form, with the lines it's on. */
 export type AIWord = { base: string; r?: string; sung?: string; pos?: string; m?: string; dict?: string; lines?: number[] };
 
-/** The AI's answer (prompt version 2): no lyrics, only background, notes by line number and the word list. */
+/** What the AI found out about the song (prompt version 3 adds everything after "artist"). Empty means unknown. */
+export type SongInfo = {
+  /** The official title as written in Japanese. */
+  title?: string;
+  titleReading?: string;
+  titleRomaji?: string;
+  titleEnglish?: string;
+  artist?: string;
+  artistReading?: string;
+  lyricist?: string;
+  composer?: string;
+  arranger?: string;
+  /** Who sings it, when that isn't the artist (a vocaloid, a featured singer). */
+  vocals?: string;
+  /** YYYY-MM-DD, YYYY-MM or YYYY. */
+  released?: string;
+  /** The single or album it came out on. */
+  release?: string;
+  /** What it was made for: "Opening theme of the anime …". */
+  tieIn?: string;
+  genre?: string;
+  /** Version 2's single line of credits. */
+  credits?: string;
+  background?: string;
+  /** "sure", "likely" or "unsure": how sure the AI is that it found the right song. */
+  confidence?: string;
+  sources?: string[];
+};
+
+/** The AI's answer (prompt versions 2 and 3): no lyrics, only the song's info, notes by line number and the word list. */
 export type AIAnswer = {
   nekko?: number;
-  song?: { title?: string; artist?: string; credits?: string; background?: string; sources?: string[] };
+  song?: SongInfo;
   lineCount?: number;
   notes?: { line: number; note: string }[];
   words: AIWord[];
@@ -29,6 +58,8 @@ export type Song = {
   id: string;
   title: string;
   artist?: string;
+  /** The title you gave, when the AI's official title replaced it. */
+  aka?: string;
   /** The lyrics as added, before cleaning. Kept only in your own progress. */
   lyrics: string;
   source: "lrclib" | "paste";
@@ -150,46 +181,117 @@ export function lyricLines(song: Song): string[] {
 
 // ---------------------------------------------------------------- the AI's answer
 
-/** Reads an AI answer: the JSON code block, or the text from the first { to the last }. Throws a message to show. */
+/** Reads an AI answer: the JSON code block (the one with a word list, if there are several), or the text from the
+ * first { to the last }. Throws a message to show. */
 export function parseAI(text: string): AIAnswer {
-  let raw = text.trim();
-  const fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (fence) raw = fence[1];
-  else {
-    const a = raw.indexOf("{");
-    const b = raw.lastIndexOf("}");
-    if (a >= 0 && b > a) raw = raw.slice(a, b + 1);
+  const t = text.trim();
+  const tries = [...t.matchAll(/```[a-zA-Z]*\s*([\s\S]*?)```/g)].map((m) => m[1]);
+  const a = t.indexOf("{");
+  const b = t.lastIndexOf("}");
+  if (a >= 0 && b > a) tries.push(t.slice(a, b + 1));
+  if (!tries.length) tries.push(t);
+  let ai: AIAnswer | undefined;
+  let problem = "";
+  for (const raw of tries) {
+    try {
+      const v = JSON.parse(raw.trim());
+      if (v && Array.isArray(v.words)) {
+        ai = v;
+        break;
+      }
+      ai ??= v;
+    } catch (e) {
+      problem ||= (e as Error).message;
+    }
   }
-  let ai: AIAnswer;
-  try {
-    ai = JSON.parse(raw);
-  } catch (e) {
-    throw new Error(`That answer isn't readable (${(e as Error).message}). Copy the AI's whole code block and try again.`);
+  if (!ai) {
+    const cut = (t.match(/```/g)?.length ?? 0) % 2 === 1;
+    throw new Error(cut ? "That answer stops partway, so it isn't complete. Ask the AI to \"continue the JSON\", or start again." : `That answer isn't readable (${problem}). Copy the AI's whole code block and try again.`);
   }
-  if (!ai || !Array.isArray(ai.words)) throw new Error("That answer has no word list. Was it the answer to Nekko's request?");
+  if (!Array.isArray(ai.words)) throw new Error("That answer has no word list. Was it the answer to Nekko's request?");
   ai.words = ai.words.filter((w) => w && typeof w.base === "string" && w.base);
   ai.notes = (ai.notes ?? []).filter((n) => n && typeof n.line === "number" && typeof n.note === "string");
-  if (ai.song?.sources) ai.song.sources = ai.song.sources.filter((u) => typeof u === "string" && /^https?:\/\//.test(u));
+  if (ai.song && typeof ai.song === "object") {
+    const info: SongInfo = {};
+    for (const [k, v] of Object.entries(ai.song)) {
+      if (k === "sources") continue;
+      if (typeof v === "string" && v.trim()) (info as Record<string, string>)[k] = v.trim();
+    }
+    const src = Array.isArray(ai.song.sources) ? ai.song.sources : [];
+    info.sources = [...new Set(src.filter((u) => typeof u === "string" && /^https?:\/\//.test(u)))];
+    ai.song = info;
+  } else delete ai.song;
   return ai;
 }
 
-/** The request for the AI: research the song, then notes by line number and a word list, never the lyrics. */
+/** The song's credits as label and value pairs, for the About part. */
+export function songCredits(info: SongInfo | undefined): [string, string][] {
+  if (!info) return [];
+  const same = (a?: string, b?: string) => !!a && !!b && a.replace(/\s/g, "") === b.replace(/\s/g, "");
+  const rows: [string, string | undefined][] = [
+    ["Words", info.lyricist],
+    ["Music", info.composer],
+    ["Arrangement", info.arranger],
+    ["Vocals", same(info.vocals, info.artist) ? undefined : info.vocals],
+    ["Released", [info.released, info.release].filter(Boolean).join(", ")],
+    ["Made for", info.tieIn],
+    ["Genre", info.genre],
+  ];
+  const out = rows.filter((r): r is [string, string] => !!r[1]);
+  // Version 2 answers have one line of credits instead.
+  if (!out.length && info.credits) out.push(["Credits", info.credits]);
+  return out;
+}
+
+const PLACEHOLDER = /^(untitled( song)?|unknown|)$/i;
+
+/**
+ * The song with the AI's answer, and the AI's title and artist when they're better than what you had: always when
+ * you had none, and otherwise only when the AI is sure it found the song. The title you had is kept in `aka`.
+ */
+export function withAnswer(song: Song, ai: AIAnswer): Song {
+  const out: Song = { ...song, ai };
+  const info = ai.song;
+  if (!info) return out;
+  const sure = info.confidence !== "unsure";
+  if (info.title && info.title !== song.title && (PLACEHOLDER.test(song.title.trim()) || sure)) {
+    out.title = info.title;
+    if (!PLACEHOLDER.test(song.title.trim())) out.aka = song.aka ?? song.title;
+  }
+  if (info.artist && (!song.artist || sure)) out.artist = info.artist;
+  return out;
+}
+
+/** The request for the AI: identify and research the song, then notes by line number and a word list, never the
+ * lyrics. It works in any AI app that can search the web, and through songAI.ts. */
 export function aiPrompt(song: Song): string {
   const numbered = lyricLines(song)
     .map((l, i) => `${i + 1}. ${l}`)
     .join("\n");
+  const title = PLACEHOLDER.test(song.title.trim()) ? "(not given: work it out from the lyrics)" : song.title;
   return `You're helping someone learn Japanese with a song in the app Nekko. Nekko already has these lyrics on the learner's device and shows them itself, so **never write the lyrics out in your answer**: no full lines, no line-by-line translation. Refer to lines by number. Nekko reads your answer automatically, so follow the format exactly.
 
-**Song:** ${song.title}${song.artist ? ` by ${song.artist}` : ""}
+**Song as the learner added it:** ${title}
+**Artist as the learner added it:** ${song.artist?.trim() || "(not given)"}
 **Notes from the learner (may be empty):** ${song.notes?.trim() || ""}
 
-The lyric lines below are already numbered. Use those numbers.
+The title and artist above may be romaji, a translation, a page title or missing. The lyric lines below are already numbered. Use those numbers.
 
-**Step 1: research.** Search the web before you write anything. Look for: who wrote, composed and sang the song, and why it was written; anything the writer or artist said about it in interviews or posts; what it was made for (a novel, a story, an anime, a drama, an ad) and how that story connects; slang, wordplay, double meanings, references and cultural background a learner would miss. Prefer what the writer actually said over fan guesses, and say when something is a fan reading.
+**Step 1: find the song.** Search the web before you write anything. Make sure you have the right song: search for its title together with a distinctive line or two from the lyrics, and check that the lyrics you find match these. Songs often share a title, and covers and versions differ, so pick the original that these lyrics come from (say in the background if these lyrics are a cover or a different version). If you can't search the web, say so at the start of the background and give only what you're sure of.
 
-**Step 2: line notes.** Add a note for each line where the learner would miss something: wordplay, slang, a double meaning, a cultural reference, a link to the source story, unusual grammar, or what the writer said about it. Skip lines that need no explanation. Write each note in your own words. You may name a single word or a short phrase from the line, but never quote or translate the whole line.
+**Step 2: the song's details.** Find each of these from reliable sources (the label or artist's site, official lyrics sites such as Uta-Net or J-Lyric, Wikipedia, VocaDB for vocaloid songs, interviews). Leave a field as "" when you can't find it. Never guess a name or a date.
+- the official title exactly as written in Japanese, its reading in hiragana, its romaji, and its official English title (or a short translation if there's none)
+- the artist as officially written, and its reading in hiragana or katakana if it's written in kanji
+- who wrote the words (作詞), who composed the music (作曲), who arranged it (編曲), and who sings it if that isn't the artist (a vocaloid, a featured singer)
+- the release date, and the single or album it first came out on
+- what it was made for, if anything: anime, drama, film, game, novel, ad or event, with its role (opening, ending, insert song, theme)
+- the genre
 
-**Step 3: word list.** List every word and grammar piece in the lyrics, once each, so that nothing in any line is left without a definition: nouns, verbs, adjectives, adverbs, pronouns, set expressions, every particle (は, が, を, に, の, さ, けど …), every verb and adjective ending (た, ない, て, ている, たい, potential, volitional …), casual forms (てる, ら抜き) and grammar patterns (ように, てしまう, かのような). Give words in dictionary form and grammar as the pattern (〜ている). When one particle is used in clearly different ways, give each use its own entry (の for 'of' and の as a sentence ending). Leave out only English words, romaji and punctuation. Before answering, go through every line piece by piece and check that each piece is covered. For each entry give:
+**Step 3: research for the notes.** Look for: why the song was written and what it's about; anything the writer or artist said about it in interviews or posts; how the story it was made for connects to the words; slang, wordplay, double meanings, references and cultural background a learner would miss. Prefer what the writer actually said over fan guesses, and say when something is a fan reading.
+
+**Step 4: line notes.** Add a note for each line where the learner would miss something: wordplay, slang, a double meaning, a cultural reference, a link to the source story, unusual grammar, or what the writer said about it. Skip lines that need no explanation. Write each note in your own words. You may name a single word or a short phrase from the line, but never quote or translate the whole line.
+
+**Step 5: word list.** List every word and grammar piece in the lyrics, once each, so that nothing in any line is left without a definition: nouns, verbs, adjectives, adverbs, pronouns, set expressions, every particle (は, が, を, に, の, さ, けど …), every verb and adjective ending (た, ない, て, ている, たい, potential, volitional …), casual forms (てる, ら抜き) and grammar patterns (ように, てしまう, かのような). Give words in dictionary form and grammar as the pattern (〜ている). When one particle is used in clearly different ways, give each use its own entry (の for 'of' and の as a sentence ending). Leave out only English words, romaji and punctuation. Before answering, go through every line piece by piece and check that each piece is covered. For each entry give:
 - "base": dictionary form, as usually written in a dictionary (歩いた → 歩く), or the grammar pattern
 - "r": its normal reading in hiragana (katakana for katakana words)
 - "sung": only if the song clearly sings it with an unusual reading (運命 sung さだめ, 地球 sung ほし), that reading; else "". Check official lyrics with furigana if you can.
@@ -198,17 +300,29 @@ The lyric lines below are already numbered. Use those numbers.
 - "dict": a short general dictionary meaning
 - "lines": the line numbers where it appears, in any form (歩いた counts for 歩く)
 
-**Output.** Answer with one JSON code block and nothing after it, in this shape:
+**Output.** Answer with one JSON code block and nothing after it. Put it straight in your reply as a normal code block, not in a file, canvas or artifact. If your answer would be too long for one reply, keep the notes shorter, but never leave words out. Use this shape:
 
 \`\`\`json
 {
-  "nekko": 2,
+  "nekko": 3,
   "song": {
-    "title": "",
+    "title": "official title in Japanese",
+    "titleReading": "",
+    "titleRomaji": "",
+    "titleEnglish": "",
     "artist": "",
-    "credits": "who wrote the words, who composed, who sings",
-    "background": "3-6 sentences on what the song is about and where it comes from",
-    "sources": ["https://..."]
+    "artistReading": "",
+    "lyricist": "",
+    "composer": "",
+    "arranger": "",
+    "vocals": "",
+    "released": "YYYY-MM-DD, or YYYY-MM or YYYY if that's all you can find",
+    "release": "single or album name",
+    "tieIn": "e.g. Opening theme of the anime …",
+    "genre": "",
+    "background": "3-6 sentences on what the song is about, why it was written and where it comes from",
+    "confidence": "sure, likely or unsure: how sure you are that this is the right song",
+    "sources": ["https://... every page you used for the details and the background"]
   },
   "lineCount": 0,
   "notes": [
@@ -222,6 +336,7 @@ The lyric lines below are already numbered. Use those numbers.
 
 Rules:
 - "lineCount" is how many numbered lyric lines there are.
+- Write names in their official form (Japanese where the official form is Japanese).
 - Never include full lyric lines or a translation of a full line anywhere in the answer.
 - Don't fix lyrics. If a line looks like a typo, say so in its note.
 - Plain JSON only: no comments, no trailing commas.
