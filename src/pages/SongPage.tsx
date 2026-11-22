@@ -15,9 +15,11 @@ import {
   removeSong,
   saveSong,
   songCoverage,
+  songCredits,
   songStage,
   tokenizerReady,
   unqueueWord,
+  withAnswer,
   type ChatMessage,
   type Song,
   type SongLine,
@@ -52,6 +54,7 @@ export function SongPage({ id }: { id: string }) {
   const [open, setOpen] = useState<number | null>(null);
   const [sel, setSel] = useState<[number, number] | null>(null);
   const [ask, setAsk] = useState<AskFrom | null>(null);
+  const [redo, setRedo] = useState(false);
 
   useEffect(() => {
     loadTokenizer().then(setTk, (e) => setTkError((e as Error).message));
@@ -72,7 +75,9 @@ export function SongPage({ id }: { id: string }) {
 
   const cover = songCoverage(k, song);
   const ai = song.ai;
-  const about = [ai?.song?.credits, ai?.song?.background].filter(Boolean).join(" ");
+  const info = ai?.song;
+  const credits = songCredits(info);
+  const names = [info?.titleReading, info?.titleRomaji, info?.titleEnglish, song.aka].filter((n, i, a) => n && n !== song.title && a.indexOf(n) === i);
   const lines = result?.lines ?? [];
   const word = sel ? (lines[sel[0]] as Lyric | undefined)?.words[sel[1]] : undefined;
 
@@ -92,14 +97,30 @@ export function SongPage({ id }: { id: string }) {
         ‹ Songs
       </a>
       <h1 lang="ja">{song.title}</h1>
+      {names.length > 0 && (
+        <p class="song-names" lang="ja">
+          {names.join(" · ")}
+        </p>
+      )}
       <p class="song-meta">
         {song.artist && <span lang="ja">{song.artist} · </span>}
         {cover === undefined ? "" : `you know ${Math.floor(cover * 100)}% of the words`}
       </p>
-      {about && (
+      {(credits.length > 0 || info?.background) && (
         <details class="song-about">
           <summary>About this song</summary>
-          <p>{about}</p>
+          {credits.length > 0 && (
+            <dl class="song-credits">
+              {credits.map(([k, v]) => (
+                <div key={k}>
+                  <dt>{k}</dt>
+                  <dd lang="ja">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+          {info?.background && <p>{info.background}</p>}
+          {info?.confidence === "unsure" && <p class="hint">The AI wasn't sure it found the right song, so check these details.</p>}
           {!!ai?.song?.sources?.length && (
             <p class="song-sources">
               {ai.song.sources.map((u) => (
@@ -115,7 +136,7 @@ export function SongPage({ id }: { id: string }) {
         {ASK}Ask about this song
       </button>
 
-      {!ai && <AINotes song={song} />}
+      {(!ai || redo) && <AINotes song={song} onDone={ai ? () => setRedo(false) : undefined} />}
       {result && ai && (result.lineCountOff || result.missing.length > 0) && (
         <p class="hint">
           {result.lineCountOff && `The AI counted ${ai.lineCount} lines and Nekko ${lines.filter((l) => !l.gap).length}, so some notes may sit on the wrong line. `}
@@ -157,7 +178,7 @@ export function SongPage({ id }: { id: string }) {
       )}
 
       <p class="song-credit">{song.source === "lrclib" ? "Lyrics from LRCLIB." : "Lyrics you pasted."} They're kept only in your own progress.</p>
-      <SongTools song={song} />
+      <SongTools song={song} onRedo={() => setRedo(true)} />
       <div class="runout" />
 
       {word && sel && <WordCard w={word} k={k} onClose={() => setSel(null)} onAsk={() => askWord(sel[0], word)} />}
@@ -324,8 +345,9 @@ function WordCard({ w, k, onClose, onAsk }: { w: SongWord; k: Knowledge; onClose
   );
 }
 
-/** Getting the AI's background, line notes and word meanings: one tap with your API key, or copy and paste. */
-function AINotes({ song }: { song: Song }) {
+/** Getting the AI's song details, line notes and word meanings: copy Nekko's request into any AI app and paste the
+ * answer back (no API key needed), or one tap with your API key. `onDone` closes it when it's redoing notes. */
+function AINotes({ song, onDone }: { song: Song; onDone?: () => void }) {
   const store = useStore();
   const key = getAIKey();
   const model = modelOf(store.settings);
@@ -335,8 +357,18 @@ function AINotes({ song }: { song: Song }) {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const ctl = useRef<AbortController | null>(null);
+  const box = useRef<HTMLElement>(null);
   const withNotes = (): Song => ({ ...song, notes: notes.trim() || undefined });
   const save = (s: Song) => update((st) => saveSong(st, s));
+  const done = (s: Song, text: string) => {
+    save(withAnswer(s, parseAI(text)));
+    onDone?.();
+  };
+
+  // Redo opens from the bottom of the page, so bring it into view.
+  useEffect(() => {
+    if (onDone) box.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   const run = async () => {
     setError("");
@@ -345,7 +377,7 @@ function AINotes({ song }: { song: Song }) {
     try {
       const s = withNotes();
       const text = await askForNotes(aiPrompt(s), getStore().settings, (t, n) => setStatus(t ? `Writing the notes (${t.length.toLocaleString()} characters so far)…` : `Researching the song (${n} ${n === 1 ? "search" : "searches"})…`), ctl.current.signal);
-      save({ ...s, ai: parseAI(text) });
+      done(s, text);
     } catch (e) {
       setError(await aiError(e));
     } finally {
@@ -354,6 +386,7 @@ function AINotes({ song }: { song: Song }) {
     }
   };
   const copy = async () => {
+    setError("");
     save(withNotes());
     try {
       await navigator.clipboard.writeText(aiPrompt(withNotes()));
@@ -365,19 +398,19 @@ function AINotes({ song }: { song: Song }) {
   const read = () => {
     setError("");
     try {
-      save({ ...withNotes(), ai: parseAI(paste) });
+      done(withNotes(), paste);
     } catch (e) {
       setError((e as Error).message);
     }
   };
 
   return (
-    <section class="ai-notes">
-      <h2>Notes and meanings from AI</h2>
-      <p class="hint">The AI looks up the song (who wrote it and why, what it was made for, interviews), then explains the lines and gives every word's meaning in the song. It never gets to see more than the lyrics you added.</p>
+    <section class="ai-notes" ref={box}>
+      <h2>{onDone ? "Redo the notes from AI" : "Notes and meanings from AI"}</h2>
+      <p class="hint">The AI finds the song (title, who wrote and sang it, when it came out, what it was made for), looks up why it was written, then explains the lines and gives every word's meaning in the song. It never gets to see more than the lyrics you added.</p>
       <textarea rows={2} placeholder="Your own notes or links for the AI (optional)" value={notes} onInput={(e) => setNotes(e.currentTarget.value)} />
-      {key ? (
-        status ? (
+      {key &&
+        (status ? (
           <div class="ai-run">
             <span>{status}</span>
             <button class="secondary" onClick={() => ctl.current?.abort()}>
@@ -388,43 +421,49 @@ function AINotes({ song }: { song: Song }) {
           <button class="primary wide" onClick={run}>
             Get the notes from Claude ({model.label}, {model.price.split(", ")[1]})
           </button>
-        )
-      ) : (
-        <ol class="ai-steps">
-          <li>
-            <button class="secondary" onClick={copy}>
-              {copied ? "✓ Copied" : "Copy Nekko's request"}
-            </button>{" "}
-            and paste it into{" "}
-            <a href="https://claude.ai/new" target="_blank" rel="noopener">
-              Claude
-            </a>{" "}
-            or any AI app that can search the web.
-          </li>
-          <li>
-            Copy the AI's whole answer and paste it here:
-            <textarea rows={3} spellcheck={false} placeholder='{ "nekko": 2, … }' value={paste} onInput={(e) => setPaste(e.currentTarget.value)} />
-            <button class="primary wide" disabled={!paste.trim()} onClick={read}>
-              Read the answer
-            </button>
-          </li>
+        ))}
+      {key && <p class="ai-or">Or without using your API key:</p>}
+      <ol class="ai-steps">
+        <li>
+          <button class="secondary" onClick={copy}>
+            {copied ? "✓ Copied" : "Copy Nekko's request"}
+          </button>{" "}
+          and paste it into{" "}
+          <a href="https://claude.ai/new" target="_blank" rel="noopener">
+            Claude
+          </a>{" "}
+          or any AI app that can search the web. Turn web search on if the app asks.
+        </li>
+        <li>
+          Copy the AI's whole answer and paste it here:
+          <textarea rows={3} spellcheck={false} placeholder='{ "nekko": 3, … }' value={paste} onInput={(e) => setPaste(e.currentTarget.value)} />
+          <button class="primary wide" disabled={!paste.trim()} onClick={read}>
+            Read the answer
+          </button>
+        </li>
+        {!key && (
           <li class="hint">
             Or add your Claude API key in <a href={href.settings("app")}>Settings → AI</a> to do this in one tap.
           </li>
-        </ol>
-      )}
+        )}
+      </ol>
       {error && <p class="form-error">{error}</p>}
+      {onDone && !status && (
+        <button class="link-button" onClick={onDone}>
+          Keep the notes you have
+        </button>
+      )}
     </section>
   );
 }
 
 /** Less common things to do with a song, at the bottom. */
-function SongTools({ song }: { song: Song }) {
+function SongTools({ song, onRedo }: { song: Song; onRedo: () => void }) {
   const [sure, setSure] = useState(false);
   return (
     <div class="song-tools">
       {song.ai && (
-        <button class="link-button" onClick={() => update((s) => saveSong(s, { ...song, ai: undefined }))}>
+        <button class="link-button" onClick={onRedo}>
           Redo the AI notes
         </button>
       )}
@@ -452,7 +491,7 @@ const CHAT_KEEP = 60;
 
 function chatSystem(song: Song): string {
   const s = song.ai?.song;
-  const about = [s?.credits, s?.background].filter(Boolean).join(" ").slice(0, 2500);
+  const about = [...songCredits(s).map(([k, v]) => `${k}: ${v}.`), s?.background].filter(Boolean).join(" ").slice(0, 2500);
   return `You are the tutor inside Nekko, a Japanese study app. The learner is studying a song and asks you follow-up questions.
 Song: ${song.title}${song.artist ? ` by ${song.artist}` : ""}
 ${about ? `What Nekko knows about the song: ${about}` : ""}

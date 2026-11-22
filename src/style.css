@@ -3032,6 +3032,35 @@ button.danger-outline:disabled {
   margin-bottom: 2px;
   overflow-wrap: anywhere;
 }
+.song-names {
+  color: var(--muted);
+  margin: 0;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.song-credits {
+  margin: 8px 0 0;
+  display: grid;
+  gap: 3px;
+  font-size: 0.9rem;
+}
+.song-credits div {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr);
+  gap: 8px;
+}
+.song-credits dt {
+  color: var(--muted);
+}
+.song-credits dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.ai-or {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
 .song-meta {
   color: var(--muted);
   margin: 2px 0 12px;

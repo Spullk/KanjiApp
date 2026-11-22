@@ -5,7 +5,7 @@ import words from "../data/words.json";
 import lessons from "../data/lessons.json";
 import type { Data } from "../src/data";
 import { addItem, emptyStore, merge, nextToLearn } from "../src/srs";
-import { cleanLyrics, findTitle, groupTokens, matchWord, parseAI, queueWord, removeSong, saveSong, unqueueWord, type Song, type Token } from "../src/songs";
+import { aiPrompt, cleanLyrics, findTitle, groupTokens, matchWord, parseAI, queueWord, removeSong, saveSong, songCredits, unqueueWord, withAnswer, type Song, type Token } from "../src/songs";
 
 const data = { kanji, radicals, words, sentences: {}, lessons, grammar: {} } as unknown as Data;
 
@@ -46,6 +46,37 @@ describe("the AI's answer", () => {
   });
   it("says so when there is no word list", () => {
     expect(() => parseAI('{"song":{}}')).toThrow(/word list/);
+  });
+  it("says so when the answer stops partway", () => {
+    expect(() => parseAI('```json\n{"nekko":3,"words":[{"base":"夜"')).toThrow(/stops partway/);
+  });
+  it("picks the code block with the word list", () => {
+    const ai = parseAI('```\n{"a":1}\n```\nand\n```json\n{"words":[{"base":"夜"}],"song":{"title":" 夜の歌 ","lyricist":"","sources":["x","https://a.jp","https://a.jp"]}}\n```');
+    expect(ai.words).toHaveLength(1);
+    expect(ai.song).toEqual({ title: "夜の歌", sources: ["https://a.jp"] });
+  });
+});
+
+describe("the song's details", () => {
+  const song: Song = { id: "a1", title: "Yoru no Uta", lyrics: "一行目", source: "paste", added: 1 };
+  it("asks to find the song when it has no title", () => {
+    expect(aiPrompt({ ...song, title: "Untitled song" })).toContain("work it out from the lyrics");
+    expect(aiPrompt(song)).toContain('"nekko": 3');
+  });
+  it("takes the official title and artist, keeping yours", () => {
+    const s = withAnswer(song, { words: [], song: { title: "夜の歌", artist: "誰か", confidence: "sure" } });
+    expect([s.title, s.artist, s.aka]).toEqual(["夜の歌", "誰か", "Yoru no Uta"]);
+    const unsure = withAnswer({ ...song, artist: "Me" }, { words: [], song: { title: "夜の歌", artist: "誰か", confidence: "unsure" } });
+    expect([unsure.title, unsure.artist]).toEqual(["Yoru no Uta", "Me"]);
+    expect(withAnswer({ ...song, title: "Untitled song" }, { words: [], song: { title: "夜の歌", confidence: "unsure" } }).title).toBe("夜の歌");
+  });
+  it("lists the credits", () => {
+    expect(songCredits({ lyricist: "A", composer: "B", vocals: "C", artist: "C", released: "2020", release: "Single" })).toEqual([
+      ["Words", "A"],
+      ["Music", "B"],
+      ["Released", "2020, Single"],
+    ]);
+    expect(songCredits({ credits: "A and B" })).toEqual([["Credits", "A and B"]]);
   });
 });
 
