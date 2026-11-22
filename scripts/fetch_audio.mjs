@@ -3,7 +3,8 @@
 // Run before `vite build` (the App workflow does, with a cache, so each deploy only fetches new ones).
 // Files that fail to download are skipped; the app then streams Kanji alive and Tatoeba ones from the source.
 // AUDIO_MINUTES=4 stops starting new downloads after 4 minutes, so a deploy never waits long on recordings: the
-// rest (often Commons files that hit its rate limit) are tried again on the next run.
+// rest (often Commons files that hit its rate limit) are tried again on the next run. A file that failed is
+// remembered in public/audio/.failed.json (kept by the workflow's cache, removed before the build) and not tried again for 3 days.
 // Wikimedia Commons recordings are .wav/.ogg there, so the mp3 copy Commons makes is used, or ffmpeg converts it.
 //
 //   node scripts/fetch_audio.mjs
@@ -70,22 +71,41 @@ const jobs = [
 mkdirSync(`${OUT}/w`, { recursive: true });
 mkdirSync(`${OUT}/s`, { recursive: true });
 
+const FAILED = `${OUT}/.failed.json`;
+const RETRY_AFTER = 3 * 24 * 3600_000;
+let failedAt = {};
+try {
+  failedAt = JSON.parse(readFileSync(FAILED, "utf8"));
+} catch {
+  // first run
+}
+
 let have = 0;
 let got = 0;
+let skipped = 0;
 const failed = [];
-const todo = jobs.filter(([, file]) => (existsSync(file) ? (have++, false) : true));
+const todo = jobs.filter(([, file]) => {
+  if (existsSync(file)) return have++, false;
+  if (Date.now() - (failedAt[file] ?? 0) < RETRY_AFTER) return skipped++, false;
+  return true;
+});
 async function worker() {
   for (let job = todo.shift(); job && Date.now() < deadline; job = todo.shift()) {
     const [url, file] = job;
     try {
       writeFileSync(file, url.commons ? await commonsMp3(url.commons, file) : await get(url));
       got++;
+      delete failedAt[file];
     } catch (e) {
       failed.push(`${url.commons ?? url} (${e.message})`);
+      // A dropped connection says nothing about the file, so only the server's answers are remembered.
+      if (e.message !== "fetch failed") failedAt[file] = Date.now();
     }
   }
 }
 await Promise.all(Array.from({ length: 16 }, worker));
-console.log(`Recordings: ${jobs.length} in the data, ${have} already here, ${got} downloaded, ${failed.length} failed${todo.length ? `, ${todo.length} left for the next run (time limit)` : ""}.`);
-if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `got=${got}\n`, { flag: "a" });
+const wanted = new Set(jobs.map(([, file]) => file));
+writeFileSync(FAILED, JSON.stringify(Object.fromEntries(Object.entries(failedAt).filter(([file]) => wanted.has(file)))));
+console.log(`Recordings: ${jobs.length} in the data, ${have} already here, ${skipped} failed lately (skipped), ${got} downloaded, ${failed.length} failed${todo.length ? `, ${todo.length} left for the next run (time limit)` : ""}.`);
+if (process.env.GITHUB_OUTPUT) writeFileSync(process.env.GITHUB_OUTPUT, `changed=${got || failed.length ? 1 : 0}\n`, { flag: "a" });
 if (failed.length) console.log("First failures:\n" + failed.slice(0, 10).join("\n"));
