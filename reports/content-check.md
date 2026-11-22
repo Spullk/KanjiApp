@@ -2,7 +2,7 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 21,903 words, 2,136 kanji, 372 radicals, 44,227 sentences, 115 stories, 237 grammar points.
+Checked: 21,936 words, 2,136 kanji, 372 radicals, 44,275 sentences, 116 stories, 237 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
@@ -15,7 +15,7 @@ Checked: 21,903 words, 2,136 kanji, 372 radicals, 44,227 sentences, 115 stories,
 | Words | [The same word taught twice](#lesson-word-duplicate) | 0 |
 | Words | [Lesson words that may be the wrong dictionary entry](#lesson-word-rarer-homophone) | 0 |
 | Words | [Junk words still in a lesson](#lesson-word-junk) | 0 |
-| Words | [Single-kana words outside the lessons](#word-lone-kana) | 12 |
+| Words | [Single-kana words outside the lessons](#word-lone-kana) | 14 |
 | Kanji | [Kanji with no meaning](#kanji-no-meaning) | 0 |
 | Kanji | [Kanji with no reading](#kanji-no-reading) | 0 |
 | Kanji | [Kanji with fewer than 2 example words](#kanji-no-words) | 3 |
@@ -129,7 +129,7 @@ Words marked junk (a wrong dictionary match) shouldn't be taught.
 None. 🎉
 
 <a id="word-lone-kana"></a>
-## Words: Single-kana words outside the lessons (12)
+## Words: Single-kana words outside the lessons (14)
 
 A lone kana as a word is usually a wrong dictionary match (ト as "note G"). Check these aren't shown as cards.
 
@@ -138,11 +138,13 @@ A lone kana as a word is usually a wrong dictionary match (ト as "note G"). Che
 - ね · right? · 2029080
 - わ · indicates emotion or admiration · 2029100
 - な · don't · 2029110
+- さ · -ness · 2029120
 - お · oh! (expression of slight surprise) · 2089690
 - え · eh? · 2122310
 - ん · yes · 2139720
 - べ · word used at sentence-end (like a particle) to indicate speculation, volition or invitation · 2213460
 - て · and · 2654270
+- マ · for real · 2837541
 - ザ · the · 1058900
 - ト · 7th in a sequence denoted by the iroha system · 2029780
 
