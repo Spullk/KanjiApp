@@ -59,7 +59,7 @@ export function Welcome() {
   const choose = (l: (typeof LEVELS)[number]) => {
     update((s) => {
       s.settings.start = l.start;
-      if (l.start === "new") s.settings.tabs = BEGINNER_TABS;
+      if (l.start === "new") s.settings.bar = BEGINNER_TABS;
     });
     setOpen(false);
     location.hash = l.to;

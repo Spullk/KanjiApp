@@ -105,8 +105,10 @@ export type Settings = {
   reminder?: number;
   /** Where you said you're starting from on the welcome screen: brand new, can read kana, or studied before. */
   start?: "new" | "kana" | "returning";
-  /** The tools on the bottom bar after Home, in order. Unset means the default four. */
+  /** Old bottom bar picks (Home at the left end). No longer read: see `bar`. */
   tabs?: string[];
+  /** The four tools on the bottom bar, left to right around Home in the middle. Unset means the default four. */
+  bar?: string[];
   /** Your order for the tools on Home (tool tabs) and for their groups. Unset means the default order. */
   homeTools?: string[];
   homeGroups?: string[];

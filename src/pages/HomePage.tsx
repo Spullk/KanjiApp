@@ -1,78 +1,113 @@
 import { useData } from "../data";
 import { href } from "../router";
-import { dueCards, newLeftToday, nextToLearn, stageOf, update, useStore } from "../srs";
-import { Chips, Section } from "../components/bits";
-import { homeGroups, moveIn } from "../tools";
-import { useState } from "preact/hooks";
-import { ToolbarEditor } from "../components/ToolbarEditor";
+import { dueCards, newLeftToday, nextToLearn, stageOf, useStore } from "../srs";
+import { rackTools, type Tool } from "../tools";
+import { useEffect, useState } from "preact/hooks";
+import { darkSky, worldSVG } from "../season";
 import { startNext } from "./GrammarPages";
 
 export function HomePage() {
   const data = useData();
   const store = useStore();
+  const dark = useDark();
   const due = dueCards(store).length;
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+  const later = Math.max(0, dueCards(store, endOfDay.getTime()).length - due);
   const next = nextToLearn(store, data, Math.min(store.settings.batch, newLeftToday(store)));
   const all = Object.keys(data.kanji);
   const known = all.filter((k) => stageOf(store, "kanji", k) === "mature").length;
   const studied = all.filter((k) => stageOf(store, "kanji", k) !== "none").length;
   // The first lesson with a kanji you haven't started.
   const lesson = data.lessons.find((l) => l.kanji.some((k) => stageOf(store, "kanji", k) === "none")) ?? data.lessons[0];
-  // A different kanji each day, to wander the web from.
-  const daily = all[Math.floor(Date.now() / 86_400_000) % all.length];
+  const rack = rackTools(store.settings);
+  const rows: Tool[][] = [];
+  for (let i = 0; i < rack.length; i += 3) rows.push(rack.slice(i, i + 3));
+  const caption: Record<string, string> = {
+    progress: studied ? `${known} known` : "stats, settings",
+    practice: "mistakes",
+    kana: "あ to ん",
+    grammar: "up to N3",
+    read: "stories",
+    songs: "lyrics",
+    lessons: `${data.lessons.length} lessons`,
+    review: `${due} due`,
+    search: "look up",
+    write: "strokes",
+  };
 
   return (
-    <article class="page">
-      <h1 class="brand">
-        Nekko <span lang="ja">根っこ</span>
-      </h1>
-
+    <article class="page home-page" style={{ "--world-ink": darkSky(dark) ? "#ece9dc" : "#2a211c" }}>
+      <div class="home-world" dangerouslySetInnerHTML={{ __html: worldSVG(dark) }} />
       {store.settings.vacation && (
         <a class="vacation-note" href={href.settings("app")}>
           Vacation mode is on, so nothing is due. Turn it off in Settings →
         </a>
       )}
       {store.settings.start === "new" && <StartHere />}
-      <div class="home-actions">
-        <a class={`big-action review ${due ? "" : "quiet"}`} href={href.review()}>
-          <span class="ba-n">{due}</span>
-          <span class="ba-label">{due === 1 ? "review due" : "reviews due"}</span>
-        </a>
-        <a class={`big-action learn ${next.length ? "" : "quiet"}`} href={href.learn()}>
-          <span class="ba-n">{next.length}</span>
-          <span class="ba-label">new to learn</span>
-          {next.length > 0 && (
-            <span class="ba-preview" lang="ja">
-              {next.map((n) => (n.kind === "word" ? data.words[n.key].w : n.key)).join(" ")}
-            </span>
-          )}
-        </a>
+
+      <a class="tree-slot" href={href.progress()}>
+        <b>{studied}</b>
+        <span>kanji studied</span>
+        <small>Your tree grows here · tap for Progress</small>
+      </a>
+
+      <a class={`plq leaf ${next.length ? "" : "quiet"}`} href={href.learn()}>
+        <i class="sh" />
+        <i class="bg" />
+        <span class="k" lang="ja">
+          学
+        </span>
+        <span class="tx">
+          <b>Learn new</b>
+          <span>{next.length ? `Lesson ${lesson.id}` : "All done for today"}</span>
+        </span>
+        <span class="big">{next.length}</span>
+      </a>
+
+      <a class={`plq ema rv ${due ? "" : "quiet"}`} href={href.review()}>
+        <i class="sh" />
+        <i class="bg" />
+        <span class="k" lang="ja">
+          復
+        </span>
+        <span class="n">{due}</span>
+        <span class="l">to review</span>
+        <span class="s">{later ? `+${later} later today` : due ? "" : "all caught up"}</span>
+      </a>
+
+      <div class="rack">
+        {rows.map((row, r) => (
+          <div key={r} class="trow">
+            {row.map((t) => (
+              <a key={t.tab} class="plq ema hang" href={t.href}>
+                <i class="sh" />
+                <i class="bg" />
+                <span class="g" lang="ja">
+                  {t.icon}
+                </span>
+                <span class="t">{t.short ?? t.label}</span>
+                <span class="c">{caption[t.tab] ?? t.about}</span>
+              </a>
+            ))}
+          </div>
+        ))}
       </div>
-      <a class="progress-line" href={href.progress()}>
-        {studied ? `${studied} kanji studied, ${known} known of ${all.length}` : `${all.length} kanji to discover`} →
-      </a>
-
-      <a class="search-link" href={href.search()}>
-        Search kanji, words, readings or meanings…
-      </a>
-
-      <Section title="Lessons">
-        <a class="lesson-row" href={href.lesson(lesson.id)}>
-          <span class="lesson-num">{lesson.id}</span>
-          <span class="lesson-kanji" lang="ja">{lesson.kanji.join("")}</span>
-          <span class="lesson-level">Up next</span>
-        </a>
-        <a class="more" href={href.lessons()}>
-          All {data.lessons.length} lessons →
-        </a>
-      </Section>
-
-      <Section title="Kanji of the day">
-        <Chips items={[daily]} kind="kanji" />
-      </Section>
-
-      <HomeTools />
     </article>
   );
+}
+
+/** Follows the phone's light or dark setting live. */
+function useDark(): boolean {
+  const query = typeof matchMedia === "function" ? matchMedia("(prefers-color-scheme: dark)") : undefined;
+  const [dark, setDark] = useState(!!query?.matches);
+  useEffect(() => {
+    if (!query) return;
+    const on = () => setDark(query.matches);
+    query.addEventListener("change", on);
+    return () => query.removeEventListener("change", on);
+  }, []);
+  return dark;
 }
 
 /** For beginners until Start here is done: the next step in it. */
@@ -84,84 +119,5 @@ function StartHere() {
       <span class="start-here-label">Start here · next up</span>
       <b lang="ja">{next.title}</b>
     </a>
-  );
-}
-
-/** Every tool, in its colour group. "Reorganize" moves tools within a group and the groups themselves. */
-function HomeTools() {
-  const store = useStore();
-  const [mode, setMode] = useState<"use" | "reorganize" | "bar">("use");
-  const groups = homeGroups(store.settings);
-  const moveTool = (tab: string, by: -1 | 1) =>
-    update((s) => (s.settings.homeTools = groups.flatMap((g) => (g.tools.some((t) => t.tab === tab) ? moveIn(g.tools.map((t) => t.tab), tab, by) : g.tools.map((t) => t.tab)))));
-  const moveGroup = (group: string, by: -1 | 1) =>
-    update((s) => (s.settings.homeGroups = moveIn(groups.map((g) => g.group), group, by)));
-  const editing = mode === "reorganize";
-
-  return (
-    <>
-      <div class="home-tools-bar">
-        {mode === "use" ? (
-          <>
-            <button class="link-button" onClick={() => setMode("reorganize")}>
-              Reorganize
-            </button>
-            <button class="link-button" onClick={() => setMode("bar")}>
-              Edit toolbar
-            </button>
-          </>
-        ) : (
-          <button class="link-button" onClick={() => setMode("use")}>
-            Done
-          </button>
-        )}
-      </div>
-      {mode === "bar" && <ToolbarEditor onDone={() => setMode("use")} />}
-      {groups.map(({ group, title, tools }, gi) => (
-        <section key={group} class="section">
-          <h2>
-            {title}
-            {editing && (
-              <span class="reorder">
-                <button disabled={gi === 0} onClick={() => moveGroup(group, -1)} aria-label={`Move ${title} up`}>
-                  ↑
-                </button>
-                <button disabled={gi === groups.length - 1} onClick={() => moveGroup(group, 1)} aria-label={`Move ${title} down`}>
-                  ↓
-                </button>
-              </span>
-            )}
-          </h2>
-          <div class={`tool-grid ${group} ${editing ? "reorganizing" : ""}`}>
-            {tools.map((t, i) =>
-              editing ? (
-                <div key={t.tab} class="tool">
-                  <span class="tool-icon" lang="ja">
-                    {t.icon}
-                  </span>
-                  <b>{t.label}</b>
-                  <span class="reorder">
-                    <button disabled={i === 0} onClick={() => moveTool(t.tab, -1)} aria-label={`Move ${t.label} earlier`}>
-                      ←
-                    </button>
-                    <button disabled={i === tools.length - 1} onClick={() => moveTool(t.tab, 1)} aria-label={`Move ${t.label} later`}>
-                      →
-                    </button>
-                  </span>
-                </div>
-              ) : (
-                <a key={t.tab} class="tool" href={t.href}>
-                  <span class="tool-icon" lang="ja">
-                    {t.icon}
-                  </span>
-                  <b>{t.label}</b>
-                  <span class="tool-about">{t.about}</span>
-                </a>
-              ),
-            )}
-          </div>
-        </section>
-      ))}
-    </>
   );
 }

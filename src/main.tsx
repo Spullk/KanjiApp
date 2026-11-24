@@ -28,6 +28,7 @@ import { activeTab, barTools } from "./tools";
 import { dropJunkWords, dueCards, getStore, initStore, junkWordsStudied, requestPersistence, update, useStore } from "./srs";
 import { initNative, isNative } from "./native";
 import { initAppFeel } from "./appFeel";
+import { initSeason, loadLookFonts } from "./season";
 import { initSync } from "./sync";
 import { Tour } from "./components/Tour";
 import { initUpdates } from "./update";
@@ -38,6 +39,8 @@ import "./style.css";
 // The app store build ships every file inside the app, so only the website needs the offline cache.
 if (!isNative) initUpdates();
 initAppFeel();
+initSeason();
+loadLookFonts();
 requestPersistence();
 
 function Page({ route }: { route: Route }) {
@@ -151,15 +154,15 @@ function App() {
         <div class="dock-actions" id={DOCK_SLOT} />
         <nav class="tabbar">
           {bar.map((t) => (
-            <a key={t.tab} data-tab={t.tab} class={[t.tab === on && "on", t.group].filter(Boolean).join(" ")} href={t.href}>
-              {t.path ? (
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d={t.path} />
-                </svg>
-              ) : (
-                <span aria-hidden="true">{t.icon}</span>
-              )}
-              {t.short ?? t.label}
+            <a key={t.tab} data-tab={t.tab} class={[t.tab === on && "on", t.tab === "home" && "home"].filter(Boolean).join(" ")} href={t.href} aria-label={t.label}>
+              <span class="pl" aria-hidden="true">
+                <i />
+                <i />
+              </span>
+              <span class="kj" lang="ja" aria-hidden="true">
+                {t.icon}
+              </span>
+              <span class="en">{t.short ?? t.label}</span>
               {t.tab === "review" && due > 0 && <b class="tab-badge">{due}</b>}
             </a>
           ))}

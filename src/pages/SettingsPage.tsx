@@ -246,7 +246,7 @@ export function SettingsPage({ group }: { group?: SettingsGroup }) {
       case "app":
         return (
           <>
-            <Section title="Bottom bar" hint="Home and Progress are always at the ends, with three tools of your choice between them. Every tool is also on Home.">
+            <Section title="Bottom bar" hint="Home (根) is always in the middle, with two tools of your choice on each side. Tools that aren't on the bar hang on Home's plaque rack, with Progress.">
               <BarSetting />
             </Section>
             <Section title="Reminders">{isNative ? <NativeReminder /> : <WebReminder />}</Section>

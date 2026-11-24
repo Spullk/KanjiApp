@@ -1,46 +1,84 @@
 :root {
-  --bg: #f7f5f9;
-  --card: #ffffff;
-  --text: #1f1b24;
-  --muted: #6d6675;
-  --line: #e4dfe8;
-  --radical: #1f8ad6;
-  --kanji: #d93279;
-  --vocab: #8e3fcf;
-  --grammar: #0e8f7e;
-  --hl: #fde68a;
-  --hl-text: #1f1b24;
-  --tab: rgba(255, 255, 255, 0.92);
+  /* MOSS AND BARK (picked 2026-11-24): soft moss greens on warm paper, wood for plaques, seal red for what's due. */
+  --bg: #e9ebdd;
+  --card: #f7f7ee;
+  --text: #2a211c;
+  --muted: #646b58;
+  --line: #d6d8c6;
+  --radical: #a3662a;
+  --kanji: #2e6650;
+  --vocab: #9a4a6e;
+  --grammar: #2f6f8a;
+  --hl: #f1df9a;
+  --hl-text: #2a211c;
+  --tab: rgba(247, 247, 238, 0.94);
   /* Height of the dock (action bar + tab bar), measured by the app. Only overlays such as the tour card use it:
      page layout never does (see LAYOUT RULES below and docs/design-rules.md). */
   --dock-h: calc(58px + env(safe-area-inset-bottom));
   --ja-font: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
   /* ACCENT RULE: highlights (underlines, the open line, buttons on new pages) come from these few tokens, so the
      colours can change in one place. New screens and the redesign use them instead of fixed colours. */
-  --accent: var(--vocab);
+  --accent: #557f2f; /* replaced by the season's colour below */
   --accent-ink: #ffffff;
   --added: var(--grammar);
-  --sung: #d97706;
+  --sung: #c0762a;
+  --good: #557f2f;
+  --again: #b5432b;
+  /* Wood and moss for the plaques, leaf and bar */
+  --moss: #557f2f;
+  --moss-deep: #3d5f22;
+  --wood: #d2ab7c;
+  --wood-dark: #a57d55;
+  --wood-ink: #3a2a1c;
+  --bark: #7b5a42;
+  --bark-line: #4b3527;
+  --seal: #b8322a;
+  --seal-dark: #7a211b;
+  --seal-ink: #fff6ec;
+  --f-hand: "Klee One", var(--ja-font);
+  --f-num: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
   color-scheme: light;
 }
+/* The season's accent (src/season.ts puts the season on <html>) */
+:root[data-season="spring"] { --accent: #b84a72; }
+:root[data-season="summer"] { --accent: #466e36; }
+:root[data-season="autumn"] { --accent: #bf4a29; }
+:root[data-season="winter"] { --accent: #4f6f8c; }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #17141b;
-    --card: #221e27;
-    --text: #f1edf5;
-    --muted: #a49cad;
-    --line: #35303c;
-    --radical: #3b9fe6;
-    --kanji: #e84d8e;
-    --vocab: #a463e0;
-    --grammar: #26b39f;
-    --hl: #6b5313;
+    --bg: #151a14;
+    --card: #1f251c;
+    --text: #ece9dc;
+    --muted: #a4a892;
+    --line: #323b2c;
+    --radical: #d9a066;
+    --kanji: #6fb595;
+    --vocab: #d88cb0;
+    --grammar: #73b2cc;
+    --hl: #5e5220;
     --hl-text: #fff4cf;
-    --tab: rgba(30, 26, 35, 0.92);
-    --sung: #f59e0b;
+    --tab: rgba(31, 37, 28, 0.94);
+    --sung: #e9a050;
+    --accent: #a5c56e;
+    --accent-ink: #151a14;
+    --good: #a5c56e;
+    --again: #e0785e;
+    --moss: #7fa850;
+    --moss-deep: #4d6e30;
+    --wood: #b8916a;
+    --wood-dark: #8a6a4a;
+    --wood-ink: #2a1d12;
+    --bark: #8a6a50;
+    --bark-line: #2e2219;
+    --seal: #d0503f;
+    --seal-dark: #7d2a20;
     color-scheme: dark;
   }
+  :root[data-season="spring"] { --accent: #efa3bd; }
+  :root[data-season="summer"] { --accent: #9dc06a; }
+  :root[data-season="autumn"] { --accent: #f0a060; }
+  :root[data-season="winter"] { --accent: #a9c2d6; }
 }
 
 * {
@@ -633,34 +671,6 @@ a.more {
   color: var(--muted);
 }
 
-/* ---------- tab bar */
-
-.tabbar {
-  display: flex;
-  justify-content: space-around;
-  background: var(--tab);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid var(--line);
-  padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
-}
-
-.tabbar a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 0.72rem;
-  color: var(--muted);
-  min-width: 72px;
-}
-
-.tabbar a span {
-  font-size: 1.3rem;
-  line-height: 1.3;
-}
-
-.tabbar a.on {
-  color: var(--kanji);
-}
 
 /* ---------- study */
 
@@ -720,7 +730,7 @@ a.primary {
 .stage.young,
 .kg.young,
 .sb-seg.young {
-  background: #2fa36b;
+  background: var(--good);
 }
 .stage.mature,
 .kg.mature,
@@ -756,7 +766,7 @@ a.primary {
 }
 
 .stage.leech {
-  background: #c43d3d;
+  background: var(--again);
 }
 
 .note-box {
@@ -788,22 +798,6 @@ a.primary {
   flex: 1;
 }
 
-.tabbar a {
-  position: relative;
-  min-width: 56px;
-}
-
-.tab-badge {
-  position: absolute;
-  top: -2px;
-  right: 4px;
-  background: var(--kanji);
-  color: #fff;
-  font-size: 0.65rem;
-  border-radius: 999px;
-  padding: 0 5px;
-  line-height: 1.5;
-}
 
 /* home */
 
@@ -1075,7 +1069,7 @@ a.primary {
   background: #e59a1f;
 }
 .grade.g3 {
-  background: #2fa36b;
+  background: var(--good);
 }
 .grade.g4 {
   background: #2563c9;
@@ -1434,7 +1428,7 @@ button.secondary,
   margin-right: 12px;
 }
 .hint.error {
-  color: #c43d3d;
+  color: var(--again);
 }
 
 button.secondary:disabled {
@@ -1499,10 +1493,10 @@ button.secondary:disabled {
 }
 .typed-result.right,
 .typed-result.close {
-  background: #2fa36b;
+  background: var(--good);
 }
 .typed-result.wrong {
-  background: #c43d3d;
+  background: var(--again);
 }
 .typed-label {
   font-size: 0.75rem;
@@ -1518,7 +1512,7 @@ button.next {
   margin-top: 12px;
 }
 button.next.wrong {
-  background: #c43d3d;
+  background: var(--again);
 }
 .typed-overrides {
   display: flex;
@@ -1549,7 +1543,7 @@ button.next.wrong {
   user-select: none;
 }
 .write-pad.miss {
-  border-color: #c43d3d;
+  border-color: var(--again);
 }
 .write-outline,
 .write-done,
@@ -2038,16 +2032,13 @@ button.next.wrong {
 .tour-actions .link-button {
   margin-right: auto;
 }
-.tabbar {
-  z-index: 21;
-}
 body[data-tour] .tabbar a {
   opacity: 0.35;
 }
 .tabbar a.tour-on {
   opacity: 1;
-  color: var(--kanji);
-  transform: scale(1.12);
+  color: var(--text);
+  transform: translateY(-6px) scale(1.08);
 }
 .history-line {
   margin: 4px 0 0;
@@ -2177,10 +2168,10 @@ ruby.tap-reading {
   padding: 10px 0;
 }
 .typed-input.right {
-  border-color: #2fa36b;
+  border-color: var(--good);
 }
 .typed-input.wrong {
-  border-color: #c43d3d;
+  border-color: var(--again);
 }
 .kana-result {
   padding: 10px 14px;
@@ -2190,10 +2181,10 @@ ruby.tap-reading {
   text-align: center;
 }
 .kana-result.right {
-  background: #2fa36b;
+  background: var(--good);
 }
 .kana-result.wrong {
-  background: #c43d3d;
+  background: var(--again);
 }
 .kana-pair {
   display: flex;
@@ -2236,11 +2227,11 @@ ruby.tap-reading {
   color: #fff;
 }
 .kana-cell.weak {
-  background: #c43d3d;
+  background: var(--again);
   color: #fff;
 }
 .kana-cell.strong {
-  background: #2fa36b;
+  background: var(--good);
   color: #fff;
 }
 .kana-learn {
@@ -2424,38 +2415,6 @@ ruby.tap-reading {
 
 /* ---------- tool colour groups: Study pink, Read and look up purple, Foundations green */
 
-.tabbar a.study span {
-  color: var(--kanji);
-}
-.tabbar a.read span {
-  color: var(--vocab);
-}
-.tabbar a.basics span {
-  color: var(--grammar);
-}
-.tabbar a svg {
-  width: 22px;
-  height: 22px;
-  margin: 3px 0 2px;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  fill: none;
-}
-.tabbar a:not(.on) span,
-.tabbar a:not(.on) svg {
-  opacity: 0.7;
-}
-.tabbar a.on {
-  font-weight: 600;
-}
-.tabbar a.on.read {
-  color: var(--vocab);
-}
-.tabbar a.on.basics {
-  color: var(--grammar);
-}
 .section:has(.tool-grid.study) h2 {
   color: var(--kanji);
 }
@@ -2646,31 +2605,6 @@ button.bar-spot.selected {
   font-size: 0.9rem;
 }
 
-/* ---------- bottom bar on a computer: one clear segment per tab, all of it clickable (phones keep the plain bar) */
-
-@media (min-width: 720px) and (hover: hover) and (pointer: fine) {
-  .tabbar {
-    justify-content: center;
-    gap: 0;
-    padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
-  }
-  .tabbar a {
-    flex: 0 1 140px;
-    justify-content: center;
-    padding: 6px 4px;
-    border-right: 1px solid var(--line);
-  }
-  .tabbar a:first-child {
-    border-left: 1px solid var(--line);
-  }
-  .tabbar a:hover {
-    background: var(--card);
-  }
-  .tabbar a.on {
-    background: var(--card);
-    box-shadow: inset 0 -3px 0 currentColor;
-  }
-}
 
 /* Settings: the list of groups, and the way back from one */
 .settings-groups {
@@ -2741,14 +2675,14 @@ button.danger-outline {
   font-weight: 600;
 }
 button.danger {
-  background: #c43d3d;
-  border: 1px solid #c43d3d;
+  background: var(--again);
+  border: 1px solid var(--again);
   color: #fff;
 }
 button.danger-outline {
   background: var(--card);
-  border: 1px solid #c43d3d;
-  color: #c43d3d;
+  border: 1px solid var(--again);
+  color: var(--again);
 }
 button.danger:disabled,
 button.danger-outline:disabled {
@@ -2786,7 +2720,7 @@ button.danger-outline:disabled {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #c43d3d;
+  background: var(--again);
   color: #fff;
   font-size: 1.6rem;
   font-weight: 700;
@@ -2898,12 +2832,12 @@ button.danger-outline:disabled {
   min-height: 56px;
 }
 .quiz-options button.right {
-  border-color: var(--good, #2e9d63);
-  background: color-mix(in srgb, var(--good, #2e9d63) 18%, var(--card));
+  border-color: var(--good);
+  background: color-mix(in srgb, var(--good) 18%, var(--card));
 }
 .quiz-options button.wrong {
-  border-color: var(--bad, #d64545);
-  background: color-mix(in srgb, var(--bad, #d64545) 18%, var(--card));
+  border-color: var(--again);
+  background: color-mix(in srgb, var(--again) 18%, var(--card));
 }
 .quiz-options button.dim {
   opacity: 0.5;
@@ -2957,7 +2891,7 @@ button.danger-outline:disabled {
   margin-top: 8px;
 }
 .flag-box .error {
-  color: #c43d3d;
+  color: var(--again);
   margin: 6px 0 0;
 }
 
@@ -3636,4 +3570,413 @@ body.no-scroll {
   stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/* ---------- the bottom bar: Home (根) in the middle, two tools each side (picked 2026-11-24)
+   Tabs you're not in show only their kanji. The one you're in pops up into a small wooden ema plaque with its
+   English name under the kanji. Every slot is the same width, so 根 always stays in the centre. */
+
+.tabbar {
+  position: relative;
+  z-index: 21;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--tab);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+  padding: 8px 6px calc(10px + env(safe-area-inset-bottom));
+}
+.tabbar a {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 110px;
+  height: 50px;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  text-decoration: none;
+  transition: transform 0.16s ease-out;
+}
+.tabbar .kj {
+  position: relative;
+  z-index: 1;
+  font-family: var(--f-hand);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1;
+}
+.tabbar a.home .kj {
+  font-size: 30px;
+  color: var(--text);
+}
+.tabbar .en {
+  display: none;
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.1;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+.tabbar .pl {
+  position: absolute;
+  inset: 0 3px;
+  z-index: 0;
+  opacity: 0;
+}
+.tabbar .pl i {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%, 0 10px);
+}
+.tabbar .pl i:first-child {
+  background: var(--wood-dark);
+  transform: translateY(3px);
+}
+.tabbar .pl i:last-child {
+  background: var(--wood);
+}
+.tabbar a.on {
+  color: var(--wood-ink);
+  transform: translateY(-7px);
+}
+.tabbar a.on .pl {
+  opacity: 1;
+}
+.tabbar a.on .pl,
+.tabbar a.on .kj,
+.tabbar a.on .en {
+  animation: plaque 0.2s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.tabbar a.on .en {
+  display: block;
+}
+.tabbar a.on .kj {
+  color: var(--wood-ink);
+  font-size: 24px;
+}
+@keyframes plaque {
+  from {
+    transform: scale(0.6) translateY(6px);
+    opacity: 0.2;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tabbar a.on .pl,
+  .tabbar a.on .kj,
+  .tabbar a.on .en {
+    animation: none;
+  }
+}
+.tab-badge {
+  position: absolute;
+  z-index: 2;
+  top: -3px;
+  right: calc(50% - 27px);
+  min-width: 20px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--seal);
+  color: var(--seal-ink);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+}
+.tabbar a.on .tab-badge {
+  display: none;
+}
+
+/* ---------- Home: the season's world behind, your tree on top (tap for Progress), the leaf to learn new, the
+   red review board, and the ema rack with every tool that isn't on the bar. */
+
+.home-world {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.home-world svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.home-page > * {
+  flex-shrink: 0;
+}
+.tree-slot {
+  /* Tall enough that the first row of plaques peeks in under the review board and the second needs a scroll. */
+  height: max(130px, calc(100svh - var(--dock-h) - 330px - env(safe-area-inset-top)));
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+  color: var(--world-ink, var(--text));
+  text-decoration: none;
+}
+.tree-slot b {
+  font-family: var(--f-num);
+  font-size: 44px;
+  line-height: 1;
+}
+.tree-slot span {
+  font-size: 14px;
+  font-weight: 600;
+}
+.tree-slot small {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Plaque skeleton: a shadow layer under a body layer, both cut by --clip */
+.plq {
+  --clip: none;
+  --body: var(--moss);
+  --shade: var(--moss-deep);
+  --ink: #f7f7ee;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.plq > * {
+  position: relative;
+  z-index: 1;
+}
+.plq > .sh,
+.plq > .bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  clip-path: var(--clip);
+}
+.plq > .sh {
+  background: var(--shade);
+  transform: translateY(3px);
+}
+.plq > .bg {
+  background: var(--body);
+}
+.plq:active {
+  transform: translateY(2px);
+}
+.plq:active > .sh {
+  transform: translateY(1px);
+}
+
+/* Learn new: a leaf with a stem and a midrib */
+.leaf {
+  height: 76px;
+  margin: 2px 8px 0 6px;
+  padding: 0 34px 0 30px;
+}
+.leaf > .bg,
+.leaf > .sh {
+  border-radius: 6px 60px 6px 60px;
+}
+.leaf > .bg {
+  background-image: linear-gradient(-10deg, transparent calc(50% - 1px), rgb(255 255 255 / 0.3) calc(50% - 1px) calc(50% + 0.6px), transparent calc(50% + 0.6px)),
+    repeating-linear-gradient(58deg, transparent 0 24px, rgb(255 255 255 / 0.12) 24px 26px);
+}
+.leaf::after {
+  content: "";
+  position: absolute;
+  left: -11px;
+  bottom: -5px;
+  width: 22px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--bark);
+  transform: rotate(-35deg);
+}
+.leaf .k {
+  font-family: var(--f-hand);
+  font-weight: 600;
+  font-size: 38px;
+  line-height: 1;
+}
+.leaf .tx {
+  display: grid;
+  line-height: 1.2;
+  min-width: 0;
+}
+.leaf .tx b {
+  font-size: 20px;
+}
+.leaf .tx span {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.leaf .big {
+  margin-left: auto;
+  font-family: var(--f-num);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1;
+}
+
+/* Reviews due: a slim red board */
+.ema {
+  --clip: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%, 0 12px);
+}
+.rv {
+  --body: var(--seal);
+  --shade: var(--seal-dark);
+  --ink: var(--seal-ink);
+  height: 58px;
+  padding: 0 18px;
+}
+.rv .k {
+  font-family: var(--f-hand);
+  font-weight: 600;
+  font-size: 28px;
+}
+.rv .n {
+  font-family: var(--f-num);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1;
+}
+.rv .l {
+  font-weight: 700;
+  font-size: 16px;
+  white-space: nowrap;
+}
+.rv .s {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.plq.quiet {
+  --body: var(--wood);
+  --shade: var(--wood-dark);
+  --ink: var(--wood-ink);
+}
+.leaf.quiet {
+  opacity: 0.75;
+}
+
+/* The ema rack: plaques hanging from bark beams on red cords, each a little tilted */
+.rack {
+  display: grid;
+  gap: 8px;
+  padding: 0 4px 12px;
+}
+.rack .trow {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding-top: 20px;
+}
+.rack .trow::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 0;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bark-line);
+}
+.hang {
+  --body: var(--wood);
+  --shade: var(--wood-dark);
+  --ink: var(--wood-ink);
+  display: grid;
+  gap: 1px;
+  justify-items: start;
+  align-content: start;
+  padding: 17px 11px 10px;
+  transform-origin: 50% -14px;
+}
+.hang > .bg {
+  background-image: repeating-linear-gradient(91deg, transparent 0 13px, rgb(90 60 30 / 0.18) 13px 14px, transparent 14px 24px, rgb(90 60 30 / 0.1) 24px 25px, transparent 25px 36px);
+}
+.hang::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: -16px;
+  width: 2px;
+  height: 21px;
+  margin-left: -1px;
+  background: var(--seal);
+}
+.hang::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 4px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--wood-ink);
+}
+.rack .trow .hang:nth-child(3n + 1) { transform: rotate(-1.2deg); }
+.rack .trow .hang:nth-child(3n + 2) { transform: rotate(0.7deg); }
+.rack .trow .hang:nth-child(3n + 3) { transform: rotate(-0.5deg); }
+.rack .trow:nth-child(even) .hang:nth-child(3n + 1) { transform: rotate(1deg); }
+.rack .trow:nth-child(even) .hang:nth-child(3n + 2) { transform: rotate(-1deg); }
+.rack .trow:nth-child(even) .hang:nth-child(3n + 3) { transform: rotate(0.5deg); }
+.rack .trow .hang:active { transform: translateY(2px); }
+.hang .g {
+  font-family: var(--f-hand);
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 1.1;
+}
+.hang .t {
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.hang .c {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.8;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.home-edit {
+  justify-self: center;
+  color: var(--world-ink, var(--muted));
+  opacity: 0.75;
+  font-size: 13px;
 }

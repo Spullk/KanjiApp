@@ -3,7 +3,7 @@
 
 import { useRef, useState } from "preact/hooks";
 import { update, useStore } from "../srs";
-import { HOME, pickedTools, placeTool, PROGRESS, TOOLS, type Tool } from "../tools";
+import { HOME, pickedTools, placeTool, TOOLS, type Tool } from "../tools";
 
 function Icon({ t }: { t: Tool }) {
   return t.path ? (
@@ -26,7 +26,7 @@ export function ToolbarEditor({ onDone }: { onDone: () => void }) {
   const [drag, setDrag] = useState<Drag | null>(null);
 
   const place = (spot: number, tool: string) => {
-    update((s) => (s.settings.tabs = placeTool(s.settings, spot, tool)));
+    update((s) => (s.settings.bar = placeTool(s.settings, spot, tool)));
     setSlot((spot + 1) % picked.length);
   };
 
@@ -64,22 +64,21 @@ export function ToolbarEditor({ onDone }: { onDone: () => void }) {
 
   return (
     <div class="toolbar-editor">
-      <p class="hint">Tap a spot on the bar, then the tool you want there, or drag a tool onto a spot. Home and Progress stay at the ends.</p>
+      <p class="hint">Tap a spot on the bar, then the tool you want there, or drag a tool onto a spot. Home stays in the middle; tools that aren't on the bar hang on Home's plaque rack.</p>
       <div class="bar-preview">
-        <span class="bar-spot fixed">
-          <Icon t={HOME} />
-          {HOME.label}
-        </span>
-        {picked.map((t, i) => (
-          <button key={i} data-slot={i} class={`bar-spot ${t.group ?? ""} ${i === slot ? "selected" : ""}`} onClick={() => setSlot(i)}>
-            <Icon t={t} />
-            {t.short ?? t.label}
-          </button>
-        ))}
-        <span class="bar-spot fixed">
-          <Icon t={PROGRESS} />
-          {PROGRESS.label}
-        </span>
+        {[0, 1, -1, 2, 3].map((i) =>
+          i < 0 ? (
+            <span key="home" class="bar-spot fixed">
+              <Icon t={HOME} />
+              {HOME.label}
+            </span>
+          ) : (
+            <button key={i} data-slot={i} class={`bar-spot ${picked[i].group ?? ""} ${i === slot ? "selected" : ""}`} onClick={() => setSlot(i)}>
+              <Icon t={picked[i]} />
+              {picked[i].short ?? picked[i].label}
+            </button>
+          ),
+        )}
       </div>
       <ul class="tool-picker">
         {TOOLS.map((t) => {

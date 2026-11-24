@@ -3,7 +3,7 @@ import points from "../data/grammar.json";
 import type { GrammarPoint } from "../src/data";
 import { cloze, placedTier, placementQuiz, QUIZ_PER_TIER, segments, spoken, tierOf, TIERS } from "../src/grammar";
 import { alignFurigana } from "../src/components/bits";
-import { activeTab, barTools, DEFAULT_TABS } from "../src/tools";
+import { activeTab, barTools, DEFAULT_TABS, rackTools } from "../src/tools";
 import { DEFAULT_SETTINGS } from "../src/srs";
 
 describe("grammar", () => {
@@ -48,15 +48,19 @@ describe("furigana in sentences", () => {
 });
 
 describe("bottom bar", () => {
-  it("is Home, your three picks, then Progress", () => {
+  it("is two picks, Home in the middle, two picks", () => {
     const bar = barTools(DEFAULT_SETTINGS);
-    expect(bar.map((t) => t.tab)).toEqual(["home", ...DEFAULT_TABS, "progress"]);
-    expect(activeTab(bar, "settings")).toBe("progress");
-    expect(activeTab(bar, "grammar")).toBe("home");
-    // An older save picked four, Progress among them; anything that isn't a tool is filled from the defaults.
-    const mine = barTools({ ...DEFAULT_SETTINGS, tabs: ["grammar", "progress", "nope", "kana"] });
-    expect(mine.map((t) => t.tab)).toEqual(["home", "grammar", "kana", "review", "progress"]);
+    expect(bar.map((t) => t.tab)).toEqual(["lessons", "review", "home", "search", "write"]);
+    expect(DEFAULT_TABS).toEqual(["lessons", "review", "search", "write"]);
+    expect(activeTab(bar, "settings")).toBe("home");
+    expect(activeTab(bar, "lesson")).toBe("lessons");
+    // Anything that isn't a tool is filled from the defaults; the old three-pick save is ignored.
+    const mine = barTools({ ...DEFAULT_SETTINGS, tabs: ["read"], bar: ["grammar", "progress", "nope", "kana"] });
+    expect(mine.map((t) => t.tab)).toEqual(["grammar", "kana", "home", "lessons", "review"]);
     expect(activeTab(mine, "kanaRow")).toBe("kana");
+  });
+  it("hangs Progress and every tool not on the bar on Home's rack", () => {
+    expect(rackTools(DEFAULT_SETTINGS).map((t) => t.tab)).toEqual(["progress", "practice", "kana", "grammar", "read", "songs"]);
   });
 });
 

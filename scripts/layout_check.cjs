@@ -22,7 +22,9 @@ async function measure(p) {
     const tab = box(".tabbar");
     const bar = box(".dock-actions .answer-bar");
     const dock = box(".dock");
-    const kids = [...document.querySelectorAll("main *")].filter((e) => e.getClientRects().length && getComputedStyle(e).position !== "fixed");
+    // Skips fixed layers and everything inside them (like Home's sky backdrop): they don't scroll with the page.
+    const fixed = (e) => { for (; e && e.tagName !== "MAIN"; e = e.parentElement) if (getComputedStyle(e).position === "fixed") return true; return false; };
+    const kids = [...document.querySelectorAll("main *")].filter((e) => e.getClientRects().length && !fixed(e));
     const lastBottom = Math.max(0, ...kids.map((e) => e.getBoundingClientRect().bottom));
     const app = [];
     const vp = document.querySelector('meta[name="viewport"]')?.content ?? "";
