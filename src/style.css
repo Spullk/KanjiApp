@@ -3585,7 +3585,8 @@ body.no-scroll {
   /* No border and no separate strip: the bar is the page's own colour, fading in above it so lists scroll softly
      under it. On Home it turns into the nearest hill of the scene (below). */
   background: var(--bg);
-  padding: 8px 6px calc(10px + env(safe-area-inset-bottom));
+  /* Sits right down on the bottom edge: only enough room under the plaques for the iPhone's home line to clear them. */
+  padding: 6px 6px max(6px, calc(env(safe-area-inset-bottom) - 20px));
   /* Paints the bar's colour on down past its end, so no empty strip can ever show under it, even when an iPhone
      reports the screen a little shorter than it is. */
   box-shadow: 0 200px 0 0 var(--bg);
