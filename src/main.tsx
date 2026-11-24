@@ -27,6 +27,7 @@ import { Welcome } from "./components/Welcome";
 import { activeTab, barTools } from "./tools";
 import { dropJunkWords, dueCards, getStore, initStore, junkWordsStudied, requestPersistence, update, useStore } from "./srs";
 import { initNative, isNative } from "./native";
+import { initAppFeel } from "./appFeel";
 import { initSync } from "./sync";
 import { Tour } from "./components/Tour";
 import { initUpdates } from "./update";
@@ -36,6 +37,7 @@ import "./style.css";
 
 // The app store build ships every file inside the app, so only the website needs the offline cache.
 if (!isNative) initUpdates();
+initAppFeel();
 requestPersistence();
 
 function Page({ route }: { route: Route }) {

@@ -45,4 +45,21 @@ The app is one column with three parts, top to bottom:
 - Screenshots at iPhone size (390 × 664 and the small 320 × 568), light and dark if colours changed.
 - `scripts/layout_check.cjs` fails if a page is wider than the screen, an action bar sits under the tab bar,
   a bottom button can't be tapped, or the end of a page is hidden behind the dock. It also fakes a home strip
-  arriving late, the way iOS sometimes reports it.
+  arriving late, the way iOS sometimes reports it, and fails on anything from rule 5 (zoomable viewport, buttons
+  that can double-tap zoom, flash or be selected, text fields under 16px).
+
+## 5. It's an app, not a web page
+
+Nekko lives on the home screen, so nothing may give away that it's a website (the NATIVE APP RULE at the top of
+`src/style.css`, plus `src/appFeel.ts`):
+
+- No zoom of any kind: the viewport tag has `maximum-scale=1, user-scalable=no`, every element has
+  `touch-action: manipulation` (no double-tap zoom, no tap delay), and `appFeel.ts` cancels iPhone pinch gestures.
+- Every text field is at least 16px, or iPhones zoom into it when tapped.
+- No grey tap flash, no text selection or copy/look-up menu on buttons and words, no dragging images or links.
+  Text fields still select and paste. Instead of the browser's flash, a pressed button dims while held.
+- No bounce or pull past the ends of the page (`overscroll-behavior: none`); scrolling sheets and overlays use
+  `overscroll-behavior: contain` so they don't scroll the page behind them.
+- Hover styles only inside `@media (hover: hover)`, so they never get stuck on after a tap.
+- Sheets pinned to the bottom with a text field (the song chat) sit on `var(--kb)` so the keyboard doesn't cover
+  them.

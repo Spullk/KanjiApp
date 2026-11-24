@@ -2,6 +2,8 @@
 //   1. The page never scrolls sideways (nothing wider than the screen).
 //   2. A page's action bar (Show answer, grade buttons, Next) sits fully above the tab bar, never under it.
 //   3. Scrolled to the very end, the last thing on the page is above the dock, not hidden behind it.
+//   4. It feels like an app, not a web page: the viewport can't zoom, taps never double-tap zoom or flash grey,
+//      buttons can't be text-selected, and no text field is under 16px (iPhones zoom in on those).
 //
 // Run it next to the dev server:   npx vite --port 5173   then   node scripts/layout_check.cjs
 // Needs Playwright (pre-installed in Claude's cloud sessions). Set SHOTS=dir to also save a screenshot per screen.
@@ -22,7 +24,23 @@ async function measure(p) {
     const dock = box(".dock");
     const kids = [...document.querySelectorAll("main *")].filter((e) => e.getClientRects().length && getComputedStyle(e).position !== "fixed");
     const lastBottom = Math.max(0, ...kids.map((e) => e.getBoundingClientRect().bottom));
+    const app = [];
+    const vp = document.querySelector('meta[name="viewport"]')?.content ?? "";
+    if (!/maximum-scale=1\b/.test(vp) || !/user-scalable=no/.test(vp)) app.push("viewport tag allows zooming");
+    for (const el of document.querySelectorAll("main button, main a[href], .dock a, .dock button")) {
+      const cs = getComputedStyle(el);
+      if (!["manipulation", "none"].includes(cs.touchAction)) app.push(`${el.tagName} "${el.textContent.trim().slice(0, 20)}" can double-tap zoom`);
+      if (cs.userSelect !== "none") app.push(`${el.tagName} "${el.textContent.trim().slice(0, 20)}" text can be selected`);
+      if (!/rgba\(0, 0, 0, 0\)|transparent/.test(cs.webkitTapHighlightColor)) app.push(`${el.tagName} flashes grey when tapped`);
+      if (app.length > 3) break;
+    }
+    for (const el of document.querySelectorAll("input, textarea, select")) {
+      if (["checkbox", "radio", "file", "range"].includes(el.type)) continue;
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if (fs < 16) app.push(`${el.tagName.toLowerCase()}.${el.className} is ${fs}px (under 16px, iPhones zoom in)`);
+    }
     return {
+      app,
       wide: document.documentElement.scrollWidth - innerWidth,
       barUnderTabs: bar && tab ? bar.bottom - tab.top : 0,
       endHidden: dock ? lastBottom - dock.top : 0,
@@ -43,6 +61,7 @@ async function measure(p) {
       await p.addStyleTag({ content: ".tabbar { padding-bottom: 40px !important }" });
       await p.waitForTimeout(150);
       const m = await measure(p);
+      for (const a of m.app) problems.push(`${phone} ${name}: ${a}`);
       if (m.wide > 1) problems.push(`${phone} ${name}: page is ${m.wide}px wider than the screen`);
       if (m.barUnderTabs > 0.5) problems.push(`${phone} ${name}: action bar is ${m.barUnderTabs.toFixed(0)}px under the tab bar`);
       if (m.endHidden > 0.5) problems.push(`${phone} ${name}: end of the page is ${m.endHidden.toFixed(0)}px behind the dock`);
