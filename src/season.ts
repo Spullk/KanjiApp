@@ -64,6 +64,11 @@ export function frontGround(dark: boolean, season = seasonOf(), t = timeOf()): s
   return mix(gr[1], dark ? "#0b0e0a" : "#2a211c", dark ? 0.3 : 0.38);
 }
 
+/** The colour at the top of the sky, for the phone's status bar while Home is open. */
+export function skyTop(dark: boolean, season = seasonOf(), t = timeOf()): string {
+  return dark ? (t === "day" ? SKY.darkDay : t === "dusk" ? SKY.darkDusk : SKY.darkNight)[0] : t === "day" ? SKY.day[season][0] : SKY[t][0];
+}
+
 /** True when the sky is dark enough that text on it should be light. */
 export function darkSky(dark: boolean, t = timeOf()): boolean {
   return dark || t !== "day";

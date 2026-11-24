@@ -3,7 +3,7 @@ import { href } from "../router";
 import { dueCards, newLeftToday, nextToLearn, stageOf, useStore } from "../srs";
 import { rackTools, type Tool } from "../tools";
 import { useEffect, useState } from "preact/hooks";
-import { darkSky, frontGround, worldSVG } from "../season";
+import { darkSky, frontGround, skyTop, worldSVG } from "../season";
 import { startNext } from "./GrammarPages";
 
 export function HomePage() {
@@ -21,10 +21,17 @@ export function HomePage() {
   // The first lesson with a kanji you haven't started.
   const lesson = data.lessons.find((l) => l.kanji.some((k) => stageOf(store, "kanji", k) === "none")) ?? data.lessons[0];
   // The bottom bar becomes the nearest hill while Home is open.
+  // The phone's status bar takes the sky's colour, so the scene reaches every edge of the screen.
   useEffect(() => {
     const root = document.documentElement.style;
     root.setProperty("--ground-front", frontGround(dark));
-    return () => root.removeProperty("--ground-front");
+    const metas = [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')];
+    const was = metas.map((m) => m.content);
+    metas.forEach((m) => (m.content = skyTop(dark)));
+    return () => {
+      root.removeProperty("--ground-front");
+      metas.forEach((m, i) => (m.content = was[i]));
+    };
   }, [dark]);
   const rack = rackTools(store.settings);
   const rows: Tool[][] = [];

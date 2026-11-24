@@ -3586,6 +3586,9 @@ body.no-scroll {
      under it. On Home it turns into the nearest hill of the scene (below). */
   background: var(--bg);
   padding: 8px 6px calc(10px + env(safe-area-inset-bottom));
+  /* Paints the bar's colour on down past its end, so no empty strip can ever show under it, even when an iPhone
+     reports the screen a little shorter than it is. */
+  box-shadow: 0 200px 0 0 var(--bg);
 }
 .tabbar::before {
   content: "";
@@ -3615,6 +3618,14 @@ body.no-scroll {
 /* Home: the bar is a hill in front of the scene, with a wavy top edge, and the scene runs to every edge. */
 #app:has(.home-page) .tabbar {
   background: var(--ground-front, var(--moss-deep));
+  box-shadow: 0 200px 0 0 var(--ground-front, var(--moss-deep));
+}
+/* Behind everything on Home: the hill's colour (anything past the bottom edge), never a plain page strip. */
+html:has(.home-page) {
+  background: var(--ground-front, var(--moss-deep));
+}
+body:has(.home-page) {
+  background: transparent;
 }
 #app:has(.home-page) .tabbar::before {
   top: -13px;
