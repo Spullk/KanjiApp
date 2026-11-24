@@ -58,6 +58,12 @@ function mix(a: string, b: string, t: number): string {
   return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join("");
 }
 
+/** The colour of the nearest hill, which the bottom bar grows out of on Home. */
+export function frontGround(dark: boolean, season = seasonOf(), t = timeOf()): string {
+  const gr = dark ? (t === "dusk" ? GROUND.dusk[season] : GROUND.night[season]).map((c) => mix(c, "#0f1322", 0.15)) : GROUND[t][season];
+  return mix(gr[1], dark ? "#0b0e0a" : "#2a211c", dark ? 0.3 : 0.38);
+}
+
 /** True when the sky is dark enough that text on it should be light. */
 export function darkSky(dark: boolean, t = timeOf()): boolean {
   return dark || t !== "day";
