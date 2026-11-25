@@ -2,7 +2,8 @@
 //   1. The page never scrolls sideways (nothing wider than the screen).
 //   2. A page's action bar (Show answer, grade buttons, Next) sits fully above the tab bar, never under it.
 //   3. Scrolled to the very end, the last thing on the page is above the dock, not hidden behind it.
-//   4. It feels like an app, not a web page: the viewport can't zoom, taps never double-tap zoom or flash grey,
+//   4. The tab bar's buttons stay clear of the iPhone's home line (bottom 13px) with 6px to spare.
+//   5. It feels like an app, not a web page: the viewport can't zoom, taps never double-tap zoom or flash grey,
 //      buttons can't be text-selected, and no text field is under 16px (iPhones zoom in on those).
 //
 // Run it next to the dev server:   npx vite --port 5173   then   node scripts/layout_check.cjs
@@ -74,7 +75,16 @@ async function measure(p) {
         () => true,
         () => (problems.push(`${where}: a button can't be tapped, something covers it`), false),
       );
+    // An iPhone's home strip (34px) with its home line at the bottom 13px: no tab button may reach into it.
+    const cdp = await ctx.newCDPSession(p);
+    const strip = await cdp.send("Emulation.setSafeAreaInsetsOverride", { insets: { top: 47, bottom: 34, left: 0, right: 0 } }).then(() => true, () => false);
     await p.goto(BASE);
+    if (strip) {
+      const low = await p.evaluate(() => Math.min(...[...document.querySelectorAll(".tabbar a")].map((a) => innerHeight - a.getBoundingClientRect().bottom)));
+      if (low < 19 - 0.5) problems.push(`${phone}: tab buttons end ${low.toFixed(0)}px above the screen edge, over or too near the home line (needs 19px)`);
+      await cdp.send("Emulation.setSafeAreaInsetsOverride", { insets: {} }).catch(() => {});
+      await p.reload();
+    }
     await p.getByText("I can read kana").click();
     await p.waitForTimeout(500);
     const skip = p.getByRole("button", { name: "Skip" });
