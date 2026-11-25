@@ -66,7 +66,6 @@ export function LearnPage({ story }: { story?: string }) {
     return <p class="empty">{story ? "You've started every word in this story. Happy reading!" : "You've added everything. Impressive."}</p>;
   }
 
-  const link = it.kind === "radical" ? href.radical(it.key) : it.kind === "kanji" ? href.kanji(it.key) : href.word(it.key);
   return (
     <article class="page learn-one">
       <div class="learn-head">
@@ -78,9 +77,6 @@ export function LearnPage({ story }: { story?: string }) {
         </div>
       </div>
       <ItemSummary key={`${it.kind}:${it.key}`} kind={it.kind} k={it.key} />
-      <a class="link-button" href={link}>
-        See everything about it
-      </a>
       <BottomBar class="learn-bar">
         {i > 0 && (
           <button class="secondary" onClick={back}>
