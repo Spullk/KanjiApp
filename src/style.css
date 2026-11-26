@@ -428,18 +428,6 @@ ruby rt {
   margin-bottom: 6px;
 }
 
-.more-senses {
-  margin-top: 4px;
-}
-.more-senses > summary {
-  color: var(--muted);
-  font-size: 0.9rem;
-  padding: 6px 0;
-}
-.more-senses .senses {
-  color: var(--muted);
-}
-
 .pos {
   display: block;
   font-size: 0.75rem;

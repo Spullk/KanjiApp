@@ -54,7 +54,7 @@ export type Word = {
   rec?: [string, string, string, string];
   /** A word taught in kana that also has a rarely used kanji spelling (ある: 有る). */
   kanjiForm?: string;
-  /** How many of the first senses are everyday uses (left out: 1). The rest only show on the word page. */
+  /** How many of the first senses are everyday uses (left out: 1). The rest stay in the data so search and typed answers still know them. */
   main?: number;
   /** Once taught in a lesson under a meaning the JLPT list didn't mean (はず as "purging croton"). */
   junk?: boolean;

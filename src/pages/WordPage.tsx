@@ -20,9 +20,6 @@ export function WordPage({ id }: { id: string }) {
     }
   }
 
-  const main = mainSenses(w);
-  const more = w.senses.slice(main.length);
-
   return (
     <article class="page word-page">
       <header class="hero word">
@@ -43,13 +40,7 @@ export function WordPage({ id }: { id: string }) {
       <StudyButton kind="word" k={w.id} />
 
       <Section title="Meaning">
-        <Senses senses={main} />
-        {more.length > 0 && (
-          <details class="more-senses">
-            <summary>More meanings ({more.length})</summary>
-            <Senses senses={more} start={main.length + 1} />
-          </details>
-        )}
+        <Senses senses={mainSenses(w)} />
       </Section>
 
       <Section title="Kanji in this word">
@@ -96,9 +87,9 @@ export function WordPage({ id }: { id: string }) {
   );
 }
 
-function Senses({ senses, start = 1 }: { senses: Word["senses"]; start?: number }) {
+function Senses({ senses }: { senses: Word["senses"] }) {
   return (
-    <ol class="senses" start={start}>
+    <ol class="senses">
       {senses.map((s, i) => (
         <li key={i}>
           {s.pos.length > 0 && <span class="pos">{s.pos.join(", ")}</span>}
