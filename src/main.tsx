@@ -2,6 +2,7 @@ import { render } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { loadData, loadSentences } from "./data";
 import { useRoute, type Route } from "./router";
+import { placeOf, placeSVG, useDark } from "./places";
 import { DOCK_SLOT } from "./components/BottomBar";
 import { HomePage } from "./pages/HomePage";
 import { KanjiPage } from "./pages/KanjiPage";
@@ -103,6 +104,14 @@ function Page({ route }: { route: Route }) {
 /** Pages that open without the example sentences, so they can show before those have loaded. */
 const NO_SENTENCES = new Set<Route["page"]>(["home", "lessons", "lesson", "progress", "settings", "known", "search", "grammar", "grammarPoint", "kana", "kanaRow", "kanaPractice", "read", "story", "write", "radical", "songs", "songAdd", "song"]);
 
+/** The spot in the tree world behind this screen (src/places.ts). Home draws its own scene. */
+function PlaceBackdrop({ page }: { page: Route["page"] }) {
+  const dark = useDark();
+  const place = placeOf(page);
+  if (!place) return null;
+  return <div class={`place-bg place-${place}`} data-place={place} dangerouslySetInnerHTML={{ __html: placeSVG(place, dark) }} />;
+}
+
 function App() {
   const [ready, setReady] = useState(false);
   const [sentences, setSentences] = useState(false);
@@ -147,6 +156,7 @@ function App() {
 
   return (
     <>
+      <PlaceBackdrop page={route.page} />
       <main>
         {error ? <p class="empty">Couldn't load the dictionary: {error}</p> : ready && (sentences || NO_SENTENCES.has(route.page)) ? <Page route={route} /> : <Loading />}
       </main>

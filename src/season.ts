@@ -46,9 +46,9 @@ const GROUND = {
   dusk: { spring: ["#8c8a62", "#6f6a4c"], summer: ["#77804c", "#5e663d"], autumn: ["#987a4b", "#775d39"], winter: ["#b9b3be", "#9a95a6"] },
   night: { spring: ["#3d4a3c", "#2c3630"], summer: ["#354532", "#263227"], autumn: ["#4a4232", "#352f25"], winter: ["#6c7489", "#4f566a"] },
 } as const;
-const LEAF = { spring: ["#d9789a", "#efaec2"], summer: ["#466e36", "#6a903b"], autumn: ["#bf4a29", "#efb440"], winter: ["#a9845a", "#c9d4dd"] } as const;
+export const LEAF = { spring: ["#d9789a", "#efaec2"], summer: ["#466e36", "#6a903b"], autumn: ["#bf4a29", "#efb440"], winter: ["#a9845a", "#c9d4dd"] } as const;
 
-function mix(a: string, b: string, t: number): string {
+export function mix(a: string, b: string, t: number): string {
   const h = (x: string) => {
     const n = parseInt(x.slice(1), 16);
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];

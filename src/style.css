@@ -4039,3 +4039,22 @@ body:has(.home-page) {
   opacity: 0.75;
   font-size: 13px;
 }
+
+/* ---------- places in the tree (src/places.ts): a faint spot of the tree world behind each menu. Fixed, behind
+   everything, never catching taps; layout_check skips fixed layers. */
+.place-bg {
+  position: fixed;
+  inset: 0;
+  /* Starts below the clock strip, so the top of each place shows instead of hiding behind it. */
+  top: env(safe-area-inset-top);
+  z-index: -1;
+  pointer-events: none;
+}
+.place-bg svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.place-world {
+  opacity: 0.32;
+}
