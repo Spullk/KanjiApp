@@ -1,10 +1,10 @@
 {
  "counts": {
-  "words": 21878,
+  "words": 21924,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 46938,
-  "stories": 115,
+  "sentences": 47014,
+  "stories": 116,
   "grammar points": 132
  },
  "checks": {
@@ -26,7 +26,7 @@
    "area": "Words",
    "title": "Lesson words with no example sentence",
    "why": "Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.",
-   "count": 272,
+   "count": 270,
    "items": [
     {
      "lesson": 1,
@@ -599,12 +599,6 @@
      "id": "1308600"
     },
     {
-     "lesson": 72,
-     "word": "インキ",
-     "meaning": "ink",
-     "id": "2856157"
-    },
-    {
      "lesson": 73,
      "word": "カラー",
      "meaning": "collar",
@@ -1017,12 +1011,6 @@
      "word": "寂然 (せきぜん)",
      "meaning": "lonely",
      "id": "1579730"
-    },
-    {
-     "lesson": 119,
-     "word": "きちっと",
-     "meaning": "properly",
-     "id": "1003390"
     },
     {
      "lesson": 120,
@@ -1798,7 +1786,7 @@
    "area": "Words",
    "title": "Single-kana words outside the lessons",
    "why": "A lone kana as a word is usually a wrong dictionary match (ト as \"note G\"). Check these aren't shown as cards.",
-   "count": 9,
+   "count": 14,
    "items": [
     {
      "word": "が",
@@ -1816,9 +1804,34 @@
      "id": "2029080"
     },
     {
+     "word": "わ",
+     "meaning": "indicates emotion or admiration",
+     "id": "2029100"
+    },
+    {
      "word": "な",
      "meaning": "don't",
      "id": "2029110"
+    },
+    {
+     "word": "さ",
+     "meaning": "-ness",
+     "id": "2029120"
+    },
+    {
+     "word": "お",
+     "meaning": "oh! (expression of slight surprise)",
+     "id": "2089690"
+    },
+    {
+     "word": "え",
+     "meaning": "eh?",
+     "id": "2122310"
+    },
+    {
+     "word": "ん",
+     "meaning": "yes",
+     "id": "2139720"
     },
     {
      "word": "べ",
@@ -1831,6 +1844,11 @@
      "id": "2654270"
     },
     {
+     "word": "マ",
+     "meaning": "for real",
+     "id": "2837541"
+    },
+    {
      "word": "ザ",
      "meaning": "the",
      "id": "1058900"
@@ -1839,11 +1857,6 @@
      "word": "ト",
      "meaning": "7th in a sequence denoted by the iroha system",
      "id": "2029780"
-    },
-    {
-     "word": "ん",
-     "meaning": "yes",
-     "id": "2139720"
     }
    ]
   },
@@ -3245,7 +3258,7 @@
    "area": "Stories",
    "title": "Story text that may be jumbled",
    "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
-   "count": 11,
+   "count": 12,
    "items": [
     {
      "story": "つみっこ",
@@ -3264,6 +3277,12 @@
      "paragraph": 1,
      "unseen pairs": "59%",
      "text": "根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」"
+    },
+    {
+     "story": "岳の幟",
+     "paragraph": 3,
+     "unseen pairs": "56%",
+     "text": "祠いるさあ小龍にのと上め雲頂た）い黒のの）っ岳様家真神神の夫（石"
     },
     {
      "story": "日本の城",

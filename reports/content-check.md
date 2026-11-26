@@ -2,19 +2,19 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 21,878 words, 2,136 kanji, 372 radicals, 46,938 sentences, 115 stories, 132 grammar points.
+Checked: 21,924 words, 2,136 kanji, 372 radicals, 47,014 sentences, 116 stories, 132 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
 | Words | [Lesson words with no dictionary entry](#lesson-word-missing) | 0 |
 | Words | [Words with no meaning](#word-no-meaning) | 0 |
-| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 272 |
+| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 270 |
 | Words | [Words pointing at sentences that don't exist](#word-sentence-missing) | 0 |
 | Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 16 |
 | Words | [Lesson words whose furigana doesn't spell the word](#lesson-word-furigana) | 0 |
 | Words | [The same word taught twice](#lesson-word-duplicate) | 0 |
 | Words | [Junk words still in a lesson](#lesson-word-junk) | 0 |
-| Words | [Single-kana words outside the lessons](#word-lone-kana) | 9 |
+| Words | [Single-kana words outside the lessons](#word-lone-kana) | 14 |
 | Kanji | [Kanji with no meaning](#kanji-no-meaning) | 0 |
 | Kanji | [Kanji with no reading](#kanji-no-reading) | 0 |
 | Kanji | [Kanji with fewer than 2 example words](#kanji-no-words) | 3 |
@@ -34,7 +34,7 @@ Checked: 21,878 words, 2,136 kanji, 372 radicals, 46,938 sentences, 115 stories,
 | Stories | [Story text with damaged characters](#story-odd-characters) | 0 |
 | Stories | [Story words with no dictionary entry](#story-word-missing) | 0 |
 | Stories | [Story files with broken links](#story-links) | 0 |
-| Stories | [Story text that may be jumbled](#story-jumbled) | 11 |
+| Stories | [Story text that may be jumbled](#story-jumbled) | 12 |
 | Stories | [Stories with ○○○ blanks](#story-blanks) | 5 |
 | Grammar | [Grammar points with no example](#grammar-no-examples) | 0 |
 | Grammar | [Grammar examples with no {marked} part](#grammar-gap) | 0 |
@@ -54,7 +54,7 @@ No sense has an English gloss, so the card has nothing to ask for.
 None. 🎉
 
 <a id="lesson-word-no-sentence"></a>
-## Words: Lesson words with no example sentence (272)
+## Words: Lesson words with no example sentence (270)
 
 Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.
 
@@ -83,7 +83,7 @@ Taught words should have at least one example sentence. Tatoeba, Wiktionary and 
 - 26 · 上っ調子 (うわっちょうし) · flippant · 1352450
 - 26 · 室町 (むろまち) · Muromachi period (1336-1573) · 1608060
 - 28 · 今秋 (こんしゅう) · this autumn · 1289210
-- …and 247 more
+- …and 245 more
 
 <a id="word-sentence-missing"></a>
 ## Words: Words pointing at sentences that don't exist (0)
@@ -136,19 +136,24 @@ Words marked junk (a wrong dictionary match) shouldn't be taught.
 None. 🎉
 
 <a id="word-lone-kana"></a>
-## Words: Single-kana words outside the lessons (9)
+## Words: Single-kana words outside the lessons (14)
 
 A lone kana as a word is usually a wrong dictionary match (ト as "note G"). Check these aren't shown as cards.
 
 - が · indicates the subject of a sentence · 2028930
 - で · at · 2028980
 - ね · right? · 2029080
+- わ · indicates emotion or admiration · 2029100
 - な · don't · 2029110
+- さ · -ness · 2029120
+- お · oh! (expression of slight surprise) · 2089690
+- え · eh? · 2122310
+- ん · yes · 2139720
 - べ · word used at sentence-end (like a particle) to indicate speculation, volition or invitation · 2213460
 - て · and · 2654270
+- マ · for real · 2837541
 - ザ · the · 1058900
 - ト · 7th in a sequence denoted by the iroha system · 2029780
-- ん · yes · 2139720
 
 <a id="kanji-no-meaning"></a>
 ## Kanji: Kanji with no meaning (0)
@@ -322,13 +327,14 @@ None. 🎉
 None. 🎉
 
 <a id="story-jumbled"></a>
-## Stories: Story text that may be jumbled (11)
+## Stories: Story text that may be jumbled (12)
 
 Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.
 
 - つみっこ · 1 · 43% · 本庄市埼玉県東京都若泉公園の桜マリーゴールドの丘公園
 - ようこそ別府へ · 14 · 48% · 北海道大阪東京九州ふくおかさが福岡佐賀別府長崎大分熊本宮崎かごしま鹿児島かごしま鹿児島沖縄
 - 北海道 · 1 · 59% · 根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」
+- 岳の幟 · 3 · 56% · 祠いるさあ小龍にのと上め雲頂た）い黒のの）っ岳様家真神神の夫（石
 - 日本の城 · 0 · 50% · 弘前城竹田城松本城彦根城姫路城まつえじょう松江城えどじょう江戸城熊本城犬山城なごやじょうおおさかじょう名古屋城大阪城首里城
 - 温泉の町 別府 · 0 · 45% · ほっかいどう北海道おおさか大阪とうきょう東京九州べっぷ福岡別府さが佐賀長崎大分熊本みやざきかごしま宮崎おきなわ鹿児島沖縄鹿児島
 - 花と色 · 0 · 40% · 埼玉県ときがわ町（上）埼玉県小川町巾着田（下）
