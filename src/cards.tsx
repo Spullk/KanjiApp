@@ -5,7 +5,7 @@ import type { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { playWord, speak } from "./audio";
 import { PitchAccent } from "./components/Pitch";
-import { isKanaWord, useData, type Data, type Sentence } from "./data";
+import { isKanaWord, mainSenses, useData, type Data, type Sentence } from "./data";
 import { href } from "./router";
 import { cardId, getStore, parseCardId, useStore, type Face, type ItemKind, type Store } from "./srs";
 import { cloze, exampleFor, spoken } from "./grammar";
@@ -51,7 +51,7 @@ export type CardType = {
 const char = (_: Data, key: string) => key;
 const word = (data: Data, key: string) => data.words[key].w;
 
-/** The word with furigana, its recording and its first meanings. */
+/** The word with furigana, its recording and its everyday meanings. */
 function wordBack(data: Data, key: string, use = true) {
   const w = data.words[key];
   return (
@@ -63,7 +63,7 @@ function wordBack(data: Data, key: string, use = true) {
         <PitchAccent w={w} />
       </div>
       <Romaji kana={w.r} />
-      <div class="answer-main">{w.senses.slice(0, 2).map((s) => s.gloss.slice(0, 3).join(", ")).join("; ")}</div>
+      <div class="answer-main">{mainSenses(w).map((s) => s.gloss.slice(0, 3).join(", ")).join("; ")}</div>
       {use && <ReadingUse id={key} />}
     </>
   );

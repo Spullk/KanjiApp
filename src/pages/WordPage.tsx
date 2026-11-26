@@ -1,4 +1,4 @@
-import { hira, useData } from "../data";
+import { hira, mainSenses, useData, type Word } from "../data";
 import { href } from "../router";
 import { StudyButton } from "../components/ItemCards";
 import { PitchAccent } from "../components/Pitch";
@@ -20,6 +20,9 @@ export function WordPage({ id }: { id: string }) {
     }
   }
 
+  const main = mainSenses(w);
+  const more = w.senses.slice(main.length);
+
   return (
     <article class="page word-page">
       <header class="hero word">
@@ -40,14 +43,13 @@ export function WordPage({ id }: { id: string }) {
       <StudyButton kind="word" k={w.id} />
 
       <Section title="Meaning">
-        <ol class="senses">
-          {w.senses.map((s, i) => (
-            <li key={i}>
-              {s.pos.length > 0 && <span class="pos">{s.pos.join(", ")}</span>}
-              {s.gloss.join("; ")}
-            </li>
-          ))}
-        </ol>
+        <Senses senses={main} />
+        {more.length > 0 && (
+          <details class="more-senses">
+            <summary>More meanings ({more.length})</summary>
+            <Senses senses={more} start={main.length + 1} />
+          </details>
+        )}
       </Section>
 
       <Section title="Kanji in this word">
@@ -91,5 +93,18 @@ export function WordPage({ id }: { id: string }) {
 
       <WordExamples id={w.id} />
     </article>
+  );
+}
+
+function Senses({ senses, start = 1 }: { senses: Word["senses"]; start?: number }) {
+  return (
+    <ol class="senses" start={start}>
+      {senses.map((s, i) => (
+        <li key={i}>
+          {s.pos.length > 0 && <span class="pos">{s.pos.join(", ")}</span>}
+          {s.gloss.join("; ")}
+        </li>
+      ))}
+    </ol>
   );
 }

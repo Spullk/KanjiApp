@@ -54,6 +54,8 @@ export type Word = {
   rec?: [string, string, string, string];
   /** A word taught in kana that also has a rarely used kanji spelling (ある: 有る). */
   kanjiForm?: string;
+  /** How many of the first senses are everyday uses (left out: 1). The rest only show on the word page. */
+  main?: number;
   /** Once taught in a lesson under a meaning the JLPT list didn't mean (はず as "purging croton"). */
   junk?: boolean;
 };
@@ -136,6 +138,11 @@ export function isKanji(c: string): boolean {
 }
 
 /** Written in kana only (ようこそ, アイス): nothing to read, so its cards ask just the meaning. */
+/** The word's everyday meanings, the ones cards and lists show. */
+export function mainSenses(w: Word): Word["senses"] {
+  return w.senses.slice(0, w.main ?? 1);
+}
+
 export function isKanaWord(w: Word): boolean {
   return ![...w.w].some(isKanji);
 }

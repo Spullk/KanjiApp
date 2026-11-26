@@ -289,6 +289,33 @@ def add_senses(con, entries):
             e["senses"].append({"pos": pos, "gloss": gloss})
 
 
+MAIN_MEANINGS_FILE = Path(__file__).resolve().parent / "main_meanings.json"
+
+
+def mark_main_meanings(words):
+    """Most words are used one way, so Nekko shows only their first meaning and keeps the rest for the word page.
+    main_meanings.json lists the words commonly used more than one way, or whose usual meaning isn't the
+    dictionary's first, as {id: {"w": word, "main": [first gloss of each meaning to show]}}. Those meanings move
+    to the front, in that order, and the word's "main" says how many there are (left out when it's 1)."""
+    picks = json.loads(MAIN_MEANINGS_FILE.read_text(encoding="utf-8"))
+    for wid, pick in picks.items():
+        w = words.get(wid)
+        if not w:
+            continue
+        main = []
+        for g in pick["main"]:
+            s = next((s for s in w["senses"] if s["gloss"][0] == g and all(s is not m for m in main)), None)
+            if s:
+                main.append(s)
+            else:
+                print(f"main_meanings.json: {pick['w']} ({wid}) has no meaning starting {g!r}")
+        if not main:
+            continue
+        w["senses"] = main + [s for s in w["senses"] if all(s is not m for m in main)]
+        if len(main) > 1:
+            w["main"] = len(main)
+
+
 # First meanings too long to ask for on a card, with no shorter part to keep (see short_meaning).
 SHORT_MEANINGS = {
     1438480: "cushy job for a retired official",  # 天下り
@@ -1040,6 +1067,7 @@ def main():
     import relink_sentences  # every word in every sentence, not just the ones the sources linked
     relink_sentences.main(con, words, sentences)
     drop_unused_lesson_words(words, lesson_out, study_words)
+    mark_main_meanings(words)
     audio_words = load_word_audio(words)
     commons_words = load_commons_audio(words)
     audio_sentences = load_sentence_audio(sentences)
