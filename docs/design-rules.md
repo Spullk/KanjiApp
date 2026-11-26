@@ -30,8 +30,11 @@ The app is one column with three parts, top to bottom:
 ## 2. Notches and the home strip are handled in one place each
 
 - `viewport-fit=cover` is on, so the app draws under the notch and home strip.
-- Top notch: `main`'s top padding uses `env(safe-area-inset-top)`. Home strip: only the tab bar's bottom padding
-  uses `env(safe-area-inset-bottom)`. Left/right: `main`'s side padding. Nothing else reads these values.
+- Top notch: `main`'s top padding uses `env(safe-area-inset-top)`. Home strip: the tab bar's bottom padding
+  (`max(6px, calc(env(safe-area-inset-bottom) - 15px))`, so its buttons end 19px above the edge, clear of the iPhone
+  home line). Left/right: `main`'s side padding.
+- Page layout reads these values only in those places. Full-screen overlays and sheets that own their own bottom
+  edge (`.welcome`, `.confirm-screen`, the song chat `.composer`) handle the home strip themselves.
 
 ## 3. The page never scrolls sideways
 
