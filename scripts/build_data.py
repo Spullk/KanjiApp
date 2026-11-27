@@ -19,7 +19,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from component_names import RADICAL_NAMES
-from word_freq import commonness, everyday_order, load_wordfreq
+from word_freq import commonness, everyday_order, load_wordfreq, wordfreq_zipf
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ROOT / "sources"
@@ -122,9 +122,15 @@ def load_kanjidic(con):
     return by_lit, joyo
 
 
+# Old JLPT levels (1-4, before 2010) as the nearest new one, for kanji the new lists leave out: 分 and 的 have no
+# new level, which put them after N1, in lessons 137 and 167.
+OLD_JLPT = {4: 5, 3: 4, 2: 3, 1: 1}
+
+
 def load_jlpt():
     data = json.loads((SOURCES / "kanji-data.json").read_text(encoding="utf-8"))
-    return {k: v["jlpt_new"] for k, v in data.items() if v.get("jlpt_new")}
+    return {k: v.get("jlpt_new") or OLD_JLPT[v["jlpt_old"]] for k, v in data.items()
+            if v.get("jlpt_new") or v.get("jlpt_old") in OLD_JLPT}
 
 
 def element_parts(group):
@@ -552,6 +558,8 @@ def add_kana_words(con, words, kanji, lessons, lesson_out):
     room = [KANA_WORDS_PER_LESSON] * len(lessons)
     moved = set()
     for idseq, (jlpt, e, known) in kana_words.items():
+        if words.get(str(idseq), {}).get("lesson"):
+            continue  # already taught with its kanji (分かる)
         start = next((i for i, l in enumerate(level) if l <= jlpt), len(lessons) - 1)
         i = next((i for i in range(start, len(lessons)) if room[i]), None)
         if i is None:
@@ -881,18 +889,42 @@ def old_entries(con):
     return {str(idseq) for idseq, sids in senses.items() if all(misc[sid] & OLD_MISC for sid in sids)}
 
 
-def pick_lesson_words(words, joyo, lesson_of, score, old):
+# A word JMdict says is usually written in kana is still taught with its kanji when people often write it that
+# way: the kanji spelling is this common (Zipf, see word_freq.py) and not much rarer than the kana one.
+WRITTEN_ZIPF = 4.0
+WRITTEN_GAP = 0.5
+
+
+def written_with_kanji(words, zipf):
+    """Usually-kana words often written with their kanji anyway (分かる, 下さい, 色々, 美味しい), not the ones
+    mostly written in kana (有る ある, 成る なる, 事 こと). A spelling several words share is left out, since
+    wordfreq can't tell them apart (私 is わたし, not the usually-kana あたし)."""
+    spelled = defaultdict(int)
+    for w in words.values():
+        spelled[w["w"]] += 1
+    out = set()
+    for wid, w in words.items():
+        if not w["usuallyKana"] or spelled[w["w"]] > 1 or not any(map(is_kanji, w["w"])):
+            continue
+        kanji_z = wordfreq_zipf(zipf, w) or 0
+        kana_z = wordfreq_zipf(zipf, {**w, "w": w["r"]}) or 0
+        if kanji_z >= WRITTEN_ZIPF and kanji_z >= kana_z - WRITTEN_GAP:
+            out.add(wid)
+    return out
+
+
+def pick_lesson_words(words, joyo, lesson_of, score, old, written):
     """→ {word id: lesson index}: the LESSON_WORDS most common words written with Jōyō kanji, each in the later of
     its kanji's lesson and the lesson that matches how common it is, so rare words wait until you know more
     (Lucas, 2026-11-26). Every kanji also gets its most common word in its own lesson, so no kanji is learned
-    without a word that uses it."""
+    without a word that uses it. `written` holds the usually-kana words whose kanji spelling is common anyway."""
     joyo_set = set(joyo)
 
     def teachable(wid, w):
         kanji = [c for c in w["w"] if is_kanji(c) and c != "々"]
         pos = {p for s in w["senses"][:1] for p in s["pos"]}
         return (kanji and all(c in joyo_set for c in kanji) and len(w["w"]) <= 5 and w["senses"]
-                and not w.get("rare") and not w["usuallyKana"] and wid not in old
+                and not w.get("rare") and (not w["usuallyKana"] or wid in written) and wid not in old
                 and not (pos and pos <= set(GRAMMAR_POS)))
 
     def kanji_lesson(w):
@@ -1100,15 +1132,17 @@ def main():
     # Lessons, and the words they teach: picked from every word, not just the ones on kanji pages.
     lessons = build_lessons(joyo, kanji, parts)
     lesson_of = {k: i for i, ks in enumerate(lessons) for k in ks}
+    zipf = load_wordfreq()
     tags = reading_tags(con, words)
     counts, tokens = tatoeba_counts(words, everyday_order(words, tags))
-    score = commonness(words, load_wordfreq(), counts, tokens, tags)
+    score = commonness(words, zipf, counts, tokens, tags)
     jlpt_words = jlpt_word_levels()
     for wid, w in words.items():
         level = jlpt_words.get((w["w"], hira(w["r"])))
         if level in JLPT_FLOOR:
             score[wid] = max(score[wid], JLPT_FLOOR[level])
-    picks = pick_lesson_words(words, joyo, lesson_of, score, old_entries(con))
+    written = written_with_kanji(words, zipf)
+    picks = pick_lesson_words(words, joyo, lesson_of, score, old_entries(con), written)
     keep |= picks.keys()
     print(f"Lesson words by how common they are: {len(picks)} (wordfreq + "
           + (f"{tokens} Tatoeba words)" if tokens else "no sentences, so JMdict bands)"))
