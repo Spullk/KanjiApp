@@ -2,7 +2,7 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 22,912 words, 2,136 kanji, 372 radicals, 52,012 sentences, 116 stories, 237 grammar points.
+Checked: 22,918 words, 2,136 kanji, 372 radicals, 52,055 sentences, 116 stories, 237 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
@@ -23,7 +23,7 @@ Checked: 22,912 words, 2,136 kanji, 372 radicals, 52,012 sentences, 116 stories,
 | Kanji | [Kanji with no stroke order](#kanji-no-strokes) | 0 |
 | Kanji | [Kanji in no lesson](#kanji-not-taught) | 0 |
 | Kanji | [Lessons listing kanji that don't exist](#lesson-kanji-missing) | 0 |
-| Kanji | [On readings with no example word](#kanji-reading-no-word) | 296 |
+| Kanji | [On readings with no example word](#kanji-reading-no-word) | 295 |
 | Radicals | [Radicals without exactly one name](#radical-name) | 0 |
 | Radicals | [Radicals no kanji uses](#radical-unused) | 0 |
 | Radicals | [Radicals pointing at kanji that don't exist](#radical-used-in-missing) | 0 |
@@ -35,7 +35,7 @@ Checked: 22,912 words, 2,136 kanji, 372 radicals, 52,012 sentences, 116 stories,
 | Stories | [Story text with damaged characters](#story-odd-characters) | 0 |
 | Stories | [Story words with no dictionary entry](#story-word-missing) | 0 |
 | Stories | [Story files with broken links](#story-links) | 0 |
-| Stories | [Story text that may be jumbled](#story-jumbled) | 3 |
+| Stories | [Story text that may be jumbled](#story-jumbled) | 2 |
 | Stories | [Stories with ○○○ blanks](#story-blanks) | 5 |
 | Grammar | [Grammar points with no example](#grammar-no-examples) | 0 |
 | Grammar | [Grammar examples with no {marked} part](#grammar-gap) | 0 |
@@ -63,14 +63,14 @@ Taught words should have at least one example sentence. Tatoeba, Wiktionary and 
 - 48 · 一月 (ひとつき) · one month · 1162130
 - 52 · 副 (ふく) · assistant · 1500330
 - 58 · 零 (れい) · zero · 1557630
-- 75 · かるた · karuta · 1590710
+- 73 · かるた · karuta · 1590710
 - 88 · 酪農 (らくのう) · dairy farming · 1548890
 - 89 · 升 (ます) · measuring container · 1346290
-- 93 · まごまご · confused · 1012110
+- 90 · まごまご · confused · 1012110
+- 102 · レクリェーション · recreation · 1144860
 - 104 · 糾合 (きゅうごう) · rally · 1230170
-- 104 · レクリェーション · recreation · 1144860
-- 109 · あぶる · to warm (e.g. one's hands over a fire) · 1568910
-- 109 · タイア · tire · 1075840
+- 107 · あぶる · to warm (e.g. one's hands over a fire) · 1568910
+- 107 · タイア · tire · 1075840
 - 115 · 犠打 (ぎだ) · sacrifice fly · 1225470
 - 116 · 朱 (あけ) · scarlet · 1328470
 - 120 · 嫡出 (ちゃくしゅつ) · legitimate birth · 1656930
@@ -80,10 +80,10 @@ Taught words should have at least one example sentence. Tatoeba, Wiktionary and 
 - 145 · 隆盛 (りゅうせい) · prosperity · 1552940
 - 145 · 漸減 (ぜんげん) · gradual decrease · 1394640
 - 146 · 丙 (へい) · third rank · 1583850
-- 150 · ティッシュペーパー · tissue paper · 1079110
-- 151 · えい · ray (any fish of superorder Batoidea) · 1001130
-- 152 · ぼやく · to grumble · 1011850
-- 153 · 租税 (そぜい) · taxes · 1396900
+- 148 · ティッシュペーパー · tissue paper · 1079110
+- 148 · えい · ray (any fish of superorder Batoidea) · 1001130
+- 150 · ぼやく · to grumble · 1011850
+- 151 · ずらっと · in a line · 1006430
 - …and 29 more
 
 <a id="word-sentence-missing"></a>
@@ -98,9 +98,9 @@ None. 🎉
 
 The first meaning is what the card asks for. These are a cross-reference, contain markup, or run over 60 characters.
 
-- 99 · お土産 (おみやげ) · local specialty or souvenir bought as a gift while travelling · very long
-- 144 · 土産 (みやげ) · local specialty or souvenir bought as a gift while travelling · very long
-- 170 · 領収書 (りょうしゅうしょ) · simplified receipt with a blank line to be filled out with the customer's name · very long
+- 100 · お土産 (おみやげ) · local specialty or souvenir bought as a gift while travelling · very long
+- 145 · 土産 (みやげ) · local specialty or souvenir bought as a gift while travelling · very long
+- 169 · 領収書 (りょうしゅうしょ) · simplified receipt with a blank line to be filled out with the customer's name · very long
 
 <a id="lesson-word-furigana"></a>
 ## Words: Lesson words whose furigana doesn't spell the word (0)
@@ -115,10 +115,10 @@ None. 🎉
 Two lesson words share the spelling and the first meaning, so they'd be two cards for one thing.
 
 - 年 (とし) · year · 1, 4
-- 何 (なに) · what · 9, 12
+- 何 (なに) · what · 9, 13
 - 方 (ほう) · direction · 11, 12
-- 私 (わたし) · i · 19, 52
-- 面 (つら) · face · 123, 159
+- 私 (わたし) · i · 19, 53
+- 面 (つら) · face · 123, 160
 
 <a id="lesson-word-rarer-homophone"></a>
 ## Words: Lesson words that may be the wrong dictionary entry (0)
@@ -208,7 +208,7 @@ The lesson can't show these.
 None. 🎉
 
 <a id="kanji-reading-no-word"></a>
-## Kanji: On readings with no example word (296)
+## Kanji: On readings with no example word (295)
 
 Kun readings often have no word of their own, but an on reading with none can't be shown in use.
 
@@ -237,7 +237,7 @@ Kun readings often have no word of their own, but an on reading with none can't 
 - 住 · チュウ
 - 乗 · ショウ
 - 世 · ソウ
-- …and 271 more
+- …and 270 more
 
 <a id="radical-name"></a>
 ## Radicals: Radicals without exactly one name (0)
@@ -317,13 +317,12 @@ None. 🎉
 None. 🎉
 
 <a id="story-jumbled"></a>
-## Stories: Story text that may be jumbled (3)
+## Stories: Story text that may be jumbled (2)
 
 Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.
 
 - 北海道 · 1 · 59% · 根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」
 - 日本の城 · 23 · 52% · しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。
-- 黒コウモリと白コウモリ · 14 · 41% · 花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ
 
 <a id="story-blanks"></a>
 ## Stories: Stories with ○○○ blanks (5)

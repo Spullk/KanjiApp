@@ -1,9 +1,9 @@
 {
  "counts": {
-  "words": 22912,
+  "words": 22918,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 52012,
+  "sentences": 52055,
   "stories": 116,
   "grammar points": 237
  },
@@ -53,7 +53,7 @@
      "id": "1557630"
     },
     {
-     "lesson": 75,
+     "lesson": 73,
      "word": "かるた",
      "meaning": "karuta",
      "id": "1590710"
@@ -71,10 +71,16 @@
      "id": "1346290"
     },
     {
-     "lesson": 93,
+     "lesson": 90,
      "word": "まごまご",
      "meaning": "confused",
      "id": "1012110"
+    },
+    {
+     "lesson": 102,
+     "word": "レクリェーション",
+     "meaning": "recreation",
+     "id": "1144860"
     },
     {
      "lesson": 104,
@@ -83,19 +89,13 @@
      "id": "1230170"
     },
     {
-     "lesson": 104,
-     "word": "レクリェーション",
-     "meaning": "recreation",
-     "id": "1144860"
-    },
-    {
-     "lesson": 109,
+     "lesson": 107,
      "word": "あぶる",
      "meaning": "to warm (e.g. one's hands over a fire)",
      "id": "1568910"
     },
     {
-     "lesson": 109,
+     "lesson": 107,
      "word": "タイア",
      "meaning": "tire",
      "id": "1075840"
@@ -155,22 +155,52 @@
      "id": "1583850"
     },
     {
-     "lesson": 150,
+     "lesson": 148,
      "word": "ティッシュペーパー",
      "meaning": "tissue paper",
      "id": "1079110"
     },
     {
-     "lesson": 151,
+     "lesson": 148,
      "word": "えい",
      "meaning": "ray (any fish of superorder Batoidea)",
      "id": "1001130"
     },
     {
-     "lesson": 152,
+     "lesson": 150,
      "word": "ぼやく",
      "meaning": "to grumble",
      "id": "1011850"
+    },
+    {
+     "lesson": 151,
+     "word": "ずらっと",
+     "meaning": "in a line",
+     "id": "1006430"
+    },
+    {
+     "lesson": 151,
+     "word": "ビールス",
+     "meaning": "virus",
+     "id": "2843940"
+    },
+    {
+     "lesson": 152,
+     "word": "ふんだん",
+     "meaning": "plentiful",
+     "id": "1011100"
+    },
+    {
+     "lesson": 152,
+     "word": "ぼつぼつ",
+     "meaning": "gradually",
+     "id": "1011840"
+    },
+    {
+     "lesson": 152,
+     "word": "インターフォン",
+     "meaning": "intercom",
+     "id": "1022990"
     },
     {
      "lesson": 153,
@@ -180,15 +210,9 @@
     },
     {
      "lesson": 153,
-     "word": "ずらっと",
-     "meaning": "in a line",
-     "id": "1006430"
-    },
-    {
-     "lesson": 153,
-     "word": "ビールス",
-     "meaning": "virus",
-     "id": "2843940"
+     "word": "インターチェンジ",
+     "meaning": "interchange",
+     "id": "1022840"
     },
     {
      "lesson": 154,
@@ -197,37 +221,13 @@
      "id": "1512770"
     },
     {
-     "lesson": 154,
-     "word": "ふんだん",
-     "meaning": "plentiful",
-     "id": "1011100"
-    },
-    {
-     "lesson": 154,
-     "word": "ぼつぼつ",
-     "meaning": "gradually",
-     "id": "1011840"
-    },
-    {
-     "lesson": 155,
-     "word": "インターフォン",
-     "meaning": "intercom",
-     "id": "1022990"
-    },
-    {
-     "lesson": 155,
-     "word": "インターチェンジ",
-     "meaning": "interchange",
-     "id": "1022840"
-    },
-    {
      "lesson": 157,
      "word": "球 (きゅう)",
      "meaning": "sphere",
      "id": "1229880"
     },
     {
-     "lesson": 157,
+     "lesson": 158,
      "word": "具体 (ぐたい)",
      "meaning": "concrete",
      "id": "1245020"
@@ -294,18 +294,18 @@
     },
     {
      "lesson": 186,
-     "word": "凸版印刷 (とっぱんいんさつ)",
-     "meaning": "letterpress",
-     "id": "1456550"
-    },
-    {
-     "lesson": 187,
      "word": "恩賜 (おんし)",
      "meaning": "Imperial gift",
      "id": "1183170"
     },
     {
-     "lesson": 189,
+     "lesson": 186,
+     "word": "凸版印刷 (とっぱんいんさつ)",
+     "meaning": "letterpress",
+     "id": "1456550"
+    },
+    {
+     "lesson": 188,
      "word": "侯 (こう)",
      "meaning": "marquis",
      "id": "1272630"
@@ -317,37 +317,37 @@
      "id": "1536310"
     },
     {
-     "lesson": 190,
+     "lesson": 189,
      "word": "彫塑 (ちょうそ)",
      "meaning": "carving",
      "id": "1428070"
     },
     {
-     "lesson": 196,
+     "lesson": 195,
      "word": "恣意 (しい)",
      "meaning": "arbitrariness",
      "id": "1566800"
     },
     {
-     "lesson": 198,
+     "lesson": 197,
      "word": "貼付 (ちょうふ)",
      "meaning": "pasting",
      "id": "1440960"
     },
     {
-     "lesson": 203,
+     "lesson": 202,
      "word": "楷書 (かいしょ)",
      "meaning": "printed style (of writing Chinese characters)",
      "id": "1568280"
     },
     {
-     "lesson": 205,
+     "lesson": 204,
      "word": "禁錮 (きんこ)",
      "meaning": "imprisonment (without forced labour)",
      "id": "1241540"
     },
     {
-     "lesson": 205,
+     "lesson": 204,
      "word": "俳諧 (はいかい)",
      "meaning": "haikai",
      "id": "1471990"
@@ -368,19 +368,19 @@
    "count": 3,
    "items": [
     {
-     "lesson": 99,
+     "lesson": 100,
      "word": "お土産 (おみやげ)",
      "meaning": "local specialty or souvenir bought as a gift while travelling",
      "why": "very long"
     },
     {
-     "lesson": 144,
+     "lesson": 145,
      "word": "土産 (みやげ)",
      "meaning": "local specialty or souvenir bought as a gift while travelling",
      "why": "very long"
     },
     {
-     "lesson": 170,
+     "lesson": 169,
      "word": "領収書 (りょうしゅうしょ)",
      "meaning": "simplified receipt with a blank line to be filled out with the customer's name",
      "why": "very long"
@@ -408,7 +408,7 @@
     {
      "word": "何 (なに)",
      "meaning": "what",
-     "lessons": "9, 12"
+     "lessons": "9, 13"
     },
     {
      "word": "方 (ほう)",
@@ -418,12 +418,12 @@
     {
      "word": "私 (わたし)",
      "meaning": "i",
-     "lessons": "19, 52"
+     "lessons": "19, 53"
     },
     {
      "word": "面 (つら)",
      "meaning": "face",
-     "lessons": "123, 159"
+     "lessons": "123, 160"
     }
    ]
   },
@@ -594,7 +594,7 @@
    "area": "Kanji",
    "title": "On readings with no example word",
    "why": "Kun readings often have no word of their own, but an on reading with none can't be shown in use.",
-   "count": 296,
+   "count": 295,
    "items": [
     {
      "kanji": "左",
@@ -990,10 +990,6 @@
     },
     {
      "kanji": "塊",
-     "reading": "ケ"
-    },
-    {
-     "kanji": "怪",
      "reading": "ケ"
     },
     {
@@ -1863,7 +1859,7 @@
    "area": "Stories",
    "title": "Story text that may be jumbled",
    "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
-   "count": 3,
+   "count": 2,
    "items": [
     {
      "story": "北海道",
@@ -1876,12 +1872,6 @@
      "paragraph": 23,
      "unseen pairs": "52%",
      "text": "しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。"
-    },
-    {
-     "story": "黒コウモリと白コウモリ",
-     "paragraph": 14,
-     "unseen pairs": "41%",
-     "text": "花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ"
     }
    ]
   },
