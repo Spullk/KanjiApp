@@ -1,9 +1,9 @@
 {
  "counts": {
-  "words": 22892,
+  "words": 22895,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 51947,
+  "sentences": 51943,
   "stories": 116,
   "grammar points": 237
  },
@@ -372,7 +372,7 @@
     {
      "word": "何 (なに)",
      "meaning": "what",
-     "lessons": "9, 9"
+     "lessons": "9, 12"
     },
     {
      "word": "方 (ほう)",
@@ -382,7 +382,7 @@
     {
      "word": "私 (わたし)",
      "meaning": "i",
-     "lessons": "19, 136"
+     "lessons": "19, 155"
     },
     {
      "word": "面 (つら)",

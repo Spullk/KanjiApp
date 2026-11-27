@@ -2,7 +2,7 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 22,892 words, 2,136 kanji, 372 radicals, 51,947 sentences, 116 stories, 237 grammar points.
+Checked: 22,895 words, 2,136 kanji, 372 radicals, 51,943 sentences, 116 stories, 237 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
@@ -115,9 +115,9 @@ None. 🎉
 Two lesson words share the spelling and the first meaning, so they'd be two cards for one thing.
 
 - 年 (とし) · year · 1, 4
-- 何 (なに) · what · 9, 9
+- 何 (なに) · what · 9, 12
 - 方 (ほう) · direction · 11, 12
-- 私 (わたし) · i · 19, 136
+- 私 (わたし) · i · 19, 155
 - 面 (つら) · face · 119, 162
 
 <a id="lesson-word-rarer-homophone"></a>
