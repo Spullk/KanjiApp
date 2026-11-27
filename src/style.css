@@ -3923,3 +3923,20 @@ body:has(.home-page) {
 .place-world {
   opacity: 0.32;
 }
+
+/* Learn new: swipe between items. pan-y keeps vertical scrolling for the page and gives sideways drags to the swipe. */
+.learn-one,
+.learn-one * {
+  touch-action: pan-y;
+}
+.learn-one {
+  /* The whole screen above the dock is the swipe area, not just the card. */
+  min-height: calc(100dvh - var(--dock-h, 120px) - env(safe-area-inset-top) - 48px);
+}
+.learn-card {
+  will-change: transform;
+}
+.learn-swipe-hint {
+  text-align: center;
+  margin-top: 12px;
+}

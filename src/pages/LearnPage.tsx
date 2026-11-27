@@ -1,7 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useSwipe } from "../components/useSwipe";
 import { useData } from "../data";
 import { href } from "../router";
-import { addItem, getStore, isAdded, newLeftToday, nextToLearn, startOfDay, update, useStore, type ItemKind } from "../srs";
+import {
+  addItem,
+  getStore,
+  isAdded,
+  newLeftToday,
+  nextToLearn,
+  startOfDay,
+  update,
+  useStore,
+  type ItemKind,
+} from "../srs";
 import { ItemSummary } from "../components/ItemCards";
 import { knowledge, newWords, useStories } from "../stories";
 import { BottomBar } from "../components/BottomBar";
@@ -23,7 +34,11 @@ function keptBatch(story: string): Kept | undefined {
   }
   const s = getStore();
   // Still today's batch for this page, and something in it is left to see.
-  if (kept?.story === story && kept.day === startOfDay(Date.now()) && kept.items.slice(kept.i).some((it) => !isAdded(s, it.kind, it.key)))
+  if (
+    kept?.story === story &&
+    kept.day === startOfDay(Date.now()) &&
+    kept.items.slice(kept.i).some((it) => !isAdded(s, it.kind, it.key))
+  )
     return kept;
   return undefined;
 }
@@ -51,7 +66,9 @@ export function LearnPage({ story }: { story?: string }) {
     () =>
       story
         ? info
-          ? newWords(knowledge(getStore(), data), info).slice(0, n).map((key) => ({ kind: "word" as const, key }))
+          ? newWords(knowledge(getStore(), data), info)
+              .slice(0, n)
+              .map((key) => ({ kind: "word" as const, key }))
           : []
         : nextToLearn(getStore(), data, n),
     [data, n, story, info],
@@ -64,7 +81,14 @@ export function LearnPage({ story }: { story?: string }) {
   const it = batch[i];
   const last = i === batch.length - 1;
   useEffect(() => {
-    if (frozen.current?.length) keep({ story: story ?? "", day: startOfDay(Date.now()), n, items: frozen.current, i });
+    if (frozen.current?.length)
+      keep({
+        story: story ?? "",
+        day: startOfDay(Date.now()),
+        n,
+        items: frozen.current,
+        i,
+      });
   }, [i, batch, n, story]);
 
   const next = () => {
@@ -73,13 +97,15 @@ export function LearnPage({ story }: { story?: string }) {
     if (last) {
       keep(undefined);
       location.hash = href.review();
-    }
-    else {
+    } else {
       setI(i + 1);
       scrollTo(0, 0);
     }
   };
   const back = () => i > 0 && setI(i - 1);
+  // Swipe left for the next item (it joins your reviews as you pass it), right to go back. On the last one a
+  // left swipe does what Start reviews does.
+  const swipe = useSwipe({ onLeft: next, onRight: i > 0 ? back : undefined });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -96,36 +122,44 @@ export function LearnPage({ story }: { story?: string }) {
   if (!n) {
     return (
       <p class="empty">
-        That's today's {store.settings.dailyNew} new items. More tomorrow, or raise the limit in <a href={href.settings("learning")}>Settings</a>.
+        That's today's {store.settings.dailyNew} new items. More tomorrow, or raise the limit in{" "}
+        <a href={href.settings("learning")}>Settings</a>.
       </p>
     );
   }
   if (story && !info) return <p class="loading">Loading story…</p>;
   if (!it) {
-    return <p class="empty">{story ? "You've started every word in this story. Happy reading!" : "You've added everything. Impressive."}</p>;
+    return (
+      <p class="empty">
+        {story ? "You've started every word in this story. Happy reading!" : "You've added everything. Impressive."}
+      </p>
+    );
   }
 
+  const left = batch.length - i;
   return (
-    <article class="page learn-one">
+    <article class="page learn-one" ref={swipe.ref}>
       <div class="learn-head">
-        <span class="hint">{info ? `New words from ${info.title}` : "New"} · {i + 1} of {batch.length}</span>
+        <span class="hint">
+          {info ? `New words from ${info.title}` : "New"} · {left === 1 ? "last one" : `${left} to go`}
+        </span>
         <div class="learn-dots" aria-hidden="true">
           {batch.map((_, j) => (
             <i key={j} class={j < i ? "seen" : j === i ? "on" : ""} />
           ))}
         </div>
       </div>
-      <ItemSummary key={`${it.kind}:${it.key}`} kind={it.kind} k={it.key} />
-      <BottomBar class="learn-bar">
-        {i > 0 && (
-          <button class="secondary" onClick={back}>
-            Back
+      <div class="learn-card" ref={swipe.card}>
+        <ItemSummary key={`${it.kind}:${it.key}`} kind={it.kind} k={it.key} />
+      </div>
+      {i === 0 && !last && <p class="learn-swipe-hint hint">Swipe left for the next one, right to go back.</p>}
+      {last && (
+        <BottomBar class="learn-bar">
+          <button class="primary" onClick={next}>
+            Start reviews
           </button>
-        )}
-        <button class="primary" onClick={next}>
-          {last ? "Start reviews" : "Got it, next"}
-        </button>
-      </BottomBar>
+        </BottomBar>
+      )}
     </article>
   );
 }

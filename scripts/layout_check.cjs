@@ -32,7 +32,8 @@ async function measure(p) {
     if (!/maximum-scale=1\b/.test(vp) || !/user-scalable=no/.test(vp)) app.push("viewport tag allows zooming");
     for (const el of document.querySelectorAll("main button, main a[href], .dock a, .dock button")) {
       const cs = getComputedStyle(el);
-      if (!["manipulation", "none"].includes(cs.touchAction)) app.push(`${el.tagName} "${el.textContent.trim().slice(0, 20)}" can double-tap zoom`);
+      // pan-y (Learn new's swipe area) also rules out double-tap zoom: only "auto" allows it.
+      if (!["manipulation", "none", "pan-y"].includes(cs.touchAction)) app.push(`${el.tagName} "${el.textContent.trim().slice(0, 20)}" can double-tap zoom`);
       if (cs.userSelect !== "none") app.push(`${el.tagName} "${el.textContent.trim().slice(0, 20)}" text can be selected`);
       if (!/rgba\(0, 0, 0, 0\)|transparent/.test(cs.webkitTapHighlightColor)) app.push(`${el.tagName} flashes grey when tapped`);
       if (app.length > 3) break;
@@ -96,13 +97,17 @@ async function measure(p) {
     // Study screens with an action bar: learn, then review (front and back), then practice.
     await p.goto(BASE + "#/learn");
     await check("learn");
-    for (let i = 0; i < 8; i++) {
-      const next = p.getByRole("button", { name: /Got it, next|Start reviews/ });
-      if (!(await next.count())) break;
-      // A real tap: fails if anything (like the tab bar) covers the button.
-      if (!(await tap(next.first(), `${phone} learn`))) break;
-      await p.waitForTimeout(250);
+    // Learn new moves on by swiping (or the arrow key); only the last item has a button, Start reviews.
+    const start = p.getByRole("button", { name: "Start reviews" });
+    for (let i = 0; i < 12 && !(await start.count()); i++) {
+      await p.keyboard.press("ArrowRight");
+      await p.waitForTimeout(150);
     }
+    await check("learn-last");
+    // A real tap: fails if anything (like the tab bar) covers the button.
+    if (await start.count()) await tap(start, `${phone} learn`);
+    else problems.push(`${phone}: no Start reviews button on the last new item`);
+    await p.waitForTimeout(250);
     await check("review-front");
     const show = p.getByRole("button", { name: "Show answer" });
     if (await show.count()) {
