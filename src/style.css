@@ -24,6 +24,9 @@
   --sung: #c0762a;
   --good: #557f2f;
   --again: #b5432b;
+  /* Hard and Easy grades (also 'learning' and 'mature' stages): ochre like the wood, slate blue like a winter sky. */
+  --hard: #b8862b;
+  --easy: #3f6f8f;
   /* Wood and moss for the plaques, leaf and bar */
   --moss: #557f2f;
   --moss-deep: #3d5f22;
@@ -65,6 +68,8 @@
     --accent-ink: #151a14;
     --good: #a5c56e;
     --again: #e0785e;
+    --hard: #d0a04a;
+    --easy: #7fa6c4;
     --moss: #7fa850;
     --moss-deep: #4d6e30;
     --bar: #2f4520;
@@ -727,7 +732,7 @@ a.primary {
 .stage.learning,
 .kg.learning,
 .sb-seg.learning {
-  background: #e59a1f;
+  background: var(--hard);
 }
 .stage.young,
 .kg.young,
@@ -737,7 +742,7 @@ a.primary {
 .stage.mature,
 .kg.mature,
 .sb-seg.mature {
-  background: #2563c9;
+  background: var(--easy);
 }
 
 .card-note {
@@ -1023,16 +1028,16 @@ a.primary {
 }
 
 .grade.g1 {
-  background: #d9443a;
+  background: var(--again);
 }
 .grade.g2 {
-  background: #e59a1f;
+  background: var(--hard);
 }
 .grade.g3 {
   background: var(--good);
 }
 .grade.g4 {
-  background: #2563c9;
+  background: var(--easy);
 }
 
 .reveal {
@@ -1362,8 +1367,8 @@ button.secondary,
   padding: 10px 4px;
 }
 .known-levels button.on {
-  background: #2563c9;
-  border-color: #2563c9;
+  background: var(--easy);
+  border-color: var(--easy);
   color: #fff;
 }
 .known-levels small {
@@ -2183,7 +2188,7 @@ ruby.tap-reading {
   color: var(--muted);
 }
 .kana-cell.learning {
-  background: #e59a1f;
+  background: var(--hard);
   color: #fff;
 }
 .kana-cell.weak {
