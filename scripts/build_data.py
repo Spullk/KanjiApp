@@ -19,7 +19,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from component_names import RADICAL_NAMES
-from word_freq import commonness, load_wordfreq
+from word_freq import commonness, everyday_order, load_wordfreq
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ROOT / "sources"
@@ -802,9 +802,11 @@ def load_strokes(joyo):
 
 # ---------------------------------------------------------------- ordering
 
-def tatoeba_counts(words):
+def tatoeba_counts(words, behind):
     """→ ({word id: how many times Tatoeba's sentences use it}, how many words its index holds), from the same
-    word index load_sentences reads, which files every form of a word under its dictionary form."""
+    word index load_sentences reads, which files every form of a word under its dictionary form. The index only
+    gives a reading when it isn't the usual one, so a use without one counts for the everyday word of that
+    spelling (`behind` is word_freq.everyday_order)."""
     path = SOURCES / "tatoeba" / "jpn_indices.tar.bz2"
     if not path.exists():
         return {}, 0
@@ -825,9 +827,12 @@ def tatoeba_counts(words):
                 if not m:
                     continue
                 total += 1
-                for wid in by_form.get(m["head"], ()):
-                    if not m["read"] or hira(m["read"]) == hira(words[wid]["r"]):
-                        counts[wid] += 1
+                if m["read"]:
+                    for wid in by_form.get(m["head"], ()):
+                        if hira(m["read"]) == hira(words[wid]["r"]):
+                            counts[wid] += 1
+                elif by_form.get(m["head"]):
+                    counts[min(by_form[m["head"]], key=lambda wid: behind.get(wid, 0))] += 1
     return counts, total
 
 
@@ -1085,8 +1090,9 @@ def main():
     # Lessons, and the words they teach: picked from every word, not just the ones on kanji pages.
     lessons = build_lessons(joyo, kanji, parts)
     lesson_of = {k: i for i, ks in enumerate(lessons) for k in ks}
-    counts, tokens = tatoeba_counts(words)
-    score = commonness(words, load_wordfreq(), counts, tokens, reading_tags(con, words))
+    tags = reading_tags(con, words)
+    counts, tokens = tatoeba_counts(words, everyday_order(words, tags))
+    score = commonness(words, load_wordfreq(), counts, tokens, tags)
     picks = pick_lesson_words(words, joyo, lesson_of, score, old_entries(con))
     keep |= picks.keys()
     print(f"Lesson words by how common they are: {len(picks)} (wordfreq + "

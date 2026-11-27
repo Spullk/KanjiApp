@@ -105,18 +105,35 @@ def surface_forms(w, pos):
     return []
 
 
-def wordfreq_zipf(zipf, w, spellings=frozenset()):
+def wordfreq_zipf(zipf, w, readings=None):
     """A word's Zipf value in wordfreq, with a verb's or adjective's forms added up, or None if it isn't there.
-    A form that is also another word's spelling only counts up to 20 times the dictionary form's own uses (about
-    the share the dictionary form has of a verb's uses): the stem of the rare 同じる "to agree" is 同じ "same",
-    but 連れ in 連れて is mostly 連れる."""
+    `readings` is {spelling: readings of the words spelled that way}. A form that is another word's spelling only
+    counts when that word reads like the same root (連れ つれ in 連れて is 連れる つれる, 大きく おおきく is
+    大きい), not when it's a different word (the stem of the rare 同じる どうじる is 同じ おなじ "same")."""
     pos = {p for s in w["senses"][:1] for p in s["pos"]}
-    own = 10 ** (zipf[w["w"]] - 9) if w["w"] in zipf else 0
-    forms = [f for f in surface_forms(w["w"], pos) if f in zipf]
-    alone = sum(10 ** (zipf[f] - 9) for f in forms if f not in spellings)
-    shared = sum(10 ** (zipf[f] - 9) for f in forms if f in spellings)
-    total = own + alone + min(shared, 20 * own)
+    stem = hira(w["r"])[:-1]
+    forms = [w["w"], *(f for f in surface_forms(w["w"], pos)
+                       if not readings or f not in readings or any(o.startswith(stem) for o in readings[f]))]
+    total = sum(10 ** (zipf[f] - 9) for f in forms if f in zipf)
     return 9 + math.log10(total) if total else None
+
+
+def hira(s):
+    return "".join(chr(ord(c) - 0x60) if "ァ" <= c <= "ヶ" else c for c in s)
+
+
+def everyday_order(words, reading_tags):
+    """{word id: 0 for the everyday one of the words sharing its spelling, 1 for the next…}. JMdict's everyday
+    marks on the reading (ichi1, then spec) decide, not its newspaper band, which puts 字 あざ before 字 じ."""
+    same = defaultdict(list)
+    for wid, w in words.items():
+        same[w["w"]].append(wid)
+
+    def key(wid):
+        tags = reading_tags.get(wid, set())
+        return ("ichi1" not in tags, not tags & {"spec1", "spec2"}, -len(tags), words[wid]["rank"], int(wid))
+
+    return {wid: n for ids in same.values() for n, wid in enumerate(sorted(ids, key=key))}
 
 
 def commonness(words, zipf, sentence_counts, total_tokens, reading_tags):
@@ -129,28 +146,17 @@ def commonness(words, zipf, sentence_counts, total_tokens, reading_tags):
     def at_rank(r):
         return by_rank[min(len(by_rank) - 1, max(0, r))] if by_rank else 6 - math.log10(max(1, r))
 
-    # wordfreq counts spellings, not words: 字 is じ "character" and the place-name あざ, 入る is はいる and the
-    # literary いる. The spelling's count goes to the entry whose reading JMdict marks as everyday (ichi1, then
-    # spec), not its newspaper band, which ranks 字 あざ first; each entry after it gets a tenth of the one before.
-    # Tatoeba's index tells readings apart, so its part isn't split.
-    same = defaultdict(list)
-    for wid, w in words.items():
-        same[w["w"]].append(wid)
-
-    def everyday(wid):
-        tags = reading_tags.get(wid, set())
-        return ("ichi1" not in tags, not tags & {"spec1", "spec2"}, -len(tags), words[wid]["rank"], int(wid))
-
-    behind = {}
-    for ids in same.values():
-        for n, wid in enumerate(sorted(ids, key=everyday)):
-            behind[wid] = n
-    spellings = frozenset(same)
+    # wordfreq counts spellings, not words: 入る is はいる and the literary いる. The spelling's count goes to the
+    # everyday one; each word after it gets a tenth of the one before. (Tatoeba's index tells readings apart.)
+    behind = everyday_order(words, reading_tags)
+    readings = defaultdict(set)
+    for w in words.values():
+        readings[w["w"]].add(hira(w["r"]))
 
     out = {}
     for wid, w in words.items():
         parts = []
-        z = wordfreq_zipf(zipf, w, spellings)
+        z = wordfreq_zipf(zipf, w, readings)
         if z is not None:
             parts.append(z - behind[wid])
         if total_tokens:
