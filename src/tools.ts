@@ -20,12 +20,6 @@ export type Tool = {
   group?: Group;
 };
 
-export const GROUPS: { group: Group; title: string }[] = [
-  { group: "study", title: "Study" },
-  { group: "read", title: "Read and look up" },
-  { group: "basics", title: "Foundations" },
-];
-
 export const HOME: Tool = { tab: "home", icon: "根", label: "Home", href: href.home(), pages: ["home"], about: "" };
 
 export const PROGRESS: Tool = {
@@ -81,35 +75,6 @@ export function rackTools(settings: Settings): Tool[] {
  * that isn't on the bar, like Progress, nothing on the bar is selected). */
 export function activeTab(bar: Tool[], page: Route["page"]): string {
   return bar.find((t) => t.pages.includes(page))?.tab ?? "";
-}
-
-/** Puts `items` in the order of `order`, with anything it doesn't list after, in their own order. */
-function ordered<T>(items: T[], key: (t: T) => string, order: string[] = []): T[] {
-  const rank = (t: T) => {
-    const i = order.indexOf(key(t));
-    return i < 0 ? order.length + items.indexOf(t) : i;
-  };
-  return [...items].sort((a, b) => rank(a) - rank(b));
-}
-
-/** Home's tool groups and the tools in each, in your order. */
-export function homeGroups(settings: Settings): { group: Group; title: string; tools: Tool[] }[] {
-  const tools = ordered(TOOLS, (t) => t.tab, settings.homeTools);
-  return ordered(GROUPS, (g) => g.group, settings.homeGroups).map(({ group, title }) => ({
-    group,
-    title,
-    tools: tools.filter((t) => t.group === group),
-  }));
-}
-
-/** Moves one tool (or group) a step earlier or later in a saved order, returning the new order. */
-export function moveIn(all: string[], key: string, by: -1 | 1): string[] {
-  const out = [...all];
-  const i = out.indexOf(key);
-  const j = i + by;
-  if (i < 0 || j < 0 || j >= out.length) return out;
-  [out[i], out[j]] = [out[j], out[i]];
-  return out;
 }
 
 /** Puts `tool` in bar spot `slot`; if it was already on the bar, the two swap places. */
