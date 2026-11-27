@@ -84,7 +84,8 @@ function blockEdgeSwipe() {
   document.addEventListener("touchend", () => {
     const tap = edge && !edge.moved ? edge.el : null;
     edge = null;
-    if (tap instanceof HTMLElement || tap instanceof SVGElement) (tap as HTMLElement).click?.();
+    // A real click event, not el.click(): the finger often lands on an icon's <svg>/<path>, which has no click().
+    tap?.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
   });
   document.addEventListener("touchcancel", () => (edge = null));
 }
