@@ -1,9 +1,9 @@
 {
  "counts": {
-  "words": 22895,
+  "words": 22912,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 51943,
+  "sentences": 52012,
   "stories": 116,
   "grammar points": 237
  },
@@ -26,13 +26,19 @@
    "area": "Words",
    "title": "Lesson words with no example sentence",
    "why": "Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.",
-   "count": 48,
+   "count": 54,
    "items": [
     {
      "lesson": 16,
      "word": "了 (りょう)",
      "meaning": "finish",
      "id": "1553290"
+    },
+    {
+     "lesson": 48,
+     "word": "一月 (ひとつき)",
+     "meaning": "one month",
+     "id": "1162130"
     },
     {
      "lesson": 52,
@@ -117,6 +123,12 @@
      "word": "俊足 (しゅんそく)",
      "meaning": "swiftness of foot",
      "id": "1340940"
+    },
+    {
+     "lesson": 143,
+     "word": "歌謡 (かよう)",
+     "meaning": "song",
+     "id": "1193450"
     },
     {
      "lesson": 143,
@@ -209,6 +221,30 @@
      "id": "1022840"
     },
     {
+     "lesson": 157,
+     "word": "球 (きゅう)",
+     "meaning": "sphere",
+     "id": "1229880"
+    },
+    {
+     "lesson": 157,
+     "word": "具体 (ぐたい)",
+     "meaning": "concrete",
+     "id": "1245020"
+    },
+    {
+     "lesson": 159,
+     "word": "背 (せい)",
+     "meaning": "height",
+     "id": "1472650"
+    },
+    {
+     "lesson": 159,
+     "word": "柄 (え)",
+     "meaning": "handle",
+     "id": "1508290"
+    },
+    {
      "lesson": 162,
      "word": "詔 (みことのり)",
      "meaning": "imperial decree",
@@ -245,16 +281,16 @@
      "id": "1578400"
     },
     {
-     "lesson": 181,
-     "word": "多 (た)",
-     "meaning": "multi-",
-     "id": "1407450"
-    },
-    {
      "lesson": 182,
      "word": "逓信 (ていしん)",
      "meaning": "communications (e.g. post, tele.)",
      "id": "1436780"
+    },
+    {
+     "lesson": 185,
+     "word": "多 (た)",
+     "meaning": "multi-",
+     "id": "1407450"
     },
     {
      "lesson": 186,
@@ -332,19 +368,19 @@
    "count": 3,
    "items": [
     {
-     "lesson": 127,
+     "lesson": 99,
      "word": "お土産 (おみやげ)",
      "meaning": "local specialty or souvenir bought as a gift while travelling",
      "why": "very long"
     },
     {
-     "lesson": 141,
+     "lesson": 144,
      "word": "土産 (みやげ)",
      "meaning": "local specialty or souvenir bought as a gift while travelling",
      "why": "very long"
     },
     {
-     "lesson": 164,
+     "lesson": 170,
      "word": "領収書 (りょうしゅうしょ)",
      "meaning": "simplified receipt with a blank line to be filled out with the customer's name",
      "why": "very long"
@@ -382,12 +418,12 @@
     {
      "word": "私 (わたし)",
      "meaning": "i",
-     "lessons": "19, 155"
+     "lessons": "19, 52"
     },
     {
      "word": "面 (つら)",
      "meaning": "face",
-     "lessons": "119, 162"
+     "lessons": "123, 159"
     }
    ]
   },
@@ -1827,7 +1863,7 @@
    "area": "Stories",
    "title": "Story text that may be jumbled",
    "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
-   "count": 2,
+   "count": 3,
    "items": [
     {
      "story": "北海道",
@@ -1840,6 +1876,12 @@
      "paragraph": 23,
      "unseen pairs": "52%",
      "text": "しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。"
+    },
+    {
+     "story": "黒コウモリと白コウモリ",
+     "paragraph": 14,
+     "unseen pairs": "41%",
+     "text": "花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ"
     }
    ]
   },

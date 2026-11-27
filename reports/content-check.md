@@ -2,13 +2,13 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 22,895 words, 2,136 kanji, 372 radicals, 51,943 sentences, 116 stories, 237 grammar points.
+Checked: 22,912 words, 2,136 kanji, 372 radicals, 52,012 sentences, 116 stories, 237 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
 | Words | [Lesson words with no dictionary entry](#lesson-word-missing) | 0 |
 | Words | [Words with no meaning](#word-no-meaning) | 0 |
-| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 48 |
+| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 54 |
 | Words | [Words pointing at sentences that don't exist](#word-sentence-missing) | 0 |
 | Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 3 |
 | Words | [Lesson words whose furigana doesn't spell the word](#lesson-word-furigana) | 0 |
@@ -35,7 +35,7 @@ Checked: 22,895 words, 2,136 kanji, 372 radicals, 51,943 sentences, 116 stories,
 | Stories | [Story text with damaged characters](#story-odd-characters) | 0 |
 | Stories | [Story words with no dictionary entry](#story-word-missing) | 0 |
 | Stories | [Story files with broken links](#story-links) | 0 |
-| Stories | [Story text that may be jumbled](#story-jumbled) | 2 |
+| Stories | [Story text that may be jumbled](#story-jumbled) | 3 |
 | Stories | [Stories with ○○○ blanks](#story-blanks) | 5 |
 | Grammar | [Grammar points with no example](#grammar-no-examples) | 0 |
 | Grammar | [Grammar examples with no {marked} part](#grammar-gap) | 0 |
@@ -55,11 +55,12 @@ No sense has an English gloss, so the card has nothing to ask for.
 None. 🎉
 
 <a id="lesson-word-no-sentence"></a>
-## Words: Lesson words with no example sentence (48)
+## Words: Lesson words with no example sentence (54)
 
 Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.
 
 - 16 · 了 (りょう) · finish · 1553290
+- 48 · 一月 (ひとつき) · one month · 1162130
 - 52 · 副 (ふく) · assistant · 1500330
 - 58 · 零 (れい) · zero · 1557630
 - 75 · かるた · karuta · 1590710
@@ -74,6 +75,7 @@ Taught words should have at least one example sentence. Tatoeba, Wiktionary and 
 - 116 · 朱 (あけ) · scarlet · 1328470
 - 120 · 嫡出 (ちゃくしゅつ) · legitimate birth · 1656930
 - 138 · 俊足 (しゅんそく) · swiftness of foot · 1340940
+- 143 · 歌謡 (かよう) · song · 1193450
 - 143 · 感慨 (かんがい) · deep emotion · 1212310
 - 145 · 隆盛 (りゅうせい) · prosperity · 1552940
 - 145 · 漸減 (ぜんげん) · gradual decrease · 1394640
@@ -82,9 +84,7 @@ Taught words should have at least one example sentence. Tatoeba, Wiktionary and 
 - 151 · えい · ray (any fish of superorder Batoidea) · 1001130
 - 152 · ぼやく · to grumble · 1011850
 - 153 · 租税 (そぜい) · taxes · 1396900
-- 153 · ずらっと · in a line · 1006430
-- 153 · ビールス · virus · 2843940
-- …and 23 more
+- …and 29 more
 
 <a id="word-sentence-missing"></a>
 ## Words: Words pointing at sentences that don't exist (0)
@@ -98,9 +98,9 @@ None. 🎉
 
 The first meaning is what the card asks for. These are a cross-reference, contain markup, or run over 60 characters.
 
-- 127 · お土産 (おみやげ) · local specialty or souvenir bought as a gift while travelling · very long
-- 141 · 土産 (みやげ) · local specialty or souvenir bought as a gift while travelling · very long
-- 164 · 領収書 (りょうしゅうしょ) · simplified receipt with a blank line to be filled out with the customer's name · very long
+- 99 · お土産 (おみやげ) · local specialty or souvenir bought as a gift while travelling · very long
+- 144 · 土産 (みやげ) · local specialty or souvenir bought as a gift while travelling · very long
+- 170 · 領収書 (りょうしゅうしょ) · simplified receipt with a blank line to be filled out with the customer's name · very long
 
 <a id="lesson-word-furigana"></a>
 ## Words: Lesson words whose furigana doesn't spell the word (0)
@@ -117,8 +117,8 @@ Two lesson words share the spelling and the first meaning, so they'd be two card
 - 年 (とし) · year · 1, 4
 - 何 (なに) · what · 9, 12
 - 方 (ほう) · direction · 11, 12
-- 私 (わたし) · i · 19, 155
-- 面 (つら) · face · 119, 162
+- 私 (わたし) · i · 19, 52
+- 面 (つら) · face · 123, 159
 
 <a id="lesson-word-rarer-homophone"></a>
 ## Words: Lesson words that may be the wrong dictionary entry (0)
@@ -317,12 +317,13 @@ None. 🎉
 None. 🎉
 
 <a id="story-jumbled"></a>
-## Stories: Story text that may be jumbled (2)
+## Stories: Story text that may be jumbled (3)
 
 Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.
 
 - 北海道 · 1 · 59% · 根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」
 - 日本の城 · 23 · 52% · しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。
+- 黒コウモリと白コウモリ · 14 · 41% · 花は苦に光ひ大お鳥と冷つ乾か流なのいるきのたいれ匂果く虫歌いたるい物もみ雨あ風か星ほの湖ずめぜしうみ
 
 <a id="story-blanks"></a>
 ## Stories: Stories with ○○○ blanks (5)
