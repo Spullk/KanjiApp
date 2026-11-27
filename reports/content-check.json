@@ -1,9 +1,9 @@
 {
  "counts": {
-  "words": 21936,
+  "words": 22892,
   "kanji": 2136,
   "radicals": 372,
-  "sentences": 44275,
+  "sentences": 51947,
   "stories": 116,
   "grammar points": 237
  },
@@ -26,61 +26,31 @@
    "area": "Words",
    "title": "Lesson words with no example sentence",
    "why": "Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.",
-   "count": 30,
+   "count": 48,
    "items": [
     {
-     "lesson": 18,
-     "word": "元首 (げんしゅ)",
-     "meaning": "sovereign",
-     "id": "1260870"
+     "lesson": 16,
+     "word": "了 (りょう)",
+     "meaning": "finish",
+     "id": "1553290"
     },
     {
-     "lesson": 24,
-     "word": "字 (あざ)",
-     "meaning": "section of village",
-     "id": "1315120"
+     "lesson": 52,
+     "word": "副 (ふく)",
+     "meaning": "assistant",
+     "id": "1500330"
     },
     {
-     "lesson": 39,
-     "word": "面 (おもて)",
-     "meaning": "face",
-     "id": "1584680"
+     "lesson": 58,
+     "word": "零 (れい)",
+     "meaning": "zero",
+     "id": "1557630"
     },
     {
-     "lesson": 59,
-     "word": "背 (せい)",
-     "meaning": "height",
-     "id": "1472650"
-    },
-    {
-     "lesson": 63,
-     "word": "抱く (だく)",
-     "meaning": "to hold in one's arms (e.g. a baby)",
-     "id": "2844997"
-    },
-    {
-     "lesson": 73,
+     "lesson": 75,
      "word": "かるた",
      "meaning": "karuta",
      "id": "1590710"
-    },
-    {
-     "lesson": 75,
-     "word": "蔵相 (ぞうしょう)",
-     "meaning": "Minister of Finance",
-     "id": "1403520"
-    },
-    {
-     "lesson": 75,
-     "word": "タイア",
-     "meaning": "tire",
-     "id": "1076120"
-    },
-    {
-     "lesson": 76,
-     "word": "管 (くだ)",
-     "meaning": "pipe",
-     "id": "2868440"
     },
     {
      "lesson": 88,
@@ -89,34 +59,64 @@
      "id": "1548890"
     },
     {
-     "lesson": 91,
+     "lesson": 89,
+     "word": "升 (ます)",
+     "meaning": "measuring container",
+     "id": "1346290"
+    },
+    {
+     "lesson": 93,
      "word": "まごまご",
      "meaning": "confused",
      "id": "1012110"
     },
     {
-     "lesson": 99,
-     "word": "殿 (どの)",
-     "meaning": "Mr.",
-     "id": "1442500"
+     "lesson": 104,
+     "word": "糾合 (きゅうごう)",
+     "meaning": "rally",
+     "id": "1230170"
     },
     {
-     "lesson": 103,
+     "lesson": 104,
      "word": "レクリェーション",
      "meaning": "recreation",
      "id": "1144860"
     },
     {
-     "lesson": 106,
-     "word": "蒸す (むす)",
-     "meaning": "to steam (food, towel, etc.)",
-     "id": "1356900"
-    },
-    {
-     "lesson": 107,
+     "lesson": 109,
      "word": "あぶる",
      "meaning": "to warm (e.g. one's hands over a fire)",
      "id": "1568910"
+    },
+    {
+     "lesson": 109,
+     "word": "タイア",
+     "meaning": "tire",
+     "id": "1075840"
+    },
+    {
+     "lesson": 115,
+     "word": "犠打 (ぎだ)",
+     "meaning": "sacrifice fly",
+     "id": "1225470"
+    },
+    {
+     "lesson": 116,
+     "word": "朱 (あけ)",
+     "meaning": "scarlet",
+     "id": "1328470"
+    },
+    {
+     "lesson": 120,
+     "word": "嫡出 (ちゃくしゅつ)",
+     "meaning": "legitimate birth",
+     "id": "1656930"
+    },
+    {
+     "lesson": 138,
+     "word": "俊足 (しゅんそく)",
+     "meaning": "swiftness of foot",
+     "id": "1340940"
     },
     {
      "lesson": 143,
@@ -125,88 +125,196 @@
      "id": "1212310"
     },
     {
-     "lesson": 146,
-     "word": "柄 (え)",
-     "meaning": "handle",
-     "id": "1508290"
+     "lesson": 145,
+     "word": "隆盛 (りゅうせい)",
+     "meaning": "prosperity",
+     "id": "1552940"
     },
     {
-     "lesson": 148,
+     "lesson": 145,
+     "word": "漸減 (ぜんげん)",
+     "meaning": "gradual decrease",
+     "id": "1394640"
+    },
+    {
+     "lesson": 146,
+     "word": "丙 (へい)",
+     "meaning": "third rank",
+     "id": "1583850"
+    },
+    {
+     "lesson": 150,
      "word": "ティッシュペーパー",
      "meaning": "tissue paper",
      "id": "1079110"
     },
     {
-     "lesson": 148,
+     "lesson": 151,
      "word": "えい",
      "meaning": "ray (any fish of superorder Batoidea)",
      "id": "1001130"
     },
     {
-     "lesson": 149,
+     "lesson": 152,
      "word": "ぼやく",
      "meaning": "to grumble",
      "id": "1011850"
     },
     {
-     "lesson": 150,
-     "word": "罰 (ばち)",
-     "meaning": "(divine) punishment",
-     "id": "1478050"
+     "lesson": 153,
+     "word": "租税 (そぜい)",
+     "meaning": "taxes",
+     "id": "1396900"
     },
     {
-     "lesson": 150,
+     "lesson": 153,
      "word": "ずらっと",
      "meaning": "in a line",
      "id": "1006430"
     },
     {
-     "lesson": 151,
+     "lesson": 153,
      "word": "ビールス",
      "meaning": "virus",
      "id": "2843940"
     },
     {
-     "lesson": 151,
+     "lesson": 154,
+     "word": "弁慶 (べんけい)",
+     "meaning": "strong person",
+     "id": "1512770"
+    },
+    {
+     "lesson": 154,
      "word": "ふんだん",
      "meaning": "plentiful",
      "id": "1011100"
     },
     {
-     "lesson": 151,
+     "lesson": 154,
      "word": "ぼつぼつ",
      "meaning": "gradually",
      "id": "1011840"
     },
     {
-     "lesson": 152,
+     "lesson": 155,
      "word": "インターフォン",
      "meaning": "intercom",
      "id": "1022990"
     },
     {
-     "lesson": 152,
+     "lesson": 155,
      "word": "インターチェンジ",
      "meaning": "interchange",
      "id": "1022840"
     },
     {
+     "lesson": 162,
+     "word": "詔 (みことのり)",
+     "meaning": "imperial decree",
+     "id": "1604470"
+    },
+    {
+     "lesson": 165,
+     "word": "雌雄 (しゆう)",
+     "meaning": "male and female (animals)",
+     "id": "1312940"
+    },
+    {
      "lesson": 171,
      "word": "穂 (ほ)",
-     "meaning": "ear (of a cereal plant)",
+     "meaning": "ear (of plant)",
      "id": "1514780"
     },
     {
-     "lesson": 180,
-     "word": "紡績 (ぼうせき)",
-     "meaning": "spinning (textiles)",
-     "id": "1519930"
+     "lesson": 171,
+     "word": "桑原 (くわばら)",
+     "meaning": "mulberry field",
+     "id": "1762710"
+    },
+    {
+     "lesson": 174,
+     "word": "呉服 (ごふく)",
+     "meaning": "cloth (for Japanese clothes)",
+     "id": "1269190"
+    },
+    {
+     "lesson": 177,
+     "word": "弦 (つる)",
+     "meaning": "bowstring",
+     "id": "1578400"
+    },
+    {
+     "lesson": 181,
+     "word": "多 (た)",
+     "meaning": "multi-",
+     "id": "1407450"
+    },
+    {
+     "lesson": 182,
+     "word": "逓信 (ていしん)",
+     "meaning": "communications (e.g. post, tele.)",
+     "id": "1436780"
+    },
+    {
+     "lesson": 186,
+     "word": "凸版印刷 (とっぱんいんさつ)",
+     "meaning": "letterpress",
+     "id": "1456550"
     },
     {
      "lesson": 187,
-     "word": "折衷 (せっちゅう)",
-     "meaning": "compromise",
-     "id": "1385960"
+     "word": "恩賜 (おんし)",
+     "meaning": "Imperial gift",
+     "id": "1183170"
+    },
+    {
+     "lesson": 189,
+     "word": "侯 (こう)",
+     "meaning": "marquis",
+     "id": "1272630"
+    },
+    {
+     "lesson": 189,
+     "word": "冶金 (やきん)",
+     "meaning": "metallurgy",
+     "id": "1536310"
+    },
+    {
+     "lesson": 190,
+     "word": "彫塑 (ちょうそ)",
+     "meaning": "carving",
+     "id": "1428070"
+    },
+    {
+     "lesson": 196,
+     "word": "恣意 (しい)",
+     "meaning": "arbitrariness",
+     "id": "1566800"
+    },
+    {
+     "lesson": 198,
+     "word": "貼付 (ちょうふ)",
+     "meaning": "pasting",
+     "id": "1440960"
+    },
+    {
+     "lesson": 203,
+     "word": "楷書 (かいしょ)",
+     "meaning": "printed style (of writing Chinese characters)",
+     "id": "1568280"
+    },
+    {
+     "lesson": 205,
+     "word": "禁錮 (きんこ)",
+     "meaning": "imprisonment (without forced labour)",
+     "id": "1241540"
+    },
+    {
+     "lesson": 205,
+     "word": "俳諧 (はいかい)",
+     "meaning": "haikai",
+     "id": "1471990"
     }
    ]
   },
@@ -221,8 +329,27 @@
    "area": "Words",
    "title": "Lesson words whose first meaning is hard to use",
    "why": "The first meaning is what the card asks for. These are a cross-reference, contain markup, or run over 60 characters.",
-   "count": 0,
-   "items": []
+   "count": 3,
+   "items": [
+    {
+     "lesson": 127,
+     "word": "お土産 (おみやげ)",
+     "meaning": "local specialty or souvenir bought as a gift while travelling",
+     "why": "very long"
+    },
+    {
+     "lesson": 141,
+     "word": "土産 (みやげ)",
+     "meaning": "local specialty or souvenir bought as a gift while travelling",
+     "why": "very long"
+    },
+    {
+     "lesson": 164,
+     "word": "領収書 (りょうしゅうしょ)",
+     "meaning": "simplified receipt with a blank line to be filled out with the customer's name",
+     "why": "very long"
+    }
+   ]
   },
   "lesson-word-furigana": {
    "area": "Words",
@@ -235,8 +362,34 @@
    "area": "Words",
    "title": "The same word taught twice",
    "why": "Two lesson words share the spelling and the first meaning, so they'd be two cards for one thing.",
-   "count": 0,
-   "items": []
+   "count": 5,
+   "items": [
+    {
+     "word": "年 (とし)",
+     "meaning": "year",
+     "lessons": "1, 4"
+    },
+    {
+     "word": "何 (なに)",
+     "meaning": "what",
+     "lessons": "9, 9"
+    },
+    {
+     "word": "方 (ほう)",
+     "meaning": "direction",
+     "lessons": "11, 12"
+    },
+    {
+     "word": "私 (わたし)",
+     "meaning": "i",
+     "lessons": "19, 136"
+    },
+    {
+     "word": "面 (つら)",
+     "meaning": "face",
+     "lessons": "119, 162"
+    }
+   ]
   },
   "lesson-word-rarer-homophone": {
    "area": "Words",
@@ -256,12 +409,17 @@
    "area": "Words",
    "title": "Single-kana words outside the lessons",
    "why": "A lone kana as a word is usually a wrong dictionary match (ト as \"note G\"). Check these aren't shown as cards.",
-   "count": 14,
+   "count": 15,
    "items": [
     {
      "word": "が",
-     "meaning": "indicates the subject of a sentence",
+     "meaning": "indicates sentence subject (occasionally object)",
      "id": "2028930"
+    },
+    {
+     "word": "や",
+     "meaning": "such things as ...",
+     "id": "2028960"
     },
     {
      "word": "で",
@@ -279,14 +437,14 @@
      "id": "2029100"
     },
     {
-     "word": "な",
-     "meaning": "don't",
-     "id": "2029110"
-    },
-    {
      "word": "さ",
      "meaning": "-ness",
      "id": "2029120"
+    },
+    {
+     "word": "ト",
+     "meaning": "7th in a sequence denoted by the iroha system",
+     "id": "2029780"
     },
     {
      "word": "お",
@@ -309,11 +467,6 @@
      "id": "2213460"
     },
     {
-     "word": "て",
-     "meaning": "and",
-     "id": "2654270"
-    },
-    {
      "word": "マ",
      "meaning": "for real",
      "id": "2837541"
@@ -324,9 +477,14 @@
      "id": "1058900"
     },
     {
-     "word": "ト",
-     "meaning": "7th in a sequence denoted by the iroha system",
-     "id": "2029780"
+     "word": "な",
+     "meaning": "don't",
+     "id": "2029110"
+    },
+    {
+     "word": "て",
+     "meaning": "and",
+     "id": "2654270"
     }
    ]
   },
@@ -348,10 +506,14 @@
    "area": "Kanji",
    "title": "Kanji with fewer than 2 example words",
    "why": "Each kanji should show a few words that use it.",
-   "count": 3,
+   "count": 4,
    "items": [
     {
      "kanji": "朕",
+     "words": 1
+    },
+    {
+     "kanji": "又",
      "words": 1
     },
     {
@@ -360,7 +522,7 @@
     },
     {
      "kanji": "塡",
-     "words": 1
+     "words": 0
     }
    ]
   },
@@ -396,11 +558,343 @@
    "area": "Kanji",
    "title": "On readings with no example word",
    "why": "Kun readings often have no word of their own, but an on reading with none can't be shown in use.",
-   "count": 294,
+   "count": 296,
    "items": [
+    {
+     "kanji": "左",
+     "reading": "シャ"
+    },
+    {
+     "kanji": "三",
+     "reading": "ゾウ"
+    },
+    {
+     "kanji": "立",
+     "reading": "リットル"
+    },
+    {
+     "kanji": "力",
+     "reading": "リイ"
+    },
+    {
+     "kanji": "夏",
+     "reading": "ガ"
+    },
+    {
+     "kanji": "画",
+     "reading": "エ"
+    },
+    {
+     "kanji": "画",
+     "reading": "カイ"
+    },
+    {
+     "kanji": "楽",
+     "reading": "ゴウ"
+    },
+    {
+     "kanji": "工",
+     "reading": "グ"
+    },
+    {
+     "kanji": "場",
+     "reading": "チョウ"
+    },
+    {
+     "kanji": "数",
+     "reading": "サク"
+    },
+    {
+     "kanji": "数",
+     "reading": "ソク"
+    },
+    {
+     "kanji": "数",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "西",
+     "reading": "ス"
+    },
+    {
+     "kanji": "米",
+     "reading": "メエトル"
+    },
+    {
+     "kanji": "野",
+     "reading": "ショ"
+    },
+    {
+     "kanji": "究",
+     "reading": "ク"
+    },
+    {
+     "kanji": "区",
+     "reading": "オウ"
+    },
+    {
+     "kanji": "区",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "実",
+     "reading": "シツ"
+    },
+    {
+     "kanji": "拾",
+     "reading": "ジュウ"
+    },
+    {
+     "kanji": "住",
+     "reading": "ヂュウ"
+    },
+    {
+     "kanji": "住",
+     "reading": "チュウ"
+    },
+    {
+     "kanji": "乗",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "世",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "打",
+     "reading": "ダース"
+    },
+    {
+     "kanji": "第",
+     "reading": "テイ"
+    },
+    {
+     "kanji": "丁",
+     "reading": "トウ"
+    },
+    {
+     "kanji": "登",
+     "reading": "ドウ"
+    },
+    {
+     "kanji": "登",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "登",
+     "reading": "チョウ"
+    },
+    {
+     "kanji": "面",
+     "reading": "ベン"
+    },
+    {
+     "kanji": "予",
+     "reading": "シャ"
+    },
+    {
+     "kanji": "様",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "和",
+     "reading": "カ"
+    },
+    {
+     "kanji": "茨",
+     "reading": "シ"
+    },
+    {
+     "kanji": "茨",
+     "reading": "ジ"
+    },
+    {
+     "kanji": "栄",
+     "reading": "ヨウ"
+    },
+    {
+     "kanji": "鏡",
+     "reading": "ケイ"
+    },
+    {
+     "kanji": "最",
+     "reading": "シュ"
+    },
+    {
+     "kanji": "埼",
+     "reading": "キ"
+    },
+    {
+     "kanji": "残",
+     "reading": "サン"
+    },
+    {
+     "kanji": "児",
+     "reading": "ゲイ"
+    },
+    {
+     "kanji": "続",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "続",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "奈",
+     "reading": "ナイ"
+    },
+    {
+     "kanji": "奈",
+     "reading": "ダイ"
+    },
+    {
+     "kanji": "阜",
+     "reading": "フウ"
+    },
+    {
+     "kanji": "法",
+     "reading": "フラン"
+    },
+    {
+     "kanji": "満",
+     "reading": "バン"
+    },
+    {
+     "kanji": "養",
+     "reading": "リョウ"
+    },
     {
      "kanji": "圧",
      "reading": "エン"
+    },
+    {
+     "kanji": "応",
+     "reading": "ヨウ"
+    },
+    {
+     "kanji": "価",
+     "reading": "ケ"
+    },
+    {
+     "kanji": "可",
+     "reading": "コク"
+    },
+    {
+     "kanji": "確",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "個",
+     "reading": "カ"
+    },
+    {
+     "kanji": "財",
+     "reading": "ゾク"
+    },
+    {
+     "kanji": "桜",
+     "reading": "ヨウ"
+    },
+    {
+     "kanji": "舎",
+     "reading": "セキ"
+    },
+    {
+     "kanji": "条",
+     "reading": "チョウ"
+    },
+    {
+     "kanji": "条",
+     "reading": "デキ"
+    },
+    {
+     "kanji": "接",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "独",
+     "reading": "トク"
+    },
+    {
+     "kanji": "弁",
+     "reading": "ヘン"
+    },
+    {
+     "kanji": "夢",
+     "reading": "ボウ"
+    },
+    {
+     "kanji": "率",
+     "reading": "シュツ"
+    },
+    {
+     "kanji": "拡",
+     "reading": "コウ"
+    },
+    {
+     "kanji": "后",
+     "reading": "ゴ"
+    },
+    {
+     "kanji": "孝",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "降",
+     "reading": "ゴ"
+    },
+    {
+     "kanji": "蚕",
+     "reading": "テン"
+    },
+    {
+     "kanji": "将",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "蒸",
+     "reading": "セイ"
+    },
+    {
+     "kanji": "創",
+     "reading": "ショウ"
+    },
+    {
+     "kanji": "操",
+     "reading": "サン"
+    },
+    {
+     "kanji": "窓",
+     "reading": "ス"
+    },
+    {
+     "kanji": "蔵",
+     "reading": "ソウ"
+    },
+    {
+     "kanji": "著",
+     "reading": "チャク"
+    },
+    {
+     "kanji": "庁",
+     "reading": "テイ"
+    },
+    {
+     "kanji": "届",
+     "reading": "カイ"
+    },
+    {
+     "kanji": "脳",
+     "reading": "ドウ"
+    },
+    {
+     "kanji": "並",
+     "reading": "ホウ"
+    },
+    {
+     "kanji": "乱",
+     "reading": "ロン"
     },
     {
      "kanji": "扱",
@@ -423,14 +917,6 @@
      "reading": "テ"
     },
     {
-     "kanji": "茨",
-     "reading": "シ"
-    },
-    {
-     "kanji": "茨",
-     "reading": "ジ"
-    },
-    {
      "kanji": "咽",
      "reading": "エン"
     },
@@ -447,16 +933,16 @@
      "reading": "ニ"
     },
     {
-     "kanji": "栄",
-     "reading": "ヨウ"
-    },
-    {
      "kanji": "怨",
      "reading": "ウン"
     },
     {
-     "kanji": "応",
-     "reading": "ヨウ"
+     "kanji": "旺",
+     "reading": "キョウ"
+    },
+    {
+     "kanji": "旺",
+     "reading": "ゴウ"
     },
     {
      "kanji": "臆",
@@ -467,23 +953,11 @@
      "reading": "エン"
     },
     {
-     "kanji": "価",
+     "kanji": "塊",
      "reading": "ケ"
     },
     {
-     "kanji": "可",
-     "reading": "コク"
-    },
-    {
-     "kanji": "夏",
-     "reading": "ガ"
-    },
-    {
-     "kanji": "画",
-     "reading": "カイ"
-    },
-    {
-     "kanji": "塊",
+     "kanji": "怪",
      "reading": "ケ"
     },
     {
@@ -511,20 +985,8 @@
      "reading": "カイ"
     },
     {
-     "kanji": "拡",
-     "reading": "コウ"
-    },
-    {
      "kanji": "殻",
      "reading": "バイ"
-    },
-    {
-     "kanji": "確",
-     "reading": "コウ"
-    },
-    {
-     "kanji": "楽",
-     "reading": "ゴウ"
     },
     {
      "kanji": "掛",
@@ -559,10 +1021,6 @@
      "reading": "ケン"
     },
     {
-     "kanji": "簡",
-     "reading": "ケン"
-    },
-    {
      "kanji": "亀",
      "reading": "キュウ"
     },
@@ -581,10 +1039,6 @@
     {
      "kanji": "詰",
      "reading": "キチ"
-    },
-    {
-     "kanji": "究",
-     "reading": "ク"
     },
     {
      "kanji": "窮",
@@ -611,10 +1065,6 @@
      "reading": "コウ"
     },
     {
-     "kanji": "鏡",
-     "reading": "ケイ"
-    },
-    {
      "kanji": "暁",
      "reading": "キョウ"
     },
@@ -625,14 +1075,6 @@
     {
      "kanji": "巾",
      "reading": "フク"
-    },
-    {
-     "kanji": "区",
-     "reading": "オウ"
-    },
-    {
-     "kanji": "区",
-     "reading": "コウ"
     },
     {
      "kanji": "串",
@@ -659,20 +1101,12 @@
      "reading": "ゲイ"
     },
     {
-     "kanji": "軽",
-     "reading": "キン"
-    },
-    {
      "kanji": "隙",
      "reading": "キャク"
     },
     {
      "kanji": "隙",
      "reading": "ケキ"
-    },
-    {
-     "kanji": "個",
-     "reading": "カ"
     },
     {
      "kanji": "乞",
@@ -691,36 +1125,12 @@
      "reading": "ク"
     },
     {
-     "kanji": "后",
-     "reading": "ゴ"
-    },
-    {
-     "kanji": "孝",
-     "reading": "キョウ"
-    },
-    {
-     "kanji": "工",
-     "reading": "グ"
-    },
-    {
-     "kanji": "降",
-     "reading": "ゴ"
-    },
-    {
      "kanji": "頃",
      "reading": "キョウ"
     },
     {
-     "kanji": "左",
-     "reading": "シャ"
-    },
-    {
      "kanji": "挫",
      "reading": "サ"
-    },
-    {
-     "kanji": "最",
-     "reading": "シュ"
     },
     {
      "kanji": "剤",
@@ -731,36 +1141,16 @@
      "reading": "セイ"
     },
     {
-     "kanji": "財",
-     "reading": "ゾク"
-    },
-    {
      "kanji": "咲",
      "reading": "ショウ"
-    },
-    {
-     "kanji": "埼",
-     "reading": "キ"
     },
     {
      "kanji": "柵",
      "reading": "サン"
     },
     {
-     "kanji": "桜",
-     "reading": "ヨウ"
-    },
-    {
-     "kanji": "三",
-     "reading": "ゾウ"
-    },
-    {
      "kanji": "桟",
      "reading": "セン"
-    },
-    {
-     "kanji": "蚕",
-     "reading": "テン"
     },
     {
      "kanji": "斬",
@@ -775,24 +1165,16 @@
      "reading": "ゼン"
     },
     {
-     "kanji": "残",
-     "reading": "サン"
+     "kanji": "侍",
+     "reading": "シ"
     },
     {
-     "kanji": "児",
-     "reading": "ゲイ"
+     "kanji": "叱",
+     "reading": "シチ"
     },
     {
      "kanji": "湿",
      "reading": "シュウ"
-    },
-    {
-     "kanji": "実",
-     "reading": "シツ"
-    },
-    {
-     "kanji": "舎",
-     "reading": "セキ"
     },
     {
      "kanji": "蛇",
@@ -823,10 +1205,6 @@
      "reading": "シュウ"
     },
     {
-     "kanji": "拾",
-     "reading": "ジュウ"
-    },
-    {
      "kanji": "蹴",
      "reading": "シュク"
     },
@@ -837,14 +1215,6 @@
     {
      "kanji": "酬",
      "reading": "トウ"
-    },
-    {
-     "kanji": "住",
-     "reading": "ヂュウ"
-    },
-    {
-     "kanji": "住",
-     "reading": "チュウ"
     },
     {
      "kanji": "渋",
@@ -859,26 +1229,6 @@
      "reading": "ソウ"
     },
     {
-     "kanji": "将",
-     "reading": "ソウ"
-    },
-    {
-     "kanji": "乗",
-     "reading": "ショウ"
-    },
-    {
-     "kanji": "場",
-     "reading": "チョウ"
-    },
-    {
-     "kanji": "条",
-     "reading": "チョウ"
-    },
-    {
-     "kanji": "条",
-     "reading": "デキ"
-    },
-    {
      "kanji": "浄",
      "reading": "セイ"
     },
@@ -887,24 +1237,8 @@
      "reading": "チョウ"
     },
     {
-     "kanji": "蒸",
-     "reading": "セイ"
-    },
-    {
      "kanji": "尽",
      "reading": "サン"
-    },
-    {
-     "kanji": "数",
-     "reading": "サク"
-    },
-    {
-     "kanji": "数",
-     "reading": "ソク"
-    },
-    {
-     "kanji": "数",
-     "reading": "シュ"
     },
     {
      "kanji": "枢",
@@ -912,11 +1246,11 @@
     },
     {
      "kanji": "裾",
-     "reading": "コ"
+     "reading": "キョ"
     },
     {
-     "kanji": "世",
-     "reading": "ソウ"
+     "kanji": "裾",
+     "reading": "コ"
     },
     {
      "kanji": "瀬",
@@ -947,7 +1281,7 @@
      "reading": "ソク"
     },
     {
-     "kanji": "接",
+     "kanji": "摂",
      "reading": "ショウ"
     },
     {
@@ -979,10 +1313,6 @@
      "reading": "ショ"
     },
     {
-     "kanji": "創",
-     "reading": "ショウ"
-    },
-    {
      "kanji": "捜",
      "reading": "シュ"
     },
@@ -993,10 +1323,6 @@
     {
      "kanji": "掃",
      "reading": "シュ"
-    },
-    {
-     "kanji": "操",
-     "reading": "サン"
     },
     {
      "kanji": "痩",
@@ -1011,32 +1337,8 @@
      "reading": "シュ"
     },
     {
-     "kanji": "窓",
-     "reading": "ス"
-    },
-    {
-     "kanji": "蔵",
-     "reading": "ソウ"
-    },
-    {
-     "kanji": "贈",
-     "reading": "ソウ"
-    },
-    {
      "kanji": "捉",
      "reading": "サク"
-    },
-    {
-     "kanji": "属",
-     "reading": "ショク"
-    },
-    {
-     "kanji": "続",
-     "reading": "コウ"
-    },
-    {
-     "kanji": "続",
-     "reading": "キョウ"
     },
     {
      "kanji": "汰",
@@ -1047,10 +1349,6 @@
      "reading": "タ"
     },
     {
-     "kanji": "打",
-     "reading": "ダース"
-    },
-    {
      "kanji": "滞",
      "reading": "テイ"
     },
@@ -1059,16 +1357,20 @@
      "reading": "ダイ"
     },
     {
-     "kanji": "第",
-     "reading": "テイ"
-    },
-    {
      "kanji": "滝",
      "reading": "ロウ"
     },
     {
      "kanji": "滝",
      "reading": "ソウ"
+    },
+    {
+     "kanji": "濁",
+     "reading": "ジョク"
+    },
+    {
+     "kanji": "但",
+     "reading": "タン"
     },
     {
      "kanji": "弾",
@@ -1095,18 +1397,6 @@
      "reading": "シュウ"
     },
     {
-     "kanji": "著",
-     "reading": "チャク"
-    },
-    {
-     "kanji": "丁",
-     "reading": "チ"
-    },
-    {
-     "kanji": "庁",
-     "reading": "テイ"
-    },
-    {
      "kanji": "聴",
      "reading": "テイ"
     },
@@ -1117,6 +1407,10 @@
     {
      "kanji": "椎",
      "reading": "スイ"
+    },
+    {
+     "kanji": "塚",
+     "reading": "チョウ"
     },
     {
      "kanji": "潰",
@@ -1151,24 +1445,16 @@
      "reading": "ニョウ"
     },
     {
+     "kanji": "貼",
+     "reading": "テン"
+    },
+    {
      "kanji": "妬",
      "reading": "ツ"
     },
     {
-     "kanji": "斗",
-     "reading": "トウ"
-    },
-    {
-     "kanji": "登",
+     "kanji": "藤",
      "reading": "ドウ"
-    },
-    {
-     "kanji": "登",
-     "reading": "ショウ"
-    },
-    {
-     "kanji": "登",
-     "reading": "チョウ"
     },
     {
      "kanji": "憧",
@@ -1183,28 +1469,12 @@
      "reading": "トウ"
     },
     {
-     "kanji": "独",
-     "reading": "トク"
-    },
-    {
      "kanji": "突",
      "reading": "カ"
     },
     {
-     "kanji": "届",
-     "reading": "カイ"
-    },
-    {
      "kanji": "頓",
      "reading": "トツ"
-    },
-    {
-     "kanji": "奈",
-     "reading": "ナイ"
-    },
-    {
-     "kanji": "奈",
-     "reading": "ダイ"
     },
     {
      "kanji": "那",
@@ -1231,28 +1501,20 @@
      "reading": "ジョウ"
     },
     {
-     "kanji": "脳",
-     "reading": "ドウ"
-    },
-    {
      "kanji": "覇",
      "reading": "ハク"
     },
     {
-     "kanji": "馬",
-     "reading": "ボ"
+     "kanji": "剥",
+     "reading": "ホク"
     },
     {
-     "kanji": "馬",
-     "reading": "モ"
+     "kanji": "箸",
+     "reading": "チョ"
     },
     {
      "kanji": "箸",
      "reading": "チャク"
-    },
-    {
-     "kanji": "八",
-     "reading": "ハツ"
     },
     {
      "kanji": "伐",
@@ -1299,16 +1561,8 @@
      "reading": "ホ"
     },
     {
-     "kanji": "阜",
-     "reading": "フウ"
-    },
-    {
      "kanji": "払",
      "reading": "ヒツ"
-    },
-    {
-     "kanji": "並",
-     "reading": "ホウ"
     },
     {
      "kanji": "蔽",
@@ -1317,18 +1571,6 @@
     {
      "kanji": "蔽",
      "reading": "フツ"
-    },
-    {
-     "kanji": "米",
-     "reading": "メエトル"
-    },
-    {
-     "kanji": "弁",
-     "reading": "ヘン"
-    },
-    {
-     "kanji": "法",
-     "reading": "フラン"
     },
     {
      "kanji": "帽",
@@ -1371,20 +1613,12 @@
      "reading": "ユウ"
     },
     {
-     "kanji": "満",
-     "reading": "バン"
-    },
-    {
      "kanji": "蜜",
      "reading": "ビツ"
     },
     {
      "kanji": "妙",
      "reading": "ビョウ"
-    },
-    {
-     "kanji": "夢",
-     "reading": "ボウ"
     },
     {
      "kanji": "矛",
@@ -1399,10 +1633,6 @@
      "reading": "ブ"
     },
     {
-     "kanji": "面",
-     "reading": "ベン"
-    },
-    {
      "kanji": "麺",
      "reading": "ベン"
     },
@@ -1413,14 +1643,6 @@
     {
      "kanji": "餅",
      "reading": "ヒョウ"
-    },
-    {
-     "kanji": "野",
-     "reading": "ショ"
-    },
-    {
-     "kanji": "輸",
-     "reading": "シュ"
     },
     {
      "kanji": "湧",
@@ -1435,36 +1657,8 @@
      "reading": "ユ"
     },
     {
-     "kanji": "予",
-     "reading": "シャ"
-    },
-    {
-     "kanji": "様",
-     "reading": "ショウ"
-    },
-    {
-     "kanji": "養",
-     "reading": "リョウ"
-    },
-    {
-     "kanji": "沃",
-     "reading": "ヨウ"
-    },
-    {
      "kanji": "沃",
      "reading": "オク"
-    },
-    {
-     "kanji": "乱",
-     "reading": "ロン"
-    },
-    {
-     "kanji": "率",
-     "reading": "シュツ"
-    },
-    {
-     "kanji": "立",
-     "reading": "リットル"
     },
     {
      "kanji": "竜",
@@ -1477,10 +1671,6 @@
     {
      "kanji": "虜",
      "reading": "ロ"
-    },
-    {
-     "kanji": "力",
-     "reading": "リイ"
     },
     {
      "kanji": "瑠",
@@ -1553,26 +1743,6 @@
     {
      "kanji": "頰",
      "reading": "キョウ"
-    },
-    {
-     "kanji": "𠮟",
-     "reading": "シツ"
-    },
-    {
-     "kanji": "𠮟",
-     "reading": "シチ"
-    },
-    {
-     "kanji": "𠮟",
-     "reading": "カ"
-    },
-    {
-     "kanji": "剝",
-     "reading": "ハク"
-    },
-    {
-     "kanji": "剝",
-     "reading": "ホク"
     }
    ]
   },
@@ -1657,13 +1827,19 @@
    "area": "Stories",
    "title": "Story text that may be jumbled",
    "why": "Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.",
-   "count": 1,
+   "count": 2,
    "items": [
     {
      "story": "北海道",
      "paragraph": 1,
      "unseen pairs": "59%",
      "text": "根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」"
+    },
+    {
+     "story": "日本の城",
+     "paragraph": 23,
+     "unseen pairs": "52%",
+     "text": "しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。"
     }
    ]
   },

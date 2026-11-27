@@ -2,28 +2,28 @@
 
 Written by `scripts/check_content.py` after every data build. Each section is one kind of problem, with up to 25 examples; `content-check.json` next to this file has every item.
 
-Checked: 21,936 words, 2,136 kanji, 372 radicals, 44,275 sentences, 116 stories, 237 grammar points.
+Checked: 22,892 words, 2,136 kanji, 372 radicals, 51,947 sentences, 116 stories, 237 grammar points.
 
 | Area | Problem | Count |
 |---|---|---:|
 | Words | [Lesson words with no dictionary entry](#lesson-word-missing) | 0 |
 | Words | [Words with no meaning](#word-no-meaning) | 0 |
-| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 30 |
+| Words | [Lesson words with no example sentence](#lesson-word-no-sentence) | 48 |
 | Words | [Words pointing at sentences that don't exist](#word-sentence-missing) | 0 |
-| Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 0 |
+| Words | [Lesson words whose first meaning is hard to use](#lesson-word-weak-meaning) | 3 |
 | Words | [Lesson words whose furigana doesn't spell the word](#lesson-word-furigana) | 0 |
-| Words | [The same word taught twice](#lesson-word-duplicate) | 0 |
+| Words | [The same word taught twice](#lesson-word-duplicate) | 5 |
 | Words | [Lesson words that may be the wrong dictionary entry](#lesson-word-rarer-homophone) | 0 |
 | Words | [Junk words still in a lesson](#lesson-word-junk) | 0 |
-| Words | [Single-kana words outside the lessons](#word-lone-kana) | 14 |
+| Words | [Single-kana words outside the lessons](#word-lone-kana) | 15 |
 | Kanji | [Kanji with no meaning](#kanji-no-meaning) | 0 |
 | Kanji | [Kanji with no reading](#kanji-no-reading) | 0 |
-| Kanji | [Kanji with fewer than 2 example words](#kanji-no-words) | 3 |
+| Kanji | [Kanji with fewer than 2 example words](#kanji-no-words) | 4 |
 | Kanji | [Kanji pointing at words that don't exist](#kanji-word-missing) | 0 |
 | Kanji | [Kanji with no stroke order](#kanji-no-strokes) | 0 |
 | Kanji | [Kanji in no lesson](#kanji-not-taught) | 0 |
 | Kanji | [Lessons listing kanji that don't exist](#lesson-kanji-missing) | 0 |
-| Kanji | [On readings with no example word](#kanji-reading-no-word) | 294 |
+| Kanji | [On readings with no example word](#kanji-reading-no-word) | 296 |
 | Radicals | [Radicals without exactly one name](#radical-name) | 0 |
 | Radicals | [Radicals no kanji uses](#radical-unused) | 0 |
 | Radicals | [Radicals pointing at kanji that don't exist](#radical-used-in-missing) | 0 |
@@ -35,7 +35,7 @@ Checked: 21,936 words, 2,136 kanji, 372 radicals, 44,275 sentences, 116 stories,
 | Stories | [Story text with damaged characters](#story-odd-characters) | 0 |
 | Stories | [Story words with no dictionary entry](#story-word-missing) | 0 |
 | Stories | [Story files with broken links](#story-links) | 0 |
-| Stories | [Story text that may be jumbled](#story-jumbled) | 1 |
+| Stories | [Story text that may be jumbled](#story-jumbled) | 2 |
 | Stories | [Stories with ○○○ blanks](#story-blanks) | 5 |
 | Grammar | [Grammar points with no example](#grammar-no-examples) | 0 |
 | Grammar | [Grammar examples with no {marked} part](#grammar-gap) | 0 |
@@ -55,36 +55,36 @@ No sense has an English gloss, so the card has nothing to ask for.
 None. 🎉
 
 <a id="lesson-word-no-sentence"></a>
-## Words: Lesson words with no example sentence (30)
+## Words: Lesson words with no example sentence (48)
 
 Taught words should have at least one example sentence. Tatoeba, Wiktionary and JESC had none for these.
 
-- 18 · 元首 (げんしゅ) · sovereign · 1260870
-- 24 · 字 (あざ) · section of village · 1315120
-- 39 · 面 (おもて) · face · 1584680
-- 59 · 背 (せい) · height · 1472650
-- 63 · 抱く (だく) · to hold in one's arms (e.g. a baby) · 2844997
-- 73 · かるた · karuta · 1590710
-- 75 · 蔵相 (ぞうしょう) · Minister of Finance · 1403520
-- 75 · タイア · tire · 1076120
-- 76 · 管 (くだ) · pipe · 2868440
+- 16 · 了 (りょう) · finish · 1553290
+- 52 · 副 (ふく) · assistant · 1500330
+- 58 · 零 (れい) · zero · 1557630
+- 75 · かるた · karuta · 1590710
 - 88 · 酪農 (らくのう) · dairy farming · 1548890
-- 91 · まごまご · confused · 1012110
-- 99 · 殿 (どの) · Mr. · 1442500
-- 103 · レクリェーション · recreation · 1144860
-- 106 · 蒸す (むす) · to steam (food, towel, etc.) · 1356900
-- 107 · あぶる · to warm (e.g. one's hands over a fire) · 1568910
+- 89 · 升 (ます) · measuring container · 1346290
+- 93 · まごまご · confused · 1012110
+- 104 · 糾合 (きゅうごう) · rally · 1230170
+- 104 · レクリェーション · recreation · 1144860
+- 109 · あぶる · to warm (e.g. one's hands over a fire) · 1568910
+- 109 · タイア · tire · 1075840
+- 115 · 犠打 (ぎだ) · sacrifice fly · 1225470
+- 116 · 朱 (あけ) · scarlet · 1328470
+- 120 · 嫡出 (ちゃくしゅつ) · legitimate birth · 1656930
+- 138 · 俊足 (しゅんそく) · swiftness of foot · 1340940
 - 143 · 感慨 (かんがい) · deep emotion · 1212310
-- 146 · 柄 (え) · handle · 1508290
-- 148 · ティッシュペーパー · tissue paper · 1079110
-- 148 · えい · ray (any fish of superorder Batoidea) · 1001130
-- 149 · ぼやく · to grumble · 1011850
-- 150 · 罰 (ばち) · (divine) punishment · 1478050
-- 150 · ずらっと · in a line · 1006430
-- 151 · ビールス · virus · 2843940
-- 151 · ふんだん · plentiful · 1011100
-- 151 · ぼつぼつ · gradually · 1011840
-- …and 5 more
+- 145 · 隆盛 (りゅうせい) · prosperity · 1552940
+- 145 · 漸減 (ぜんげん) · gradual decrease · 1394640
+- 146 · 丙 (へい) · third rank · 1583850
+- 150 · ティッシュペーパー · tissue paper · 1079110
+- 151 · えい · ray (any fish of superorder Batoidea) · 1001130
+- 152 · ぼやく · to grumble · 1011850
+- 153 · 租税 (そぜい) · taxes · 1396900
+- 153 · ずらっと · in a line · 1006430
+- 153 · ビールス · virus · 2843940
+- …and 23 more
 
 <a id="word-sentence-missing"></a>
 ## Words: Words pointing at sentences that don't exist (0)
@@ -94,11 +94,13 @@ The word lists a sentence id that sentences.json doesn't have.
 None. 🎉
 
 <a id="lesson-word-weak-meaning"></a>
-## Words: Lesson words whose first meaning is hard to use (0)
+## Words: Lesson words whose first meaning is hard to use (3)
 
 The first meaning is what the card asks for. These are a cross-reference, contain markup, or run over 60 characters.
 
-None. 🎉
+- 127 · お土産 (おみやげ) · local specialty or souvenir bought as a gift while travelling · very long
+- 141 · 土産 (みやげ) · local specialty or souvenir bought as a gift while travelling · very long
+- 164 · 領収書 (りょうしゅうしょ) · simplified receipt with a blank line to be filled out with the customer's name · very long
 
 <a id="lesson-word-furigana"></a>
 ## Words: Lesson words whose furigana doesn't spell the word (0)
@@ -108,11 +110,15 @@ The furigana pieces put together should give back the word exactly.
 None. 🎉
 
 <a id="lesson-word-duplicate"></a>
-## Words: The same word taught twice (0)
+## Words: The same word taught twice (5)
 
 Two lesson words share the spelling and the first meaning, so they'd be two cards for one thing.
 
-None. 🎉
+- 年 (とし) · year · 1, 4
+- 何 (なに) · what · 9, 9
+- 方 (ほう) · direction · 11, 12
+- 私 (わたし) · i · 19, 136
+- 面 (つら) · face · 119, 162
 
 <a id="lesson-word-rarer-homophone"></a>
 ## Words: Lesson words that may be the wrong dictionary entry (0)
@@ -129,24 +135,25 @@ Words marked junk (a wrong dictionary match) shouldn't be taught.
 None. 🎉
 
 <a id="word-lone-kana"></a>
-## Words: Single-kana words outside the lessons (14)
+## Words: Single-kana words outside the lessons (15)
 
 A lone kana as a word is usually a wrong dictionary match (ト as "note G"). Check these aren't shown as cards.
 
-- が · indicates the subject of a sentence · 2028930
+- が · indicates sentence subject (occasionally object) · 2028930
+- や · such things as ... · 2028960
 - で · at · 2028980
 - ね · right? · 2029080
 - わ · indicates emotion or admiration · 2029100
-- な · don't · 2029110
 - さ · -ness · 2029120
+- ト · 7th in a sequence denoted by the iroha system · 2029780
 - お · oh! (expression of slight surprise) · 2089690
 - え · eh? · 2122310
 - ん · yes · 2139720
 - べ · word used at sentence-end (like a particle) to indicate speculation, volition or invitation · 2213460
-- て · and · 2654270
 - マ · for real · 2837541
 - ザ · the · 1058900
-- ト · 7th in a sequence denoted by the iroha system · 2029780
+- な · don't · 2029110
+- て · and · 2654270
 
 <a id="kanji-no-meaning"></a>
 ## Kanji: Kanji with no meaning (0)
@@ -163,13 +170,14 @@ No on or kun reading to teach.
 None. 🎉
 
 <a id="kanji-no-words"></a>
-## Kanji: Kanji with fewer than 2 example words (3)
+## Kanji: Kanji with fewer than 2 example words (4)
 
 Each kanji should show a few words that use it.
 
 - 朕 · 1
+- 又 · 1
 - 憬 · 1
-- 塡 · 1
+- 塡 · 0
 
 <a id="kanji-word-missing"></a>
 ## Kanji: Kanji pointing at words that don't exist (0)
@@ -200,36 +208,36 @@ The lesson can't show these.
 None. 🎉
 
 <a id="kanji-reading-no-word"></a>
-## Kanji: On readings with no example word (294)
+## Kanji: On readings with no example word (296)
 
 Kun readings often have no word of their own, but an on reading with none can't be shown in use.
 
-- 圧 · エン
-- 扱 · ソウ
-- 扱 · キュウ
-- 闇 · オン
-- 壱 · イツ
-- 稲 · テ
-- 茨 · シ
-- 茨 · ジ
-- 咽 · エン
-- 臼 · グ
-- 唄 · バイ
-- 餌 · ニ
-- 栄 · ヨウ
-- 怨 · ウン
-- 応 · ヨウ
-- 臆 · ヨク
-- 俺 · エン
-- 価 · ケ
-- 可 · コク
+- 左 · シャ
+- 三 · ゾウ
+- 立 · リットル
+- 力 · リイ
 - 夏 · ガ
+- 画 · エ
 - 画 · カイ
-- 塊 · ケ
-- 懐 · エ
-- 崖 · ゲ
-- 崖 · ギ
-- …and 269 more
+- 楽 · ゴウ
+- 工 · グ
+- 場 · チョウ
+- 数 · サク
+- 数 · ソク
+- 数 · シュ
+- 西 · ス
+- 米 · メエトル
+- 野 · ショ
+- 究 · ク
+- 区 · オウ
+- 区 · コウ
+- 実 · シツ
+- 拾 · ジュウ
+- 住 · ヂュウ
+- 住 · チュウ
+- 乗 · ショウ
+- 世 · ソウ
+- …and 271 more
 
 <a id="radical-name"></a>
 ## Radicals: Radicals without exactly one name (0)
@@ -309,11 +317,12 @@ None. 🎉
 None. 🎉
 
 <a id="story-jumbled"></a>
-## Stories: Story text that may be jumbled (1)
+## Stories: Story text that may be jumbled (2)
 
 Half or more of the character pairs never appear in real Japanese. Usually side notes, picture labels or furigana read in the wrong order; place-name lists also land here.
 
 - 北海道 · 1 · 59% · 根室県札幌県根室札幌函館県函館実は、昔北海道は「札幌県」
+- 日本の城 · 23 · 52% · しゅりじょう首里城沖縄県正殿守礼門首里城は赤い城です。
 
 <a id="story-blanks"></a>
 ## Stories: Stories with ○○○ blanks (5)
