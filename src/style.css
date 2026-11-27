@@ -27,6 +27,7 @@
   /* Wood and moss for the plaques, leaf and bar */
   --moss: #557f2f;
   --moss-deep: #3d5f22;
+  --bar: #3d5f22; /* the bottom bar, the same on every screen */
   --wood: #d2ab7c;
   --wood-dark: #a57d55;
   --wood-ink: #3a2a1c;
@@ -66,6 +67,7 @@
     --again: #e0785e;
     --moss: #7fa850;
     --moss-deep: #4d6e30;
+    --bar: #2f4520;
     --wood: #b8916a;
     --wood-dark: #8a6a4a;
     --wood-ink: #2a1d12;
@@ -3582,9 +3584,9 @@ body.no-scroll {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  /* No border and no separate strip: the bar is the page's own colour, fading in above it so lists scroll softly
-     under it. On Home it turns into the nearest hill of the scene (below). */
-  background: var(--bg);
+  /* One colour on every screen, every season and time of day, with a flat top edge (Lucas 2026-11-26: "make the
+     color the same and the shape flat line"). */
+  background: var(--bar);
   /* As low as it can go while every button stays clear of the iPhone's home line. The line covers the bottom 13px
      (5px tall, 8px up from the edge, on every iPhone with a 34px home strip), so the buttons end 6px above it, at
      19px: a finger on a button's bottom edge never lands on the line. Lower than this and they overlap (they did at
@@ -3592,17 +3594,13 @@ body.no-scroll {
   padding: 6px 6px max(6px, calc(env(safe-area-inset-bottom) - 15px));
   /* Paints the bar's colour on down past its end, so no empty strip can ever show under it, even when an iPhone
      reports the screen a little shorter than it is. */
-  box-shadow: 0 200px 0 0 var(--bg);
+  box-shadow: 0 200px 0 0 var(--bar);
 }
-.tabbar::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -16px;
-  height: 16px;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--bg));
+.tabbar a:not(.on) {
+  color: rgb(243 238 221 / 0.72);
+}
+.tabbar a.home:not(.on) .kj {
+  color: #f3eedd;
 }
 /* The clock and battery sit over the page (index.html), so a strip of page colour keeps text from scrolling under them. */
 #app::before {
@@ -3619,30 +3617,13 @@ body.no-scroll {
 #app:has(.home-page)::before {
   display: none;
 }
-/* Home: the bar is a hill in front of the scene, with a wavy top edge, and the scene runs to every edge. */
-#app:has(.home-page) .tabbar {
-  background: var(--ground-front, var(--moss-deep));
-  box-shadow: 0 200px 0 0 var(--ground-front, var(--moss-deep));
-}
-/* Behind everything on Home: the hill's colour (anything past the bottom edge), never a plain page strip. */
+/* Home: the scene runs to every edge. */
+/* Behind everything on Home: the bar's colour (anything past the bottom edge), never a plain page strip. */
 html:has(.home-page) {
-  background: var(--ground-front, var(--moss-deep));
+  background: var(--bar);
 }
 body:has(.home-page) {
   background: transparent;
-}
-#app:has(.home-page) .tabbar::before {
-  top: -13px;
-  height: 14px;
-  background: inherit;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 14' preserveAspectRatio='none'%3E%3Cpath d='M0 14V8C60 1 125 2 190 7S320 13 400 3V14Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 14' preserveAspectRatio='none'%3E%3Cpath d='M0 14V8C60 1 125 2 190 7S320 13 400 3V14Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
-}
-#app:has(.home-page) .tabbar a:not(.on) {
-  color: rgb(243 238 221 / 0.72);
-}
-#app:has(.home-page) .tabbar a.home:not(.on) .kj {
-  color: #f3eedd;
 }
 #app:has(.home-page) .dock-actions {
   background: transparent;

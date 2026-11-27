@@ -52,7 +52,8 @@ describe("bottom bar", () => {
     const bar = barTools(DEFAULT_SETTINGS);
     expect(bar.map((t) => t.tab)).toEqual(["lessons", "review", "home", "search", "write"]);
     expect(DEFAULT_TABS).toEqual(["lessons", "review", "search", "write"]);
-    expect(activeTab(bar, "settings")).toBe("home");
+    expect(activeTab(bar, "settings")).toBe("");
+    expect(activeTab(bar, "home")).toBe("home");
     expect(activeTab(bar, "lesson")).toBe("lessons");
     // Anything that isn't a tool is filled from the defaults; the old three-pick save is ignored.
     const mine = barTools({ ...DEFAULT_SETTINGS, tabs: ["read"], bar: ["grammar", "progress", "nope", "kana"] });

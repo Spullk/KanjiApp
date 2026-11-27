@@ -77,9 +77,10 @@ export function rackTools(settings: Settings): Tool[] {
   return [PROGRESS, ...RACK_ORDER.map((t) => TOOLS.find((x) => x.tab === t)!).filter((t) => !bar.includes(t))];
 }
 
-/** Which bar tab lights up on a page: the tool on the bar that has it, else Home. */
+/** Which bar tab lights up on a page: the tool on the bar that has it, else none (Lucas 2026-11-26: on a page
+ * that isn't on the bar, like Progress, nothing on the bar is selected). */
 export function activeTab(bar: Tool[], page: Route["page"]): string {
-  return bar.find((t) => t.pages.includes(page))?.tab ?? "home";
+  return bar.find((t) => t.pages.includes(page))?.tab ?? "";
 }
 
 /** Puts `items` in the order of `order`, with anything it doesn't list after, in their own order. */
