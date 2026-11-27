@@ -42,6 +42,8 @@ MIN_FORMS = 100_000
 JLPT_URL = "https://raw.githubusercontent.com/davidluzgouveia/kanji-data/master/kanji.json"
 # JLPT levels for words (Jonathan Waller's lists, CC BY, as packaged by OpenJLPT, CC BY-SA 4.0), for kana words.
 OPENJLPT = "openjlpt==0.1.0"
+# How often words are used, from subtitles, Wikipedia, news, books, the web and social media (CC BY-SA 4.0).
+WORDFREQ = "wordfreq==3.1.1"
 KANJIALIVE_URL = "https://raw.githubusercontent.com/kanjialive/kanji-data-media/master/language-data/ka_data.csv"
 ACCENTS_URL = "https://raw.githubusercontent.com/mifunetoshiro/kanjium/master/data/source_files/raw/accents.txt"
 KANJIVG_URL = "https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/{}.svg"
@@ -135,6 +137,18 @@ def fetch_word_levels():
             for name in whl.namelist():
                 if re.fullmatch(r"openjlpt/data/csv/vocab-n\d\.csv", name):
                     (out / Path(name).name).write_bytes(whl.read(name))
+
+
+def fetch_word_frequencies():
+    """sources/wordfreq/large_ja.msgpack.gz: wordfreq's Japanese word list (read by scripts/word_freq.py)."""
+    out = SOURCES / "wordfreq" / "large_ja.msgpack.gz"
+    if out.exists():
+        return
+    out.parent.mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory() as tmp:
+        subprocess.run([sys.executable, "-m", "pip", "download", "--no-deps", "-d", tmp, "-q", WORDFREQ], check=True)
+        with zipfile.ZipFile(next(Path(tmp).glob("wordfreq-*.whl"))) as whl:
+            out.write_bytes(whl.read("wordfreq/data/large_ja.msgpack.gz"))
 
 
 def fetch_kanjivg(db):
@@ -246,6 +260,8 @@ def main():
     print("JLPT levels: ok")
     fetch_word_levels()
     print("JLPT word levels: ok")
+    fetch_word_frequencies()
+    print("Word frequencies: ok")
     download(KANJIALIVE_URL, SOURCES / "ka_data.csv")
     print("Kanji alive audio list: ok")
     download(ACCENTS_URL, SOURCES / "accents.txt")

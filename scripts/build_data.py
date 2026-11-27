@@ -19,6 +19,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from component_names import RADICAL_NAMES
+from word_freq import commonness, load_wordfreq
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ROOT / "sources"
@@ -29,8 +30,8 @@ LESSON_SIZE = 10
 MAX_RELATED = 3            # related kanji pulled into a lesson per seed kanji
 WORDS_PER_KANJI = 15       # words listed on a kanji's page
 WORDS_PER_READING = 3      # guaranteed words for each reading that has any
-STUDY_WORDS_PER_KANJI = 3  # words added to the review queue per kanji
-STUDY_MAX_RANK = 25        # only fairly common words go into reviews (see priority_rank)
+LESSON_WORDS = 6000        # words with kanji the lessons teach, the most common ones (Lucas, 2026-11-27)
+MAX_LESSON_WORDS = 40      # more than this in one lesson and the least common wait for the next
 MIN_WORDS_PER_KANJI = 3    # rare kanji get uncommon words up to this many, so their page isn't empty
 RARE_RANK = 99             # rank of words with no frequency tag at all (marked "rare")
 SENTENCES_PER_WORD = 3
@@ -611,28 +612,6 @@ def jlpt_word_forms():
     return forms
 
 
-def drop_unused_lesson_words(words, lesson_out, study_words):
-    """A lesson word no sentence anywhere uses (本木 "original stock", 二百十日) is too rare to teach early, or at
-    all: it leaves the lessons, unless it's on the JLPT lists. Its kanji's page still lists it."""
-    if not any(w.get("sentences") for w in words.values()):
-        print("Unused lesson words: kept (no sentences loaded)")
-        return
-    jlpt = jlpt_word_forms()
-    dropped = []
-    for lesson in lesson_out:
-        keep = []
-        for wid in lesson["words"]:
-            w = words[wid]
-            if w.get("sentences") or w["w"] in jlpt or w.get("kanjiForm") in jlpt:
-                keep.append(wid)
-            else:
-                del w["lesson"]
-                study_words.discard(wid)
-                dropped.append(w["w"])
-        lesson["words"] = keep
-    print(f"Lesson words no sentence uses, taken out of the lessons: {len(dropped)}, e.g. " + ", ".join(dropped[:30]))
-
-
 # Kana words whose JLPT list entry means more than one thing, where learners mean this one first: the list has
 # ソース as "source; sauce", but the word people meet is the sauce.
 KANA_MEANT = {"ソース": "sauce"}
@@ -823,6 +802,125 @@ def load_strokes(joyo):
 
 # ---------------------------------------------------------------- ordering
 
+def tatoeba_counts(words):
+    """→ ({word id: how many times Tatoeba's sentences use it}, how many words its index holds), from the same
+    word index load_sentences reads, which files every form of a word under its dictionary form."""
+    path = SOURCES / "tatoeba" / "jpn_indices.tar.bz2"
+    if not path.exists():
+        return {}, 0
+    by_form = defaultdict(list)
+    for wid, w in words.items():
+        by_form[w["w"]].append(wid)
+        if w.get("kanjiForm") and w["kanjiForm"] != w["w"]:
+            by_form[w["kanjiForm"]].append(wid)
+    counts, total = defaultdict(int), 0
+    with tarfile.open(path) as tar:
+        member = next(m for m in tar.getmembers() if m.isfile())
+        for line in tar.extractfile(member).read().decode("utf-8").splitlines():
+            cols = line.split("\t")
+            if len(cols) < 3:
+                continue
+            for tok in cols[2].split():
+                m = B_TOKEN.match(tok)
+                if not m:
+                    continue
+                total += 1
+                for wid in by_form.get(m["head"], ()):
+                    if not m["read"] or hira(m["read"]) == hira(words[wid]["r"]):
+                        counts[wid] += 1
+    return counts, total
+
+
+def reading_tags(con, words):
+    """{word id: JMdict's priority tags (ichi1, news1, nf05…) on the word's reading}."""
+    want = defaultdict(dict)
+    for wid, w in words.items():
+        want[int(wid)][w["r"]] = wid
+    tags = defaultdict(set)
+    kid_of = {}
+    for kid, idseq, text in con.execute("SELECT ID, idseq, text FROM Kana"):
+        wid = want.get(idseq, {}).get(text)
+        if wid:
+            kid_of[kid] = wid
+    for kid, t in con.execute("SELECT kid, text FROM KNP"):
+        if kid in kid_of:
+            tags[kid_of[kid]].add(t)
+    return tags
+
+
+# Words whose every meaning JMdict marks as one of these aren't taught (Lucas: rare words come later, but
+# obsolete ones don't come at all).
+OLD_MISC = {"archaism", "obsolete term", "dated term"}
+
+
+def old_entries(con):
+    """JMdict entries (as word ids) whose every English meaning is archaic, obsolete or dated."""
+    misc = defaultdict(set)
+    for sid, t in con.execute("SELECT sid, text FROM misc"):
+        misc[sid].add(t)
+    english = {sid for (sid,) in con.execute("SELECT DISTINCT sid FROM SenseGloss WHERE lang = 'eng'")}
+    senses = defaultdict(list)
+    for sid, idseq in con.execute("SELECT ID, idseq FROM Sense"):
+        if sid in english:
+            senses[idseq].append(sid)
+    return {str(idseq) for idseq, sids in senses.items() if all(misc[sid] & OLD_MISC for sid in sids)}
+
+
+def pick_lesson_words(words, joyo, lesson_of, score, old):
+    """→ {word id: lesson index}: the LESSON_WORDS most common words written with Jōyō kanji, each in the later of
+    its kanji's lesson and the lesson that matches how common it is, so rare words wait until you know more
+    (Lucas, 2026-11-26). Every kanji also gets its most common word in its own lesson, so no kanji is learned
+    without a word that uses it."""
+    joyo_set = set(joyo)
+
+    def teachable(wid, w):
+        kanji = [c for c in w["w"] if is_kanji(c) and c != "々"]
+        pos = {p for s in w["senses"][:1] for p in s["pos"]}
+        return (kanji and all(c in joyo_set for c in kanji) and len(w["w"]) <= 5 and w["senses"]
+                and not w.get("rare") and not w["usuallyKana"] and wid not in old
+                and not (pos and pos <= set(GRAMMAR_POS)))
+
+    def kanji_lesson(w):
+        return max(lesson_of[c] for c in w["w"] if c in lesson_of)
+
+    best = sorted((wid for wid, w in words.items() if teachable(wid, w)), key=lambda wid: (-score[wid], int(wid)))
+    anchors = set()
+    for k in joyo:
+        own = [wid for wid in best if k in words[wid]["w"]]
+        # Its most common word that needs no kanji from a later lesson, else its most common word.
+        first = next((wid for wid in own if kanji_lesson(words[wid]) == lesson_of[k]), own[0] if own else None)
+        if first:
+            anchors.add(first)
+    chosen = set(anchors)
+    for wid in best:
+        if len(chosen) >= LESSON_WORDS:
+            break
+        chosen.add(wid)
+    ordered = [wid for wid in best if wid in chosen]
+    lessons = len(set(lesson_of.values()))
+    out = {}
+    for pos, wid in enumerate(ordered):
+        own = kanji_lesson(words[wid])
+        out[wid] = own if wid in anchors else max(own, pos * lessons // len(ordered))
+    # A kanji with many common words (的: 目的, 具体的, 積極的…) would bring them all at once; past
+    # MAX_LESSON_WORDS the least common ones move on to the next lesson.
+    by_lesson = defaultdict(list)
+    for wid in ordered:
+        by_lesson[out[wid]].append(wid)
+    carry = []
+    for lesson in range(lessons):
+        here = carry + by_lesson[lesson]
+        here.sort(key=lambda wid: (wid not in anchors, -score[wid], int(wid)))
+        keep, carry = here[:MAX_LESSON_WORDS], here[MAX_LESSON_WORDS:]
+        keep += [wid for wid in carry if wid in anchors]
+        carry = [wid for wid in carry if wid not in anchors]
+        for wid in keep:
+            out[wid] = lesson
+    for wid in carry:  # past the last lesson: they stay in it
+        out[wid] = lessons - 1
+    return out
+
+
 def build_lessons(joyo, kanji, parts):
     joyo_set = set(joyo)
     level_rank = {5: 0, 4: 1, 3: 2, 2: 3, 1: 4}
@@ -984,6 +1082,15 @@ def main():
         kanji[k]["specialWords"] = [w for w in groups.get("*", []) if w in chosen_set]
         kanji[k]["words"] = sorted(chosen, key=order_key)
         keep |= chosen_set
+    # Lessons, and the words they teach: picked from every word, not just the ones on kanji pages.
+    lessons = build_lessons(joyo, kanji, parts)
+    lesson_of = {k: i for i, ks in enumerate(lessons) for k in ks}
+    counts, tokens = tatoeba_counts(words)
+    score = commonness(words, load_wordfreq(), counts, tokens, reading_tags(con, words))
+    picks = pick_lesson_words(words, joyo, lesson_of, score, old_entries(con))
+    keep |= picks.keys()
+    print(f"Lesson words by how common they are: {len(picks)} (wordfreq + "
+          + (f"{tokens} Tatoeba words)" if tokens else "no sentences, so JMdict bands)"))
     story_ids = story_word_ids()
     # Words already shipped stay, since someone may be studying them: from the dictionary if it still has them,
     # otherwise as they were.
@@ -1003,16 +1110,7 @@ def main():
         for r in kanji[k]["readings"]:
             del r["count"]
 
-    # Lessons
-    lessons = build_lessons(joyo, kanji, parts)
-    lesson_of = {k: i for i, ks in enumerate(lessons) for k in ks}
-
-    def studyable(w):
-        return (w["rank"] <= STUDY_MAX_RANK and len(w["w"]) <= 4 and not w["usuallyKana"]
-                and all(c in joyo_set for c in w["w"] if is_kanji(c) and c != "々"))
-
     seen_radicals = set()
-    study_words = set()
     lesson_out = []
     for i, ks in enumerate(lessons):
         rads = []
@@ -1026,19 +1124,10 @@ def main():
         lesson_out.append({"id": i + 1, "radicals": rads, "kanji": ks, "words": []})
     for k in joyo:
         kanji[k]["lesson"] = lesson_of[k] + 1
-        # Review vocab: the most common everyday word for each of the kanji's main readings.
-        picked = []
-        for r in kanji[k]["readings"]:
-            fit = [w for w in r["words"] if studyable(words[w]) and w not in picked]
-            picked += fit[:1]
-            if len(picked) >= STUDY_WORDS_PER_KANJI:
-                break
-        study_words |= set(picked)
-    for wid in sorted(study_words, key=order_key):
-        w = words[wid]
-        lesson = max(lesson_of[c] for c in w["w"] if c in lesson_of)
-        w["lesson"] = lesson + 1
-        lesson_out[lesson]["words"].append(wid)
+    # Most common first within a lesson too.
+    for wid in sorted(picks, key=lambda wid: (-score[wid], int(wid))):
+        words[wid]["lesson"] = picks[wid] + 1
+        lesson_out[picks[wid]]["words"].append(wid)
     add_kana_words(con, words, kanji, lessons, lesson_out)
     mark_retired_kana_words(words, shipped, lesson_out)
     for el, r in radicals.items():
@@ -1066,7 +1155,6 @@ def main():
                   lambda wid: SENTENCES_PER_LESSON_WORD if words[wid].get("lesson") else SENTENCES_PER_WORD)
     import relink_sentences  # every word in every sentence, not just the ones the sources linked
     relink_sentences.main(con, words, sentences)
-    drop_unused_lesson_words(words, lesson_out, study_words)
     mark_main_meanings(words)
     audio_words = load_word_audio(words)
     commons_words = load_commons_audio(words)
@@ -1079,7 +1167,7 @@ def main():
     OUT.mkdir(exist_ok=True)
     meta = {
         "counts": {"kanji": len(kanji), "radicals": len(radicals), "words": len(words),
-                   "studyWords": len(study_words), "sentences": len(sentences), "lessons": len(lesson_out),
+                   "studyWords": len(picks), "sentences": len(sentences), "lessons": len(lesson_out),
                    "wordAudio": audio_words, "commonsAudio": commons_words, "sentenceAudio": audio_sentences},
         "sources": {
             "JMdict / KANJIDIC2": "Electronic Dictionary Research and Development Group, CC BY-SA 4.0",
@@ -1089,6 +1177,7 @@ def main():
             "Example sentences": "Tatoeba Project, CC BY 2.0 FR; recordings by the named Tatoeba speakers; "
                                  "Wiktionary usage examples via kaikki.org, CC BY-SA 4.0; "
                                  "film and TV subtitles from JESC (Pryzant et al., Stanford), CC BY-SA 4.0",
+            "Word order": "wordfreq by Robyn Speer, CC BY-SA 4.0, with Tatoeba sentence counts",
             "Word audio": "Kanji alive, CC BY 4.0; volunteers on Wikimedia Commons and Lingua Libre (each "
                           "recording's author and licence are listed with it)",
             "Stories": "Aozora Bunko (public domain); Tadoku free readers by NPO多言語多読, CC BY-NC-ND 4.0",
