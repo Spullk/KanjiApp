@@ -598,18 +598,28 @@ def mark_retired_kana_words(words, shipped, lesson_out):
           + ", ".join(words[wid]["w"] for wid in retired[:20]))
 
 
-def jlpt_word_forms():
-    """Every spelling on the JLPT word lists: "いい/よい" and "あげる (=やる)" give いい, よい and あげる."""
+def jlpt_word_levels():
+    """{(spelling, reading in hiragana): JLPT level} for the words on the JLPT lists ("いい/よい" gives both)."""
     folder = SOURCES / "jlpt-vocab"
-    forms = set()
+    levels = {}
     for level in (5, 4, 3, 2, 1):
         path = folder / f"vocab-n{level}.csv"
-        if path.exists():
-            with open(path, encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    forms |= {v for v in (re.sub(r"\s*[(（].*?[)）]", "", v).strip(" ～〜~")
-                                          for v in row["word"].split("/")) if v}
-    return forms
+        if not path.exists():
+            continue
+        with open(path, encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                clean = lambda v: [x for x in (re.sub(r"\s*[(（].*?[)）]", "", x).strip(" ～〜~") for x in v.split("/")) if x]
+                forms = clean(row["word"])
+                for form in forms:
+                    for reading in clean(row["reading"]) or [form]:
+                        levels.setdefault((form, hira(reading)), level)
+    return levels
+
+
+# The JLPT lists are a third opinion: a word on them is at least about this common (as a Zipf value, see
+# word_freq.py), so the counting words the frequency lists split apart (九つ, 八つ) and words like 重さ still come
+# early enough. N1 words get no help.
+JLPT_FLOOR = {5: 4.6, 4: 4.2, 3: 3.9, 2: 3.6}
 
 
 # Kana words whose JLPT list entry means more than one thing, where learners mean this one first: the list has
@@ -1093,6 +1103,11 @@ def main():
     tags = reading_tags(con, words)
     counts, tokens = tatoeba_counts(words, everyday_order(words, tags))
     score = commonness(words, load_wordfreq(), counts, tokens, tags)
+    jlpt_words = jlpt_word_levels()
+    for wid, w in words.items():
+        level = jlpt_words.get((w["w"], hira(w["r"])))
+        if level in JLPT_FLOOR:
+            score[wid] = max(score[wid], JLPT_FLOOR[level])
     picks = pick_lesson_words(words, joyo, lesson_of, score, old_entries(con))
     keep |= picks.keys()
     print(f"Lesson words by how common they are: {len(picks)} (wordfreq + "

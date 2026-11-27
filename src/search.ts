@@ -95,9 +95,10 @@ export function search(d: Data, raw: string): Results {
         .sort(byLesson)
         .slice(0, 20),
     );
-    // A whole meaning: the gloss list is "a | b | c", so look for the needle between separators.
-    const [first, last, middle] = [needle + " | ", " | " + needle, " | " + needle + " | "];
-    const whole = (g: string) => g === needle || g.startsWith(first) || g.endsWith(last) || g.includes(middle);
+    // A whole meaning: the gloss list is "a | b | c", so look for the needle between separators. A meaning with a
+    // note after it counts too: 水 is "water (esp. cool or cold)".
+    const noted = needle + " (";
+    const whole = (g: string) => g.split(" | ").some((m) => m === needle || m.startsWith(noted));
     scan((w) => whole(w.gloss));
     scan((w) => word.test(w.gloss));
   }
