@@ -5,7 +5,9 @@ import words from "../data/words.json";
 import lessons from "../data/lessons.json";
 import type { Data } from "../src/data";
 import { addItem, emptyStore, merge, nextToLearn } from "../src/srs";
-import { aiPrompt, cleanLyrics, findTitle, groupTokens, matchWord, parseAI, queueWord, removeSong, saveSong, songCredits, unqueueWord, withAnswer, type Song, type Token } from "../src/songs";
+import { readFileSync } from "node:fs";
+import { lookupDict, makeDict } from "../src/jmdict";
+import { aiPrompt, analyse, cleanLyrics, findTitle, groupTokens, matchWord, parseAI, queueWord, removeSong, saveSong, songCredits, unqueueWord, withAnswer, type Song, type Token } from "../src/songs";
 
 const data = { kanji, radicals, words, sentences: {}, lessons, grammar: {} } as unknown as Data;
 
@@ -90,6 +92,34 @@ describe("splitting and matching", () => {
     expect(matchWord(data, "空", "そら")?.r).toBe("そら");
     expect(matchWord(data, "空", "から", "から")?.r).toBe("から");
     expect(matchWord(data, "僕", "ぼく")?.r).toBe("ぼく");
+  });
+});
+
+describe("every word has a meaning", () => {
+  const dict = makeDict(JSON.parse(readFileSync(new URL("../public/dict/jmdict.json", import.meta.url), "utf8")));
+  const tok = (surface_form: string, pos: string, pos_detail_1: string, basic_form: string, reading: string) => ({ surface_form, pos, pos_detail_1, basic_form, reading });
+  it("finds words Nekko doesn't have in JMdict", () => {
+    expect(lookupDict(dict, "纏う", "マトウ")?.m).toMatch(/wear/);
+    expect(lookupDict(dict, "がむしゃら", "ガムシャラ")?.m).toMatch(/reckless/);
+    expect(lookupDict(dict, "分かり合う", "ワカリアウ")?.m).toMatch(/understand/);
+  });
+  it("reads a particle as a particle, not a noun read the same way", () => {
+    expect(lookupDict(dict, "は", "ハ", "grammar")?.m).toMatch(/topic/);
+    expect(lookupDict(dict, "を", "ヲ", "grammar")?.m).toMatch(/object/);
+    expect(lookupDict(dict, "くる", "キ", "v")?.m).not.toMatch(/rickets/);
+  });
+  it("fills in what the AI skipped", () => {
+    const line = [tok("君", "名詞", "代名詞", "君", "キミ"), tok("は", "助詞", "係助詞", "は", "ハ"), tok("纏う", "動詞", "自立", "纏う", "マトウ")];
+    const tk = { tokenize: () => line } as unknown as Parameters<typeof analyse>[1];
+    const song = { id: "t", title: "t", lyrics: "君は纏う", added: 0, ai: { words: [] } } as unknown as Song;
+    const without = analyse(song, tk, data);
+    expect(without.missing).toContain("纏う");
+    const { lines, missing } = analyse(song, tk, data, dict);
+    expect(missing).toEqual([]);
+    const ws = (lines[0] as Extract<(typeof lines)[0], { words: unknown }>).words;
+    expect(ws[0].wid).toBeTruthy();
+    expect(ws[1].jm).toMatch(/topic/);
+    expect(ws[2].jm).toMatch(/wear/);
   });
 });
 

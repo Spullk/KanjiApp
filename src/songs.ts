@@ -6,6 +6,7 @@
 import { hira, isKanji, type Data, type Word } from "./data";
 import { isAdded, itemInfo, setItemInfo, stageOf, type Store } from "./srs";
 import type { Knowledge } from "./stories";
+import { lookupDict, type Dict } from "./jmdict";
 
 // ---------------------------------------------------------------- types
 
@@ -432,6 +433,8 @@ export type SongWord = {
   m?: string;
   /** A short dictionary meaning from the AI, for words Nekko doesn't have. */
   dict?: string;
+  /** JMdict's meaning, for words Nekko's word list doesn't have (public/dict/jmdict.json). */
+  jm?: string;
   /** The Nekko word, when Nekko has it. */
   wid?: string;
 };
@@ -486,8 +489,10 @@ export function matchWord(data: Data, base: string, reading: string, aiReading?:
   return [...cands].sort((a, b) => a.rank - b.rank)[0];
 }
 
-/** Splits every line into words and attaches Nekko's word and the AI's meaning and notes. */
-export function analyse(song: Song, tk: Tokenizer, data: Data): { lines: SongLine[]; wids: string[]; missing: string[]; lineCountOff: boolean } {
+/** Splits every line into words and attaches Nekko's word and the AI's meaning and notes. A word Nekko doesn't have
+ * gets JMdict's meaning, so nothing is left without a definition when the AI skips it; `missing` lists what neither
+ * the AI nor either dictionary explains. */
+export function analyse(song: Song, tk: Tokenizer, data: Data, dict?: Dict): { lines: SongLine[]; wids: string[]; missing: string[]; lineCountOff: boolean } {
   const { sections } = cleanLyrics(song.lyrics);
   const ai = song.ai;
   const byBase = new Map<string, AIWord[]>();
@@ -519,18 +524,39 @@ export function analyse(song: Song, tk: Tokenizer, data: Data): { lines: SongLin
         if (/^\s+$/.test(s) || h.pos === "記号") return { s, kind: "punct", base: s, r: "" };
         const readingRaw = g.map((t) => (t.reading && t.reading !== "*" ? t.reading : t.surface_form)).join("");
         const r = isKatakana(s) ? readingRaw : kata2hira(readingRaw);
-        const base = h.basic_form && h.basic_form !== "*" ? h.basic_form : s;
+        // The splitter gives 来る written in kana as くる; Nekko lists it as 来る.
+        const base = h.basic_form === "くる" && h.pos === "動詞" ? "来る" : h.basic_form && h.basic_form !== "*" ? h.basic_form : s;
         const headReading = kata2hira(h.reading && h.reading !== "*" ? h.reading : h.surface_form);
-        const hit = findAI([base, s, h.surface_form], g.length === 1 ? r : headReading, n);
+        const hit = findAI([base, h.basic_form, s, h.surface_form], g.length === 1 ? r : headReading, n);
         const sung = hit?.sung && (!Array.isArray(hit.lines) || hit.lines.includes(n)) ? hit.sung : undefined;
         const out: SongWord = { s, kind: "word", base: hit?.base ?? base, r: r === s ? "" : r, sung, m: hit?.m, dict: hit?.dict };
         if (/^[A-Za-z0-9'’.,!?\- ]+$/.test(s) || (h.pos === "名詞" && h.pos_detail_1 === "固有名詞")) return { ...out, kind: "other" };
-        if (h.pos === "助詞" || (h.pos === "助動詞" && g.length === 1)) return { ...out, kind: "grammar" };
+        const fromDict = (grammar: boolean) => {
+          if (!dict) return;
+          const want = grammar ? "grammar" : h.pos === "動詞" ? "v" : h.pos === "形容詞" ? "adj" : undefined;
+          const d = lookupDict(dict, base, headReading, want) ?? (s !== base ? lookupDict(dict, s, r || s, want) : undefined);
+          if (d) out.jm = d.m;
+        };
+        if (h.pos === "助詞" || (h.pos === "助動詞" && g.length === 1)) {
+          if (!hit) {
+            // Particles and endings aren't lesson words, so a Nekko entry only lends its meaning here.
+            const nw = matchWord(data, base, headReading);
+            const nekko = nw && nw.senses.slice(0, 3).map((x) => x.gloss.slice(0, 3).join("; ")).join(" · ");
+            if (nw && nw.senses[0]?.pos.some((p) => /particle|auxiliary|suffix|expression|conjunction|copula/.test(p))) out.jm = nekko;
+            else fromDict(true);
+            out.jm ??= nekko;
+            if (!out.jm) missing.add(base);
+          }
+          return { ...out, kind: "grammar" };
+        }
         const w = matchWord(data, base, headReading, hit?.r, hit?.m || hit?.dict);
         if (w) {
           out.wid = w.id;
           wids.add(w.id);
-        } else if (!hit) missing.add(base);
+        } else {
+          fromDict(false);
+          if (!hit?.m && !hit?.dict && !out.jm) missing.add(base);
+        }
         return out;
       });
       lines.push({ n, text, note: notes.get(n), words: ws });

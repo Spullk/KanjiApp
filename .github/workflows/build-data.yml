@@ -82,6 +82,7 @@ jobs:
           pip install -q pyarrow==22.0.0 # reads the Hugging Face copy of the subtitle corpus
           python scripts/build_data.py
           python scripts/build_pitch.py
+          python scripts/build_dict.py
 
       # Lists broken or missing content (reports/content-check.md); it never fails the build.
       - name: Check content
@@ -91,7 +92,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data reports
+          git add data reports public/dict
           if git diff --cached --quiet; then
             echo "Data unchanged"
           else

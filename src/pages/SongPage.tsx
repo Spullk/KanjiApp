@@ -26,6 +26,7 @@ import {
   type SongWord,
 } from "../songs";
 import { aiError, askChat, askForNotes, getAIKey, modelOf } from "../songAI";
+import { loadDict, type Dict } from "../jmdict";
 
 type Tk = Awaited<ReturnType<typeof loadTokenizer>>;
 type Lyric = Exclude<SongLine, { gap: true }>;
@@ -56,11 +57,15 @@ export function SongPage({ id }: { id: string }) {
   const [ask, setAsk] = useState<AskFrom | null>(null);
   const [redo, setRedo] = useState(false);
 
+  const [dict, setDict] = useState<Dict | undefined>();
+
   useEffect(() => {
     loadTokenizer().then(setTk, (e) => setTkError((e as Error).message));
+    // Meanings for words Nekko doesn't have. The lyrics show without it; it fills the gaps once it's here.
+    loadDict().then(setDict, () => {});
   }, []);
   const k = useMemo(() => knowledge(store, data), [store, data]);
-  const result = useMemo(() => (song && tk ? analyse(song, tk, data) : null), [song?.lyrics, song?.ai, tk, data]);
+  const result = useMemo(() => (song && tk ? analyse(song, tk, data, dict) : null), [song?.lyrics, song?.ai, tk, data, dict]);
 
   // Remember which Nekko words the song has, so the song list can say how much of it you know.
   useEffect(() => {
@@ -140,7 +145,10 @@ export function SongPage({ id }: { id: string }) {
       {result && ai && (result.lineCountOff || result.missing.length > 0) && (
         <p class="hint">
           {result.lineCountOff && `The AI counted ${ai.lineCount} lines and Nekko ${lines.filter((l) => !l.gap).length}, so some notes may sit on the wrong line. `}
-          {result.missing.length > 0 && `${result.missing.length} words have no meaning from the AI: ${result.missing.slice(0, 12).join("、")}${result.missing.length > 12 ? "…" : ""}.`}
+          {result.missing.length > 0 &&
+            (dict
+              ? `${result.missing.length} words have no meaning from the AI or the dictionary: ${result.missing.slice(0, 12).join("、")}${result.missing.length > 12 ? "…" : ""}. Redo the AI notes to fill them in.`
+              : "Getting the dictionary for words Nekko doesn't have…")}
         </p>
       )}
 
@@ -232,7 +240,7 @@ function LinePanel({ l, k, onWord, onAsk }: { l: Lyric; li: number; k: Knowledge
                     {w.base} ·{" "}
                   </span>
                 )}
-                {w.m || w.dict || (w.wid ? "" : "")}
+                {w.m || w.dict || w.jm}
                 {!w.m && w.wid && <WordMeaning wid={w.wid} />}
                 {w.sung ? <span class="tag sung">sung {w.sung}</span> : st === "new" ? <span class="tag new">new</span> : st === "added" ? <span class="tag added">added</span> : st === "learning" ? <span class="tag learning">learning</span> : null}
               </span>
@@ -284,14 +292,21 @@ function WordCard({ w, k, onClose, onAsk }: { w: SongWord; k: Knowledge; onClose
             ✕
           </button>
         </div>
-        <div class="wc-sec">
-          <b>In this song</b>
-          {w.m || <span class="muted">No AI meaning yet. Get the AI notes at the top of the song.</span>}
-        </div>
+        {(w.m || (!nw && !w.jm && !w.dict)) && (
+          <div class="wc-sec">
+            <b>In this song</b>
+            {w.m || <span class="muted">No AI meaning yet. Get the AI notes at the top of the song.</span>}
+          </div>
+        )}
         {nw ? (
           <div class="wc-sec">
             <b>Dictionary</b>
             {glossLine(nw)}
+          </div>
+        ) : w.jm ? (
+          <div class="wc-sec">
+            <b>Dictionary</b>
+            {w.jm}
           </div>
         ) : (
           w.dict && (

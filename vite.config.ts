@@ -63,6 +63,13 @@ export default defineConfig({
             handler: "CacheFirst",
             options: { cacheName: "nekko-kuromoji", cacheableResponse: { statuses: [200] } },
           },
+          // Meanings for words Nekko doesn't have (~16 MB, scripts/build_dict.py): fetched the first time a song opens.
+          // Kept for a month (the dictionary is rebuilt monthly), so it downloads about once a month and works offline.
+          {
+            urlPattern: ({ url }) => url.pathname.endsWith("/dict/jmdict.json"),
+            handler: "CacheFirst",
+            options: { cacheName: "nekko-dict", expiration: { maxAgeSeconds: 30 * 24 * 60 * 60 }, cacheableResponse: { statuses: [200] } },
+          },
           {
             urlPattern: ({ url }) => url.origin === "https://fonts.googleapis.com" || url.origin === "https://fonts.gstatic.com",
             handler: "CacheFirst",
